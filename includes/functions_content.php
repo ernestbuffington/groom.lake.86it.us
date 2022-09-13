@@ -618,7 +618,7 @@ function generate_text_for_display($text, $uid, $bitfield, $flags, $censor_text 
 			if (!class_exists('bbcode'))
 			{
 				global $an602_root_path, $phpEx;
-				include($an602_root_path . 'includes/bbcode.' . $phpEx);
+				include($an602_root_path . 'includes/an602_bbcode.' . $phpEx);
 			}
 
 			if (empty($bbcode))

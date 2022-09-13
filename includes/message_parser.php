@@ -34,7 +34,7 @@ if (!class_exists('bbcode'))
 		global $phpEx;
 	}
 
-	include($an602_root_path . 'includes/bbcode.' . $phpEx);
+	include($an602_root_path . 'includes/an602_bbcode.' . $phpEx);
 }
 
 /**
