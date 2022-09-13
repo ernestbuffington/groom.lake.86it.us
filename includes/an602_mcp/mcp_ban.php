@@ -36,7 +36,7 @@ class mcp_ban
 		// Include the admin banning interface...
 		if (!class_exists('acp_ban'))
 		{
-			include($an602_root_path . 'includes/acp/acp_ban.' . $phpEx);
+			include($an602_root_path . 'includes/an602_acp/acp_ban.' . $phpEx);
 		}
 
 		$bansubmit		= $request->is_set_post('bansubmit');

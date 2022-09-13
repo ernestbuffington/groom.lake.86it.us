@@ -33,7 +33,7 @@ class update_custom_bbcodes_with_idn extends \an602\db\migration\migration
 	{
 		if (!class_exists('acp_bbcodes'))
 		{
-			include($this->an602_root_path . 'includes/acp/acp_bbcodes.' . $this->php_ext);
+			include($this->an602_root_path . 'includes/an602_acp/acp_bbcodes.' . $this->php_ext);
 		}
 
 		$bbcodes = new \acp_bbcodes();

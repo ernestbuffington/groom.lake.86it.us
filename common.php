@@ -146,7 +146,7 @@ require($an602_root_path . 'includes/an602_compatibility_globals.' . $phpEx);
 register_compatibility_globals();
 
 // Add own hook handler
-require($an602_root_path . 'includes/hooks/index.' . $phpEx);
+require($an602_root_path . 'includes/an602_hooks/index.' . $phpEx);
 $an602_hook = new an602_hook(array('exit_handler', 'an602_user_session_handler', 'append_sid', array('template', 'display')));
 
 /* @var $an602_hook_finder \an602\hook\finder */
@@ -154,7 +154,7 @@ $an602_hook_finder = $an602_container->get('hook_finder');
 
 foreach ($an602_hook_finder->find() as $hook)
 {
-	@include($an602_root_path . 'includes/hooks/' . $hook . '.' . $phpEx);
+	@include($an602_root_path . 'includes/an602_hooks/' . $hook . '.' . $phpEx);
 }
 
 /**

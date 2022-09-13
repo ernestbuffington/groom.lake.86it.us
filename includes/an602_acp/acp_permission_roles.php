@@ -37,7 +37,7 @@ class acp_permission_roles
 
 		if (!class_exists('auth_admin'))
 		{
-			include($an602_root_path . 'includes/acp/auth.' . $phpEx);
+			include($an602_root_path . 'includes/an602_acp/auth.' . $phpEx);
 		}
 
 		$this->auth_admin = new auth_admin();

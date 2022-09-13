@@ -2540,7 +2540,7 @@ class acp_users
 
 				if (!class_exists('auth_admin'))
 				{
-					include($an602_root_path . 'includes/acp/auth.' . $phpEx);
+					include($an602_root_path . 'includes/an602_acp/auth.' . $phpEx);
 				}
 
 				$auth_admin = new auth_admin();

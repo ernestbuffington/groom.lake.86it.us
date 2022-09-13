@@ -683,7 +683,7 @@ class p_master
 	* This function is called for adding specific url parameters while executing the current module.
 	* It is doing the same as the _module_{name}_url() function, apart from being able to be called after
 	* having dynamically parsed specific parameters. This allows more freedom in choosing additional parameters.
-	* One example can be seen in /includes/mcp/mcp_notes.php - $this->p_master->adjust_url() call.
+	* One example can be seen in /includes/an602_mcp/mcp_notes.php - $this->p_master->adjust_url() call.
 	*
 	* @param string $url_extra Extra url parameters, e.g.: &amp;u=$user_id
 	*
@@ -982,7 +982,7 @@ class p_master
 	/**
 	* Load module as the current active one without the need for registering it
 	*
-	* @param string $class module class (acp/mcp/ucp)
+	* @param string $class module class (acp/an602_mcp/ucp)
 	* @param string $name module name (class name of the module, or its basename
 	*                     an602_ext_foo_acp_bar_module, ucp_zebra or zebra)
 	* @param string $mode mode, as passed through to the module

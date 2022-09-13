@@ -60,7 +60,7 @@ function mcp_topic_view($id, $mode, $action)
 	{
 		if (!function_exists('mcp_resync_topics'))
 		{
-			include($an602_root_path . 'includes/mcp/mcp_forum.' . $phpEx);
+			include($an602_root_path . 'includes/an602_mcp/mcp_forum.' . $phpEx);
 		}
 		mcp_resync_topics(array($topic_id));
 	}
@@ -95,7 +95,7 @@ function mcp_topic_view($id, $mode, $action)
 	{
 		if (!class_exists('mcp_queue'))
 		{
-			include($an602_root_path . 'includes/mcp/mcp_queue.' . $phpEx);
+			include($an602_root_path . 'includes/an602_mcp/mcp_queue.' . $phpEx);
 		}
 
 		include_once($an602_root_path . 'includes/an602_functions_posting.' . $phpEx);

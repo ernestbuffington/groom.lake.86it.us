@@ -96,8 +96,8 @@ class diff_files extends task_base
 	public function run()
 	{
 		// Include diff engine
-		$this->update_helper->include_file('includes/diff/diff.' . $this->php_ext);
-		$this->update_helper->include_file('includes/diff/engine.' . $this->php_ext);
+		$this->update_helper->include_file('includes/an602_diff/diff.' . $this->php_ext);
+		$this->update_helper->include_file('includes/an602_diff/engine.' . $this->php_ext);
 
 		// Set up basic vars
 		$old_path = $this->update_helper->get_path_to_old_update_files();

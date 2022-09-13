@@ -109,7 +109,7 @@ class ucp_pm
 
 				if (!function_exists('compose_pm'))
 				{
-					include($an602_root_path . 'includes/ucp/ucp_pm_compose.' . $phpEx);
+					include($an602_root_path . 'includes/an602_ucp/ucp_pm_compose.' . $phpEx);
 				}
 				compose_pm($id, $mode, $action, $user_folders);
 
@@ -122,7 +122,7 @@ class ucp_pm
 
 				if (!function_exists('message_options'))
 				{
-					include($an602_root_path . 'includes/ucp/ucp_pm_options.' . $phpEx);
+					include($an602_root_path . 'includes/an602_ucp/ucp_pm_options.' . $phpEx);
 				}
 				message_options($id, $mode, $global_privmsgs_rules, $global_rule_conditions);
 
@@ -136,7 +136,7 @@ class ucp_pm
 
 				if (!class_exists('ucp_main'))
 				{
-					include($an602_root_path . 'includes/ucp/ucp_main.' . $phpEx);
+					include($an602_root_path . 'includes/an602_ucp/ucp_main.' . $phpEx);
 				}
 
 				$module = new ucp_main($this);
@@ -395,7 +395,7 @@ class ucp_pm
 				{
 					if (!function_exists('view_folder'))
 					{
-						include($an602_root_path . 'includes/ucp/ucp_pm_viewfolder.' . $phpEx);
+						include($an602_root_path . 'includes/an602_ucp/ucp_pm_viewfolder.' . $phpEx);
 					}
 					view_folder($id, $mode, $folder_id, $folder);
 
@@ -416,7 +416,7 @@ class ucp_pm
 
 					if (!function_exists('view_message'))
 					{
-						include($an602_root_path . 'includes/ucp/ucp_pm_viewmessage.' . $phpEx);
+						include($an602_root_path . 'includes/an602_ucp/ucp_pm_viewmessage.' . $phpEx);
 					}
 					view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row);
 

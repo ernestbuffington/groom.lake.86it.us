@@ -67,7 +67,7 @@ class finder
 		$hook_files = array();
 
 		// Now search for hooks...
-		$dh = @opendir($this->an602_root_path . 'includes/hooks/');
+		$dh = @opendir($this->an602_root_path . 'includes/an602_hooks/');
 
 		if ($dh)
 		{

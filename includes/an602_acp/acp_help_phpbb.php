@@ -29,7 +29,7 @@ class acp_help_an602
 
 		if (!class_exists('an602_questionnaire_data_collector'))
 		{
-			include($an602_root_path . 'includes/questionnaire/questionnaire.' . $phpEx);
+			include($an602_root_path . 'includes/an602_questionnaire/questionnaire.' . $phpEx);
 		}
 
 		$collect_url = "https://groom.lake.86it.us/statistics/send";

@@ -67,15 +67,15 @@ class release_3_0_8_rc1 extends \an602\db\migration\migration
 
 			$lang_dir = basename($row['lang_dir']);
 
-			// The language strings we need are either in language/.../acp/attachments.php
+			// The language strings we need are either in language/.../an602_acp/attachments.php
 			// in the update package if we're updating to 3.0.8-RC1 or later,
 			// or they are in language/.../install.php when we're updating from 3.0.7-PL1 or earlier.
-			// On an already updated board, they can also already be in language/.../acp/attachments.php
+			// On an already updated board, they can also already be in language/.../an602_acp/attachments.php
 			// in the board root.
 			$lang_files = array(
-				"{$this->an602_root_path}install/update/new/language/$lang_dir/acp/attachments.{$this->php_ext}",
+				"{$this->an602_root_path}install/update/new/language/$lang_dir/an602_acp/attachments.{$this->php_ext}",
 				"{$this->an602_root_path}language/$lang_dir/install.{$this->php_ext}",
-				"{$this->an602_root_path}language/$lang_dir/acp/attachments.{$this->php_ext}",
+				"{$this->an602_root_path}language/$lang_dir/an602_acp/attachments.{$this->php_ext}",
 			);
 
 			foreach ($lang_files as $lang_file)

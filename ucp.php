@@ -234,7 +234,7 @@ switch ($mode)
 			redirect(append_sid("{$an602_root_path}index.$phpEx"));
 		}
 
-		include($an602_root_path . 'includes/acp/auth.' . $phpEx);
+		include($an602_root_path . 'includes/an602_acp/auth.' . $phpEx);
 
 		$auth_admin = new auth_admin();
 		if (!$auth_admin->ghost_permissions($user_id, $user->data['user_id']))

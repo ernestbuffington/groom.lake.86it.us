@@ -46,11 +46,11 @@ class local_url_bbcode extends \an602\db\migration\migration
 			{
 				if (function_exists('an602_require_updated'))
 				{
-					an602_require_updated('includes/acp/acp_bbcodes.' . $this->php_ext);
+					an602_require_updated('includes/an602_acp/acp_bbcodes.' . $this->php_ext);
 				}
 				else
 				{
-					require($this->an602_root_path . 'includes/acp/acp_bbcodes.' . $this->php_ext);
+					require($this->an602_root_path . 'includes/an602_acp/acp_bbcodes.' . $this->php_ext);
 				}
 			}
 

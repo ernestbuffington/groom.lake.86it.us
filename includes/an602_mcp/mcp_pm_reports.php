@@ -62,7 +62,7 @@ class mcp_pm_reports
 
 				if (!function_exists('close_report'))
 				{
-					include($an602_root_path . 'includes/mcp/mcp_reports.' . $phpEx);
+					include($an602_root_path . 'includes/an602_mcp/mcp_reports.' . $phpEx);
 				}
 
 				close_report($report_id_list, $mode, $action, true);

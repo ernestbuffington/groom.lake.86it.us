@@ -55,7 +55,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 
 		if (!class_exists('auth_admin'))
 		{
-			include($this->an602_root_path . 'includes/acp/auth.' . $this->php_ext);
+			include($this->an602_root_path . 'includes/an602_acp/auth.' . $this->php_ext);
 		}
 		$this->auth_admin = new \auth_admin();
 	}

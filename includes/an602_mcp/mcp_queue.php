@@ -79,7 +79,7 @@ class mcp_queue
 					if (!function_exists('mcp_delete_post'))
 					{
 						global $an602_root_path, $phpEx;
-						include($an602_root_path . 'includes/mcp/mcp_main.' . $phpEx);
+						include($an602_root_path . 'includes/an602_mcp/mcp_main.' . $phpEx);
 					}
 					mcp_delete_post($post_id_list, false, $delete_reason, $action);
 				}
@@ -88,7 +88,7 @@ class mcp_queue
 					if (!function_exists('mcp_delete_topic'))
 					{
 						global $an602_root_path, $phpEx;
-						include($an602_root_path . 'includes/mcp/mcp_main.' . $phpEx);
+						include($an602_root_path . 'includes/an602_mcp/mcp_main.' . $phpEx);
 					}
 					mcp_delete_topic($topic_id_list, false, $delete_reason, $action);
 				}
@@ -107,7 +107,7 @@ class mcp_queue
 					if (!function_exists('mcp_delete_topic'))
 					{
 						global $an602_root_path, $phpEx;
-						include($an602_root_path . 'includes/mcp/mcp_main.' . $phpEx);
+						include($an602_root_path . 'includes/an602_mcp/mcp_main.' . $phpEx);
 					}
 					mcp_delete_topic($topic_id_list, false, '', 'disapprove');
 					return;
