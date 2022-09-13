@@ -294,11 +294,11 @@ function utf8_recode($string, $encoding)
 			case '15':
 				if (!function_exists('iso_8859_' . $array[1]))
 				{
-					if (!file_exists($an602_root_path . 'includes/utf/data/recode_basic.' . $phpEx))
+					if (!file_exists($an602_root_path . 'includes/an602_utf/data/recode_basic.' . $phpEx))
 					{
 						trigger_error('Basic reencoder file is missing', E_USER_ERROR);
 					}
-					include($an602_root_path . 'includes/utf/data/recode_basic.' . $phpEx);
+					include($an602_root_path . 'includes/an602_utf/data/recode_basic.' . $phpEx);
 				}
 				return call_user_func('iso_8859_' . $array[1], $string);
 			break;
@@ -326,11 +326,11 @@ function utf8_recode($string, $encoding)
 			case '874':
 				if (!function_exists('cp' . $array[1]))
 				{
-					if (!file_exists($an602_root_path . 'includes/utf/data/recode_basic.' . $phpEx))
+					if (!file_exists($an602_root_path . 'includes/an602_utf/data/recode_basic.' . $phpEx))
 					{
 						trigger_error('Basic reencoder file is missing', E_USER_ERROR);
 					}
-					include($an602_root_path . 'includes/utf/data/recode_basic.' . $phpEx);
+					include($an602_root_path . 'includes/an602_utf/data/recode_basic.' . $phpEx);
 				}
 				return call_user_func('cp' . $array[1], $string);
 			break;
@@ -346,11 +346,11 @@ function utf8_recode($string, $encoding)
 	{
 		if (!function_exists('tis_620'))
 		{
-			if (!file_exists($an602_root_path . 'includes/utf/data/recode_basic.' . $phpEx))
+			if (!file_exists($an602_root_path . 'includes/an602_utf/data/recode_basic.' . $phpEx))
 			{
 				trigger_error('Basic reencoder file is missing', E_USER_ERROR);
 			}
-			include($an602_root_path . 'includes/utf/data/recode_basic.' . $phpEx);
+			include($an602_root_path . 'includes/an602_utf/data/recode_basic.' . $phpEx);
 		}
 		return tis_620($string);
 	}
@@ -360,11 +360,11 @@ function utf8_recode($string, $encoding)
 	{
 		if (!function_exists('sjis'))
 		{
-			if (!file_exists($an602_root_path . 'includes/utf/data/recode_cjk.' . $phpEx))
+			if (!file_exists($an602_root_path . 'includes/an602_utf/data/recode_cjk.' . $phpEx))
 			{
 				trigger_error('CJK reencoder file is missing', E_USER_ERROR);
 			}
-			include($an602_root_path . 'includes/utf/data/recode_cjk.' . $phpEx);
+			include($an602_root_path . 'includes/an602_utf/data/recode_cjk.' . $phpEx);
 		}
 		return sjis($string);
 	}
@@ -374,11 +374,11 @@ function utf8_recode($string, $encoding)
 	{
 		if (!function_exists('euc_kr'))
 		{
-			if (!file_exists($an602_root_path . 'includes/utf/data/recode_cjk.' . $phpEx))
+			if (!file_exists($an602_root_path . 'includes/an602_utf/data/recode_cjk.' . $phpEx))
 			{
 				trigger_error('CJK reencoder file is missing', E_USER_ERROR);
 			}
-			include($an602_root_path . 'includes/utf/data/recode_cjk.' . $phpEx);
+			include($an602_root_path . 'includes/an602_utf/data/recode_cjk.' . $phpEx);
 		}
 		return euc_kr($string);
 	}
@@ -388,11 +388,11 @@ function utf8_recode($string, $encoding)
 	{
 		if (!function_exists('big5'))
 		{
-			if (!file_exists($an602_root_path . 'includes/utf/data/recode_cjk.' . $phpEx))
+			if (!file_exists($an602_root_path . 'includes/an602_utf/data/recode_cjk.' . $phpEx))
 			{
 				trigger_error('CJK reencoder file is missing', E_USER_ERROR);
 			}
-			include($an602_root_path . 'includes/utf/data/recode_cjk.' . $phpEx);
+			include($an602_root_path . 'includes/an602_utf/data/recode_cjk.' . $phpEx);
 		}
 		return big5($string);
 	}
@@ -402,11 +402,11 @@ function utf8_recode($string, $encoding)
 	{
 		if (!function_exists('gb2312'))
 		{
-			if (!file_exists($an602_root_path . 'includes/utf/data/recode_cjk.' . $phpEx))
+			if (!file_exists($an602_root_path . 'includes/an602_utf/data/recode_cjk.' . $phpEx))
 			{
 				trigger_error('CJK reencoder file is missing', E_USER_ERROR);
 			}
-			include($an602_root_path . 'includes/utf/data/recode_cjk.' . $phpEx);
+			include($an602_root_path . 'includes/an602_utf/data/recode_cjk.' . $phpEx);
 		}
 		return gb2312($string);
 	}
@@ -561,19 +561,19 @@ function utf8_case_fold($text, $option = 'full')
 	// common is always set
 	if (!isset($uniarray['c']))
 	{
-		$uniarray['c'] = include($an602_root_path . 'includes/utf/data/case_fold_c.' . $phpEx);
+		$uniarray['c'] = include($an602_root_path . 'includes/an602_utf/data/case_fold_c.' . $phpEx);
 	}
 
 	// only set full if we need to
 	if ($option === 'full' && !isset($uniarray['f']))
 	{
-		$uniarray['f'] = include($an602_root_path . 'includes/utf/data/case_fold_f.' . $phpEx);
+		$uniarray['f'] = include($an602_root_path . 'includes/an602_utf/data/case_fold_f.' . $phpEx);
 	}
 
 	// only set simple if we need to
 	if ($option !== 'full' && !isset($uniarray['s']))
 	{
-		$uniarray['s'] = include($an602_root_path . 'includes/utf/data/case_fold_s.' . $phpEx);
+		$uniarray['s'] = include($an602_root_path . 'includes/an602_utf/data/case_fold_s.' . $phpEx);
 	}
 
 	// common is always replaced
@@ -1342,7 +1342,7 @@ function utf8_clean_string($text)
 	static $homographs = array();
 	if (empty($homographs))
 	{
-		$homographs = include($an602_root_path . 'includes/utf/data/confusables.' . $phpEx);
+		$homographs = include($an602_root_path . 'includes/an602_utf/data/confusables.' . $phpEx);
 	}
 
 	$text = utf8_case_fold_nfkc($text);

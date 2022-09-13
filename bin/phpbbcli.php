@@ -41,7 +41,7 @@ if (!defined('AN602_ENVIRONMENT'))
 require($an602_root_path . 'includes/an602_constants.' . $phpEx);
 require($an602_root_path . 'includes/an602_functions.' . $phpEx);
 require($an602_root_path . 'includes/an602_functions_admin.' . $phpEx);
-require($an602_root_path . 'includes/utf/utf_tools.' . $phpEx);
+require($an602_root_path . 'includes/an602_utf/utf_tools.' . $phpEx);
 require($an602_root_path . 'includes/an602_functions_compatibility.' . $phpEx);
 
 $an602_container_builder = new \an602\di\container_builder($an602_root_path, $phpEx);

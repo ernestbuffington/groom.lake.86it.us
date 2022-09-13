@@ -133,7 +133,7 @@ class fulltext_native extends \an602\search\base
 		*/
 		if (!function_exists('utf8_decode_ncr'))
 		{
-			include($this->an602_root_path . 'includes/utf/utf_tools.' . $this->php_ext);
+			include($this->an602_root_path . 'includes/an602_utf/utf_tools.' . $this->php_ext);
 		}
 
 		$error = false;
@@ -1997,7 +1997,7 @@ class fulltext_native extends \an602\search\base
 			if (!isset($conv_loaded[$idx]))
 			{
 				$conv_loaded[$idx] = 1;
-				$file = $this->an602_root_path . 'includes/utf/data/search_indexer_' . $idx . '.' . $this->php_ext;
+				$file = $this->an602_root_path . 'includes/an602_utf/data/search_indexer_' . $idx . '.' . $this->php_ext;
 
 				if (file_exists($file))
 				{

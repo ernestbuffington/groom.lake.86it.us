@@ -55,7 +55,7 @@ if (isset($_GET['avatar']))
 	require($an602_root_path . 'includes/an602_constants.' . $phpEx);
 	require($an602_root_path . 'includes/an602_functions.' . $phpEx);
 	require($an602_root_path . 'includes/an602_functions_download' . '.' . $phpEx);
-	require($an602_root_path . 'includes/utf/utf_tools.' . $phpEx);
+	require($an602_root_path . 'includes/an602_utf/utf_tools.' . $phpEx);
 
 	// Setup class loader first
 	$an602_class_loader_ext = new \an602\class_loader('\\', "{$an602_root_path}ext/", $phpEx);

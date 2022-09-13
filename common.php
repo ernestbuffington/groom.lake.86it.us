@@ -94,7 +94,7 @@ require($an602_root_path . 'includes/an602_functions_content.' . $phpEx);
 include($an602_root_path . 'includes/an602_functions_compatibility.' . $phpEx);
 
 require($an602_root_path . 'includes/an602_constants.' . $phpEx);
-require($an602_root_path . 'includes/utf/utf_tools.' . $phpEx);
+require($an602_root_path . 'includes/an602_utf/utf_tools.' . $phpEx);
 
 // Registered before building the container so the development environment stay capable of intercepting
 // the container builder exceptions.

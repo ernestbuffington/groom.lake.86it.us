@@ -114,7 +114,7 @@ class fulltext_postgres extends \an602\search\base
 		 */
 		if (!function_exists('utf8_strlen'))
 		{
-			include($an602_root_path . 'includes/utf/utf_tools.' . $phpEx);
+			include($an602_root_path . 'includes/an602_utf/utf_tools.' . $phpEx);
 		}
 
 		$error = false;

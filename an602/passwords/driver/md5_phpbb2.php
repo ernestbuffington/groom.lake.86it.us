@@ -107,7 +107,7 @@ class md5_an6022 extends base
 		{
 			if (!function_exists('utf8_to_cp1252'))
 			{
-				include($this->an602_root_path . 'includes/utf/data/recode_basic.' . $this->php_ext);
+				include($this->an602_root_path . 'includes/an602_utf/data/recode_basic.' . $this->php_ext);
 			}
 
 			if ($this->helper->string_compare(md5($password_old_format), $hash) || $this->helper->string_compare(md5(\utf8_to_cp1252($password_old_format)), $hash)
