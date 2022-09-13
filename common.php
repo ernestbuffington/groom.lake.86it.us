@@ -20,7 +20,7 @@ if (!defined('IN_AN602'))
 	exit;
 }
 
-require($an602_root_path . 'includes/startup.' . $phpEx);
+require($an602_root_path . 'includes/an602_startup.' . $phpEx);
 require($an602_root_path . 'an602/class_loader.' . $phpEx);
 
 $an602_class_loader = new \an602\class_loader('an602\\', "{$an602_root_path}an602/", $phpEx);
@@ -37,7 +37,7 @@ if (!defined('AN602_ENVIRONMENT'))
 if (!defined('AN602_INSTALLED'))
 {
 	// Redirect the user to the installer
-	require($an602_root_path . 'includes/functions.' . $phpEx);
+	require($an602_root_path . 'includes/an602_functions.' . $phpEx);
 
 	// We have to generate a full HTTP/1.1 header here since we can't guarantee to have any of the information
 	// available as used by the redirect function
@@ -89,11 +89,11 @@ $an602_adm_relative_path = (isset($an602_adm_relative_path)) ? $an602_adm_relati
 $an602_admin_path = (defined('AN602_ADMIN_PATH')) ? AN602_ADMIN_PATH : $an602_root_path . $an602_adm_relative_path;
 
 // Include files
-require($an602_root_path . 'includes/functions.' . $phpEx);
-require($an602_root_path . 'includes/functions_content.' . $phpEx);
-include($an602_root_path . 'includes/functions_compatibility.' . $phpEx);
+require($an602_root_path . 'includes/an602_functions.' . $phpEx);
+require($an602_root_path . 'includes/an602_functions_content.' . $phpEx);
+include($an602_root_path . 'includes/an602_functions_compatibility.' . $phpEx);
 
-require($an602_root_path . 'includes/constants.' . $phpEx);
+require($an602_root_path . 'includes/an602_constants.' . $phpEx);
 require($an602_root_path . 'includes/utf/utf_tools.' . $phpEx);
 
 // Registered before building the container so the development environment stay capable of intercepting
@@ -141,7 +141,7 @@ $an602_class_loader_ext->set_cache($an602_container->get('cache.driver'));
 
 $an602_container->get('dbal.conn')->set_debug_sql_explain($an602_container->getParameter('debug.sql_explain'));
 $an602_container->get('dbal.conn')->set_debug_load_time($an602_container->getParameter('debug.load_time'));
-require($an602_root_path . 'includes/compatibility_globals.' . $phpEx);
+require($an602_root_path . 'includes/an602_compatibility_globals.' . $phpEx);
 
 register_compatibility_globals();
 

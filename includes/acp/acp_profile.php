@@ -39,12 +39,12 @@ class acp_profile
 
 		if (!function_exists('generate_smilies'))
 		{
-			include($an602_root_path . 'includes/functions_posting.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_posting.' . $phpEx);
 		}
 
 		if (!function_exists('user_get_id_name'))
 		{
-			include($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 		}
 
 		$user->add_lang(array('ucp', 'acp/profile'));

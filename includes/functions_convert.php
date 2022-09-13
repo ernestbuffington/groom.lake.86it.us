@@ -1,6 +1,6 @@
 <?php
 /**
-*
+* THIS FILE DOES NOT APPEAR TO BE USED ANYWHERE - 09/13/2022 TheGhost
 * This file is part of the AN602 CMS Software package.
 *
 * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
@@ -1894,7 +1894,7 @@ function add_bots()
 
 	if (!function_exists('user_add'))
 	{
-		include($an602_root_path . 'includes/functions_user.' . $phpEx);
+		include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 	}
 
 	foreach ($bots as $bot_name => $bot_ary)
@@ -2180,7 +2180,7 @@ function remove_invalid_users()
 	{
 		if (!function_exists('user_delete'))
 		{
-			include($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 		}
 
 		user_delete('remove', $row['user_id']);

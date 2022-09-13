@@ -717,22 +717,22 @@ function generate_text_for_storage(&$text, &$uid, &$bitfield, &$flags, $allow_bb
 
 	if (!class_exists('parse_message'))
 	{
-		include($an602_root_path . 'includes/message_parser.' . $phpEx);
+		include($an602_root_path . 'includes/an602_message_parser.' . $phpEx);
 	}
 
-	$message_parser = new parse_message($text);
-	$message_parser->parse($allow_bbcode, $allow_urls, $allow_smilies, $allow_img_bbcode, $allow_flash_bbcode, $allow_quote_bbcode, $allow_url_bbcode, true, $mode);
+	$an602_message_parser = new parse_message($text);
+	$an602_message_parser->parse($allow_bbcode, $allow_urls, $allow_smilies, $allow_img_bbcode, $allow_flash_bbcode, $allow_quote_bbcode, $allow_url_bbcode, true, $mode);
 
-	$text = $message_parser->message;
-	$uid = $message_parser->bbcode_uid;
+	$text = $an602_message_parser->message;
+	$uid = $an602_message_parser->bbcode_uid;
 
 	// If the bbcode_bitfield is empty, there is no need for the uid to be stored.
-	if (!$message_parser->bbcode_bitfield)
+	if (!$an602_message_parser->bbcode_bitfield)
 	{
 		$uid = '';
 	}
 
-	$bitfield = $message_parser->bbcode_bitfield;
+	$bitfield = $an602_message_parser->bbcode_bitfield;
 
 	/**
 	* Use this event to modify the text after it is prepared for storage
@@ -742,14 +742,14 @@ function generate_text_for_storage(&$text, &$uid, &$bitfield, &$flags, $allow_bb
 	* @var string	uid				The BBCode UID
 	* @var string	bitfield		The BBCode Bitfield
 	* @var int		flags			The BBCode Flags
-	* @var string	message_parser	The message_parser object
+	* @var string	an602_message_parser	The an602_message_parser object
 	* @since 3.1.0-a1
-	* @changed 3.1.11-RC1			Added message_parser to vars
+	* @changed 3.1.11-RC1			Added an602_message_parser to vars
 	*/
-	$vars = array('text', 'uid', 'bitfield', 'flags', 'message_parser');
+	$vars = array('text', 'uid', 'bitfield', 'flags', 'an602_message_parser');
 	extract($an602_dispatcher->trigger_event('core.modify_text_for_storage_after', compact($vars)));
 
-	return $message_parser->warn_msg;
+	return $an602_message_parser->warn_msg;
 }
 
 /**
@@ -1783,28 +1783,28 @@ class bitfield
  * Formats the quote according to the given BBCode status setting
  *
  * @param an602\language\language				$language Language class
- * @param parse_message 						$message_parser Message parser class
+ * @param parse_message 						$an602_message_parser Message parser class
  * @param an602\textformatter\utils_interface	$text_formatter_utils Text formatter utilities
  * @param bool 									$bbcode_status The status of the BBCode setting
  * @param array 								$quote_attributes The attributes of the quoted post
  * @param string 								$message_link Link of the original quoted post
  */
-function an602_format_quote($language, $message_parser, $text_formatter_utils, $bbcode_status, $quote_attributes, $message_link = '')
+function an602_format_quote($language, $an602_message_parser, $text_formatter_utils, $bbcode_status, $quote_attributes, $message_link = '')
 {
 	if ($bbcode_status)
 	{
 		$quote_text = $text_formatter_utils->generate_quote(
-			censor_text($message_parser->message),
+			censor_text($an602_message_parser->message),
 			$quote_attributes
 		);
 
-		$message_parser->message = $quote_text . "\n\n";
+		$an602_message_parser->message = $quote_text . "\n\n";
 	}
 	else
 	{
 		$offset = 0;
 		$quote_string = "&gt; ";
-		$message = censor_text(trim($message_parser->message));
+		$message = censor_text(trim($an602_message_parser->message));
 		// see if we are nesting. It's easily tricked but should work for one level of nesting
 		if (strpos($message, "&gt;") !== false)
 		{
@@ -1815,11 +1815,11 @@ function an602_format_quote($language, $message_parser, $text_formatter_utils, $
 		$message = $quote_string . $message;
 		$message = str_replace("\n", "\n" . $quote_string, $message);
 
-		$message_parser->message = $quote_attributes['author'] . " " . $language->lang('WROTE') . ":\n" . $message . "\n";
+		$an602_message_parser->message = $quote_attributes['author'] . " " . $language->lang('WROTE') . ":\n" . $message . "\n";
 	}
 
 	if ($message_link)
 	{
-		$message_parser->message = $message_link . $message_parser->message;
+		$an602_message_parser->message = $message_link . $an602_message_parser->message;
 	}
 }

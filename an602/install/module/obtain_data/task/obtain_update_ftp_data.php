@@ -76,7 +76,7 @@ class obtain_update_ftp_data extends task_base
 	{
 		if ($this->iohandler->get_input('submit_ftp', false))
 		{
-			$this->update_helper->include_file('includes/functions_transfer.' . $this->php_ext);
+			$this->update_helper->include_file('includes/an602_functions_transfer.' . $this->php_ext);
 
 			$method = 'ftp';
 			$methods = \transfer::methods();

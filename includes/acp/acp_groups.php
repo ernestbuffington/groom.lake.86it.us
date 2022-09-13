@@ -47,7 +47,7 @@ class acp_groups
 
 		if (!function_exists('group_user_attributes'))
 		{
-			include($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 		}
 
 		// Check and set some common vars
@@ -320,7 +320,7 @@ class acp_groups
 
 				if (!function_exists('display_forums'))
 				{
-					include($an602_root_path . 'includes/functions_display.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
 				}
 
 				if ($action == 'edit' && !$group_id)

@@ -713,7 +713,7 @@ class acp_board
 		{
 			if ($config['email_enable'])
 			{
-				include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+				include_once($an602_root_path . 'includes/an602_functions_messenger.' . $phpEx);
 
 				$messenger = new messenger(false);
 				$messenger->template('test');

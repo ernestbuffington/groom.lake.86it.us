@@ -231,7 +231,7 @@ class add extends command
 	{
 		if (!function_exists('validate_data'))
 		{
-			require($this->an602_root_path . 'includes/functions_user.' . $this->php_ext);
+			require($this->an602_root_path . 'includes/an602_functions_user.' . $this->php_ext);
 		}
 
 		$error = validate_data($this->data, array(
@@ -304,7 +304,7 @@ class add extends command
 
 		if (!class_exists('messenger'))
 		{
-			require($this->an602_root_path . 'includes/functions_messenger.' . $this->php_ext);
+			require($this->an602_root_path . 'includes/an602_functions_messenger.' . $this->php_ext);
 		}
 
 		$messenger = new \messenger(false);

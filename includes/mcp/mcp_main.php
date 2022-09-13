@@ -1180,7 +1180,7 @@ function mcp_delete_post($post_ids, $is_soft = false, $soft_delete_reason = '', 
 	{
 		if (!function_exists('delete_posts'))
 		{
-			include($an602_root_path . 'includes/functions_admin.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_admin.' . $phpEx);
 		}
 
 		// Count the number of topics that are affected

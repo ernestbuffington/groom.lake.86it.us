@@ -64,7 +64,7 @@ class compression_file_updater implements file_updater_interface
 	 */
 	public function init($method)
 	{
-		$this->update_helper->include_file('includes/functions_compress.' . $this->php_ext);
+		$this->update_helper->include_file('includes/an602_functions_compress.' . $this->php_ext);
 
 		$archive_filename = 'update_archive_' . time() . '_' . uniqid();
 		$path = $this->an602_root_path . 'store/' . $archive_filename . '' . $method;

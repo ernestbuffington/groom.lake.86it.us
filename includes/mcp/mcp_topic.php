@@ -98,8 +98,8 @@ function mcp_topic_view($id, $mode, $action)
 			include($an602_root_path . 'includes/mcp/mcp_queue.' . $phpEx);
 		}
 
-		include_once($an602_root_path . 'includes/functions_posting.' . $phpEx);
-		include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+		include_once($an602_root_path . 'includes/an602_functions_posting.' . $phpEx);
+		include_once($an602_root_path . 'includes/an602_functions_messenger.' . $phpEx);
 
 		if (!count($post_id_list))
 		{
@@ -344,7 +344,7 @@ function mcp_topic_view($id, $mode, $action)
 
 	if ($auth->acl_gets('m_split', 'm_merge', (int) $topic_info['forum_id']))
 	{
-		include_once($an602_root_path . 'includes/functions_posting.' . $phpEx);
+		include_once($an602_root_path . 'includes/an602_functions_posting.' . $phpEx);
 		$s_topic_icons = posting_gen_topic_icons('', $icon_id);
 
 		// Has the user selected a topic for merge?
@@ -863,7 +863,7 @@ function merge_posts($topic_id, $to_topic_id)
 		{
 			if (!function_exists('an602_update_rows_avoiding_duplicates_notify_status'))
 			{
-				include($an602_root_path . 'includes/functions_database_helper.' . $phpEx);
+				include($an602_root_path . 'includes/an602_functions_database_helper.' . $phpEx);
 			}
 
 			// If the topic no longer exist, we will update the topic watch table.

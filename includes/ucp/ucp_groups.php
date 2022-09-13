@@ -401,7 +401,7 @@ class ucp_groups
 
 				if (!function_exists('an602_get_user_rank'))
 				{
-					include($an602_root_path . 'includes/functions_display.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
 				}
 
 				add_form_key('ucp_groups');

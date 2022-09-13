@@ -48,7 +48,7 @@ class queue extends \an602\cron\task\base
 	{
 		if (!class_exists('queue'))
 		{
-			include($this->an602_root_path . 'includes/functions_messenger.' . $this->php_ext);
+			include($this->an602_root_path . 'includes/an602_functions_messenger.' . $this->php_ext);
 		}
 		$queue = new \queue();
 		$queue->process();

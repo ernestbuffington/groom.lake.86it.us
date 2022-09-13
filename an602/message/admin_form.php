@@ -134,7 +134,7 @@ class admin_form extends form
 
 			if (!function_exists('validate_data'))
 			{
-				require($this->an602_root_path . 'includes/functions_user.' . $this->phpEx);
+				require($this->an602_root_path . 'includes/an602_functions_user.' . $this->phpEx);
 			}
 
 			$validate_array = validate_data(

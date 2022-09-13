@@ -170,7 +170,7 @@ class ucp_profile
 						{
 							$message = ($config['require_activation'] == USER_ACTIVATION_SELF) ? 'ACCOUNT_EMAIL_CHANGED' : 'ACCOUNT_EMAIL_CHANGED_ADMIN';
 
-							include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+							include_once($an602_root_path . 'includes/an602_functions_messenger.' . $phpEx);
 
 							$server_url = generate_board_url();
 
@@ -471,12 +471,12 @@ class ucp_profile
 
 				if (!function_exists('generate_smilies'))
 				{
-					include($an602_root_path . 'includes/functions_posting.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_posting.' . $phpEx);
 				}
 
 				if (!function_exists('display_custom_bbcodes'))
 				{
-					include($an602_root_path . 'includes/functions_display.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
 				}
 
 				$preview	= $request->is_set_post('preview');

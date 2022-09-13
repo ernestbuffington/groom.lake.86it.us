@@ -33,7 +33,7 @@ else if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'
 
 if (isset($_GET['avatar']))
 {
-	require($an602_root_path . 'includes/startup.' . $phpEx);
+	require($an602_root_path . 'includes/an602_startup.' . $phpEx);
 
 	require($an602_root_path . 'an602/class_loader.' . $phpEx);
 	$an602_class_loader = new \an602\class_loader('an602\\', "{$an602_root_path}an602/", $phpEx);
@@ -52,9 +52,9 @@ if (isset($_GET['avatar']))
 		exit;
 	}
 
-	require($an602_root_path . 'includes/constants.' . $phpEx);
-	require($an602_root_path . 'includes/functions.' . $phpEx);
-	require($an602_root_path . 'includes/functions_download' . '.' . $phpEx);
+	require($an602_root_path . 'includes/an602_constants.' . $phpEx);
+	require($an602_root_path . 'includes/an602_functions.' . $phpEx);
+	require($an602_root_path . 'includes/an602_functions_download' . '.' . $phpEx);
 	require($an602_root_path . 'includes/utf/utf_tools.' . $phpEx);
 
 	// Setup class loader first
@@ -148,7 +148,7 @@ if (isset($_GET['avatar']))
 
 // implicit else: we are not in avatar mode
 include($an602_root_path . 'common.' . $phpEx);
-require($an602_root_path . 'includes/functions_download' . '.' . $phpEx);
+require($an602_root_path . 'includes/an602_functions_download' . '.' . $phpEx);
 
 $attach_id = $request->variable('id', 0);
 $mode = $request->variable('mode', '');

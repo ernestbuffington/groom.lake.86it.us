@@ -187,7 +187,7 @@ class mcp_notes
 
 		if (!function_exists('an602_get_user_rank'))
 		{
-			include($an602_root_path . 'includes/functions_display.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
 		}
 
 		// Generate the appropriate user information for the user we are looking at

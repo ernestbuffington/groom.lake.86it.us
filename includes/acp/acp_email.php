@@ -191,12 +191,12 @@ class acp_email
 				// Send the messages
 				if (!class_exists('messenger'))
 				{
-					include($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_messenger.' . $phpEx);
 				}
 
 				if (!function_exists('get_group_name'))
 				{
-					include($an602_root_path . 'includes/functions_user.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 				}
 				$messenger = new messenger($use_queue);
 

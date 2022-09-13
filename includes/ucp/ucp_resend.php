@@ -88,7 +88,7 @@ class ucp_resend
 
 			$coppa = ($row['group_name'] == 'REGISTERED_COPPA' && $row['group_type'] == GROUP_SPECIAL) ? true : false;
 
-			include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+			include_once($an602_root_path . 'includes/an602_functions_messenger.' . $phpEx);
 			$messenger = new messenger(false);
 
 			if ($config['require_activation'] == USER_ACTIVATION_SELF || $coppa)

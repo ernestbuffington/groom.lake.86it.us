@@ -44,7 +44,7 @@ class jabber
 	var $verify_peer;
 	var $verify_peer_name;
 	var $allow_self_signed;
-	var $resource = 'functions_jabber.an602.php';
+	var $resource = 'an602_functions_jabber.php';
 
 	var $enable_logging;
 	var $log_array;

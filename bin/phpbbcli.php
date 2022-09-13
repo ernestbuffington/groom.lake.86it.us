@@ -24,7 +24,7 @@ define('IN_AN602', true);
 
 $an602_root_path = __DIR__ . '/../';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-require($an602_root_path . 'includes/startup.' . $phpEx);
+require($an602_root_path . 'includes/an602_startup.' . $phpEx);
 require($an602_root_path . 'an602/class_loader.' . $phpEx);
 
 $an602_class_loader = new \an602\class_loader('an602\\', "{$an602_root_path}an602/", $phpEx);
@@ -38,11 +38,11 @@ if (!defined('AN602_ENVIRONMENT'))
 	@define('AN602_ENVIRONMENT', 'production');
 }
 
-require($an602_root_path . 'includes/constants.' . $phpEx);
-require($an602_root_path . 'includes/functions.' . $phpEx);
-require($an602_root_path . 'includes/functions_admin.' . $phpEx);
+require($an602_root_path . 'includes/an602_constants.' . $phpEx);
+require($an602_root_path . 'includes/an602_functions.' . $phpEx);
+require($an602_root_path . 'includes/an602_functions_admin.' . $phpEx);
 require($an602_root_path . 'includes/utf/utf_tools.' . $phpEx);
-require($an602_root_path . 'includes/functions_compatibility.' . $phpEx);
+require($an602_root_path . 'includes/an602_functions_compatibility.' . $phpEx);
 
 $an602_container_builder = new \an602\di\container_builder($an602_root_path, $phpEx);
 $an602_container = $an602_container_builder->with_config($an602_config_php_file);
@@ -67,7 +67,7 @@ else
 
 $an602_container = $an602_container_builder->get_container();
 $an602_container->get('request')->enable_super_globals();
-require($an602_root_path . 'includes/compatibility_globals.' . $phpEx);
+require($an602_root_path . 'includes/an602_compatibility_globals.' . $phpEx);
 
 register_compatibility_globals();
 

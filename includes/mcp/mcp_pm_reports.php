@@ -38,8 +38,8 @@ class mcp_pm_reports
 		global $auth, $db, $user, $template, $request;
 		global $config, $an602_root_path, $phpEx, $action, $an602_container;
 
-		include_once($an602_root_path . 'includes/functions_posting.' . $phpEx);
-		include_once($an602_root_path . 'includes/functions_privmsgs.' . $phpEx);
+		include_once($an602_root_path . 'includes/an602_functions_posting.' . $phpEx);
+		include_once($an602_root_path . 'includes/an602_functions_privmsgs.' . $phpEx);
 
 		/* @var $pagination \an602\pagination */
 		$pagination = $an602_container->get('pagination');
@@ -51,7 +51,7 @@ class mcp_pm_reports
 		{
 			case 'close':
 			case 'delete':
-				include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+				include_once($an602_root_path . 'includes/an602_functions_messenger.' . $phpEx);
 
 				$report_id_list = $request->variable('report_id_list', array(0));
 

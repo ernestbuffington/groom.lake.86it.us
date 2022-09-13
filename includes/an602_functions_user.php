@@ -664,7 +664,7 @@ function user_delete($mode, $user_ids, $retain_username = true)
 	{
 		if (!function_exists('delete_posts'))
 		{
-			include($an602_root_path . 'includes/functions_admin.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_admin.' . $phpEx);
 		}
 
 		// Delete posts, attachments, etc.
@@ -761,7 +761,7 @@ function user_delete($mode, $user_ids, $retain_username = true)
 	// Clean the private messages tables from the user
 	if (!function_exists('an602_delete_users_pms'))
 	{
-		include($an602_root_path . 'includes/functions_privmsgs.' . $phpEx);
+		include($an602_root_path . 'includes/an602_functions_privmsgs.' . $phpEx);
 	}
 	an602_delete_users_pms($user_ids);
 
@@ -2696,7 +2696,7 @@ function group_delete($group_id, $group_name = false)
 	// Re-cache moderators
 	if (!function_exists('an602_cache_moderators'))
 	{
-		include($an602_root_path . 'includes/functions_admin.' . $phpEx);
+		include($an602_root_path . 'includes/an602_functions_admin.' . $phpEx);
 	}
 
 	an602_cache_moderators($db, $cache, $auth);
@@ -3606,7 +3606,7 @@ function group_update_listings($group_id)
 		if (!function_exists('an602_cache_moderators'))
 		{
 			global $an602_root_path, $phpEx;
-			include($an602_root_path . 'includes/functions_admin.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_admin.' . $phpEx);
 		}
 		an602_cache_moderators($db, $cache, $auth);
 	}
@@ -3616,7 +3616,7 @@ function group_update_listings($group_id)
 		if (!function_exists('an602_update_foes'))
 		{
 			global $an602_root_path, $phpEx;
-			include($an602_root_path . 'includes/functions_admin.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_admin.' . $phpEx);
 		}
 		an602_update_foes($db, $auth, array($group_id));
 	}

@@ -457,7 +457,7 @@ class ucp_register
 
 				if ($config['email_enable'])
 				{
-					include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+					include_once($an602_root_path . 'includes/an602_functions_messenger.' . $phpEx);
 
 					$messenger = new messenger(false);
 

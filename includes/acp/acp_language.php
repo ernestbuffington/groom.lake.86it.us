@@ -36,7 +36,7 @@ class acp_language
 
 		if (!function_exists('validate_language_iso_name'))
 		{
-			include($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 		}
 
 		// Check and set some common vars

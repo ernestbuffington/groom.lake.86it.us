@@ -1,7 +1,7 @@
 <?php
 
 //
-// $Id: sphinxapi.php 3087 2012-01-30 23:07:35Z shodan $
+// $Id: an602_sphinxapi.php 3087 2012-01-30 23:07:35Z shodan $
 //
 
 //
@@ -1707,5 +1707,5 @@ class SphinxClient
 }
 
 //
-// $Id: sphinxapi.php 3087 2012-01-30 23:07:35Z shodan $
+// $Id: an602_sphinxapi.php 3087 2012-01-30 23:07:35Z shodan $
 //

@@ -1637,7 +1637,7 @@ function an602_show_profile($data, $user_notes_enabled = false, $warn_user_enabl
 
 	if (!function_exists('an602_get_banned_user_ids'))
 	{
-		include($an602_root_path . 'includes/functions_user.' . $phpEx);
+		include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 	}
 
 	// Can this user receive a Private Message?

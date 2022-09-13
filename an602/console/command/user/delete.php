@@ -133,7 +133,7 @@ class delete extends command
 
 			if (!function_exists('user_delete'))
 			{
-				require($this->an602_root_path . 'includes/functions_user.' . $this->php_ext);
+				require($this->an602_root_path . 'includes/an602_functions_user.' . $this->php_ext);
 			}
 
 			user_delete($mode, $user_row['user_id'], $user_row['username']);

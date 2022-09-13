@@ -99,7 +99,7 @@ class ucp_activate
 
 		if (!$update_password)
 		{
-			include_once($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include_once($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 
 			user_active_flip('activate', $user_row['user_id']);
 
@@ -131,7 +131,7 @@ class ucp_activate
 			$an602_notifications = $an602_container->get('notification_manager');
 			$an602_notifications->delete_notifications('notification.type.admin_activate_user', $user_row['user_id']);
 
-			include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+			include_once($an602_root_path . 'includes/an602_functions_messenger.' . $phpEx);
 
 			$messenger = new messenger(false);
 

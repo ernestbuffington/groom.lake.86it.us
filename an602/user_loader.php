@@ -219,7 +219,7 @@ class user_loader
 
 		if (!function_exists('an602_get_user_rank'))
 		{
-			include($this->an602_root_path . 'includes/functions_display.' . $this->php_ext);
+			include($this->an602_root_path . 'includes/an602_functions_display.' . $this->php_ext);
 		}
 
 		$rank = array(

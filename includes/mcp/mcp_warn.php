@@ -338,7 +338,7 @@ class mcp_warn
 		// Generate the appropriate user information for the user we are looking at
 		if (!function_exists('an602_get_user_rank'))
 		{
-			include($an602_root_path . 'includes/functions_display.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
 		}
 
 		$user_rank_data = an602_get_user_rank($user_row, $user_row['user_posts']);
@@ -488,7 +488,7 @@ class mcp_warn
 		// Generate the appropriate user information for the user we are looking at
 		if (!function_exists('an602_get_user_rank'))
 		{
-			include($an602_root_path . 'includes/functions_display.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
 		}
 		$user_rank_data = an602_get_user_rank($user_row, $user_row['user_posts']);
 		$avatar_img = an602_get_user_avatar($user_row);
@@ -527,8 +527,8 @@ function add_warning($user_row, $warning, $send_pm = true, $post_id = 0)
 
 	if ($send_pm)
 	{
-		include_once($an602_root_path . 'includes/functions_privmsgs.' . $phpEx);
-		include_once($an602_root_path . 'includes/message_parser.' . $phpEx);
+		include_once($an602_root_path . 'includes/an602_functions_privmsgs.' . $phpEx);
+		include_once($an602_root_path . 'includes/an602_message_parser.' . $phpEx);
 
 		// Attempt to translate warning to language of user being warned if user's language differs from issuer's language
 		if ($user_row['user_lang'] != $user->lang_name)
@@ -549,10 +549,10 @@ function add_warning($user_row, $warning, $send_pm = true, $post_id = 0)
 			$warn_pm_body = $user->lang('WARNING_PM_BODY', $warning);
 		}
 
-		$message_parser = new parse_message();
+		$an602_message_parser = new parse_message();
 
-		$message_parser->message = $warn_pm_body;
-		$message_parser->parse(true, true, true, false, false, true, true);
+		$an602_message_parser->message = $warn_pm_body;
+		$an602_message_parser->parse(true, true, true, false, false, true, true);
 
 		$pm_data = array(
 			'from_user_id'			=> $user->data['user_id'],
@@ -563,9 +563,9 @@ function add_warning($user_row, $warning, $send_pm = true, $post_id = 0)
 			'enable_smilies'		=> true,
 			'enable_urls'			=> false,
 			'icon_id'				=> 0,
-			'bbcode_bitfield'		=> $message_parser->bbcode_bitfield,
-			'bbcode_uid'			=> $message_parser->bbcode_uid,
-			'message'				=> $message_parser->message,
+			'bbcode_bitfield'		=> $an602_message_parser->bbcode_bitfield,
+			'bbcode_uid'			=> $an602_message_parser->bbcode_uid,
+			'message'				=> $an602_message_parser->message,
 			'address_list'			=> array('u' => array($user_row['user_id'] => 'to')),
 		);
 

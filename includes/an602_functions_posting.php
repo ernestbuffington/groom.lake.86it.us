@@ -1352,7 +1352,7 @@ function delete_post($forum_id, $topic_id, $post_id, &$data, $is_soft = false, $
 	$sql_data = array();
 	$next_post_id = false;
 
-	include_once($an602_root_path . 'includes/functions_admin.' . $phpEx);
+	include_once($an602_root_path . 'includes/an602_functions_admin.' . $phpEx);
 
 	$db->sql_transaction('begin');
 

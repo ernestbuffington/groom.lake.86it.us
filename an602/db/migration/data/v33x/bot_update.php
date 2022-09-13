@@ -59,7 +59,7 @@ class bot_update extends \an602\db\migration\migration
 
 			if (!function_exists('user_add'))
 			{
-				include($this->an602_root_path . 'includes/functions_user.' . $this->php_ext);
+				include($this->an602_root_path . 'includes/an602_functions_user.' . $this->php_ext);
 			}
 
 			$user_row = [

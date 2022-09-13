@@ -84,7 +84,7 @@ class ucp_pm
 
 		if (!function_exists('get_folder'))
 		{
-			include($an602_root_path . 'includes/functions_privmsgs.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_privmsgs.' . $phpEx);
 		}
 
 		switch ($mode)

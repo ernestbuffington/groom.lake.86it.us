@@ -217,7 +217,7 @@ class ucp_main
 				{
 					if (!function_exists('display_user_activity'))
 					{
-						include_once($an602_root_path . 'includes/functions_display.' . $phpEx);
+						include_once($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
 					}
 					display_user_activity($user->data);
 				}
@@ -247,7 +247,7 @@ class ucp_main
 
 				if (!function_exists('topic_status'))
 				{
-					include($an602_root_path . 'includes/functions_display.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
 				}
 
 				$user->add_lang('viewforum');
@@ -488,7 +488,7 @@ class ucp_main
 
 				if (!function_exists('topic_status'))
 				{
-					include($an602_root_path . 'includes/functions_display.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
 				}
 
 				$user->add_lang('viewforum');
@@ -548,8 +548,8 @@ class ucp_main
 				$draft_subject = $draft_message = '';
 				add_form_key('ucp_draft');
 
-				include_once($an602_root_path . 'includes/message_parser.' . $phpEx);
-				$message_parser = new parse_message();
+				include_once($an602_root_path . 'includes/an602_message_parser.' . $phpEx);
+				$an602_message_parser = new parse_message();
 
 				if ($delete)
 				{
@@ -591,12 +591,12 @@ class ucp_main
 							$img_status = $auth->acl_get('u_pm_img') || $auth->acl_getf_global('f_img');
 							$flash_status = $auth->acl_get('u_pm_flash') || $auth->acl_getf_global('f_flash');
 
-							$message_parser->message = $draft_message;
-							$message_parser->parse($bbcode_status, $config['allow_post_links'], $smilies_status, $img_status, $flash_status, true, $config['allow_post_links']);
+							$an602_message_parser->message = $draft_message;
+							$an602_message_parser->parse($bbcode_status, $config['allow_post_links'], $smilies_status, $img_status, $flash_status, true, $config['allow_post_links']);
 
 							$draft_row = array(
 								'draft_subject' => $draft_subject,
-								'draft_message' => $message_parser->message,
+								'draft_message' => $an602_message_parser->message,
 							);
 
 							$sql = 'UPDATE ' . AN602_DRAFTS_TABLE . '
@@ -700,9 +700,9 @@ class ucp_main
 
 					if (!$submit)
 					{
-						$message_parser->message = $draft['draft_message'];
-						$message_parser->decode_message();
-						$draft_message = $message_parser->message;
+						$an602_message_parser->message = $draft['draft_message'];
+						$an602_message_parser->decode_message();
+						$draft_message = $an602_message_parser->message;
 					}
 
 					$template_row = array(

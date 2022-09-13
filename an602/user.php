@@ -822,7 +822,7 @@ class user extends \an602\session
 		{
 			global $an602_root_path, $phpEx;
 
-			include($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 		}
 		if ($group = remove_newly_registered($this->data['user_id'], $this->data))
 		{

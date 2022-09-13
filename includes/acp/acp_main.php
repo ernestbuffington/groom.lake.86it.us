@@ -177,7 +177,7 @@ class acp_main
 
 						if (!function_exists('update_last_username'))
 						{
-							include($an602_root_path . "includes/functions_user.$phpEx");
+							include($an602_root_path . "includes/an602_functions_user.$phpEx");
 						}
 						update_last_username();
 

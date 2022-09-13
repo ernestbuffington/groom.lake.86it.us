@@ -67,7 +67,7 @@ class remote extends \an602\avatar\driver\driver
 
 		if (!function_exists('validate_data'))
 		{
-			require($this->an602_root_path . 'includes/functions_user.' . $this->php_ext);
+			require($this->an602_root_path . 'includes/an602_functions_user.' . $this->php_ext);
 		}
 
 		$validate_array = validate_data(

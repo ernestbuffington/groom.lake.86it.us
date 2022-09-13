@@ -18,8 +18,8 @@ define('IN_AN602', true);
 $an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 require($an602_root_path . 'common.' . $phpEx);
-require($an602_root_path . 'includes/functions_user.' . $phpEx);
-require($an602_root_path . 'includes/functions_module.' . $phpEx);
+require($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
+require($an602_root_path . 'includes/an602_functions_module.' . $phpEx);
 
 // Basic parameter data
 $id 	= $request->variable('i', '');

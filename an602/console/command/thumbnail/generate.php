@@ -119,7 +119,7 @@ class generate extends \an602\console\command\command
 
 		if (!function_exists('create_thumbnail'))
 		{
-			require($this->an602_root_path . 'includes/functions_posting.' . $this->php_ext);
+			require($this->an602_root_path . 'includes/an602_functions_posting.' . $this->php_ext);
 		}
 
 		$progress = $this->create_progress_bar($nb_missing_thumbnails, $io, $output);

@@ -18,9 +18,9 @@ define('IN_AN602', true);
 $an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($an602_root_path . 'common.' . $phpEx);
-include($an602_root_path . 'includes/functions_posting.' . $phpEx);
-include($an602_root_path . 'includes/functions_display.' . $phpEx);
-include($an602_root_path . 'includes/message_parser.' . $phpEx);
+include($an602_root_path . 'includes/an602_functions_posting.' . $phpEx);
+include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
+include($an602_root_path . 'includes/an602_message_parser.' . $phpEx);
 
 
 // Start session management
@@ -622,17 +622,17 @@ if ($mode == 'edit')
 
 $orig_poll_options_size = count($post_data['poll_options']);
 
-$message_parser = new parse_message();
+$an602_message_parser = new parse_message();
 /* @var $plupload \an602\plupload\plupload */
 $plupload = $an602_container->get('plupload');
 
 /* @var $mimetype_guesser \an602\mimetype\guesser */
 $mimetype_guesser = $an602_container->get('mimetype.guesser');
-$message_parser->set_plupload($plupload);
+$an602_message_parser->set_plupload($plupload);
 
 if (isset($post_data['post_text']))
 {
-	$message_parser->message = &$post_data['post_text'];
+	$an602_message_parser->message = &$post_data['post_text'];
 	unset($post_data['post_text']);
 }
 
@@ -664,7 +664,7 @@ unset($uninit);
 
 // Always check if the submitted attachment data is valid and belongs to the user.
 // Further down (especially in submit_post()) we do not check this again.
-$message_parser->get_submitted_attachment_data($post_data['poster_id']);
+$an602_message_parser->get_submitted_attachment_data($post_data['poster_id']);
 
 if ($post_data['post_attachment'] && !$submit && !$refresh && !$preview && $mode == 'edit')
 {
@@ -676,7 +676,7 @@ if ($post_data['post_attachment'] && !$submit && !$refresh && !$preview && $mode
 			AND is_orphan = 0
 		ORDER BY attach_id DESC";
 	$result = $db->sql_query($sql);
-	$message_parser->attachment_data = array_merge($message_parser->attachment_data, $db->sql_fetchrowset($result));
+	$an602_message_parser->attachment_data = array_merge($an602_message_parser->attachment_data, $db->sql_fetchrowset($result));
 	$db->sql_freeresult($result);
 }
 
@@ -741,7 +741,7 @@ if ($mode != 'post' && $config['allow_topic_notify'] && $user->data['is_register
 // Do we want to edit our post ?
 if ($mode == 'edit' && $post_data['bbcode_uid'])
 {
-	$message_parser->bbcode_uid = $post_data['bbcode_uid'];
+	$an602_message_parser->bbcode_uid = $post_data['bbcode_uid'];
 }
 
 // HTML, BBCode, Smilies, Images and Flash status
@@ -792,8 +792,8 @@ if ($save && $user->data['is_registered'] && $auth->acl_get('u_savedrafts') && (
 	{
 		if (confirm_box(true))
 		{
-			$message_parser->message = $message;
-			$message_parser->parse($post_data['enable_bbcode'], ($config['allow_post_links']) ? $post_data['enable_urls'] : false, $post_data['enable_smilies'], $img_status, $flash_status, $quote_status, $config['allow_post_links']);
+			$an602_message_parser->message = $message;
+			$an602_message_parser->parse($post_data['enable_bbcode'], ($config['allow_post_links']) ? $post_data['enable_urls'] : false, $post_data['enable_smilies'], $img_status, $flash_status, $quote_status, $config['allow_post_links']);
 
 			$sql = 'INSERT INTO ' . AN602_DRAFTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 				'user_id'		=> (int) $user->data['user_id'],
@@ -801,13 +801,13 @@ if ($save && $user->data['is_registered'] && $auth->acl_get('u_savedrafts') && (
 				'forum_id'		=> (int) $forum_id,
 				'save_time'		=> (int) $current_time,
 				'draft_subject'	=> (string) $subject,
-				'draft_message'	=> (string) $message_parser->message)
+				'draft_message'	=> (string) $an602_message_parser->message)
 			);
 			$db->sql_query($sql);
 
 			/** @var \an602\attachment\manager $attachment_manager */
 			$attachment_manager = $an602_container->get('attachment.manager');
-			$attachment_manager->delete('attach', array_column($message_parser->attachment_data, 'attach_id'));
+			$attachment_manager->delete('attach', array_column($an602_message_parser->attachment_data, 'attach_id'));
 
 			$meta_info = ($mode == 'post') ? append_sid("{$an602_root_path}viewforum.$phpEx", 'f=' . $forum_id) : append_sid("{$an602_root_path}viewtopic.$phpEx", "t=$topic_id");
 
@@ -828,7 +828,7 @@ if ($save && $user->data['is_registered'] && $auth->acl_get('u_savedrafts') && (
 				't'			=> $topic_id,
 				'subject'	=> $subject,
 				'message'	=> $message,
-				'attachment_data' => $message_parser->attachment_data,
+				'attachment_data' => $an602_message_parser->attachment_data,
 				)
 			);
 
@@ -905,7 +905,7 @@ if ($draft_id && ($mode == 'reply' || $mode == 'quote' || $mode == 'post') && $u
 	if ($row)
 	{
 		$post_data['post_subject'] = $row['draft_subject'];
-		$message_parser->message = $row['draft_message'];
+		$an602_message_parser->message = $row['draft_message'];
 
 		$template->assign_var('S_DRAFT_LOADED', true);
 	}
@@ -928,7 +928,7 @@ if ($submit || $preview || $refresh)
 {
 	$post_data['topic_cur_post_id']	= $request->variable('topic_cur_post_id', 0);
 	$post_data['post_subject']		= $request->variable('subject', '', true);
-	$message_parser->message		= $request->variable('message', '', true);
+	$an602_message_parser->message		= $request->variable('message', '', true);
 
 	$post_data['username']			= $request->variable('username', $post_data['username'], true);
 	$post_data['post_edit_reason']	= ($request->variable('edit_reason', false, false, \an602\request\request_interface::POST) && $mode == 'edit' && $auth->acl_get('m_edit', $forum_id)) ? $request->variable('edit_reason', '', true) : '';
@@ -1030,9 +1030,9 @@ if ($submit || $preview || $refresh)
 	}
 
 	// Parse Attachments - before checksum is calculated
-	if ($message_parser->check_attachment_form_token($language, $request, 'posting'))
+	if ($an602_message_parser->check_attachment_form_token($language, $request, 'posting'))
 	{
-		$message_parser->parse_attachments('fileupload', $mode, $forum_id, $submit, $preview, $refresh);
+		$an602_message_parser->parse_attachments('fileupload', $mode, $forum_id, $submit, $preview, $refresh);
 	}
 
 	/**
@@ -1053,7 +1053,7 @@ if ($submit || $preview || $refresh)
 	*				viewtopic or viewforum depending on if the user
 	*				is posting a new topic or editing a post)
 	* @var	bool	refresh		Whether or not to retain previously submitted data
-	* @var	object	message_parser	The message parser object
+	* @var	object	an602_message_parser	The message parser object
 	* @var	array	error		Array of errors
 	* @since 3.1.2-RC1
 	* @changed 3.1.11-RC1 Added error
@@ -1070,13 +1070,13 @@ if ($submit || $preview || $refresh)
 		'load',
 		'cancel',
 		'refresh',
-		'message_parser',
+		'an602_message_parser',
 		'error',
 	);
 	extract($an602_dispatcher->trigger_event('core.posting_modify_message_text', compact($vars)));
 
 	// Grab md5 'checksum' of new message
-	$message_md5 = md5($message_parser->message);
+	$message_md5 = md5($an602_message_parser->message);
 
 	// If editing and checksum has changed we know the post was edited while we're editing
 	// Notify and show user the changed post
@@ -1124,26 +1124,26 @@ if ($submit || $preview || $refresh)
 	// Parse message
 	if ($update_message)
 	{
-		if (count($message_parser->warn_msg))
+		if (count($an602_message_parser->warn_msg))
 		{
-			$error[] = implode('<br />', $message_parser->warn_msg);
-			$message_parser->warn_msg = array();
+			$error[] = implode('<br />', $an602_message_parser->warn_msg);
+			$an602_message_parser->warn_msg = array();
 		}
 
-		if (!$preview || !empty($message_parser->message))
+		if (!$preview || !empty($an602_message_parser->message))
 		{
-			$message_parser->parse($post_data['enable_bbcode'], ($config['allow_post_links']) ? $post_data['enable_urls'] : false, $post_data['enable_smilies'], $img_status, $flash_status, $quote_status, $config['allow_post_links']);
+			$an602_message_parser->parse($post_data['enable_bbcode'], ($config['allow_post_links']) ? $post_data['enable_urls'] : false, $post_data['enable_smilies'], $img_status, $flash_status, $quote_status, $config['allow_post_links']);
 		}
 
 		// On a refresh we do not care about message parsing errors
-		if (count($message_parser->warn_msg) && $refresh && !$preview)
+		if (count($an602_message_parser->warn_msg) && $refresh && !$preview)
 		{
-			$message_parser->warn_msg = array();
+			$an602_message_parser->warn_msg = array();
 		}
 	}
 	else
 	{
-		$message_parser->bbcode_bitfield = $post_data['bbcode_bitfield'];
+		$an602_message_parser->bbcode_bitfield = $post_data['bbcode_bitfield'];
 	}
 
 	$ignore_flood = $auth->acl_get('u_ignoreflood') ? true : $auth->acl_get('f_ignoreflood', $forum_id);
@@ -1181,7 +1181,7 @@ if ($submit || $preview || $refresh)
 	{
 		if (!function_exists('validate_username'))
 		{
-			include($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 		}
 
 		$user->add_lang('ucp');
@@ -1280,7 +1280,7 @@ if ($submit || $preview || $refresh)
 			'img_status'		=> $img_status
 		);
 
-		$message_parser->parse_poll($poll);
+		$an602_message_parser->parse_poll($poll);
 
 		$post_data['poll_options'] = (isset($poll['poll_options'])) ? $poll['poll_options'] : array();
 		$post_data['poll_title'] = (isset($poll['poll_title'])) ? $poll['poll_title'] : '';
@@ -1288,7 +1288,7 @@ if ($submit || $preview || $refresh)
 		/* We reset votes, therefore also allow removing options
 		if ($post_data['poll_last_vote'] && ($poll['poll_options_size'] < $orig_poll_options_size))
 		{
-			$message_parser->warn_msg[] = $user->lang['NO_DELETE_POLL_OPTIONS'];
+			$an602_message_parser->warn_msg[] = $user->lang['NO_DELETE_POLL_OPTIONS'];
 		}*/
 	}
 	else if ($mode == 'edit' && $post_id == $post_data['topic_first_post_id'] && $auth->acl_get('f_poll', $forum_id))
@@ -1325,7 +1325,7 @@ if ($submit || $preview || $refresh)
 			'img_status'		=> $img_status,
 		));
 
-		$message_parser->parse_poll($poll);
+		$an602_message_parser->parse_poll($poll);
 
 		$post_data['poll_options'] = (isset($poll['poll_options'])) ? $poll['poll_options'] : array();
 		$post_data['poll_title'] = (isset($poll['poll_title'])) ? $poll['poll_title'] : '';
@@ -1373,9 +1373,9 @@ if ($submit || $preview || $refresh)
 		}
 	}
 
-	if (count($message_parser->warn_msg))
+	if (count($an602_message_parser->warn_msg))
 	{
-		$error[] = implode('<br />', $message_parser->warn_msg);
+		$error[] = implode('<br />', $an602_message_parser->warn_msg);
 	}
 
 	// DNSBL check
@@ -1488,11 +1488,11 @@ if ($submit || $preview || $refresh)
 				'notify_set'			=> $post_data['notify_set'],
 				'poster_ip'				=> (isset($post_data['poster_ip'])) ? $post_data['poster_ip'] : $user->ip,
 				'post_edit_locked'		=> (int) $post_data['post_edit_locked'],
-				'bbcode_bitfield'		=> $message_parser->bbcode_bitfield,
-				'bbcode_uid'			=> $message_parser->bbcode_uid,
-				'message'				=> $message_parser->message,
-				'attachment_data'		=> $message_parser->attachment_data,
-				'filename_data'			=> $message_parser->filename_data,
+				'bbcode_bitfield'		=> $an602_message_parser->bbcode_bitfield,
+				'bbcode_uid'			=> $an602_message_parser->bbcode_uid,
+				'message'				=> $an602_message_parser->message,
+				'attachment_data'		=> $an602_message_parser->attachment_data,
+				'filename_data'			=> $an602_message_parser->filename_data,
 				'topic_status'			=> $post_data['topic_status'],
 
 				'topic_visibility'			=> (isset($post_data['topic_visibility'])) ? $post_data['topic_visibility'] : false,
@@ -1619,7 +1619,7 @@ if (!count($error) && $preview)
 {
 	$post_data['post_time'] = ($mode == 'edit') ? $post_data['post_time'] : $current_time;
 
-	$preview_message = $message_parser->format_display($post_data['enable_bbcode'], $post_data['enable_urls'], $post_data['enable_smilies'], false);
+	$preview_message = $an602_message_parser->format_display($post_data['enable_bbcode'], $post_data['enable_urls'], $post_data['enable_smilies'], false);
 
 	$preview_signature = ($mode == 'edit') ? $post_data['user_sig'] : $user->data['user_sig'];
 	$preview_signature_uid = ($mode == 'edit') ? $post_data['user_sig_bbcode_uid'] : $user->data['user_sig_bbcode_uid'];
@@ -1646,8 +1646,8 @@ if (!count($error) && $preview)
 	&& $auth->acl_get('f_poll', $forum_id))
 	{
 		$parse_poll = new parse_message($post_data['poll_title']);
-		$parse_poll->bbcode_uid = $message_parser->bbcode_uid;
-		$parse_poll->bbcode_bitfield = $message_parser->bbcode_bitfield;
+		$parse_poll->bbcode_uid = $an602_message_parser->bbcode_uid;
+		$parse_poll->bbcode_bitfield = $an602_message_parser->bbcode_bitfield;
 
 		$parse_poll->format_display($post_data['enable_bbcode'], $post_data['enable_urls'], $post_data['enable_smilies']);
 
@@ -1686,12 +1686,12 @@ if (!count($error) && $preview)
 	}
 
 	// Attachment Preview
-	if (count($message_parser->attachment_data))
+	if (count($an602_message_parser->attachment_data))
 	{
 		$template->assign_var('S_HAS_ATTACHMENTS', true);
 
 		$update_count = array();
-		$attachment_data = $message_parser->attachment_data;
+		$attachment_data = $an602_message_parser->attachment_data;
 
 		parse_attachments($forum_id, $preview_message, $attachment_data, $update_count, true);
 
@@ -1720,20 +1720,20 @@ if (!count($error) && $preview)
 $generate_quote = ($mode == 'quote' && !$submit && !$preview && !$refresh);
 if ($generate_quote && $config['max_quote_depth'] > 0)
 {
-	$tmp_bbcode_uid = $message_parser->bbcode_uid;
-	$message_parser->bbcode_uid = $post_data['bbcode_uid'];
-	$message_parser->remove_nested_quotes($config['max_quote_depth'] - 1);
-	$message_parser->bbcode_uid = $tmp_bbcode_uid;
+	$tmp_bbcode_uid = $an602_message_parser->bbcode_uid;
+	$an602_message_parser->bbcode_uid = $post_data['bbcode_uid'];
+	$an602_message_parser->remove_nested_quotes($config['max_quote_depth'] - 1);
+	$an602_message_parser->bbcode_uid = $tmp_bbcode_uid;
 }
 
 // Decode text for message display
-$post_data['bbcode_uid'] = ($mode == 'quote' && !$preview && !$refresh && !count($error)) ? $post_data['bbcode_uid'] : $message_parser->bbcode_uid;
-$message_parser->decode_message($post_data['bbcode_uid']);
+$post_data['bbcode_uid'] = ($mode == 'quote' && !$preview && !$refresh && !count($error)) ? $post_data['bbcode_uid'] : $an602_message_parser->bbcode_uid;
+$an602_message_parser->decode_message($post_data['bbcode_uid']);
 
 if ($generate_quote)
 {
 	// Remove attachment bbcode tags from the quoted message to avoid mixing with the new post attachments if any
-	$message_parser->message = preg_replace('#\[attachment=([0-9]+)\](.*?)\[\/attachment\]#uis', '\\2', $message_parser->message);
+	$an602_message_parser->message = preg_replace('#\[attachment=([0-9]+)\](.*?)\[\/attachment\]#uis', '\\2', $an602_message_parser->message);
 
 	$quote_attributes = array(
 						'author'  => $post_data['quote_username'],
@@ -1758,7 +1758,7 @@ if ($generate_quote)
 
 	/** @var \an602\language\language $language */
 	$language = $an602_container->get('language');
-	an602_format_quote($language, $message_parser, $bbcode_utils, $bbcode_status, $quote_attributes);
+	an602_format_quote($language, $an602_message_parser, $bbcode_utils, $bbcode_status, $quote_attributes);
 }
 
 if (($mode == 'reply' || $mode == 'quote') && !$submit && !$preview && !$refresh)
@@ -1780,21 +1780,21 @@ if (($mode == 'reply' || $mode == 'quote') && !$submit && !$preview && !$refresh
 	$post_data['post_subject'] = $post_subject;
 }
 
-$attachment_data = $message_parser->attachment_data;
-$filename_data = $message_parser->filename_data;
-$post_data['post_text'] = $message_parser->message;
+$attachment_data = $an602_message_parser->attachment_data;
+$filename_data = $an602_message_parser->filename_data;
+$post_data['post_text'] = $an602_message_parser->message;
 
 if (count($post_data['poll_options']) || (isset($post_data['poll_title']) && !$bbcode_utils->is_empty($post_data['poll_title'])))
 {
-	$message_parser->message = $post_data['poll_title'];
-	$message_parser->bbcode_uid = $post_data['bbcode_uid'];
+	$an602_message_parser->message = $post_data['poll_title'];
+	$an602_message_parser->bbcode_uid = $post_data['bbcode_uid'];
 
-	$message_parser->decode_message();
-	$post_data['poll_title'] = $message_parser->message;
+	$an602_message_parser->decode_message();
+	$post_data['poll_title'] = $an602_message_parser->message;
 
-	$message_parser->message = implode("\n", $post_data['poll_options']);
-	$message_parser->decode_message();
-	$post_data['poll_options'] = explode("\n", $message_parser->message);
+	$an602_message_parser->message = implode("\n", $post_data['poll_options']);
+	$an602_message_parser->decode_message();
+	$post_data['poll_options'] = explode("\n", $an602_message_parser->message);
 }
 
 // MAIN POSTING PAGE BEGINS HERE
@@ -1971,7 +1971,7 @@ $page_data = array(
 
 	'S_POST_ACTION'			=> $s_action,
 	'S_HIDDEN_FIELDS'		=> $s_hidden_fields,
-	'S_ATTACH_DATA'			=> json_encode($message_parser->attachment_data),
+	'S_ATTACH_DATA'			=> json_encode($an602_message_parser->attachment_data),
 	'S_IN_POSTING'			=> true,
 );
 
@@ -2031,12 +2031,12 @@ if (($mode == 'post' || ($mode == 'edit' && $post_id == $post_data['topic_first_
 * @var	bool	refresh		Whether or not to retain previously submitted data
 * @var	array	page_data	Posting page data that should be passed to the
 *				posting page via $template->assign_vars()
-* @var	object	message_parser	The message parser object
+* @var	object	an602_message_parser	The message parser object
 * @since 3.1.0-a1
 * @changed 3.1.0-b3 Added vars post_data, moderators, mode, page_title,
 *		s_topic_icons, form_enctype, s_action, s_hidden_fields,
 *		post_id, topic_id, forum_id, submit, preview, save, load,
-*		delete, cancel, refresh, error, page_data, message_parser
+*		delete, cancel, refresh, error, page_data, an602_message_parser
 * @changed 3.1.2-RC1 Removed 'delete' var as it does not exist
 * @changed 3.1.5-RC1 Added poll variables to the page_data array
 * @changed 3.1.6-RC1 Added 'draft_id' var
@@ -2062,7 +2062,7 @@ $vars = array(
 	'refresh',
 	'error',
 	'page_data',
-	'message_parser',
+	'an602_message_parser',
 );
 extract($an602_dispatcher->trigger_event('core.posting_modify_template_vars', compact($vars)));
 

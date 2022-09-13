@@ -18,7 +18,7 @@ define('IN_AN602', true);
 $an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($an602_root_path . 'common.' . $phpEx);
-include($an602_root_path . 'includes/functions_display.' . $phpEx);
+include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
 
 $mode = $request->variable('mode', '');
 
@@ -107,7 +107,7 @@ switch ($mode)
 		// Display a listing of board admins, moderators
 		if (!function_exists('user_get_id_name'))
 		{
-			include($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 		}
 
 		$page_title = $user->lang['THE_TEAM'];
@@ -429,7 +429,7 @@ switch ($mode)
 					if (check_form_key('memberlist_messaging'))
 					{
 
-						include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+						include_once($an602_root_path . 'includes/an602_functions_messenger.' . $phpEx);
 
 						$subject = sprintf($user->lang['IM_JABBER_SUBJECT'], $user->data['username'], $config['server_name']);
 						$message = $request->variable('message', '', true);
@@ -700,7 +700,7 @@ switch ($mode)
 		{
 			if (!class_exists('p_master'))
 			{
-				include($an602_root_path . 'includes/functions_module.' . $phpEx);
+				include($an602_root_path . 'includes/an602_functions_module.' . $phpEx);
 			}
 			$module = new p_master();
 
@@ -891,7 +891,7 @@ switch ($mode)
 	case 'email':
 		if (!class_exists('messenger'))
 		{
-			include($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_messenger.' . $phpEx);
 		}
 
 		$user_id	= $request->variable('u', 0);
@@ -1318,7 +1318,7 @@ switch ($mode)
 			{
 				if (!class_exists('p_master'))
 				{
-					include($an602_root_path . 'includes/functions_module.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_module.' . $phpEx);
 				}
 				$module = new p_master;
 				$module->list_modules('ucp');

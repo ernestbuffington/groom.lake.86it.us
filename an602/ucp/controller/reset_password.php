@@ -252,7 +252,7 @@ class reset_password
 
 				if (!class_exists('messenger'))
 				{
-					include($this->root_path . 'includes/functions_messenger.' . $this->php_ext);
+					include($this->root_path . 'includes/an602_functions_messenger.' . $this->php_ext);
 				}
 
 				/** @var \messenger $messenger */
@@ -384,7 +384,7 @@ class reset_password
 
 			if (!function_exists('validate_data'))
 			{
-				include($this->root_path . 'includes/functions_user.' . $this->php_ext);
+				include($this->root_path . 'includes/an602_functions_user.' . $this->php_ext);
 			}
 
 			$data = [

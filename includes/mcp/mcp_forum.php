@@ -30,7 +30,7 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 
 	$user->add_lang(array('viewtopic', 'viewforum'));
 
-	include_once($an602_root_path . 'includes/functions_display.' . $phpEx);
+	include_once($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
 
 	// merge_topic is the quickmod action, merge_topics is the mcp_forum action, and merge_select is the mcp_topic action
 	$merge_select = ($action == 'merge_select' || $action == 'merge_topic' || $action == 'merge_topics') ? true : false;
@@ -526,7 +526,7 @@ function merge_topics($forum_id, $topic_ids, $to_topic_id)
 
 		if (!function_exists('an602_update_rows_avoiding_duplicates_notify_status'))
 		{
-			include($an602_root_path . 'includes/functions_database_helper.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_database_helper.' . $phpEx);
 		}
 
 		// Update the topic watch table.

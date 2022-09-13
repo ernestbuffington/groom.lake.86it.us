@@ -59,7 +59,7 @@ class acp_users
 		{
 			if (!function_exists('user_get_id_name'))
 			{
-				include($an602_root_path . 'includes/functions_user.' . $phpEx);
+				include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 			}
 
 			$this->page_title = 'WHOIS';
@@ -175,7 +175,7 @@ class acp_users
 
 				if (!function_exists('user_get_id_name'))
 				{
-					include($an602_root_path . 'includes/functions_user.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 				}
 
 				$user->add_lang('acp/ban');
@@ -360,7 +360,7 @@ class acp_users
 							{
 								if (!class_exists('messenger'))
 								{
-									include($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+									include($an602_root_path . 'includes/an602_functions_messenger.' . $phpEx);
 								}
 
 								$server_url = generate_board_url();
@@ -454,7 +454,7 @@ class acp_users
 
 									if (!class_exists('messenger'))
 									{
-										include($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+										include($an602_root_path . 'includes/an602_functions_messenger.' . $phpEx);
 									}
 
 									$messenger = new messenger(false);
@@ -596,7 +596,7 @@ class acp_users
 								{
 									if (!function_exists('delete_pm'))
 									{
-										include($an602_root_path . 'includes/functions_privmsgs.' . $phpEx);
+										include($an602_root_path . 'includes/an602_functions_privmsgs.' . $phpEx);
 									}
 
 									do
@@ -1415,7 +1415,7 @@ class acp_users
 
 				if (!function_exists('user_get_id_name'))
 				{
-					include($an602_root_path . 'includes/functions_user.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 				}
 
 				/* @var $cp \an602\profilefields\manager */
@@ -1579,7 +1579,7 @@ class acp_users
 
 				if (!function_exists('user_get_id_name'))
 				{
-					include($an602_root_path . 'includes/functions_user.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 				}
 
 				$data = array(
@@ -2029,7 +2029,7 @@ class acp_users
 
 				if (!function_exists('display_custom_bbcodes'))
 				{
-					include($an602_root_path . 'includes/functions_display.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
 				}
 
 				$enable_bbcode	= ($config['allow_sig_bbcode']) ? $this->optionget($user_row, 'sig_bbcode') : false;
@@ -2316,7 +2316,7 @@ class acp_users
 
 				if (!function_exists('group_user_attributes'))
 				{
-					include($an602_root_path . 'includes/functions_user.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 				}
 
 				$user->add_lang(array('groups', 'acp/groups'));

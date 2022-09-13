@@ -453,7 +453,7 @@ function get_user_information($user_id, $user_row)
 
 	if (!function_exists('an602_get_user_rank'))
 	{
-		include($an602_root_path . 'includes/functions_display.' . $phpEx);
+		include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
 	}
 
 	$user_rank_data = an602_get_user_rank($user_row, $user_row['user_posts']);

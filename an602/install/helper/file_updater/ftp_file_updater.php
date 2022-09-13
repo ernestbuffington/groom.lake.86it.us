@@ -68,7 +68,7 @@ class ftp_file_updater implements file_updater_interface
 	 */
 	public function init($method, $host, $user, $pass, $path, $port, $timeout)
 	{
-		$this->update_helper->include_file('includes/functions_transfer.' . $this->php_ext);
+		$this->update_helper->include_file('includes/an602_functions_transfer.' . $this->php_ext);
 		$this->transfer = new $method($host, $user, $pass, $path, $port, $timeout);
 		$this->transfer->open_session();
 	}

@@ -39,7 +39,7 @@ class mcp_queue
 		global $config, $an602_root_path, $phpEx, $action, $an602_container;
 		global $an602_dispatcher;
 
-		include_once($an602_root_path . 'includes/functions_posting.' . $phpEx);
+		include_once($an602_root_path . 'includes/an602_functions_posting.' . $phpEx);
 
 		$forum_id = $request->variable('f', 0);
 		$start = $request->variable('start', 0);
@@ -50,7 +50,7 @@ class mcp_queue
 		{
 			case 'approve':
 			case 'restore':
-				include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+				include_once($an602_root_path . 'includes/an602_functions_messenger.' . $phpEx);
 
 				$post_id_list = $request->variable('post_id_list', array(0));
 				$topic_id_list = $request->variable('topic_id_list', array(0));
@@ -115,7 +115,7 @@ class mcp_queue
 
 				if (!class_exists('messenger'))
 				{
-					include($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_messenger.' . $phpEx);
 				}
 
 				if (!empty($topic_id_list))
@@ -1294,7 +1294,7 @@ class mcp_queue
 			{
 				if (!function_exists('delete_posts'))
 				{
-					include($an602_root_path . 'includes/functions_admin.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_admin.' . $phpEx);
 				}
 
 				// We do not check for permissions here, because the moderator allowed approval/disapproval should be allowed to delete the disapproved posts

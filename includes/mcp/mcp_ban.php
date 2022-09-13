@@ -30,7 +30,7 @@ class mcp_ban
 
 		if (!function_exists('user_ban'))
 		{
-			include($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 		}
 
 		// Include the admin banning interface...

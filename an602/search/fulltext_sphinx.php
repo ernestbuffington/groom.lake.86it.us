@@ -156,7 +156,7 @@ class fulltext_sphinx
 
 		if (!class_exists('SphinxClient'))
 		{
-			require($this->an602_root_path . 'includes/sphinxapi.' . $this->php_ext);
+			require($this->an602_root_path . 'includes/an602_sphinxapi.' . $this->php_ext);
 		}
 
 		// Initialize sphinx client

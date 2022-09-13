@@ -18,9 +18,9 @@ define('IN_AN602', true);
 $an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($an602_root_path . 'common.' . $phpEx);
-include($an602_root_path . 'includes/functions_admin.' . $phpEx);
-include($an602_root_path . 'includes/functions_mcp.' . $phpEx);
-require($an602_root_path . 'includes/functions_module.' . $phpEx);
+include($an602_root_path . 'includes/an602_functions_admin.' . $phpEx);
+include($an602_root_path . 'includes/an602_functions_mcp.' . $phpEx);
+require($an602_root_path . 'includes/an602_functions_module.' . $phpEx);
 
 // Start session management
 $user->session_begin();

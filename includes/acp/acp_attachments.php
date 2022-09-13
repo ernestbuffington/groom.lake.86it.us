@@ -120,7 +120,7 @@ class acp_attachments
 
 				if (!function_exists('get_supported_image_types'))
 				{
-					include($an602_root_path . 'includes/functions_posting.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_posting.' . $phpEx);
 				}
 
 				$allowed_pm_groups = [];

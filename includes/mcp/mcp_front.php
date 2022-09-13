@@ -353,7 +353,7 @@ function mcp_front_view($id, $mode, $action)
 		{
 			if (!function_exists('get_recipient_strings'))
 			{
-				include($an602_root_path . 'includes/functions_privmsgs.' . $phpEx);
+				include($an602_root_path . 'includes/an602_functions_privmsgs.' . $phpEx);
 			}
 
 			$sql_ary = array(

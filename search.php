@@ -661,11 +661,11 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 
 	if ($show_results == 'posts')
 	{
-		include($an602_root_path . 'includes/functions_posting.' . $phpEx);
+		include($an602_root_path . 'includes/an602_functions_posting.' . $phpEx);
 	}
 	else
 	{
-		include($an602_root_path . 'includes/functions_display.' . $phpEx);
+		include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
 	}
 
 	$user->add_lang('viewtopic');

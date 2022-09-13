@@ -144,7 +144,7 @@ class acp_bots
 
 				if (!function_exists('user_update_name'))
 				{
-					include($an602_root_path . 'includes/functions_user.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 				}
 
 				$bot_row = array(

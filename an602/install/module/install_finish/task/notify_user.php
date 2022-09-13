@@ -113,7 +113,7 @@ class notify_user extends \an602\install\task_base
 
 		if ($this->config['email_enable'])
 		{
-			include ($this->an602_root_path . 'includes/functions_messenger.' . $this->php_ext);
+			include ($this->an602_root_path . 'includes/an602_functions_messenger.' . $this->php_ext);
 
 			$messenger = new \messenger(false);
 			$messenger->template('installed', $this->install_config->get('user_language', 'en'));

@@ -67,7 +67,7 @@ class reparse extends \an602\console\command\command
 	*/
 	public function __construct(\an602\user $user, \an602\lock\db $reparse_lock, \an602\textreparser\manager $reparser_manager, \an602\di\service_collection $reparsers)
 	{
-		require_once __DIR__ . '/../../../../includes/functions_content.php';
+		require_once __DIR__ . '/../../../../includes/an602_functions_content.php';
 
 		$this->reparse_lock = $reparse_lock;
 		$this->reparser_manager = $reparser_manager;

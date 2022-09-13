@@ -1860,7 +1860,7 @@ class acp_forums
 	{
 		global $db, $config, $an602_root_path, $phpEx, $an602_container, $an602_dispatcher;
 
-		include_once($an602_root_path . 'includes/functions_posting.' . $phpEx);
+		include_once($an602_root_path . 'includes/an602_functions_posting.' . $phpEx);
 
 		$db->sql_transaction('begin');
 

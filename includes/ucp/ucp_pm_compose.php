@@ -35,17 +35,17 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 
 	if (!function_exists('generate_smilies'))
 	{
-		include($an602_root_path . 'includes/functions_posting.' . $phpEx);
+		include($an602_root_path . 'includes/an602_functions_posting.' . $phpEx);
 	}
 
 	if (!function_exists('display_custom_bbcodes'))
 	{
-		include($an602_root_path . 'includes/functions_display.' . $phpEx);
+		include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
 	}
 
 	if (!class_exists('parse_message'))
 	{
-		include($an602_root_path . 'includes/message_parser.' . $phpEx);
+		include($an602_root_path . 'includes/an602_message_parser.' . $phpEx);
 	}
 
 	if (!$action)
@@ -536,10 +536,10 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 
 	/* @var $plupload \an602\plupload\plupload */
 	$plupload = $an602_container->get('plupload');
-	$message_parser = new parse_message();
-	$message_parser->set_plupload($plupload);
+	$an602_message_parser = new parse_message();
+	$an602_message_parser->set_plupload($plupload);
 
-	$message_parser->message = ($action == 'reply') ? '' : $message_text;
+	$an602_message_parser->message = ($action == 'reply') ? '' : $message_text;
 	unset($message_text);
 
 	$s_action = append_sid("{$an602_root_path}ucp.$phpEx", "i=$id&amp;mode=$mode&amp;action=$action", true, $user->session_id);
@@ -631,7 +631,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 
 	// Always check if the submitted attachment data is valid and belongs to the user.
 	// Further down (especially in submit_post()) we do not check this again.
-	$message_parser->get_submitted_attachment_data();
+	$an602_message_parser->get_submitted_attachment_data();
 
 	if ($message_attachment && !$submit && !$refresh && !$preview && $action == 'edit')
 	{
@@ -643,7 +643,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 				AND is_orphan = 0
 			ORDER BY filetime DESC";
 		$result = $db->sql_query($sql);
-		$message_parser->attachment_data = array_merge($message_parser->attachment_data, $db->sql_fetchrowset($result));
+		$an602_message_parser->attachment_data = array_merge($an602_message_parser->attachment_data, $db->sql_fetchrowset($result));
 		$db->sql_freeresult($result);
 	}
 
@@ -678,7 +678,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 
 	if ($action == 'edit')
 	{
-		$message_parser->bbcode_uid = $bbcode_uid;
+		$an602_message_parser->bbcode_uid = $bbcode_uid;
 	}
 
 	$bbcode_status	= ($config['allow_bbcode'] && $config['auth_bbcode_pm'] && $auth->acl_get('u_pm_bbcode')) ? true : false;
@@ -725,8 +725,8 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		{
 			if (confirm_box(true))
 			{
-				$message_parser->message = $message;
-				$message_parser->parse($bbcode_status, $url_status, $smilies_status, $img_status, $flash_status, true, $url_status);
+				$an602_message_parser->message = $message;
+				$an602_message_parser->parse($bbcode_status, $url_status, $smilies_status, $img_status, $flash_status, true, $url_status);
 
 				$sql = 'INSERT INTO ' . AN602_DRAFTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 					'user_id'		=> $user->data['user_id'],
@@ -734,14 +734,14 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 					'forum_id'		=> 0,
 					'save_time'		=> $current_time,
 					'draft_subject'	=> $subject,
-					'draft_message'	=> $message_parser->message,
+					'draft_message'	=> $an602_message_parser->message,
 					)
 				);
 				$db->sql_query($sql);
 
 				/** @var \an602\attachment\manager $attachment_manager */
 				$attachment_manager = $an602_container->get('attachment.manager');
-				$attachment_manager->delete('attach', array_column($message_parser->attachment_data, 'attach_id'));
+				$attachment_manager->delete('attach', array_column($an602_message_parser->attachment_data, 'attach_id'));
 
 				$redirect_url = append_sid("{$an602_root_path}ucp.$phpEx", "i=pm&amp;mode=$mode");
 
@@ -761,7 +761,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 					'u'			=> $to_user_id,
 					'g'			=> $to_group_id,
 					'p'			=> $msg_id,
-					'attachment_data' => $message_parser->attachment_data,
+					'attachment_data' => $an602_message_parser->attachment_data,
 				));
 				$s_hidden_fields .= build_address_field($address_list);
 
@@ -797,7 +797,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 
 		if ($row = $db->sql_fetchrow($result))
 		{
-			$message_parser->message = $row['draft_message'];
+			$an602_message_parser->message = $row['draft_message'];
 			$message_subject = $row['draft_subject'];
 
 			$template->assign_var('S_DRAFT_LOADED', true);
@@ -822,7 +822,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 			$error[] = $user->lang['FORM_INVALID'];
 		}
 		$subject = $request->variable('subject', '', true);
-		$message_parser->message = $request->variable('message', '', true);
+		$an602_message_parser->message = $request->variable('message', '', true);
 
 		$icon_id			= $request->variable('icon', 0);
 
@@ -840,7 +840,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		* @var	bool	enable_urls			Whether or not urls are enabled
 		* @var	bool	enable_sig			Whether or not signature is enabled
 		* @var	string	subject				PM subject text
-		* @var	object	message_parser		The message parser object
+		* @var	object	an602_message_parser		The message parser object
 		* @var	bool	submit				Whether or not the form has been sumitted
 		* @var	bool	preview				Whether or not the signature is being previewed
 		* @var	array	error				Any error strings
@@ -852,7 +852,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 			'enable_urls',
 			'enable_sig',
 			'subject',
-			'message_parser',
+			'an602_message_parser',
 			'submit',
 			'preview',
 			'error',
@@ -860,24 +860,24 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		extract($an602_dispatcher->trigger_event('core.ucp_pm_compose_modify_parse_before', compact($vars)));
 
 		// Parse Attachments - before checksum is calculated
-		if ($message_parser->check_attachment_form_token($language, $request, 'ucp_pm_compose'))
+		if ($an602_message_parser->check_attachment_form_token($language, $request, 'ucp_pm_compose'))
 		{
-			$message_parser->parse_attachments('fileupload', $action, 0, $submit, $preview, $refresh, true);
+			$an602_message_parser->parse_attachments('fileupload', $action, 0, $submit, $preview, $refresh, true);
 		}
 
-		if (count($message_parser->warn_msg) && !($remove_u || $remove_g || $add_to || $add_bcc))
+		if (count($an602_message_parser->warn_msg) && !($remove_u || $remove_g || $add_to || $add_bcc))
 		{
-			$error[] = implode('<br />', $message_parser->warn_msg);
-			$message_parser->warn_msg = array();
+			$error[] = implode('<br />', $an602_message_parser->warn_msg);
+			$an602_message_parser->warn_msg = array();
 		}
 
 		// Parse message
-		$message_parser->parse($enable_bbcode, ($config['allow_post_links']) ? $enable_urls : false, $enable_smilies, $img_status, $flash_status, true, $config['allow_post_links']);
+		$an602_message_parser->parse($enable_bbcode, ($config['allow_post_links']) ? $enable_urls : false, $enable_smilies, $img_status, $flash_status, true, $config['allow_post_links']);
 
 		// On a refresh we do not care about message parsing errors
-		if (count($message_parser->warn_msg) && !$refresh)
+		if (count($an602_message_parser->warn_msg) && !$refresh)
 		{
-			$error[] = implode('<br />', $message_parser->warn_msg);
+			$error[] = implode('<br />', $an602_message_parser->warn_msg);
 		}
 
 		if ($action != 'edit' && !$preview && !$refresh && $config['flood_interval'] && !$auth->acl_get('u_ignoreflood'))
@@ -917,7 +917,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		* @var	bool	enable_urls			Whether or not urls are enabled
 		* @var	bool	enable_sig			Whether or not signature is enabled
 		* @var	string	subject				PM subject text
-		* @var	object	message_parser		The message parser object
+		* @var	object	an602_message_parser		The message parser object
 		* @var	bool	submit				Whether or not the form has been sumitted
 		* @var	bool	preview				Whether or not the signature is being previewed
 		* @var	array	error				Any error strings
@@ -930,7 +930,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 			'enable_urls',
 			'enable_sig',
 			'subject',
-			'message_parser',
+			'an602_message_parser',
 			'submit',
 			'preview',
 			'error',
@@ -952,11 +952,11 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 				'enable_bbcode'			=> (bool) $enable_bbcode,
 				'enable_smilies'		=> (bool) $enable_smilies,
 				'enable_urls'			=> (bool) $enable_urls,
-				'bbcode_bitfield'		=> $message_parser->bbcode_bitfield,
-				'bbcode_uid'			=> $message_parser->bbcode_uid,
-				'message'				=> $message_parser->message,
-				'attachment_data'		=> $message_parser->attachment_data,
-				'filename_data'			=> $message_parser->filename_data,
+				'bbcode_bitfield'		=> $an602_message_parser->bbcode_bitfield,
+				'bbcode_uid'			=> $an602_message_parser->bbcode_uid,
+				'message'				=> $an602_message_parser->message,
+				'attachment_data'		=> $an602_message_parser->attachment_data,
+				'filename_data'			=> $an602_message_parser->filename_data,
 				'address_list'			=> $address_list
 			);
 
@@ -1003,7 +1003,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 	// Preview
 	if (!count($error) && $preview)
 	{
-		$preview_message = $message_parser->format_display($enable_bbcode, $enable_urls, $enable_smilies, false);
+		$preview_message = $an602_message_parser->format_display($enable_bbcode, $enable_urls, $enable_smilies, false);
 
 		$preview_signature = $user->data['user_sig'];
 		$preview_signature_uid = $user->data['user_sig_bbcode_uid'];
@@ -1021,12 +1021,12 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		}
 
 		// Attachment Preview
-		if (count($message_parser->attachment_data))
+		if (count($an602_message_parser->attachment_data))
 		{
 			$template->assign_var('S_HAS_ATTACHMENTS', true);
 
 			$update_count = array();
-			$attachment_data = $message_parser->attachment_data;
+			$attachment_data = $an602_message_parser->attachment_data;
 
 			parse_attachments(false, $preview_message, $attachment_data, $update_count, true);
 
@@ -1055,9 +1055,9 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 	}
 
 	// Decode text for message display
-	$bbcode_uid = (($action == 'quote' || $action == 'forward') && !$preview && !$refresh && (!count($error) || (count($error) && !$submit))) ? $bbcode_uid : $message_parser->bbcode_uid;
+	$bbcode_uid = (($action == 'quote' || $action == 'forward') && !$preview && !$refresh && (!count($error) || (count($error) && !$submit))) ? $bbcode_uid : $an602_message_parser->bbcode_uid;
 
-	$message_parser->decode_message($bbcode_uid);
+	$an602_message_parser->decode_message($bbcode_uid);
 
 	if (($action == 'quote' || $action == 'quotepost') && !$preview && !$refresh && !$submit)
 	{
@@ -1103,7 +1103,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		$language = $an602_container->get('language');
 		/** @var \an602\textformatter\utils_interface $text_formatter_utils */
 		$text_formatter_utils = $an602_container->get('text_formatter.utils');
-		an602_format_quote($language, $message_parser, $text_formatter_utils, $bbcode_status, $quote_attributes, $message_link);
+		an602_format_quote($language, $an602_message_parser, $text_formatter_utils, $bbcode_status, $quote_attributes, $message_link);
 	}
 
 	if (($action == 'reply' || $action == 'quote' || $action == 'quotepost') && !$preview && !$refresh)
@@ -1142,16 +1142,16 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		$forward_text[] = sprintf($user->lang['FWD_TO'], implode($user->lang['COMMA_SEPARATOR'], $fwd_to_field['to']));
 
 		$quote_text = $an602_container->get('text_formatter.utils')->generate_quote(
-			censor_text($message_parser->message),
+			censor_text($an602_message_parser->message),
 			array('author' => $quote_username)
 		);
-		$message_parser->message = implode("\n", $forward_text) . "\n\n" . $quote_text;
+		$an602_message_parser->message = implode("\n", $forward_text) . "\n\n" . $quote_text;
 		$message_subject = ((!preg_match('/^Fwd:/', $message_subject)) ? 'Fwd: ' : '') . censor_text($message_subject);
 	}
 
-	$attachment_data = $message_parser->attachment_data;
-	$filename_data = $message_parser->filename_data;
-	$message_text = $message_parser->message;
+	$attachment_data = $an602_message_parser->attachment_data;
+	$filename_data = $an602_message_parser->filename_data;
+	$message_text = $an602_message_parser->message;
 
 	// MAIN PM PAGE BEGINS HERE
 
@@ -1349,7 +1349,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		'S_SAVE_ALLOWED'		=> ($auth->acl_get('u_savedrafts') && $action != 'edit') ? true : false,
 		'S_HAS_DRAFTS'			=> ($auth->acl_get('u_savedrafts') && $drafts),
 		'S_FORM_ENCTYPE'		=> $form_enctype,
-		'S_ATTACH_DATA'			=> json_encode($message_parser->attachment_data),
+		'S_ATTACH_DATA'			=> json_encode($an602_message_parser->attachment_data),
 
 		'S_BBCODE_IMG'			=> $img_status,
 		'S_BBCODE_FLASH'		=> $flash_status,

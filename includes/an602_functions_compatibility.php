@@ -191,7 +191,7 @@ function get_user_rank($user_rank, $user_posts, &$rank_title, &$rank_img, &$rank
 	global $an602_root_path, $phpEx;
 	if (!function_exists('an602_get_user_rank'))
 	{
-		include($an602_root_path . 'includes/functions_display.' . $phpEx);
+		include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
 	}
 
 	$rank_data = an602_get_user_rank(array('user_rank' => $user_rank), $user_posts);

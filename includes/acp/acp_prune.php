@@ -31,7 +31,7 @@ class acp_prune
 
 		if (!function_exists('user_active_flip'))
 		{
-			include($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 		}
 
 		switch ($mode)

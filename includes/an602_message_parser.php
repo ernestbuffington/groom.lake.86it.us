@@ -21,7 +21,7 @@ if (!defined('IN_AN602'))
 
 if (!class_exists('bbcode'))
 {
-	// The following lines are for extensions which include message_parser.php
+	// The following lines are for extensions which include an602_message_parser.php
 	// while $an602_root_path and $phpEx are out of the script scope
 	// which may lead to the 'Undefined variable' and 'failed to open stream' errors
 	if (!isset($an602_root_path))
@@ -1176,7 +1176,7 @@ class parse_message extends bbcode_firstpass
 		/**
 		* This event can be used for additional message checks/cleanup before parsing
 		*
-		* @event core.message_parser_check_message
+		* @event core.an602_message_parser_check_message
 		* @var bool		allow_bbcode			Do we allow BBCodes
 		* @var bool		allow_magic_url			Do we allow magic urls
 		* @var bool		allow_smilies			Do we allow smilies
@@ -1215,7 +1215,7 @@ class parse_message extends bbcode_firstpass
 			'return',
 			'warn_msg',
 		);
-		extract($an602_dispatcher->trigger_event('core.message_parser_check_message', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.an602_message_parser_check_message', compact($vars)));
 		$this->message = $message;
 		$this->warn_msg = $warn_msg;
 		$this->bbcode_bitfield = $bbcode_bitfield;
@@ -1657,7 +1657,7 @@ class parse_message extends bbcode_firstpass
 			// Perform actions on temporary attachments
 			if ($delete_file)
 			{
-				include_once($an602_root_path . 'includes/functions_admin.' . $phpEx);
+				include_once($an602_root_path . 'includes/an602_functions_admin.' . $phpEx);
 
 				$index = array_keys($request->variable('delete_file', array(0 => 0)));
 				$index = (!empty($index)) ? $index[0] : false;

@@ -951,10 +951,10 @@ class auth
 			// If the auth module wants us to create an empty profile do so and then treat the status as LOGIN_SUCCESS
 			if ($login['status'] == LOGIN_SUCCESS_CREATE_PROFILE)
 			{
-				// we are going to use the user_add function so include functions_user.php if it wasn't defined yet
+				// we are going to use the user_add function so include an602_functions_user.php if it wasn't defined yet
 				if (!function_exists('user_add'))
 				{
-					include($an602_root_path . 'includes/functions_user.' . $phpEx);
+					include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
 				}
 
 				user_add($login['user_row'], (isset($login['cp_data'])) ? $login['cp_data'] : false);
