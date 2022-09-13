@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -32,42 +32,42 @@ class acp_styles
 	protected $styles_list_cols = 0;
 	protected $reserved_style_names = array('adm', 'admin', 'all');
 
-	/** @var \phpbb\config\config */
+	/** @var \an602\config\config */
 	protected $config;
 
-	/** @var \phpbb\db\driver\driver_interface */
+	/** @var \an602\db\driver\driver_interface */
 	protected $db;
 
-	/** @var \phpbb\user */
+	/** @var \an602\user */
 	protected $user;
 
-	/** @var \phpbb\template\template */
+	/** @var \an602\template\template */
 	protected $template;
 
-	/** @var \phpbb\request\request_interface */
+	/** @var \an602\request\request_interface */
 	protected $request;
 
-	/** @var \phpbb\cache\driver\driver_interface */
+	/** @var \an602\cache\driver\driver_interface */
 	protected $cache;
 
-	/** @var \phpbb\auth\auth */
+	/** @var \an602\auth\auth */
 	protected $auth;
 
-	/** @var \phpbb\textformatter\cache_interface */
+	/** @var \an602\textformatter\cache_interface */
 	protected $text_formatter_cache;
 
 	/** @var string */
-	protected $phpbb_root_path;
+	protected $an602_root_path;
 
 	/** @var string */
 	protected $php_ext;
 
-	/** @var \phpbb\event\dispatcher_interface */
+	/** @var \an602\event\dispatcher_interface */
 	protected $dispatcher;
 
 	public function main($id, $mode)
 	{
-		global $db, $user, $phpbb_admin_path, $phpbb_root_path, $phpEx, $template, $request, $cache, $auth, $config, $phpbb_dispatcher, $phpbb_container;
+		global $db, $user, $an602_admin_path, $an602_root_path, $phpEx, $template, $request, $cache, $auth, $config, $an602_dispatcher, $an602_container;
 
 		$this->db = $db;
 		$this->user = $user;
@@ -75,16 +75,16 @@ class acp_styles
 		$this->request = $request;
 		$this->cache = $cache;
 		$this->auth = $auth;
-		$this->text_formatter_cache = $phpbb_container->get('text_formatter.cache');
+		$this->text_formatter_cache = $an602_container->get('text_formatter.cache');
 		$this->config = $config;
-		$this->phpbb_root_path = $phpbb_root_path;
+		$this->an602_root_path = $an602_root_path;
 		$this->php_ext = $phpEx;
-		$this->dispatcher = $phpbb_dispatcher;
+		$this->dispatcher = $an602_dispatcher;
 
 		$this->default_style = $config['default_style'];
-		$this->styles_path = $this->phpbb_root_path . $this->styles_path_absolute . '/';
+		$this->styles_path = $this->an602_root_path . $this->styles_path_absolute . '/';
 
-		$this->u_base_action = append_sid("{$phpbb_admin_path}index.{$this->php_ext}", "i={$id}");
+		$this->u_base_action = append_sid("{$an602_admin_path}index.{$this->php_ext}", "i={$id}");
 		$this->s_hidden_fields = array(
 			'mode'		=> $mode,
 		);
@@ -261,7 +261,7 @@ class acp_styles
 
 		// Don't remove prosilver, you can still deactivate it.
 		$sql = 'SELECT style_id
-			FROM ' . STYLES_TABLE . "
+			FROM ' . AN602_STYLES_TABLE . "
 			WHERE style_name = '" . $this->db->sql_escape('prosilver') . "'";
 		$result = $this->db->sql_query($sql);
 		$prosilver_id = (int) $this->db->sql_fetchfield('style_id');
@@ -300,7 +300,7 @@ class acp_styles
 	*/
 	protected function action_uninstall_confirmed($ids, $delete_files)
 	{
-		global $user, $phpbb_log;
+		global $user, $an602_log;
 
 		$default = $this->default_style;
 		$uninstalled = array();
@@ -323,7 +323,7 @@ class acp_styles
 		// Order by reversed style_id, so parent styles would be removed after child styles
 		// This way parent and child styles can be removed in same function call
 		$sql = 'SELECT *
-			FROM ' . STYLES_TABLE . '
+			FROM ' . AN602_STYLES_TABLE . '
 			WHERE style_id IN (' . implode(', ', $ids) . ')
 			ORDER BY style_id DESC';
 		$result = $this->db->sql_query($sql);
@@ -361,7 +361,7 @@ class acp_styles
 		// Log action
 		if (count($uninstalled))
 		{
-			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_STYLE_DELETE', false, array(implode(', ', $uninstalled)));
+			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_STYLE_DELETE', false, array(implode(', ', $uninstalled)));
 		}
 
 		// Clear cache
@@ -380,13 +380,13 @@ class acp_styles
 		$ids = $this->request_vars('id', 0, true);
 
 		// Activate styles
-		$sql = 'UPDATE ' . STYLES_TABLE . '
+		$sql = 'UPDATE ' . AN602_STYLES_TABLE . '
 			SET style_active = 1
 			WHERE style_id IN (' . implode(', ', $ids) . ')';
 		$this->db->sql_query($sql);
 
 		// Purge cache
-		$this->cache->destroy('sql', STYLES_TABLE);
+		$this->cache->destroy('sql', AN602_STYLES_TABLE);
 
 		// Show styles list
 		$this->frontend();
@@ -410,19 +410,19 @@ class acp_styles
 		}
 
 		// Reset default style for users who use selected styles
-		$sql = 'UPDATE ' . USERS_TABLE . '
+		$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 			SET user_style = ' . (int) $this->default_style . '
 			WHERE user_style IN (' . implode(', ', $ids) . ')';
 		$this->db->sql_query($sql);
 
 		// Deactivate styles
-		$sql = 'UPDATE ' . STYLES_TABLE . '
+		$sql = 'UPDATE ' . AN602_STYLES_TABLE . '
 			SET style_active = 0
 			WHERE style_id IN (' . implode(', ', $ids) . ')';
 		$this->db->sql_query($sql);
 
 		// Purge cache
-		$this->cache->destroy('sql', STYLES_TABLE);
+		$this->cache->destroy('sql', AN602_STYLES_TABLE);
 
 		// Show styles list
 		$this->frontend();
@@ -433,7 +433,7 @@ class acp_styles
 	*/
 	protected function action_details()
 	{
-		global $user, $phpbb_log;
+		global $user, $an602_log;
 
 		$id = $this->request->variable('id', 0);
 		if (!$id)
@@ -552,7 +552,7 @@ class acp_styles
 			// Update data
 			if (count($update))
 			{
-				$sql = 'UPDATE ' . STYLES_TABLE . '
+				$sql = 'UPDATE ' . AN602_STYLES_TABLE . '
 					SET ' . $this->db->sql_build_array('UPDATE', $update) . "
 					WHERE style_id = $id";
 				$this->db->sql_query($sql);
@@ -570,7 +570,7 @@ class acp_styles
 					}
 				}
 
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_STYLE_EDIT_DETAILS', false, array($style['style_name']));
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_STYLE_EDIT_DETAILS', false, array($style['style_name']));
 			}
 
 			// Update default style
@@ -904,7 +904,7 @@ class acp_styles
 		}
 		if ($update)
 		{
-			$sql = 'UPDATE ' . STYLES_TABLE . "
+			$sql = 'UPDATE ' . AN602_STYLES_TABLE . "
 				SET style_parent_tree = '" . $this->db->sql_escape($parent_tree) . "'
 				WHERE style_parent_id = {$parent_id}";
 			$this->db->sql_query($sql);
@@ -968,7 +968,7 @@ class acp_styles
 			'STYLE_ID'				=> $style['style_id'],
 			'STYLE_NAME'			=> htmlspecialchars($style['style_name'], ENT_COMPAT),
 			'STYLE_VERSION'			=> $style_cfg['style_version'] ?? '-',
-			'STYLE_PHPBB_VERSION'	=> $style_cfg['phpbb_version'],
+			'STYLE_AN602_VERSION'	=> $style_cfg['an602_version'],
 			'STYLE_PATH'			=> htmlspecialchars($style['style_path'], ENT_COMPAT),
 			'STYLE_COPYRIGHT'		=> strip_tags($style['style_copyright']),
 			'STYLE_ACTIVE'			=> $style['style_active'],
@@ -1025,7 +1025,7 @@ class acp_styles
 
 			// Preview
 			$actions[] = array(
-				'U_ACTION'	=> append_sid($this->phpbb_root_path . 'index.' . $this->php_ext, 'style=' . $style['style_id']),
+				'U_ACTION'	=> append_sid($this->an602_root_path . 'index.' . $this->php_ext, 'style=' . $style['style_id']),
 				'L_ACTION'	=> $this->user->lang['PREVIEW']
 			);
 		}
@@ -1148,7 +1148,7 @@ class acp_styles
 			trigger_error($this->user->lang('NO_STYLE_CFG', $dir), E_USER_WARNING);
 		}
 
-		static $required = array('name', 'phpbb_version', 'copyright');
+		static $required = array('name', 'an602_version', 'copyright');
 
 		$cfg = parse_cfg_file($this->styles_path . $dir . '/style.cfg');
 
@@ -1182,7 +1182,7 @@ class acp_styles
 	*/
 	protected function install_style($style)
 	{
-		global $user, $phpbb_log;
+		global $user, $an602_log;
 
 		// Generate row
 		$sql_ary = array();
@@ -1197,7 +1197,7 @@ class acp_styles
 		// Add to database
 		$this->db->sql_transaction('begin');
 
-		$sql = 'INSERT INTO ' . STYLES_TABLE . '
+		$sql = 'INSERT INTO ' . AN602_STYLES_TABLE . '
 			' . $this->db->sql_build_array('INSERT', $sql_ary);
 		$this->db->sql_query($sql);
 
@@ -1205,7 +1205,7 @@ class acp_styles
 
 		$this->db->sql_transaction('commit');
 
-		$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_STYLE_ADD', false, array($sql_ary['style_name']));
+		$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_STYLE_ADD', false, array($sql_ary['style_name']));
 
 		return $id;
 	}
@@ -1218,7 +1218,7 @@ class acp_styles
 	protected function get_styles()
 	{
 		$sql = 'SELECT *
-			FROM ' . STYLES_TABLE;
+			FROM ' . AN602_STYLES_TABLE;
 		$result = $this->db->sql_query($sql);
 
 		$rows = $this->db->sql_fetchrowset($result);
@@ -1235,7 +1235,7 @@ class acp_styles
 	protected function get_users()
 	{
 		$sql = 'SELECT user_style, COUNT(user_style) AS style_count
-			FROM ' . USERS_TABLE . '
+			FROM ' . AN602_USERS_TABLE . '
 			GROUP BY user_style';
 		$result = $this->db->sql_query($sql);
 
@@ -1262,7 +1262,7 @@ class acp_styles
 
 		// Check if style has child styles
 		$sql = 'SELECT style_id
-			FROM ' . STYLES_TABLE . '
+			FROM ' . AN602_STYLES_TABLE . '
 			WHERE style_parent_id = ' . (int) $id . " OR style_parent_tree = '" . $this->db->sql_escape($path) . "'";
 		$result = $this->db->sql_query($sql);
 
@@ -1275,13 +1275,13 @@ class acp_styles
 		}
 
 		// Change default style for users
-		$sql = 'UPDATE ' . USERS_TABLE . '
+		$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 			SET user_style = ' . (int) $this->default_style . '
 			WHERE user_style = ' . $id;
 		$this->db->sql_query($sql);
 
 		// Uninstall style
-		$sql = 'DELETE FROM ' . STYLES_TABLE . '
+		$sql = 'DELETE FROM ' . AN602_STYLES_TABLE . '
 			WHERE style_id = ' . $id;
 		$this->db->sql_query($sql);
 		return true;

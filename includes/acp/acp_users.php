@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -32,9 +32,9 @@ class acp_users
 	function main($id, $mode)
 	{
 		global $config, $db, $user, $auth, $template;
-		global $phpbb_root_path, $phpbb_admin_path, $phpEx;
-		global $phpbb_dispatcher, $request;
-		global $phpbb_container, $phpbb_log;
+		global $an602_root_path, $an602_admin_path, $phpEx;
+		global $an602_dispatcher, $request;
+		global $an602_container, $an602_log;
 
 		$user->add_lang(array('posting', 'ucp', 'acp/users'));
 		$this->tpl_name = 'acp_users';
@@ -47,7 +47,7 @@ class acp_users
 		// Get referer to redirect user to the appropriate page after delete action
 		$redirect		= $request->variable('redirect', '');
 		$redirect_tag	= "redirect=$redirect";
-		$redirect_url	= append_sid("{$phpbb_admin_path}index.$phpEx", "i=$redirect");
+		$redirect_url	= append_sid("{$an602_admin_path}index.$phpEx", "i=$redirect");
 
 		$submit		= (isset($_POST['update']) && !isset($_POST['cancel'])) ? true : false;
 
@@ -59,13 +59,13 @@ class acp_users
 		{
 			if (!function_exists('user_get_id_name'))
 			{
-				include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+				include($an602_root_path . 'includes/functions_user.' . $phpEx);
 			}
 
 			$this->page_title = 'WHOIS';
 			$this->tpl_name = 'simple_body';
 
-			$user_ip = phpbb_ip_normalise($request->variable('user_ip', ''));
+			$user_ip = an602_ip_normalise($request->variable('user_ip', ''));
 			$domain = gethostbyaddr($user_ip);
 			$ipwhois = user_ipwhois($user_ip);
 
@@ -87,7 +87,7 @@ class acp_users
 				'ANONYMOUS_USER_ID'	=> ANONYMOUS,
 
 				'S_SELECT_USER'		=> true,
-				'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=select_user&amp;field=username&amp;select_single=true'),
+				'U_FIND_USERNAME'	=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=select_user&amp;field=username&amp;select_single=true'),
 			));
 
 			return;
@@ -96,7 +96,7 @@ class acp_users
 		if (!$user_id)
 		{
 			$sql = 'SELECT user_id
-				FROM ' . USERS_TABLE . "
+				FROM ' . AN602_USERS_TABLE . "
 				WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($username)) . "'";
 			$result = $db->sql_query($sql);
 			$user_id = (int) $db->sql_fetchfield('user_id');
@@ -110,8 +110,8 @@ class acp_users
 
 		// Generate content for all modes
 		$sql = 'SELECT u.*, s.*
-			FROM ' . USERS_TABLE . ' u
-				LEFT JOIN ' . SESSIONS_TABLE . ' s ON (s.session_user_id = u.user_id)
+			FROM ' . AN602_USERS_TABLE . ' u
+				LEFT JOIN ' . AN602_SESSIONS_TABLE . ' s ON (s.session_user_id = u.user_id)
 			WHERE u.user_id = ' . $user_id . '
 			ORDER BY s.session_time DESC';
 		$result = $db->sql_query_limit($sql, 1);
@@ -128,7 +128,7 @@ class acp_users
 
 		// Build modes dropdown list
 		$sql = 'SELECT module_mode, module_auth
-			FROM ' . MODULES_TABLE . "
+			FROM ' . AN602_MODULES_TABLE . "
 			WHERE module_basename = 'acp_users'
 				AND module_enabled = 1
 				AND module_class = 'acp'
@@ -155,7 +155,7 @@ class acp_users
 
 		$template->assign_vars(array(
 			'U_BACK'			=> (empty($redirect)) ? $this->u_action : $redirect_url,
-			'U_MODE_SELECT'		=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=$id&amp;u=$user_id"),
+			'U_MODE_SELECT'		=> append_sid("{$an602_admin_path}index.$phpEx", "i=$id&amp;u=$user_id"),
 			'U_ACTION'			=> $this->u_action . '&amp;u=' . $user_id . ((empty($redirect)) ? '' : '&amp;' . $redirect_tag),
 			'S_FORM_OPTIONS'	=> $s_form_options,
 			'MANAGED_USERNAME'	=> $user_row['username'])
@@ -175,7 +175,7 @@ class acp_users
 
 				if (!function_exists('user_get_id_name'))
 				{
-					include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+					include($an602_root_path . 'includes/functions_user.' . $phpEx);
 				}
 
 				$user->add_lang('acp/ban');
@@ -197,7 +197,7 @@ class acp_users
 				 * @since 3.1.3-RC1
 				 */
 				$vars = array('user_row', 'mode', 'action', 'submit', 'error');
-				extract($phpbb_dispatcher->trigger_event('core.acp_users_overview_before', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_users_overview_before', compact($vars)));
 
 				if ($submit)
 				{
@@ -232,7 +232,7 @@ class acp_users
 							{
 								user_delete($delete_type, $user_id, $user_row['username']);
 
-								$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_DELETED', false, array($user_row['username']));
+								$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_DELETED', false, array($user_row['username']));
 								trigger_error($user->lang['USER_DELETED'] . adm_back_link(
 										(empty($redirect)) ? $this->u_action : $redirect_url
 									)
@@ -310,7 +310,7 @@ class acp_users
 									$ban[] = $user_row['user_ip'];
 
 									$sql = 'SELECT DISTINCT poster_ip
-										FROM ' . POSTS_TABLE . "
+										FROM ' . AN602_POSTS_TABLE . "
 										WHERE poster_id = $user_id";
 									$result = $db->sql_query($sql);
 
@@ -360,7 +360,7 @@ class acp_users
 							{
 								if (!class_exists('messenger'))
 								{
-									include($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+									include($an602_root_path . 'includes/functions_messenger.' . $phpEx);
 								}
 
 								$server_url = generate_board_url();
@@ -376,7 +376,7 @@ class acp_users
 								{
 									// Grabbing the last confirm key - we only send a reminder
 									$sql = 'SELECT user_actkey
-										FROM ' . USERS_TABLE . '
+										FROM ' . AN602_USERS_TABLE . '
 										WHERE user_id = ' . $user_id;
 									$result = $db->sql_query($sql);
 									$user_activation_key = (string) $db->sql_fetchfield('user_actkey');
@@ -387,7 +387,7 @@ class acp_users
 
 								if ($user_row['user_type'] == USER_NORMAL || empty($user_activation_key))
 								{
-									$sql = 'UPDATE ' . USERS_TABLE . "
+									$sql = 'UPDATE ' . AN602_USERS_TABLE . "
 										SET user_actkey = '" . $db->sql_escape($user_actkey) . "'
 										WHERE user_id = $user_id";
 									$db->sql_query($sql);
@@ -409,8 +409,8 @@ class acp_users
 
 								$messenger->send(NOTIFY_EMAIL);
 
-								$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_REACTIVATE', false, array($user_row['username']));
-								$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_REACTIVATE_USER', false, array(
+								$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_REACTIVATE', false, array($user_row['username']));
+								$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_REACTIVATE_USER', false, array(
 									'reportee_id' => $user_id
 								));
 
@@ -448,13 +448,13 @@ class acp_users
 							{
 								if ($config['require_activation'] == USER_ACTIVATION_ADMIN)
 								{
-									/* @var $phpbb_notifications \phpbb\notification\manager */
-									$phpbb_notifications = $phpbb_container->get('notification_manager');
-									$phpbb_notifications->delete_notifications('notification.type.admin_activate_user', $user_row['user_id']);
+									/* @var $an602_notifications \an602\notification\manager */
+									$an602_notifications = $an602_container->get('notification_manager');
+									$an602_notifications->delete_notifications('notification.type.admin_activate_user', $user_row['user_id']);
 
 									if (!class_exists('messenger'))
 									{
-										include($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+										include($an602_root_path . 'includes/functions_messenger.' . $phpEx);
 									}
 
 									$messenger = new messenger(false);
@@ -476,8 +476,8 @@ class acp_users
 							$message = ($user_row['user_type'] == USER_INACTIVE) ? 'USER_ADMIN_ACTIVATED' : 'USER_ADMIN_DEACTIVED';
 							$log = ($user_row['user_type'] == USER_INACTIVE) ? 'LOG_USER_ACTIVE' : 'LOG_USER_INACTIVE';
 
-							$phpbb_log->add('admin', $user->data['user_id'], $user->ip, $log, false, array($user_row['username']));
-							$phpbb_log->add('user', $user->data['user_id'], $user->ip, $log . '_USER', false, array(
+							$an602_log->add('admin', $user->data['user_id'], $user->ip, $log, false, array($user_row['username']));
+							$an602_log->add('user', $user->data['user_id'], $user->ip, $log . '_USER', false, array(
 								'reportee_id' => $user_id
 							));
 
@@ -498,12 +498,12 @@ class acp_users
 								'user_sig_bbcode_bitfield'	=> ''
 							);
 
-							$sql = 'UPDATE ' . USERS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . "
+							$sql = 'UPDATE ' . AN602_USERS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . "
 								WHERE user_id = $user_id";
 							$db->sql_query($sql);
 
-							$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_DEL_SIG', false, array($user_row['username']));
-							$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_DEL_SIG_USER', false, array(
+							$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_DEL_SIG', false, array($user_row['username']));
+							$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_DEL_SIG_USER', false, array(
 								'reportee_id' => $user_id
 							));
 
@@ -519,12 +519,12 @@ class acp_users
 							}
 
 							// Delete old avatar if present
-							/* @var $phpbb_avatar_manager \phpbb\avatar\manager */
-							$phpbb_avatar_manager = $phpbb_container->get('avatar.manager');
-							$phpbb_avatar_manager->handle_avatar_delete($db, $user, $phpbb_avatar_manager->clean_row($user_row, 'user'), USERS_TABLE, 'user_');
+							/* @var $an602_avatar_manager \an602\avatar\manager */
+							$an602_avatar_manager = $an602_container->get('avatar.manager');
+							$an602_avatar_manager->handle_avatar_delete($db, $user, $an602_avatar_manager->clean_row($user_row, 'user'), AN602_USERS_TABLE, 'user_');
 
-							$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_DEL_AVATAR', false, array($user_row['username']));
-							$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_DEL_AVATAR_USER', false, array(
+							$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_DEL_AVATAR', false, array($user_row['username']));
+							$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_DEL_AVATAR_USER', false, array(
 								'reportee_id' => $user_id
 							));
 
@@ -538,7 +538,7 @@ class acp_users
 								// Delete posts, attachments, etc.
 								delete_posts('poster_id', $user_id);
 
-								$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_DEL_POSTS', false, array($user_row['username']));
+								$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_DEL_POSTS', false, array($user_row['username']));
 								trigger_error($user->lang['USER_POSTS_DELETED'] . adm_back_link($this->u_action . '&amp;u=' . $user_id));
 							}
 							else
@@ -558,12 +558,12 @@ class acp_users
 
 							if (confirm_box(true))
 							{
-								/** @var \phpbb\attachment\manager $attachment_manager */
-								$attachment_manager = $phpbb_container->get('attachment.manager');
+								/** @var \an602\attachment\manager $attachment_manager */
+								$attachment_manager = $an602_container->get('attachment.manager');
 								$attachment_manager->delete('user', $user_id);
 								unset($attachment_manager);
 
-								$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_DEL_ATTACH', false, array($user_row['username']));
+								$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_DEL_ATTACH', false, array($user_row['username']));
 								trigger_error($user->lang['USER_ATTACHMENTS_REMOVED'] . adm_back_link($this->u_action . '&amp;u=' . $user_id));
 							}
 							else
@@ -587,7 +587,7 @@ class acp_users
 								$lang = 'EMPTY';
 
 								$sql = 'SELECT msg_id
-									FROM ' . PRIVMSGS_TO_TABLE . "
+									FROM ' . AN602_PRIVMSGS_TO_TABLE . "
 									WHERE author_id = $user_id
 										AND folder_id = " . PRIVMSGS_OUTBOX;
 								$result = $db->sql_query($sql);
@@ -596,7 +596,7 @@ class acp_users
 								{
 									if (!function_exists('delete_pm'))
 									{
-										include($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
+										include($an602_root_path . 'includes/functions_privmsgs.' . $phpEx);
 									}
 
 									do
@@ -609,7 +609,7 @@ class acp_users
 
 									delete_pm($user_id, $msg_ids, PRIVMSGS_OUTBOX);
 
-									$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_DEL_OUTBOX', false, array($user_row['username']));
+									$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_DEL_OUTBOX', false, array($user_row['username']));
 
 									$lang = 'EMPTIED';
 								}
@@ -656,7 +656,7 @@ class acp_users
 
 							// Is the new forum postable to?
 							$sql = 'SELECT forum_name, forum_type
-								FROM ' . FORUMS_TABLE . "
+								FROM ' . AN602_FORUMS_TABLE . "
 								WHERE forum_id = $new_forum_id";
 							$result = $db->sql_query($sql);
 							$forum_info = $db->sql_fetchrow($result);
@@ -678,7 +678,7 @@ class acp_users
 							$forum_id_ary = array($new_forum_id);
 
 							$sql = 'SELECT topic_id, post_visibility, COUNT(post_id) AS total_posts
-								FROM ' . POSTS_TABLE . "
+								FROM ' . AN602_POSTS_TABLE . "
 								WHERE poster_id = $user_id
 									AND forum_id <> $new_forum_id
 								GROUP BY topic_id, post_visibility";
@@ -693,7 +693,7 @@ class acp_users
 							if (count($topic_id_ary))
 							{
 								$sql = 'SELECT topic_id, forum_id, topic_title, topic_posts_approved, topic_posts_unapproved, topic_posts_softdeleted, topic_attachment
-									FROM ' . TOPICS_TABLE . '
+									FROM ' . AN602_TOPICS_TABLE . '
 									WHERE ' . $db->sql_in_set('topic_id', array_keys($topic_id_ary));
 								$result = $db->sql_query($sql);
 
@@ -730,7 +730,7 @@ class acp_users
 								foreach ($move_post_ary as $topic_id => $post_ary)
 								{
 									// Create new topic
-									$sql = 'INSERT INTO ' . TOPICS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+									$sql = 'INSERT INTO ' . AN602_TOPICS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 										'topic_poster'				=> $user_id,
 										'topic_time'				=> time(),
 										'forum_id' 					=> $new_forum_id,
@@ -747,7 +747,7 @@ class acp_users
 									$new_topic_id = $db->sql_nextid();
 
 									// Move posts
-									$sql = 'UPDATE ' . POSTS_TABLE . "
+									$sql = 'UPDATE ' . AN602_POSTS_TABLE . "
 										SET forum_id = $new_forum_id, topic_id = $new_topic_id
 										WHERE topic_id = $topic_id
 											AND poster_id = $user_id";
@@ -755,7 +755,7 @@ class acp_users
 
 									if ($post_ary['attach'])
 									{
-										$sql = 'UPDATE ' . ATTACHMENTS_TABLE . "
+										$sql = 'UPDATE ' . AN602_ATTACHMENTS_TABLE . "
 											SET topic_id = $new_topic_id
 											WHERE topic_id = $topic_id
 												AND poster_id = $user_id";
@@ -780,8 +780,8 @@ class acp_users
 								sync('forum', 'forum_id', $forum_id_ary, false, true);
 							}
 
-							$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_MOVE_POSTS', false, array($user_row['username'], $forum_info['forum_name']));
-							$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_MOVE_POSTS_USER', false, array(
+							$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_MOVE_POSTS', false, array($user_row['username'], $forum_info['forum_name']));
+							$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_MOVE_POSTS_USER', false, array(
 								'reportee_id' => $user_id,
 								$forum_info['forum_name']
 							));
@@ -796,7 +796,7 @@ class acp_users
 							{
 								remove_newly_registered($user_id, $user_row);
 
-								$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_REMOVED_NR', false, array($user_row['username']));
+								$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_REMOVED_NR', false, array($user_row['username']));
 								trigger_error($user->lang['USER_LIFTED_NR'] . adm_back_link($this->u_action . '&amp;u=' . $user_id));
 							}
 							else
@@ -828,7 +828,7 @@ class acp_users
 							* @changed 3.2.10-RC1 Added user_id
 							*/
 							$vars = array('action', 'user_row', 'u_action', 'user_id');
-							extract($phpbb_dispatcher->trigger_event('core.acp_users_overview_run_quicktool', compact($vars)));
+							extract($an602_dispatcher->trigger_event('core.acp_users_overview_run_quicktool', compact($vars)));
 
 							unset($u_action);
 						break;
@@ -886,8 +886,8 @@ class acp_users
 					}
 
 					// Instantiate passwords manager
-					/* @var $passwords_manager \phpbb\passwords\manager */
-					$passwords_manager = $phpbb_container->get('passwords.manager');
+					/* @var $passwords_manager \an602\passwords\manager */
+					$passwords_manager = $an602_container->get('passwords.manager');
 
 					// Which updates do we need to do?
 					$update_username = ($user_row['username'] != $data['username']) ? $data['username'] : false;
@@ -923,7 +923,7 @@ class acp_users
 								{
 									// Check if at least one founder is present
 									$sql = 'SELECT user_id
-										FROM ' . USERS_TABLE . '
+										FROM ' . AN602_USERS_TABLE . '
 										WHERE user_type = ' . USER_FOUNDER . '
 											AND user_id <> ' . $user_id;
 									$result = $db->sql_query_limit($sql, 1);
@@ -952,14 +952,14 @@ class acp_users
 						* @since 3.1.0-a1
 						*/
 						$vars = array('user_row', 'data', 'sql_ary');
-						extract($phpbb_dispatcher->trigger_event('core.acp_users_overview_modify_data', compact($vars)));
+						extract($an602_dispatcher->trigger_event('core.acp_users_overview_modify_data', compact($vars)));
 
 						if ($update_username !== false)
 						{
 							$sql_ary['username'] = $update_username;
 							$sql_ary['username_clean'] = utf8_clean_string($update_username);
 
-							$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_UPDATE_NAME', false, array(
+							$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_UPDATE_NAME', false, array(
 								'reportee_id' => $user_id,
 								$user_row['username'],
 								$update_username
@@ -970,7 +970,7 @@ class acp_users
 						{
 							$sql_ary += ['user_email'		=> $update_email];
 
-							$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_UPDATE_EMAIL', false, array(
+							$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_UPDATE_EMAIL', false, array(
 								'reportee_id' => $user_id,
 								$user_row['username'],
 								$user_row['user_email'],
@@ -987,7 +987,7 @@ class acp_users
 
 							$user->reset_login_keys($user_id);
 
-							$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_NEW_PASSWORD', false, array(
+							$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_NEW_PASSWORD', false, array(
 								'reportee_id' => $user_id,
 								$user_row['username']
 							));
@@ -995,7 +995,7 @@ class acp_users
 
 						if (count($sql_ary))
 						{
-							$sql = 'UPDATE ' . USERS_TABLE . '
+							$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 								SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 								WHERE user_id = ' . $user_id;
 							$db->sql_query($sql);
@@ -1009,7 +1009,7 @@ class acp_users
 						// Let the users permissions being updated
 						$auth->acl_clear_prefetch($user_id);
 
-						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_USER_UPDATE', false, array($data['username']));
+						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_USER_UPDATE', false, array($data['username']));
 
 						trigger_error($user->lang['USER_OVERVIEW_UPDATED'] . adm_back_link($this->u_action . '&amp;u=' . $user_id));
 					}
@@ -1056,7 +1056,7 @@ class acp_users
 				if ($config['load_onlinetrack'])
 				{
 					$sql = 'SELECT MAX(session_time) AS session_time, MIN(session_viewonline) AS session_viewonline
-						FROM ' . SESSIONS_TABLE . "
+						FROM ' . AN602_SESSIONS_TABLE . "
 						WHERE session_user_id = $user_id";
 					$result = $db->sql_query($sql);
 					$row = $db->sql_fetchrow($result);
@@ -1076,7 +1076,7 @@ class acp_users
 				* @since 3.1.0-a1
 				*/
 				$vars = array('user_row', 'quick_tool_ary');
-				extract($phpbb_dispatcher->trigger_event('core.acp_users_display_overview', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_users_display_overview', compact($vars)));
 
 				$s_action_options = '<option class="sep" value="">' . $user->lang['SELECT_OPTION'] . '</option>';
 				foreach ($quick_tool_ary as $value => $lang)
@@ -1113,7 +1113,7 @@ class acp_users
 
 				// Posts in Queue
 				$sql = 'SELECT COUNT(post_id) as posts_in_queue
-					FROM ' . POSTS_TABLE . '
+					FROM ' . AN602_POSTS_TABLE . '
 					WHERE poster_id = ' . $user_id . '
 						AND ' . $db->sql_in_set('post_visibility', array(ITEM_UNAPPROVED, ITEM_REAPPROVE));
 				$result = $db->sql_query($sql);
@@ -1121,7 +1121,7 @@ class acp_users
 				$db->sql_freeresult($result);
 
 				$sql = 'SELECT post_id
-					FROM ' . POSTS_TABLE . '
+					FROM ' . AN602_POSTS_TABLE . '
 					WHERE poster_id = '. $user_id;
 				$result = $db->sql_query_limit($sql, 1);
 				$user_row['user_has_posts'] = (bool) $db->sql_fetchfield('post_id');
@@ -1142,10 +1142,10 @@ class acp_users
 
 					'U_SHOW_IP'		=> $this->u_action . "&amp;u=$user_id&amp;ip=" . (($ip == 'ip') ? 'hostname' : 'ip'),
 					'U_WHOIS'		=> $this->u_action . "&amp;action=whois&amp;user_ip={$user_row['user_ip']}",
-					'U_MCP_QUEUE'	=> ($auth->acl_getf_global('m_approve')) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue', true, $user->session_id) : '',
-					'U_SEARCH_USER'	=> ($config['load_search'] && $auth->acl_get('u_search')) ? append_sid("{$phpbb_root_path}search.$phpEx", "author_id={$user_row['user_id']}&amp;sr=posts") : '',
+					'U_MCP_QUEUE'	=> ($auth->acl_getf_global('m_approve')) ? append_sid("{$an602_root_path}mcp.$phpEx", 'i=queue', true, $user->session_id) : '',
+					'U_SEARCH_USER'	=> ($config['load_search'] && $auth->acl_get('u_search')) ? append_sid("{$an602_root_path}search.$phpEx", "author_id={$user_row['user_id']}&amp;sr=posts") : '',
 
-					'U_SWITCH_PERMISSIONS'	=> ($auth->acl_get('a_switchperm') && $user->data['user_id'] != $user_row['user_id']) ? append_sid("{$phpbb_root_path}ucp.$phpEx", "mode=switch_perm&amp;u={$user_row['user_id']}&amp;hash=" . generate_link_hash('switchperm')) : '',
+					'U_SWITCH_PERMISSIONS'	=> ($auth->acl_get('a_switchperm') && $user->data['user_id'] != $user_row['user_id']) ? append_sid("{$an602_root_path}ucp.$phpEx", "mode=switch_perm&amp;u={$user_row['user_id']}&amp;hash=" . generate_link_hash('switchperm')) : '',
 
 					'POSTS_IN_QUEUE'	=> $user_row['posts_in_queue'],
 					'USER'				=> $user_row['username'],
@@ -1172,8 +1172,8 @@ class acp_users
 				$marked		= $request->variable('mark', array(0));
 				$message	= $request->variable('message', '', true);
 
-				/* @var $pagination \phpbb\pagination */
-				$pagination = $phpbb_container->get('pagination');
+				/* @var $pagination \an602\pagination */
+				$pagination = $an602_container->get('pagination');
 
 				// Sort keys
 				$sort_days	= $request->variable('st', 0);
@@ -1202,13 +1202,13 @@ class acp_users
 
 					if ($where_sql || $deleteall)
 					{
-						$sql = 'DELETE FROM ' . LOG_TABLE . '
+						$sql = 'DELETE FROM ' . AN602_LOG_TABLE . '
 							WHERE log_type = ' . LOG_USERS . "
 							AND reportee_id = $user_id
 							$where_sql";
 						$db->sql_query($sql);
 
-						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_CLEAR_USER', false, array($user_row['username']));
+						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_CLEAR_USER', false, array($user_row['username']));
 					}
 				}
 
@@ -1219,13 +1219,13 @@ class acp_users
 						trigger_error($user->lang['FORM_INVALID'] . adm_back_link($this->u_action . '&amp;u=' . $user_id), E_USER_WARNING);
 					}
 
-					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_FEEDBACK', false, array($user_row['username']));
-					$phpbb_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_USER_FEEDBACK', false, array(
+					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_FEEDBACK', false, array($user_row['username']));
+					$an602_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_USER_FEEDBACK', false, array(
 						'forum_id' => 0,
 						'topic_id' => 0,
 						$user_row['username']
 					));
-					$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_GENERAL', false, array(
+					$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_GENERAL', false, array(
 						'reportee_id' => $user_id,
 						$message
 					));
@@ -1299,7 +1299,7 @@ class acp_users
 
 						if ($where_sql || $deleteall)
 						{
-							$sql = 'DELETE FROM ' . WARNINGS_TABLE . "
+							$sql = 'DELETE FROM ' . AN602_WARNINGS_TABLE . "
 								WHERE user_id = $user_id
 									$where_sql";
 							$db->sql_query($sql);
@@ -1315,18 +1315,18 @@ class acp_users
 								$log_warnings = ($num_warnings > 2) ? 2 : $num_warnings;
 							}
 
-							$sql = 'UPDATE ' . USERS_TABLE . "
+							$sql = 'UPDATE ' . AN602_USERS_TABLE . "
 								SET user_warnings = $deleted_warnings
 								WHERE user_id = $user_id";
 							$db->sql_query($sql);
 
 							if ($log_warnings)
 							{
-								$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_WARNINGS_DELETED', false, array($user_row['username'], $num_warnings));
+								$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_WARNINGS_DELETED', false, array($user_row['username'], $num_warnings));
 							}
 							else
 							{
-								$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_WARNINGS_DELETED_ALL', false, array($user_row['username']));
+								$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_WARNINGS_DELETED_ALL', false, array($user_row['username']));
 							}
 						}
 					}
@@ -1354,10 +1354,10 @@ class acp_users
 				}
 
 				$sql = 'SELECT w.warning_id, w.warning_time, w.post_id, l.log_operation, l.log_data, l.user_id AS mod_user_id, m.username AS mod_username, m.user_colour AS mod_user_colour
-					FROM ' . WARNINGS_TABLE . ' w
-					LEFT JOIN ' . LOG_TABLE . ' l
+					FROM ' . AN602_WARNINGS_TABLE . ' w
+					LEFT JOIN ' . AN602_LOG_TABLE . ' l
 						ON (w.log_id = l.log_id)
-					LEFT JOIN ' . USERS_TABLE . ' m
+					LEFT JOIN ' . AN602_USERS_TABLE . ' m
 						ON (l.user_id = m.user_id)
 					WHERE w.user_id = ' . $user_id . '
 					ORDER BY w.warning_time DESC';
@@ -1415,16 +1415,16 @@ class acp_users
 
 				if (!function_exists('user_get_id_name'))
 				{
-					include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+					include($an602_root_path . 'includes/functions_user.' . $phpEx);
 				}
 
-				/* @var $cp \phpbb\profilefields\manager */
-				$cp = $phpbb_container->get('profilefields.manager');
+				/* @var $cp \an602\profilefields\manager */
+				$cp = $an602_container->get('profilefields.manager');
 
 				$cp_data = $cp_error = array();
 
 				$sql = 'SELECT lang_id
-					FROM ' . LANG_TABLE . "
+					FROM ' . AN602_LANG_TABLE . "
 					WHERE lang_iso = '" . $db->sql_escape($user->data['user_lang']) . "'";
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
@@ -1460,7 +1460,7 @@ class acp_users
 				* @since 3.1.4-RC1
 				*/
 				$vars = array('data', 'submit', 'user_id', 'user_row');
-				extract($phpbb_dispatcher->trigger_event('core.acp_users_modify_profile', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_users_modify_profile', compact($vars)));
 
 				if ($submit)
 				{
@@ -1498,7 +1498,7 @@ class acp_users
 					* @changed 3.1.12-RC1		Removed submit, added user_id, user_row
 					*/
 					$vars = array('data', 'user_id', 'user_row', 'error');
-					extract($phpbb_dispatcher->trigger_event('core.acp_users_profile_validate', compact($vars)));
+					extract($an602_dispatcher->trigger_event('core.acp_users_profile_validate', compact($vars)));
 
 					if (!count($error))
 					{
@@ -1519,9 +1519,9 @@ class acp_users
 						* @since 3.1.4-RC1
 						*/
 						$vars = array('cp_data', 'data', 'user_id', 'user_row', 'sql_ary');
-						extract($phpbb_dispatcher->trigger_event('core.acp_users_profile_modify_sql_ary', compact($vars)));
+						extract($an602_dispatcher->trigger_event('core.acp_users_profile_modify_sql_ary', compact($vars)));
 
-						$sql = 'UPDATE ' . USERS_TABLE . '
+						$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 							SET ' . $db->sql_build_array('UPDATE', $sql_ary) . "
 							WHERE user_id = $user_id";
 						$db->sql_query($sql);
@@ -1579,7 +1579,7 @@ class acp_users
 
 				if (!function_exists('user_get_id_name'))
 				{
-					include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+					include($an602_root_path . 'includes/functions_user.' . $phpEx);
 				}
 
 				$data = array(
@@ -1624,7 +1624,7 @@ class acp_users
 				* @since 3.1.0-b3
 				*/
 				$vars = array('data', 'user_row');
-				extract($phpbb_dispatcher->trigger_event('core.acp_users_prefs_modify_data', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_users_prefs_modify_data', compact($vars)));
 
 				if ($submit)
 				{
@@ -1693,11 +1693,11 @@ class acp_users
 						* @since 3.1.0-b3
 						*/
 						$vars = array('data', 'user_row', 'sql_ary', 'error');
-						extract($phpbb_dispatcher->trigger_event('core.acp_users_prefs_modify_sql', compact($vars)));
+						extract($an602_dispatcher->trigger_event('core.acp_users_prefs_modify_sql', compact($vars)));
 
 						if (!count($error))
 						{
-							$sql = 'UPDATE ' . USERS_TABLE . '
+							$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 								SET ' . $db->sql_build_array('UPDATE', $sql_ary) . "
 								WHERE user_id = $user_id";
 							$db->sql_query($sql);
@@ -1711,14 +1711,14 @@ class acp_users
 									|| $user_row['user_allow_viewonline'] && !$sql_ary['user_allow_viewonline'])
 								{
 									// We also need to check if the user has the permission to cloak.
-									$user_auth = new \phpbb\auth\auth();
+									$user_auth = new \an602\auth\auth();
 									$user_auth->acl($user_row);
 
 									$session_sql_ary = array(
 										'session_viewonline'	=> ($user_auth->acl_get('u_hideonline')) ? $sql_ary['user_allow_viewonline'] : true,
 									);
 
-									$sql = 'UPDATE ' . SESSIONS_TABLE . '
+									$sql = 'UPDATE ' . AN602_SESSIONS_TABLE . '
 										SET ' . $db->sql_build_array('UPDATE', $session_sql_ary) . "
 										WHERE session_user_id = $user_id";
 									$db->sql_query($sql);
@@ -1791,7 +1791,7 @@ class acp_users
 					${'s_sort_' . $sort_option . '_dir'} .= '</select>';
 				}
 
-				phpbb_timezone_select($template, $user, $data['tz'], true);
+				an602_timezone_select($template, $user, $data['tz'], true);
 				$user_prefs_data = array(
 					'S_PREFS'			=> true,
 					'S_JABBER_DISABLED'	=> ($config['jab_enable'] && $user_row['user_jabber'] && @extension_loaded('xml')) ? false : true,
@@ -1842,7 +1842,7 @@ class acp_users
 				* @since 3.1.0-b3
 				*/
 				$vars = array('data', 'user_row', 'user_prefs_data');
-				extract($phpbb_dispatcher->trigger_event('core.acp_users_prefs_modify_template_data', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_users_prefs_modify_template_data', compact($vars)));
 
 				$template->assign_vars($user_prefs_data);
 
@@ -1851,25 +1851,25 @@ class acp_users
 			case 'avatar':
 
 				$avatars_enabled = false;
-				/** @var \phpbb\avatar\manager $phpbb_avatar_manager */
-				$phpbb_avatar_manager = $phpbb_container->get('avatar.manager');
+				/** @var \an602\avatar\manager $an602_avatar_manager */
+				$an602_avatar_manager = $an602_container->get('avatar.manager');
 
 				if ($config['allow_avatar'])
 				{
-					$avatar_drivers = $phpbb_avatar_manager->get_enabled_drivers();
+					$avatar_drivers = $an602_avatar_manager->get_enabled_drivers();
 
 					// This is normalised data, without the user_ prefix
-					$avatar_data = \phpbb\avatar\manager::clean_row($user_row, 'user');
+					$avatar_data = \an602\avatar\manager::clean_row($user_row, 'user');
 
 					if ($submit)
 					{
 						if (check_form_key($form_name))
 						{
-							$driver_name = $phpbb_avatar_manager->clean_driver_name($request->variable('avatar_driver', ''));
+							$driver_name = $an602_avatar_manager->clean_driver_name($request->variable('avatar_driver', ''));
 
 							if (in_array($driver_name, $avatar_drivers) && !$request->is_set_post('avatar_delete'))
 							{
-								$driver = $phpbb_avatar_manager->get_driver($driver_name);
+								$driver = $an602_avatar_manager->get_driver($driver_name);
 								$result = $driver->process_form($request, $template, $user, $avatar_data, $error);
 
 								if ($result && empty($error))
@@ -1891,9 +1891,9 @@ class acp_users
 									* @since 3.2.4-RC1
 									*/
 									$vars = array('user_row', 'result');
-									extract($phpbb_dispatcher->trigger_event('core.acp_users_avatar_sql', compact($vars)));
+									extract($an602_dispatcher->trigger_event('core.acp_users_avatar_sql', compact($vars)));
 
-									$sql = 'UPDATE ' . USERS_TABLE . '
+									$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 										SET ' . $db->sql_build_array('UPDATE', $result) . '
 										WHERE user_id = ' . (int) $user_id;
 
@@ -1919,13 +1919,13 @@ class acp_users
 						}
 						else
 						{
-							$phpbb_avatar_manager->handle_avatar_delete($db, $user, $avatar_data, USERS_TABLE, 'user_');
+							$an602_avatar_manager->handle_avatar_delete($db, $user, $avatar_data, AN602_USERS_TABLE, 'user_');
 
 							trigger_error($user->lang['USER_AVATAR_UPDATED'] . adm_back_link($this->u_action . '&amp;u=' . $user_id));
 						}
 					}
 
-					$selected_driver = $phpbb_avatar_manager->clean_driver_name($request->variable('avatar_driver', $user_row['user_avatar_type']));
+					$selected_driver = $an602_avatar_manager->clean_driver_name($request->variable('avatar_driver', $user_row['user_avatar_type']));
 
 					// Assign min and max values before generating avatar driver html
 					$template->assign_vars(array(
@@ -1937,7 +1937,7 @@ class acp_users
 
 					foreach ($avatar_drivers as $current_driver)
 					{
-						$driver = $phpbb_avatar_manager->get_driver($current_driver);
+						$driver = $an602_avatar_manager->get_driver($current_driver);
 
 						$avatars_enabled = true;
 						$template->set_filenames(array(
@@ -1946,7 +1946,7 @@ class acp_users
 
 						if ($driver->prepare_form($request, $template, $user, $avatar_data, $error))
 						{
-							$driver_name = $phpbb_avatar_manager->prepare_driver_name($current_driver);
+							$driver_name = $an602_avatar_manager->prepare_driver_name($current_driver);
 							$driver_upper = strtoupper($driver_name);
 
 							$template->assign_block_vars('avatar_drivers', array(
@@ -1962,18 +1962,18 @@ class acp_users
 				}
 
 				// Avatar manager is not initialized if avatars are disabled
-				if (isset($phpbb_avatar_manager))
+				if (isset($an602_avatar_manager))
 				{
 					// Replace "error" strings with their real, localised form
-					$error = $phpbb_avatar_manager->localize_errors($user, $error);
+					$error = $an602_avatar_manager->localize_errors($user, $error);
 				}
 
-				$avatar = phpbb_get_user_avatar($user_row, 'USER_AVATAR', true);
+				$avatar = an602_get_user_avatar($user_row, 'USER_AVATAR', true);
 
 				$template->assign_vars(array(
 					'S_AVATAR'	=> true,
 					'ERROR'			=> (!empty($error)) ? implode('<br />', $error) : '',
-					'AVATAR'		=> (empty($avatar) ? '<img src="' . $phpbb_admin_path . 'images/no_avatar.gif" alt="" />' : $avatar),
+					'AVATAR'		=> (empty($avatar) ? '<img src="' . $an602_admin_path . 'images/no_avatar.gif" alt="" />' : $avatar),
 
 					'S_FORM_ENCTYPE'	=> ' enctype="multipart/form-data"',
 
@@ -1995,7 +1995,7 @@ class acp_users
 
 					$rank_id = $request->variable('user_rank', 0);
 
-					$sql = 'UPDATE ' . USERS_TABLE . "
+					$sql = 'UPDATE ' . AN602_USERS_TABLE . "
 						SET user_rank = $rank_id
 						WHERE user_id = $user_id";
 					$db->sql_query($sql);
@@ -2004,7 +2004,7 @@ class acp_users
 				}
 
 				$sql = 'SELECT *
-					FROM ' . RANKS_TABLE . '
+					FROM ' . AN602_RANKS_TABLE . '
 					WHERE rank_special = 1
 					ORDER BY rank_title';
 				$result = $db->sql_query($sql);
@@ -2029,7 +2029,7 @@ class acp_users
 
 				if (!function_exists('display_custom_bbcodes'))
 				{
-					include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+					include($an602_root_path . 'includes/functions_display.' . $phpEx);
 				}
 
 				$enable_bbcode	= ($config['allow_sig_bbcode']) ? $this->optionget($user_row, 'sig_bbcode') : false;
@@ -2104,9 +2104,9 @@ class acp_users
 						* @since 3.2.4-RC1
 						*/
 						$vars = array('user_row', 'sql_ary');
-						extract($phpbb_dispatcher->trigger_event('core.acp_users_modify_signature_sql_ary', compact($vars)));
+						extract($an602_dispatcher->trigger_event('core.acp_users_modify_signature_sql_ary', compact($vars)));
 
-						$sql = 'UPDATE ' . USERS_TABLE . '
+						$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 							SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 							WHERE user_id = ' . $user_id;
 						$db->sql_query($sql);
@@ -2123,8 +2123,8 @@ class acp_users
 					$decoded_message = generate_text_for_edit($signature, $bbcode_uid, $bbcode_flags);
 				}
 
-				/** @var \phpbb\controller\helper $controller_helper */
-				$controller_helper = $phpbb_container->get('controller.helper');
+				/** @var \an602\controller\helper $controller_helper */
+				$controller_helper = $an602_container->get('controller.helper');
 
 				$template->assign_vars(array(
 					'S_SIGNATURE'		=> true,
@@ -2136,7 +2136,7 @@ class acp_users
 					'S_SMILIES_CHECKED'		=> (!$enable_smilies) ? ' checked="checked"' : '',
 					'S_MAGIC_URL_CHECKED'	=> (!$enable_urls) ? ' checked="checked"' : '',
 
-					'BBCODE_STATUS'			=> $user->lang(($config['allow_sig_bbcode'] ? 'BBCODE_IS_ON' : 'BBCODE_IS_OFF'), '<a href="' . $controller_helper->route('phpbb_help_bbcode_controller') . '">', '</a>'),
+					'BBCODE_STATUS'			=> $user->lang(($config['allow_sig_bbcode'] ? 'BBCODE_IS_ON' : 'BBCODE_IS_OFF'), '<a href="' . $controller_helper->route('an602_help_bbcode_controller') . '">', '</a>'),
 					'SMILIES_STATUS'		=> ($config['allow_sig_smilies']) ? $user->lang['SMILIES_ARE_ON'] : $user->lang['SMILIES_ARE_OFF'],
 					'IMG_STATUS'			=> ($config['allow_sig_img']) ? $user->lang['IMAGES_ARE_ON'] : $user->lang['IMAGES_ARE_OFF'],
 					'FLASH_STATUS'			=> ($config['allow_sig_flash']) ? $user->lang['FLASH_IS_ON'] : $user->lang['FLASH_IS_OFF'],
@@ -2157,8 +2157,8 @@ class acp_users
 			break;
 
 			case 'attach':
-				/* @var $pagination \phpbb\pagination */
-				$pagination = $phpbb_container->get('pagination');
+				/* @var $pagination \an602\pagination */
+				$pagination = $an602_container->get('pagination');
 
 				$start		= $request->variable('start', 0);
 				$deletemark = (isset($_POST['delmarked'])) ? true : false;
@@ -2171,7 +2171,7 @@ class acp_users
 				if ($deletemark && count($marked))
 				{
 					$sql = 'SELECT attach_id
-						FROM ' . ATTACHMENTS_TABLE . '
+						FROM ' . AN602_ATTACHMENTS_TABLE . '
 						WHERE poster_id = ' . $user_id . '
 							AND is_orphan = 0
 							AND ' . $db->sql_in_set('attach_id', $marked);
@@ -2190,7 +2190,7 @@ class acp_users
 					if (confirm_box(true))
 					{
 						$sql = 'SELECT real_filename
-							FROM ' . ATTACHMENTS_TABLE . '
+							FROM ' . AN602_ATTACHMENTS_TABLE . '
 							WHERE ' . $db->sql_in_set('attach_id', $marked);
 						$result = $db->sql_query($sql);
 
@@ -2201,14 +2201,14 @@ class acp_users
 						}
 						$db->sql_freeresult($result);
 
-						/** @var \phpbb\attachment\manager $attachment_manager */
-						$attachment_manager = $phpbb_container->get('attachment.manager');
+						/** @var \an602\attachment\manager $attachment_manager */
+						$attachment_manager = $an602_container->get('attachment.manager');
 						$attachment_manager->delete('attach', $marked);
 						unset($attachment_manager);
 
 						$message = (count($log_attachments) == 1) ? $user->lang['ATTACHMENT_DELETED'] : $user->lang['ATTACHMENTS_DELETED'];
 
-						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACHMENTS_DELETED', false, array(implode($user->lang['COMMA_SEPARATOR'], $log_attachments)));
+						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACHMENTS_DELETED', false, array(implode($user->lang['COMMA_SEPARATOR'], $log_attachments)));
 						trigger_error($message . adm_back_link($this->u_action . '&amp;u=' . $user_id));
 					}
 					else
@@ -2251,7 +2251,7 @@ class acp_users
 				$order_by = $sk_sql[$sort_key] . ' ' . (($sort_dir == 'a') ? 'ASC' : 'DESC');
 
 				$sql = 'SELECT COUNT(attach_id) as num_attachments
-					FROM ' . ATTACHMENTS_TABLE . "
+					FROM ' . AN602_ATTACHMENTS_TABLE . "
 					WHERE poster_id = $user_id
 						AND is_orphan = 0";
 				$result = $db->sql_query_limit($sql, 1);
@@ -2259,10 +2259,10 @@ class acp_users
 				$db->sql_freeresult($result);
 
 				$sql = 'SELECT a.*, t.topic_title, p.message_subject as message_title
-					FROM ' . ATTACHMENTS_TABLE . ' a
-						LEFT JOIN ' . TOPICS_TABLE . ' t ON (a.topic_id = t.topic_id
+					FROM ' . AN602_ATTACHMENTS_TABLE . ' a
+						LEFT JOIN ' . AN602_TOPICS_TABLE . ' t ON (a.topic_id = t.topic_id
 							AND a.in_message = 0)
-						LEFT JOIN ' . PRIVMSGS_TABLE . ' p ON (a.post_msg_id = p.msg_id
+						LEFT JOIN ' . AN602_PRIVMSGS_TABLE . ' p ON (a.post_msg_id = p.msg_id
 							AND a.in_message = 1)
 					WHERE a.poster_id = ' . $user_id . "
 						AND a.is_orphan = 0
@@ -2273,11 +2273,11 @@ class acp_users
 				{
 					if ($row['in_message'])
 					{
-						$view_topic = append_sid("{$phpbb_root_path}ucp.$phpEx", "i=pm&amp;p={$row['post_msg_id']}");
+						$view_topic = append_sid("{$an602_root_path}ucp.$phpEx", "i=pm&amp;p={$row['post_msg_id']}");
 					}
 					else
 					{
-						$view_topic = append_sid("{$phpbb_root_path}viewtopic.$phpEx", "p={$row['post_msg_id']}") . '#p' . $row['post_msg_id'];
+						$view_topic = append_sid("{$an602_root_path}viewtopic.$phpEx", "p={$row['post_msg_id']}") . '#p' . $row['post_msg_id'];
 					}
 
 					$template->assign_block_vars('attach', array(
@@ -2295,7 +2295,7 @@ class acp_users
 
 						'S_IN_MESSAGE'		=> $row['in_message'],
 
-						'U_DOWNLOAD'		=> append_sid("{$phpbb_root_path}download/file.$phpEx", 'mode=view&amp;id=' . $row['attach_id']),
+						'U_DOWNLOAD'		=> append_sid("{$an602_root_path}download/file.$phpEx", 'mode=view&amp;id=' . $row['attach_id']),
 						'U_VIEW_TOPIC'		=> $view_topic)
 					);
 				}
@@ -2316,7 +2316,7 @@ class acp_users
 
 				if (!function_exists('group_user_attributes'))
 				{
-					include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+					include($an602_root_path . 'includes/functions_user.' . $phpEx);
 				}
 
 				$user->add_lang(array('groups', 'acp/groups'));
@@ -2326,7 +2326,7 @@ class acp_users
 				{
 					// Check the founder only entry for this group to make sure everything is well
 					$sql = 'SELECT group_founder_manage
-						FROM ' . GROUPS_TABLE . '
+						FROM ' . AN602_GROUPS_TABLE . '
 						WHERE group_id = ' . $group_id;
 					$result = $db->sql_query($sql);
 					$founder_manage = (int) $db->sql_fetchfield('group_founder_manage');
@@ -2379,8 +2379,8 @@ class acp_users
 
 							// The delete action was successful - therefore update the user row...
 							$sql = 'SELECT u.*, s.*
-								FROM ' . USERS_TABLE . ' u
-									LEFT JOIN ' . SESSIONS_TABLE . ' s ON (s.session_user_id = u.user_id)
+								FROM ' . AN602_USERS_TABLE . ' u
+									LEFT JOIN ' . AN602_SESSIONS_TABLE . ' s ON (s.session_user_id = u.user_id)
 								WHERE u.user_id = ' . $user_id . '
 								ORDER BY s.session_time DESC';
 							$result = $db->sql_query_limit($sql, 1);
@@ -2447,11 +2447,11 @@ class acp_users
 					$error = array();
 				}
 
-				/** @var \phpbb\group\helper $group_helper */
-				$group_helper = $phpbb_container->get('group_helper');
+				/** @var \an602\group\helper $group_helper */
+				$group_helper = $an602_container->get('group_helper');
 
 				$sql = 'SELECT ug.*, g.*
-					FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . " ug
+					FROM ' . AN602_GROUPS_TABLE . ' g, ' . AN602_USER_GROUP_TABLE . " ug
 					WHERE ug.user_id = $user_id
 						AND g.group_id = ug.group_id
 					ORDER BY g.group_type DESC, ug.user_pending ASC, g.group_name";
@@ -2475,7 +2475,7 @@ class acp_users
 
 				// Select box for other groups
 				$sql = 'SELECT group_id, group_name, group_type, group_founder_manage
-					FROM ' . GROUPS_TABLE . '
+					FROM ' . AN602_GROUPS_TABLE . '
 					' . ((count($id_ary)) ? 'WHERE ' . $db->sql_in_set('group_id', $id_ary, true) : '') . '
 					ORDER BY group_type DESC, group_name ASC';
 				$result = $db->sql_query($sql);
@@ -2512,7 +2512,7 @@ class acp_users
 					foreach ($data_ary as $data)
 					{
 						$template->assign_block_vars('group', array(
-							'U_EDIT_GROUP'		=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=groups&amp;mode=manage&amp;action=edit&amp;u=$user_id&amp;g={$data['group_id']}&amp;back_link=acp_users_groups"),
+							'U_EDIT_GROUP'		=> append_sid("{$an602_admin_path}index.$phpEx", "i=groups&amp;mode=manage&amp;action=edit&amp;u=$user_id&amp;g={$data['group_id']}&amp;back_link=acp_users_groups"),
 							'U_DEFAULT'			=> $this->u_action . "&amp;action=default&amp;u=$user_id&amp;g=" . $data['group_id'] . '&amp;hash=' . generate_link_hash('acp_users'),
 							'U_DEMOTE_PROMOTE'	=> $this->u_action . '&amp;action=' . (($data['group_leader']) ? 'demote' : 'promote') . "&amp;u=$user_id&amp;g=" . $data['group_id'] . '&amp;hash=' . generate_link_hash('acp_users'),
 							'U_DELETE'			=> $this->u_action . "&amp;action=delete&amp;u=$user_id&amp;g=" . $data['group_id'],
@@ -2540,7 +2540,7 @@ class acp_users
 
 				if (!class_exists('auth_admin'))
 				{
-					include($phpbb_root_path . 'includes/acp/auth.' . $phpEx);
+					include($an602_root_path . 'includes/acp/auth.' . $phpEx);
 				}
 
 				$auth_admin = new auth_admin();
@@ -2555,7 +2555,7 @@ class acp_users
 				{
 					// Select auth options
 					$sql = 'SELECT auth_option, is_local, is_global
-						FROM ' . ACL_OPTIONS_TABLE . '
+						FROM ' . AN602_ACL_OPTIONS_TABLE . '
 						WHERE auth_option ' . $db->sql_like_expression($db->get_any_char() . '_') . '
 							AND is_global = 1
 						ORDER BY auth_option';
@@ -2565,7 +2565,7 @@ class acp_users
 
 					while ($row = $db->sql_fetchrow($result))
 					{
-						$hold_ary = $auth_admin->get_mask('view', $user_id, false, false, $row['auth_option'], 'global', ACL_NEVER);
+						$hold_ary = $auth_admin->get_mask('view', $user_id, false, false, $row['auth_option'], 'global', AN602_ACL_NEVER);
 						$auth_admin->display_mask('view', $row['auth_option'], $hold_ary, 'user', false, false);
 					}
 					$db->sql_freeresult($result);
@@ -2575,7 +2575,7 @@ class acp_users
 				else
 				{
 					$sql = 'SELECT auth_option, is_local, is_global
-						FROM ' . ACL_OPTIONS_TABLE . "
+						FROM ' . AN602_ACL_OPTIONS_TABLE . "
 						WHERE auth_option " . $db->sql_like_expression($db->get_any_char() . '_') . "
 							AND is_local = 1
 						ORDER BY is_global DESC, auth_option";
@@ -2583,7 +2583,7 @@ class acp_users
 
 					while ($row = $db->sql_fetchrow($result))
 					{
-						$hold_ary = $auth_admin->get_mask('view', $user_id, false, $forum_id, $row['auth_option'], 'local', ACL_NEVER);
+						$hold_ary = $auth_admin->get_mask('view', $user_id, false, $forum_id, $row['auth_option'], 'local', AN602_ACL_NEVER);
 						$auth_admin->display_mask('view', $row['auth_option'], $hold_ary, 'user', true, false);
 					}
 					$db->sql_freeresult($result);
@@ -2599,8 +2599,8 @@ class acp_users
 					'S_FORUM_OPTIONS'			=> $s_forum_options,
 
 					'U_ACTION'					=> $this->u_action . '&amp;u=' . $user_id,
-					'U_USER_PERMISSIONS'		=> append_sid("{$phpbb_admin_path}index.$phpEx" ,'i=permissions&amp;mode=setting_user_global&amp;user_id[]=' . $user_id),
-					'U_USER_FORUM_PERMISSIONS'	=> append_sid("{$phpbb_admin_path}index.$phpEx", 'i=permissions&amp;mode=setting_user_local&amp;user_id[]=' . $user_id))
+					'U_USER_PERMISSIONS'		=> append_sid("{$an602_admin_path}index.$phpEx" ,'i=permissions&amp;mode=setting_user_global&amp;user_id[]=' . $user_id),
+					'U_USER_FORUM_PERMISSIONS'	=> append_sid("{$an602_admin_path}index.$phpEx", 'i=permissions&amp;mode=setting_user_local&amp;user_id[]=' . $user_id))
 				);
 
 			break;
@@ -2621,7 +2621,7 @@ class acp_users
 				* @changed 3.2.10-RC1 Added u_action
 				*/
 				$vars = array('mode', 'user_id', 'user_row', 'error', 'u_action');
-				extract($phpbb_dispatcher->trigger_event('core.acp_users_mode_add', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_users_mode_add', compact($vars)));
 
 				unset($u_action);
 			break;
@@ -2655,7 +2655,7 @@ class acp_users
 
 		$var = ($data !== false) ? $data : $user_row['user_options'];
 
-		$new_var = phpbb_optionset($user->keyoptions[$key], $value, $var);
+		$new_var = an602_optionset($user->keyoptions[$key], $value, $var);
 
 		if ($data === false)
 		{
@@ -2690,6 +2690,6 @@ class acp_users
 		global $user;
 
 		$var = ($data !== false) ? $data : $user_row['user_options'];
-		return phpbb_optionget($user->keyoptions[$key], $var);
+		return an602_optionget($user->keyoptions[$key], $var);
 	}
 }

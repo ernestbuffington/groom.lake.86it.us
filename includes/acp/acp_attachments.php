@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,35 +14,35 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
 
 class acp_attachments
 {
-	/** @var \phpbb\db\driver\driver_interface */
+	/** @var \an602\db\driver\driver_interface */
 	protected $db;
 
-	/** @var \phpbb\config\config */
+	/** @var \an602\config\config */
 	protected $config;
 
-	/** @var \phpbb\language\language */
+	/** @var \an602\language\language */
 	protected $language;
 
 	/** @var ContainerBuilder */
-	protected $phpbb_container;
+	protected $an602_container;
 
-	/** @var \phpbb\template\template */
+	/** @var \an602\template\template */
 	protected $template;
 
-	/** @var \phpbb\user */
+	/** @var \an602\user */
 	protected $user;
 
-	/** @var  \phpbb\filesystem\filesystem_interface */
+	/** @var  \an602\filesystem\filesystem_interface */
 	protected $filesystem;
 
-	/** @var \phpbb\attachment\manager */
+	/** @var \an602\attachment\manager */
 	protected $attachment_manager;
 
 	public $id;
@@ -51,18 +51,18 @@ class acp_attachments
 
 	function main($id, $mode)
 	{
-		global $db, $user, $auth, $template, $cache, $phpbb_container, $phpbb_filesystem, $phpbb_dispatcher;
-		global $config, $phpbb_admin_path, $phpbb_root_path, $phpEx, $phpbb_log, $request;
+		global $db, $user, $auth, $template, $cache, $an602_container, $an602_filesystem, $an602_dispatcher;
+		global $config, $an602_admin_path, $an602_root_path, $phpEx, $an602_log, $request;
 
 		$this->id = $id;
 		$this->db = $db;
 		$this->config = $config;
-		$this->language = $phpbb_container->get('language');
+		$this->language = $an602_container->get('language');
 		$this->template = $template;
 		$this->user = $user;
-		$this->phpbb_container = $phpbb_container;
-		$this->filesystem = $phpbb_filesystem;
-		$this->attachment_manager = $phpbb_container->get('attachment.manager');
+		$this->an602_container = $an602_container;
+		$this->filesystem = $an602_filesystem;
+		$this->attachment_manager = $an602_container->get('attachment.manager');
 
 		$user->add_lang(array('posting', 'viewtopic', 'acp/attachments'));
 
@@ -120,7 +120,7 @@ class acp_attachments
 
 				if (!function_exists('get_supported_image_types'))
 				{
-					include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+					include($an602_root_path . 'includes/functions_posting.' . $phpEx);
 				}
 
 				$allowed_pm_groups = [];
@@ -128,7 +128,7 @@ class acp_attachments
 				$s_assigned_groups = [];
 
 				$sql = 'SELECT group_id, group_name, cat_id, allow_group, allow_in_pm
-					FROM ' . EXTENSION_GROUPS_TABLE . '
+					FROM ' . AN602_EXTENSION_AN602_GROUPS_TABLE . '
 					WHERE cat_id > 0
 					ORDER BY cat_id';
 				$result = $db->sql_query($sql);
@@ -197,7 +197,7 @@ class acp_attachments
 				* @since 3.1.11-RC1
 				*/
 				$vars = array('display_vars', 'mode', 'submit');
-				extract($phpbb_dispatcher->trigger_event('core.acp_attachments_config_edit_add', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_attachments_config_edit_add', compact($vars)));
 
 				$this->new_config = $config;
 				$cfg_array = (isset($_REQUEST['config'])) ? $request->variable('config', array('' => '')) : $this->new_config;
@@ -241,7 +241,7 @@ class acp_attachments
 
 				if ($submit)
 				{
-					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_CONFIG_ATTACH');
+					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_CONFIG_ATTACH');
 
 					// Check Settings
 					$this->test_upload($error, $this->new_config['upload_path'], false);
@@ -258,7 +258,7 @@ class acp_attachments
 				$allow_deny = ($this->new_config['secure_allow_deny']) ? 'ALLOWED' : 'DISALLOWED';
 
 				$sql = 'SELECT *
-					FROM ' . SITELIST_TABLE;
+					FROM ' . AN602_SITELIST_TABLE;
 				$result = $db->sql_query($sql);
 
 				$defined_ips = '';
@@ -282,7 +282,7 @@ class acp_attachments
 					'S_DEFINED_IPS'			=> ($defined_ips != '') ? true : false,
 					'S_WARNING'				=> (count($error)) ? true : false,
 
-					'U_EXTENSION_GROUPS'	=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=$id&amp;mode=ext_groups"),
+					'U_EXTENSION_GROUPS'	=> append_sid("{$an602_admin_path}index.$phpEx", "i=$id&amp;mode=ext_groups"),
 
 					'WARNING_MSG'			=> implode('<br />', $error),
 					'DEFINED_IPS'			=> $defined_ips,
@@ -361,7 +361,7 @@ class acp_attachments
 						}
 
 						$sql = 'SELECT *
-							FROM ' . EXTENSIONS_TABLE . '
+							FROM ' . AN602_EXTENSIONS_TABLE . '
 							ORDER BY extension_id';
 						$result = $db->sql_query($sql);
 
@@ -369,12 +369,12 @@ class acp_attachments
 						{
 							if ($row['group_id'] != $extensions[$row['extension_id']]['group_id'])
 							{
-								$sql = 'UPDATE ' . EXTENSIONS_TABLE . '
+								$sql = 'UPDATE ' . AN602_EXTENSIONS_TABLE . '
 									SET group_id = ' . (int) $extensions[$row['extension_id']]['group_id'] . '
 									WHERE extension_id = ' . $row['extension_id'];
 								$db->sql_query($sql);
 
-								$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACH_EXT_UPDATE', false, array($row['extension']));
+								$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACH_EXT_UPDATE', false, array($row['extension']));
 							}
 						}
 						$db->sql_freeresult($result);
@@ -385,7 +385,7 @@ class acp_attachments
 						if (count($extension_id_list))
 						{
 							$sql = 'SELECT extension
-								FROM ' . EXTENSIONS_TABLE . '
+								FROM ' . AN602_EXTENSIONS_TABLE . '
 								WHERE ' . $db->sql_in_set('extension_id', $extension_id_list);
 							$result = $db->sql_query($sql);
 
@@ -397,11 +397,11 @@ class acp_attachments
 							$db->sql_freeresult($result);
 
 							$sql = 'DELETE
-								FROM ' . EXTENSIONS_TABLE . '
+								FROM ' . AN602_EXTENSIONS_TABLE . '
 								WHERE ' . $db->sql_in_set('extension_id', $extension_id_list);
 							$db->sql_query($sql);
 
-							$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACH_EXT_DEL', false, array($extension_list));
+							$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACH_EXT_DEL', false, array($extension_list));
 						}
 					}
 
@@ -415,7 +415,7 @@ class acp_attachments
 						if (!count($error))
 						{
 							$sql = 'SELECT extension_id
-								FROM ' . EXTENSIONS_TABLE . "
+								FROM ' . AN602_EXTENSIONS_TABLE . "
 								WHERE extension = '" . $db->sql_escape($add_extension) . "'";
 							$result = $db->sql_query($sql);
 
@@ -432,9 +432,9 @@ class acp_attachments
 									'extension'	=>	$add_extension
 								);
 
-								$db->sql_query('INSERT INTO ' . EXTENSIONS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
+								$db->sql_query('INSERT INTO ' . AN602_EXTENSIONS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
 
-								$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACH_EXT_ADD', false, array($add_extension));
+								$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACH_EXT_ADD', false, array($add_extension));
 							}
 						}
 					}
@@ -454,7 +454,7 @@ class acp_attachments
 				);
 
 				$sql = 'SELECT *
-					FROM ' . EXTENSIONS_TABLE . '
+					FROM ' . AN602_EXTENSIONS_TABLE . '
 					ORDER BY group_id, extension';
 				$result = $db->sql_query($sql);
 
@@ -507,7 +507,7 @@ class acp_attachments
 					if ($group_id)
 					{
 						$sql = 'SELECT *
-							FROM ' . EXTENSION_GROUPS_TABLE . "
+							FROM ' . AN602_EXTENSION_AN602_GROUPS_TABLE . "
 							WHERE group_id = $group_id";
 						$result = $db->sql_query($sql);
 						$ext_row = $db->sql_fetchrow($result);
@@ -535,7 +535,7 @@ class acp_attachments
 					if ($new_group_name)
 					{
 						$sql = 'SELECT group_id
-							FROM ' . EXTENSION_GROUPS_TABLE . "
+							FROM ' . AN602_EXTENSION_AN602_GROUPS_TABLE . "
 							WHERE LOWER(group_name) = '" . $db->sql_escape(utf8_strtolower($new_group_name)) . "'";
 						if ($group_id)
 						{
@@ -587,7 +587,7 @@ class acp_attachments
 							$group_ary['download_mode'] = INLINE_LINK;
 						}
 
-						$sql = ($action == 'add') ? 'INSERT INTO ' . EXTENSION_GROUPS_TABLE . ' ' : 'UPDATE ' . EXTENSION_GROUPS_TABLE . ' SET ';
+						$sql = ($action == 'add') ? 'INSERT INTO ' . AN602_EXTENSION_AN602_GROUPS_TABLE . ' ' : 'UPDATE ' . AN602_EXTENSION_AN602_GROUPS_TABLE . ' SET ';
 						$sql .= $db->sql_build_array((($action == 'add') ? 'INSERT' : 'UPDATE'), $group_ary);
 						$sql .= ($action == 'edit') ? " WHERE group_id = $group_id" : '';
 
@@ -599,14 +599,14 @@ class acp_attachments
 						}
 
 						$group_name = $this->language->is_set('EXT_GROUP_' . utf8_strtoupper($group_name)) ? $this->language->lang('EXT_GROUP_' . utf8_strtoupper($group_name)) : $group_name;
-						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACH_EXTGROUP_' . strtoupper($action), false, array($group_name));
+						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACH_EXTGROUP_' . strtoupper($action), false, array($group_name));
 					}
 
 					$extension_list = $request->variable('extensions', array(0));
 
 					if ($action == 'edit' && count($extension_list))
 					{
-						$sql = 'UPDATE ' . EXTENSIONS_TABLE . "
+						$sql = 'UPDATE ' . AN602_EXTENSIONS_TABLE . "
 							SET group_id = 0
 							WHERE group_id = $group_id";
 						$db->sql_query($sql);
@@ -614,7 +614,7 @@ class acp_attachments
 
 					if (count($extension_list))
 					{
-						$sql = 'UPDATE ' . EXTENSIONS_TABLE . "
+						$sql = 'UPDATE ' . AN602_EXTENSIONS_TABLE . "
 							SET group_id = $group_id
 							WHERE " . $db->sql_in_set('extension_id', $extension_list);
 						$db->sql_query($sql);
@@ -643,24 +643,24 @@ class acp_attachments
 						if (confirm_box(true))
 						{
 							$sql = 'SELECT group_name
-								FROM ' . EXTENSION_GROUPS_TABLE . "
+								FROM ' . AN602_EXTENSION_AN602_GROUPS_TABLE . "
 								WHERE group_id = $group_id";
 							$result = $db->sql_query($sql);
 							$group_name = (string) $db->sql_fetchfield('group_name');
 							$db->sql_freeresult($result);
 
 							$sql = 'DELETE
-								FROM ' . EXTENSION_GROUPS_TABLE . "
+								FROM ' . AN602_EXTENSION_AN602_GROUPS_TABLE . "
 								WHERE group_id = $group_id";
 							$db->sql_query($sql);
 
 							// Set corresponding Extensions to a pending Group
-							$sql = 'UPDATE ' . EXTENSIONS_TABLE . "
+							$sql = 'UPDATE ' . AN602_EXTENSIONS_TABLE . "
 								SET group_id = 0
 								WHERE group_id = $group_id";
 							$db->sql_query($sql);
 
-							$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACH_EXTGROUP_DEL', false, array($group_name));
+							$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACH_EXTGROUP_DEL', false, array($group_name));
 
 							$cache->destroy('_extensions');
 
@@ -686,7 +686,7 @@ class acp_attachments
 						}
 
 						$sql = 'SELECT *
-							FROM ' . EXTENSION_GROUPS_TABLE . "
+							FROM ' . AN602_EXTENSION_AN602_GROUPS_TABLE . "
 							WHERE group_id = $group_id";
 						$result = $db->sql_query($sql);
 						$ext_group_row = $db->sql_fetchrow($result);
@@ -713,7 +713,7 @@ class acp_attachments
 						}
 
 						$sql = 'SELECT *
-							FROM ' . EXTENSIONS_TABLE . "
+							FROM ' . AN602_EXTENSIONS_TABLE . "
 							WHERE group_id = $group_id
 								OR group_id = 0
 							ORDER BY extension";
@@ -735,7 +735,7 @@ class acp_attachments
 						$filename_list = '';
 						$no_image_select = false;
 
-						$imglist = filelist($phpbb_root_path . $img_path);
+						$imglist = filelist($an602_root_path . $img_path);
 
 						if (!empty($imglist['']))
 						{
@@ -787,7 +787,7 @@ class acp_attachments
 							'GROUP_NAME'			=> $ext_group_row['group_name'],
 							'ALLOW_GROUP'			=> $ext_group_row['allow_group'],
 							'ALLOW_IN_PM'			=> $ext_group_row['allow_in_pm'],
-							'UPLOAD_ICON_SRC'		=> $phpbb_root_path . $img_path . '/' . $ext_group_row['upload_icon'],
+							'UPLOAD_ICON_SRC'		=> $an602_root_path . $img_path . '/' . $ext_group_row['upload_icon'],
 							'EXTGROUP_FILESIZE'		=> $ext_group_row['max_filesize'],
 							'ASSIGNED_EXTENSIONS'	=> $assigned_extensions,
 
@@ -799,7 +799,7 @@ class acp_attachments
 							'S_NO_IMAGE'				=> $no_image_select,
 							'S_FORUM_IDS'				=> (count($forum_ids)) ? true : false,
 
-							'U_EXTENSIONS'		=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=$id&amp;mode=extensions"),
+							'U_EXTENSIONS'		=> append_sid("{$an602_admin_path}index.$phpEx", "i=$id&amp;mode=extensions"),
 							'U_BACK'			=> $this->u_action,
 
 							'L_LEGEND'			=> $user->lang[strtoupper($action) . '_EXTENSION_GROUP'])
@@ -810,7 +810,7 @@ class acp_attachments
 						/** @todo use in-built function **/
 
 						$sql = 'SELECT forum_id, forum_name, parent_id, forum_type, left_id, right_id
-							FROM ' . FORUMS_TABLE . '
+							FROM ' . AN602_FORUMS_TABLE . '
 							ORDER BY left_id ASC';
 						$result = $db->sql_query($sql, 600);
 
@@ -882,7 +882,7 @@ class acp_attachments
 				}
 
 				$sql = 'SELECT *
-					FROM ' . EXTENSION_GROUPS_TABLE . '
+					FROM ' . AN602_EXTENSION_AN602_GROUPS_TABLE . '
 					ORDER BY allow_group DESC, allow_in_pm DESC, group_name';
 				$result = $db->sql_query($sql);
 
@@ -913,8 +913,8 @@ class acp_attachments
 
 			case 'orphan':
 
-				/* @var $pagination \phpbb\pagination */
-				$pagination = $this->phpbb_container->get('pagination');
+				/* @var $pagination \an602\pagination */
+				$pagination = $this->an602_container->get('pagination');
 
 				if ($submit)
 				{
@@ -925,7 +925,7 @@ class acp_attachments
 					if (count($delete_files))
 					{
 						$sql = 'SELECT *
-							FROM ' . ATTACHMENTS_TABLE . '
+							FROM ' . AN602_ATTACHMENTS_TABLE . '
 							WHERE ' . $db->sql_in_set('attach_id', $delete_files) . '
 								AND is_orphan = 1';
 						$result = $db->sql_query($sql);
@@ -947,11 +947,11 @@ class acp_attachments
 
 					if (count($delete_files))
 					{
-						$sql = 'DELETE FROM ' . ATTACHMENTS_TABLE . '
+						$sql = 'DELETE FROM ' . AN602_ATTACHMENTS_TABLE . '
 							WHERE ' . $db->sql_in_set('attach_id', array_keys($delete_files));
 						$db->sql_query($sql);
 
-						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACH_ORPHAN_DEL', false, array(implode(', ', $delete_files)));
+						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACH_ORPHAN_DEL', false, array(implode(', ', $delete_files)));
 						$notify[] = sprintf($user->lang['LOG_ATTACH_ORPHAN_DEL'], implode($user->lang['COMMA_SEPARATOR'], $delete_files));
 					}
 
@@ -970,7 +970,7 @@ class acp_attachments
 						$template->assign_var('S_UPLOADING_FILES', true);
 
 						$sql = 'SELECT forum_id, forum_name
-							FROM ' . FORUMS_TABLE;
+							FROM ' . AN602_FORUMS_TABLE;
 						$result = $db->sql_query($sql);
 
 						$forum_names = array();
@@ -981,7 +981,7 @@ class acp_attachments
 						$db->sql_freeresult($result);
 
 						$sql = 'SELECT forum_id, topic_id, post_id, poster_id
-							FROM ' . POSTS_TABLE . '
+							FROM ' . AN602_POSTS_TABLE . '
 							WHERE ' . $db->sql_in_set('post_id', $upload_list);
 						$result = $db->sql_query($sql);
 
@@ -994,7 +994,7 @@ class acp_attachments
 
 						// Select those attachments we want to change...
 						$sql = 'SELECT *
-							FROM ' . ATTACHMENTS_TABLE . '
+							FROM ' . AN602_ATTACHMENTS_TABLE . '
 							WHERE ' . $db->sql_in_set('attach_id', array_keys($upload_list)) . '
 								AND is_orphan = 1';
 						$result = $db->sql_query($sql);
@@ -1040,17 +1040,17 @@ class acp_attachments
 								'topic_id'		=> $post_row['topic_id'],
 							];
 
-							$sql = 'UPDATE ' . ATTACHMENTS_TABLE . '
+							$sql = 'UPDATE ' . AN602_ATTACHMENTS_TABLE . '
 								SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 								WHERE attach_id = ' . $row['attach_id'];
 							$db->sql_query($sql);
 
-							$sql = 'UPDATE ' . POSTS_TABLE . '
+							$sql = 'UPDATE ' . AN602_POSTS_TABLE . '
 								SET post_attachment = 1
 								WHERE post_id = ' . $post_row['post_id'];
 							$db->sql_query($sql);
 
-							$sql = 'UPDATE ' . TOPICS_TABLE . '
+							$sql = 'UPDATE ' . AN602_TOPICS_TABLE . '
 								SET topic_attachment = 1
 								WHERE topic_id = ' . $post_row['topic_id'];
 							$db->sql_query($sql);
@@ -1058,7 +1058,7 @@ class acp_attachments
 							$space_taken += $row['filesize'];
 							$files_added++;
 
-							$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACH_FILEUPLOAD', false, [$post_row['post_id'], $row['real_filename']]);
+							$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACH_FILEUPLOAD', false, [$post_row['post_id'], $row['real_filename']]);
 						}
 						$db->sql_freeresult($result);
 
@@ -1078,7 +1078,7 @@ class acp_attachments
 
 				// Get total number or orphans older than 3 hours
 				$sql = 'SELECT COUNT(attach_id) as num_files, SUM(filesize) as total_size
-					FROM ' . ATTACHMENTS_TABLE . '
+					FROM ' . AN602_ATTACHMENTS_TABLE . '
 					WHERE is_orphan = 1
 						AND filetime < ' . (time() - 3*60*60);
 				$result = $this->db->sql_query($sql);
@@ -1092,7 +1092,7 @@ class acp_attachments
 
 				// Just get the files with is_orphan set and older than 3 hours
 				$sql = 'SELECT *
-					FROM ' . ATTACHMENTS_TABLE . '
+					FROM ' . AN602_ATTACHMENTS_TABLE . '
 					WHERE is_orphan = 1
 						AND filetime < ' . (time() - 3*60*60) . '
 					ORDER BY filetime DESC';
@@ -1107,7 +1107,7 @@ class acp_attachments
 						'PHYSICAL_FILENAME'	=> utf8_basename($row['physical_filename']),
 						'ATTACH_ID'			=> $row['attach_id'],
 						'POST_ID'			=> (!empty($post_ids[$row['attach_id']])) ? $post_ids[$row['attach_id']] : '',
-						'U_FILE'			=> append_sid($phpbb_root_path . 'download/file.' . $phpEx, 'mode=view&amp;id=' . $row['attach_id']),
+						'U_FILE'			=> append_sid($an602_root_path . 'download/file.' . $phpEx, 'mode=view&amp;id=' . $row['attach_id']),
 					]);
 				}
 				$db->sql_freeresult($result);
@@ -1138,7 +1138,7 @@ class acp_attachments
 					{
 						// Select those attachments we want to delete...
 						$sql = 'SELECT real_filename
-							FROM ' . ATTACHMENTS_TABLE . '
+							FROM ' . AN602_ATTACHMENTS_TABLE . '
 							WHERE ' . $db->sql_in_set('attach_id', $delete_files) . '
 								AND is_orphan = 0';
 						$result = $db->sql_query($sql);
@@ -1155,7 +1155,7 @@ class acp_attachments
 								$error[] = $user->lang['FILES_GONE'];
 							}
 
-							$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACHMENTS_DELETED', false, array(implode(', ', $deleted_filenames)));
+							$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ATTACHMENTS_DELETED', false, array(implode(', ', $deleted_filenames)));
 							$notify[] = sprintf($user->lang['LOG_ATTACHMENTS_DELETED'], implode($user->lang['COMMA_SEPARATOR'], $deleted_filenames));
 						}
 						else
@@ -1207,8 +1207,8 @@ class acp_attachments
 				$total_size = $stats['upload_dir_size'];
 
 				// Make sure $start is set to the last page if it exceeds the amount
-				/* @var $pagination \phpbb\pagination */
-				$pagination = $phpbb_container->get('pagination');
+				/* @var $pagination \an602\pagination */
+				$pagination = $an602_container->get('pagination');
 				$start = $pagination->validate_start($start, $attachments_per_page, $num_files);
 
 				// If the user is trying to reach the second half of the attachments list, fetch it starting from the end
@@ -1237,9 +1237,9 @@ class acp_attachments
 
 				// Just get the files
 				$sql = 'SELECT a.*, u.username, u.user_colour, t.topic_title
-					FROM ' . ATTACHMENTS_TABLE . ' a
-					LEFT JOIN ' . USERS_TABLE . ' u ON (u.user_id = a.poster_id)
-					LEFT JOIN ' . TOPICS_TABLE . " t ON (a.topic_id = t.topic_id)
+					FROM ' . AN602_ATTACHMENTS_TABLE . ' a
+					LEFT JOIN ' . AN602_USERS_TABLE . ' u ON (u.user_id = a.poster_id)
+					LEFT JOIN ' . AN602_TOPICS_TABLE . " t ON (a.topic_id = t.topic_id)
 					WHERE a.is_orphan = 0
 						$limit_filetime
 					ORDER BY $sql_sort_order";
@@ -1294,8 +1294,8 @@ class acp_attachments
 
 						'S_IN_MESSAGE'		=> (bool) $row['in_message'],
 
-						'U_VIEW_TOPIC'		=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "p={$row['post_msg_id']}") . "#p{$row['post_msg_id']}",
-						'U_FILE'			=> append_sid($phpbb_root_path . 'download/file.' . $phpEx, 'mode=view&amp;id=' . $row['attach_id']))
+						'U_VIEW_TOPIC'		=> append_sid("{$an602_root_path}viewtopic.$phpEx", "p={$row['post_msg_id']}") . "#p{$row['post_msg_id']}",
+						'U_FILE'			=> append_sid($an602_root_path . 'download/file.' . $phpEx, 'mode=view&amp;id=' . $row['attach_id']))
 					);
 				}
 
@@ -1328,7 +1328,7 @@ class acp_attachments
 	public function get_attachment_stats($limit = '')
 	{
 		$sql = 'SELECT COUNT(a.attach_id) AS num_files, SUM(' . $this->db->cast_expr_to_bigint('a.filesize') . ') AS upload_dir_size
-			FROM ' . ATTACHMENTS_TABLE . " a
+			FROM ' . AN602_ATTACHMENTS_TABLE . " a
 			WHERE a.is_orphan = 0
 				$limit";
 		$result = $this->db->sql_query($sql);
@@ -1404,8 +1404,8 @@ class acp_attachments
 		{
 			$this->set_attachment_stats($this->get_attachment_stats());
 
-			/* @var $log \phpbb\log\log_interface */
-			$log = $this->phpbb_container->get('log');
+			/* @var $log \an602\log\log_interface */
+			$log = $this->an602_container->get('log');
 			$log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_RESYNC_FILES_STATS');
 		}
 
@@ -1426,7 +1426,7 @@ class acp_attachments
 		if ($group_id)
 		{
 			$sql = 'SELECT cat_id
-				FROM ' . EXTENSION_GROUPS_TABLE . '
+				FROM ' . AN602_EXTENSION_AN602_GROUPS_TABLE . '
 				WHERE group_id = ' . (int) $group_id;
 			$result = $db->sql_query($sql);
 
@@ -1462,7 +1462,7 @@ class acp_attachments
 		$group_select = '<select name="' . $select_name . '"' . (($key) ? ' id="' . $key . '"' : '') . '>';
 
 		$sql = 'SELECT group_id, group_name
-			FROM ' . EXTENSION_GROUPS_TABLE . '
+			FROM ' . AN602_EXTENSION_AN602_GROUPS_TABLE . '
 			ORDER BY group_name';
 		$result = $db->sql_query($sql);
 
@@ -1502,39 +1502,39 @@ class acp_attachments
 	*/
 	function test_upload(&$error, $upload_dir, $create_directory = false)
 	{
-		global $user, $phpbb_root_path;
+		global $user, $an602_root_path;
 
 		// Does the target directory exist, is it a directory and writable.
 		if ($create_directory)
 		{
-			if (!file_exists($phpbb_root_path . $upload_dir))
+			if (!file_exists($an602_root_path . $upload_dir))
 			{
-				@mkdir($phpbb_root_path . $upload_dir, 0777);
+				@mkdir($an602_root_path . $upload_dir, 0777);
 
 				try
 				{
-					$this->filesystem->phpbb_chmod($phpbb_root_path . $upload_dir, \phpbb\filesystem\filesystem_interface::CHMOD_READ | \phpbb\filesystem\filesystem_interface::CHMOD_WRITE);
+					$this->filesystem->an602_chmod($an602_root_path . $upload_dir, \an602\filesystem\filesystem_interface::CHMOD_READ | \an602\filesystem\filesystem_interface::CHMOD_WRITE);
 				}
-				catch (\phpbb\filesystem\exception\filesystem_exception $e)
+				catch (\an602\filesystem\exception\filesystem_exception $e)
 				{
 					// Do nothing
 				}
 			}
 		}
 
-		if (!file_exists($phpbb_root_path . $upload_dir))
+		if (!file_exists($an602_root_path . $upload_dir))
 		{
 			$error[] = sprintf($user->lang['NO_UPLOAD_DIR'], $upload_dir);
 			return;
 		}
 
-		if (!is_dir($phpbb_root_path . $upload_dir))
+		if (!is_dir($an602_root_path . $upload_dir))
 		{
 			$error[] = sprintf($user->lang['UPLOAD_NOT_DIR'], $upload_dir);
 			return;
 		}
 
-		if (!$this->filesystem->is_writable($phpbb_root_path . $upload_dir))
+		if (!$this->filesystem->is_writable($an602_root_path . $upload_dir))
 		{
 			$error[] = sprintf($user->lang['NO_WRITE_UPLOAD'], $upload_dir);
 			return;
@@ -1546,7 +1546,7 @@ class acp_attachments
 	*/
 	function perform_site_list()
 	{
-		global $db, $user, $request, $phpbb_log;
+		global $db, $user, $request, $an602_log;
 
 		if (isset($_REQUEST['securesubmit']))
 		{
@@ -1555,7 +1555,7 @@ class acp_attachments
 			$ip_list = array_unique(explode("\n", $ips));
 			$ip_list_log = implode(', ', $ip_list);
 
-			$ip_exclude = (int) $request->variable('ipexclude', false, false, \phpbb\request\request_interface::POST);
+			$ip_exclude = (int) $request->variable('ipexclude', false, false, \an602\request\request_interface::POST);
 
 			$iplist = array();
 			$hostlist = array();
@@ -1631,7 +1631,7 @@ class acp_attachments
 			}
 
 			$sql = 'SELECT site_ip, site_hostname
-				FROM ' . SITELIST_TABLE . "
+				FROM ' . AN602_SITELIST_TABLE . "
 				WHERE ip_exclude = $ip_exclude";
 			$result = $db->sql_query($sql);
 
@@ -1674,7 +1674,7 @@ class acp_attachments
 			{
 				foreach ($iplist as $ip_entry)
 				{
-					$sql = 'INSERT INTO ' . SITELIST_TABLE . " (site_ip, ip_exclude)
+					$sql = 'INSERT INTO ' . AN602_SITELIST_TABLE . " (site_ip, ip_exclude)
 						VALUES ($ip_entry, $ip_exclude)";
 					$db->sql_query($sql);
 				}
@@ -1684,7 +1684,7 @@ class acp_attachments
 			{
 				foreach ($hostlist as $host_entry)
 				{
-					$sql = 'INSERT INTO ' . SITELIST_TABLE . " (site_hostname, ip_exclude)
+					$sql = 'INSERT INTO ' . AN602_SITELIST_TABLE . " (site_hostname, ip_exclude)
 						VALUES ($host_entry, $ip_exclude)";
 					$db->sql_query($sql);
 				}
@@ -1694,7 +1694,7 @@ class acp_attachments
 			{
 				// Update log
 				$log_entry = ($ip_exclude) ? 'LOG_DOWNLOAD_EXCLUDE_IP' : 'LOG_DOWNLOAD_IP';
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, $log_entry, false, array($ip_list_log));
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, $log_entry, false, array($ip_list_log));
 			}
 
 			trigger_error($user->lang['SECURE_DOWNLOAD_UPDATE_SUCCESS'] . adm_back_link($this->u_action));
@@ -1709,7 +1709,7 @@ class acp_attachments
 
 				// Grab details of ips for logging information later
 				$sql = 'SELECT site_ip, site_hostname
-					FROM ' . SITELIST_TABLE . '
+					FROM ' . AN602_SITELIST_TABLE . '
 					WHERE ' . $db->sql_in_set('site_id', $unip_sql);
 				$result = $db->sql_query($sql);
 
@@ -1719,11 +1719,11 @@ class acp_attachments
 				}
 				$db->sql_freeresult($result);
 
-				$sql = 'DELETE FROM ' . SITELIST_TABLE . '
+				$sql = 'DELETE FROM ' . AN602_SITELIST_TABLE . '
 					WHERE ' . $db->sql_in_set('site_id', $unip_sql);
 				$db->sql_query($sql);
 
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_DOWNLOAD_REMOVE_IP', false, array($l_unip_list));
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_DOWNLOAD_REMOVE_IP', false, array($l_unip_list));
 			}
 
 			trigger_error($user->lang['SECURE_DOWNLOAD_UPDATE_SUCCESS'] . adm_back_link($this->u_action));

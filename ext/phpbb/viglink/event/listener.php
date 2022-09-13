@@ -1,14 +1,14 @@
 <?php
 /**
  *
- * VigLink extension for the phpBB Forum Software package.
+ * VigLink extension for the AN602 CMS Software package.
  *
- * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
+ * @copyright (c) 2014 PHP-AN602 <https://groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
 
-namespace phpbb\viglink\event;
+namespace an602\viglink\event;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -17,19 +17,19 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class listener implements EventSubscriberInterface
 {
-	/** @var \phpbb\config\config $config Config object */
+	/** @var \an602\config\config $config Config object */
 	protected $config;
 
-	/** @var \phpbb\template\template $template Template object */
+	/** @var \an602\template\template $template Template object */
 	protected $template;
 
 	/**
 	 * Constructor
 	 *
-	 * @param \phpbb\config\config     $config   Config object
-	 * @param \phpbb\template\template $template Template object
+	 * @param \an602\config\config     $config   Config object
+	 * @param \an602\template\template $template Template object
 	 */
-	public function __construct(\phpbb\config\config $config, \phpbb\template\template $template)
+	public function __construct(\an602\config\config $config, \an602\template\template $template)
 	{
 		$this->config = $config;
 		$this->template = $template;
@@ -54,10 +54,10 @@ class listener implements EventSubscriberInterface
 	{
 		$viglink_key = '';
 
-		if ($this->config['allow_viglink_phpbb'] && $this->config['phpbb_viglink_api_key'])
+		if ($this->config['allow_viglink_an602'] && $this->config['an602_viglink_api_key'])
 		{
-			// Use phpBB API key if VigLink is allowed for phpBB
-			$viglink_key = $this->config['phpbb_viglink_api_key'];
+			// Use AN602 API key if VigLink is allowed for AN602
+			$viglink_key = $this->config['an602_viglink_api_key'];
 		}
 
 		$this->template->assign_vars(array(

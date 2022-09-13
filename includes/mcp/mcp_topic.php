@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -24,17 +24,17 @@ if (!defined('IN_PHPBB'))
 */
 function mcp_topic_view($id, $mode, $action)
 {
-	global $phpEx, $phpbb_root_path, $config, $request;
-	global $template, $db, $user, $auth, $phpbb_container, $phpbb_dispatcher;
+	global $phpEx, $an602_root_path, $config, $request;
+	global $template, $db, $user, $auth, $an602_container, $an602_dispatcher;
 
-	$url = append_sid("{$phpbb_root_path}mcp.$phpEx?" . phpbb_extra_url());
+	$url = append_sid("{$an602_root_path}mcp.$phpEx?" . an602_extra_url());
 
-	/* @var $pagination \phpbb\pagination */
-	$pagination = $phpbb_container->get('pagination');
+	/* @var $pagination \an602\pagination */
+	$pagination = $an602_container->get('pagination');
 	$user->add_lang('viewtopic');
 
 	$topic_id = $request->variable('t', 0);
-	$topic_info = phpbb_get_topic_data(array($topic_id), false, true);
+	$topic_info = an602_get_topic_data(array($topic_id), false, true);
 
 	if (!count($topic_info))
 	{
@@ -60,7 +60,7 @@ function mcp_topic_view($id, $mode, $action)
 	{
 		if (!function_exists('mcp_resync_topics'))
 		{
-			include($phpbb_root_path . 'includes/mcp/mcp_forum.' . $phpEx);
+			include($an602_root_path . 'includes/mcp/mcp_forum.' . $phpEx);
 		}
 		mcp_resync_topics(array($topic_id));
 	}
@@ -95,11 +95,11 @@ function mcp_topic_view($id, $mode, $action)
 	{
 		if (!class_exists('mcp_queue'))
 		{
-			include($phpbb_root_path . 'includes/mcp/mcp_queue.' . $phpEx);
+			include($an602_root_path . 'includes/mcp/mcp_queue.' . $phpEx);
 		}
 
-		include_once($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
-		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+		include_once($an602_root_path . 'includes/functions_posting.' . $phpEx);
+		include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
 
 		if (!count($post_id_list))
 		{
@@ -119,15 +119,15 @@ function mcp_topic_view($id, $mode, $action)
 	$sort_days = $total = 0;
 	$sort_key = $sort_dir = '';
 	$sort_by_sql = $sort_order_sql = array();
-	phpbb_mcp_sorting('viewtopic', $sort_days, $sort_key, $sort_dir, $sort_by_sql, $sort_order_sql, $total, $topic_info['forum_id'], $topic_id, $where_sql);
+	an602_mcp_sorting('viewtopic', $sort_days, $sort_key, $sort_dir, $sort_by_sql, $sort_order_sql, $total, $topic_info['forum_id'], $topic_id, $where_sql);
 
-	/* @var $phpbb_content_visibility \phpbb\content_visibility */
-	$phpbb_content_visibility = $phpbb_container->get('content.visibility');
+	/* @var $an602_content_visibility \an602\content_visibility */
+	$an602_content_visibility = $an602_container->get('content.visibility');
 	$limit_time_sql = ($sort_days) ? 'AND p.post_time >= ' . (time() - ($sort_days * 86400)) : '';
 
 	if ($total == -1)
 	{
-		$total = $phpbb_content_visibility->get_count('topic_posts', $topic_info, $topic_info['forum_id']);
+		$total = $an602_content_visibility->get_count('topic_posts', $topic_info, $topic_info['forum_id']);
 	}
 
 	$posts_per_page = max(0, $request->variable('posts_per_page', intval($config['posts_per_page'])));
@@ -144,15 +144,15 @@ function mcp_topic_view($id, $mode, $action)
 
 	$sql_where = (($action == 'reports') ? 'p.post_reported = 1 AND ' : '') . '
 			p.topic_id = ' . $topic_id . '
-			AND ' .	$phpbb_content_visibility->get_visibility_sql('post', $topic_info['forum_id'], 'p.') . '
+			AND ' .	$an602_content_visibility->get_visibility_sql('post', $topic_info['forum_id'], 'p.') . '
 			AND p.poster_id = u.user_id ' .
 			$limit_time_sql;
 
 	$sql_ary = array(
 		'SELECT'	=> 'u.username, u.username_clean, u.user_colour, p.*',
 		'FROM'		=> array(
-			POSTS_TABLE		=> 'p',
-			USERS_TABLE		=> 'u'
+			AN602_POSTS_TABLE		=> 'p',
+			AN602_USERS_TABLE		=> 'u'
 		),
 		'LEFT_JOIN'	=> array(),
 		'WHERE'		=> $sql_where,
@@ -167,7 +167,7 @@ function mcp_topic_view($id, $mode, $action)
 	* @since 3.2.8-RC1
 	*/
 	$vars = array('sql_ary');
-	extract($phpbb_dispatcher->trigger_event('core.mcp_topic_modify_sql_ary', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.mcp_topic_modify_sql_ary', compact($vars)));
 
 	$sql = $db->sql_build_query('SELECT', $sql_ary);
 	unset($sql_ary);
@@ -204,7 +204,7 @@ function mcp_topic_view($id, $mode, $action)
 		if ($auth->acl_get('u_download') && $auth->acl_get('f_download', $topic_info['forum_id']))
 		{
 			$sql = 'SELECT *
-				FROM ' . ATTACHMENTS_TABLE . '
+				FROM ' . AN602_ATTACHMENTS_TABLE . '
 				WHERE ' . $db->sql_in_set('post_msg_id', $post_id_list) . '
 					AND in_message = 0
 				ORDER BY filetime DESC, post_msg_id ASC';
@@ -240,7 +240,7 @@ function mcp_topic_view($id, $mode, $action)
 		'rowset',
 		'topic_id',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.mcp_topic_modify_post_data', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.mcp_topic_modify_post_data', compact($vars)));
 
 	foreach ($rowset as $current_row_number => $row)
 	{
@@ -278,7 +278,7 @@ function mcp_topic_view($id, $mode, $action)
 			'POST_SUBJECT'	=> $post_subject,
 			'MESSAGE'		=> $message,
 			'POST_ID'		=> $row['post_id'],
-			'RETURN_TOPIC'	=> sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $topic_id) . '">', '</a>'),
+			'RETURN_TOPIC'	=> sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$an602_root_path}viewtopic.$phpEx", 't=' . $topic_id) . '">', '</a>'),
 
 			'MINI_POST_IMG'			=> ($post_unread) ? $user->img('icon_post_target_unread', 'UNREAD_POST') : $user->img('icon_post_target', 'POST'),
 
@@ -289,8 +289,8 @@ function mcp_topic_view($id, $mode, $action)
 			'S_HAS_ATTACHMENTS'	=> (!empty($attachments[$row['post_id']])) ? true : false,
 
 			'U_POST_DETAILS'	=> "$url&amp;i=$id&amp;p={$row['post_id']}&amp;mode=post_details",
-			'U_MCP_APPROVE'		=> ($auth->acl_get('m_approve', $topic_info['forum_id'])) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue&amp;mode=approve_details&amp;p=' . $row['post_id']) : '',
-			'U_MCP_REPORT'		=> ($auth->acl_get('m_report', $topic_info['forum_id'])) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=reports&amp;mode=report_details&amp;p=' . $row['post_id']) : '',
+			'U_MCP_APPROVE'		=> ($auth->acl_get('m_approve', $topic_info['forum_id'])) ? append_sid("{$an602_root_path}mcp.$phpEx", 'i=queue&amp;mode=approve_details&amp;p=' . $row['post_id']) : '',
+			'U_MCP_REPORT'		=> ($auth->acl_get('m_report', $topic_info['forum_id'])) ? append_sid("{$an602_root_path}mcp.$phpEx", 'i=reports&amp;mode=report_details&amp;p=' . $row['post_id']) : '',
 		);
 
 		/**
@@ -321,7 +321,7 @@ function mcp_topic_view($id, $mode, $action)
 			'topic_info',
 			'total',
 		);
-		extract($phpbb_dispatcher->trigger_event('core.mcp_topic_review_modify_row', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.mcp_topic_review_modify_row', compact($vars)));
 
 		$template->assign_block_vars('postrow', $post_row);
 
@@ -344,13 +344,13 @@ function mcp_topic_view($id, $mode, $action)
 
 	if ($auth->acl_gets('m_split', 'm_merge', (int) $topic_info['forum_id']))
 	{
-		include_once($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+		include_once($an602_root_path . 'includes/functions_posting.' . $phpEx);
 		$s_topic_icons = posting_gen_topic_icons('', $icon_id);
 
 		// Has the user selected a topic for merge?
 		if ($to_topic_id)
 		{
-			$to_topic_info = phpbb_get_topic_data(array($to_topic_id), 'm_merge');
+			$to_topic_info = an602_get_topic_data(array($to_topic_id), 'm_merge');
 
 			if (!count($to_topic_info))
 			{
@@ -373,7 +373,7 @@ function mcp_topic_view($id, $mode, $action)
 		'post_ids'	=> $post_id_list,
 	));
 
-	$base_url = append_sid("{$phpbb_root_path}mcp.$phpEx", "i=$id&amp;t={$topic_info['topic_id']}&amp;mode=$mode&amp;action=$action&amp;to_topic_id=$to_topic_id&amp;posts_per_page=$posts_per_page&amp;st=$sort_days&amp;sk=$sort_key&amp;sd=$sort_dir");
+	$base_url = append_sid("{$an602_root_path}mcp.$phpEx", "i=$id&amp;t={$topic_info['topic_id']}&amp;mode=$mode&amp;action=$action&amp;to_topic_id=$to_topic_id&amp;posts_per_page=$posts_per_page&amp;st=$sort_days&amp;sk=$sort_key&amp;sd=$sort_dir");
 	if ($posts_per_page)
 	{
 		$pagination->generate_template_pagination($base_url, 'pagination', 'start', $total, $posts_per_page, $start);
@@ -381,10 +381,10 @@ function mcp_topic_view($id, $mode, $action)
 
 	$topic_row = [
 		'TOPIC_TITLE'		=> $topic_info['topic_title'],
-		'U_VIEW_TOPIC'		=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $topic_info['topic_id']),
+		'U_VIEW_TOPIC'		=> append_sid("{$an602_root_path}viewtopic.$phpEx", 't=' . $topic_info['topic_id']),
 
 		'TO_TOPIC_ID'		=> $to_topic_id,
-		'TO_TOPIC_INFO'		=> ($to_topic_id) ? sprintf($user->lang['YOU_SELECTED_TOPIC'], $to_topic_id, '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $to_topic_id) . '">' . $to_topic_info['topic_title'] . '</a>') : '',
+		'TO_TOPIC_INFO'		=> ($to_topic_id) ? sprintf($user->lang['YOU_SELECTED_TOPIC'], $to_topic_id, '<a href="' . append_sid("{$an602_root_path}viewtopic.$phpEx", 't=' . $to_topic_id) . '">' . $to_topic_info['topic_title'] . '</a>') : '',
 
 		'SPLIT_SUBJECT'		=> $subject,
 		'POSTS_PER_PAGE'	=> $posts_per_page,
@@ -416,8 +416,8 @@ function mcp_topic_view($id, $mode, $action)
 
 		'U_SELECT_TOPIC'	=> "$url&amp;i=$id&amp;mode=forum_view&amp;action=merge_select" . (($forum_id) ? "&amp;f=$forum_id" : ''),
 
-		'RETURN_TOPIC'		=> sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", "t={$topic_info['topic_id']}&amp;start=$start") . '">', '</a>'),
-		'RETURN_FORUM'		=> sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", "f={$topic_info['forum_id']}&amp;start=$start") . '">', '</a>'),
+		'RETURN_TOPIC'		=> sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$an602_root_path}viewtopic.$phpEx", "t={$topic_info['topic_id']}&amp;start=$start") . '">', '</a>'),
+		'RETURN_FORUM'		=> sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("{$an602_root_path}viewforum.$phpEx", "f={$topic_info['forum_id']}&amp;start=$start") . '">', '</a>'),
 
 		'TOTAL_POSTS'		=> $user->lang('VIEW_TOPIC_POSTS', (int) $total),
 	];
@@ -460,7 +460,7 @@ function mcp_topic_view($id, $mode, $action)
 		'topic_row',
 		'total',
 	];
-	extract($phpbb_dispatcher->trigger_event('core.mcp_topic_review_modify_topic_row', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.mcp_topic_review_modify_topic_row', compact($vars)));
 
 	$template->assign_vars($topic_row);
 }
@@ -470,7 +470,7 @@ function mcp_topic_view($id, $mode, $action)
 */
 function split_topic($action, $topic_id, $to_forum_id, $subject)
 {
-	global $db, $template, $user, $phpEx, $phpbb_root_path, $auth, $config, $phpbb_log, $request, $phpbb_dispatcher;
+	global $db, $template, $user, $phpEx, $an602_root_path, $auth, $config, $an602_log, $request, $an602_dispatcher;
 
 	$post_id_list	= $request->variable('post_id_list', array(0));
 	$forum_id		= $request->variable('forum_id', 0);
@@ -482,13 +482,13 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 		return;
 	}
 
-	if (!phpbb_check_ids($post_id_list, POSTS_TABLE, 'post_id', array('m_split')))
+	if (!an602_check_ids($post_id_list, AN602_POSTS_TABLE, 'post_id', array('m_split')))
 	{
 		return;
 	}
 
 	$post_id = $post_id_list[0];
-	$post_info = phpbb_get_post_data(array($post_id));
+	$post_info = an602_get_post_data(array($post_id));
 
 	if (!count($post_info))
 	{
@@ -518,7 +518,7 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 		return;
 	}
 
-	$forum_info = phpbb_get_forum_data(array($to_forum_id), 'f_post');
+	$forum_info = an602_get_forum_data(array($to_forum_id), 'f_post');
 
 	if (!count($forum_info))
 	{
@@ -557,14 +557,14 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 			$sort_days = $total = 0;
 			$sort_key = $sort_dir = '';
 			$sort_by_sql = $sort_order_sql = array();
-			phpbb_mcp_sorting('viewtopic', $sort_days, $sort_key, $sort_dir, $sort_by_sql, $sort_order_sql, $total, $forum_id, $topic_id);
+			an602_mcp_sorting('viewtopic', $sort_days, $sort_key, $sort_dir, $sort_by_sql, $sort_order_sql, $total, $forum_id, $topic_id);
 
 			$limit_time_sql = ($sort_days) ? 'AND t.topic_last_post_time >= ' . (time() - ($sort_days * 86400)) : '';
 
 			if ($sort_order_sql[0] == 'u')
 			{
 				$sql = 'SELECT p.post_id, p.forum_id, p.post_visibility
-					FROM ' . POSTS_TABLE . ' p, ' . USERS_TABLE . " u
+					FROM ' . AN602_POSTS_TABLE . ' p, ' . AN602_USERS_TABLE . " u
 					WHERE p.topic_id = $topic_id
 						AND p.poster_id = u.user_id
 						$limit_time_sql
@@ -573,7 +573,7 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 			else
 			{
 				$sql = 'SELECT p.post_id, p.forum_id, p.post_visibility
-					FROM ' . POSTS_TABLE . " p
+					FROM ' . AN602_POSTS_TABLE . " p
 					WHERE p.topic_id = $topic_id
 						$limit_time_sql
 					ORDER BY $sort_order_sql";
@@ -618,28 +618,28 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 			'topic_visibility'	=> 1
 		);
 
-		$sql = 'INSERT INTO ' . TOPICS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+		$sql = 'INSERT INTO ' . AN602_TOPICS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 		$db->sql_query($sql);
 
 		$to_topic_id = $db->sql_nextid();
 		move_posts($post_id_list, $to_topic_id);
 
-		$topic_info = phpbb_get_topic_data(array($topic_id));
+		$topic_info = an602_get_topic_data(array($topic_id));
 		$topic_info = $topic_info[$topic_id];
 
-		$phpbb_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_SPLIT_DESTINATION', false, array(
+		$an602_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_SPLIT_DESTINATION', false, array(
 			'forum_id' => $to_forum_id,
 			'topic_id' => $to_topic_id,
 			$subject
 		));
-		$phpbb_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_SPLIT_SOURCE', false, array(
+		$an602_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_SPLIT_SOURCE', false, array(
 			'forum_id' => $forum_id,
 			'topic_id' => $topic_id,
 			$topic_info['topic_title']
 		));
 
 		// Change topic title of first post
-		$sql = 'UPDATE ' . POSTS_TABLE . "
+		$sql = 'UPDATE ' . AN602_POSTS_TABLE . "
 			SET post_subject = '" . $db->sql_escape($subject) . "'
 			WHERE post_id = {$post_id_list[0]}";
 		$db->sql_query($sql);
@@ -648,11 +648,11 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 		$sql_array = array(
 			'SELECT'  => 'p.post_id, p.forum_id, p.poster_id, p.post_text, f.enable_indexing',
 			'FROM' => array(
-				POSTS_TABLE => 'p',
+				AN602_POSTS_TABLE => 'p',
 			),
 			'LEFT_JOIN' => array(
 				array(
-					'FROM' => array(FORUMS_TABLE => 'f'),
+					'FROM' => array(AN602_FORUMS_TABLE => 'f'),
 					'ON' => 'p.forum_id = f.forum_id',
 				)
 			),
@@ -675,7 +675,7 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 			}
 
 			$error = false;
-			$search = new $search_type($error, $phpbb_root_path, $phpEx, $auth, $config, $db, $user, $phpbb_dispatcher);
+			$search = new $search_type($error, $an602_root_path, $phpEx, $auth, $config, $db, $user, $an602_dispatcher);
 
 			if ($error)
 			{
@@ -687,7 +687,7 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 
 		// Copy topic subscriptions to new topic
 		$sql = 'SELECT user_id, notify_status
-			FROM ' . TOPICS_WATCH_TABLE . '
+			FROM ' . AN602_TOPICS_WATCH_TABLE . '
 			WHERE topic_id = ' . $topic_id;
 		$result = $db->sql_query($sql);
 
@@ -704,12 +704,12 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 
 		if (count($sql_ary))
 		{
-			$db->sql_multi_insert(TOPICS_WATCH_TABLE, $sql_ary);
+			$db->sql_multi_insert(AN602_TOPICS_WATCH_TABLE, $sql_ary);
 		}
 
 		// Copy bookmarks to new topic
 		$sql = 'SELECT user_id
-			FROM ' . BOOKMARKS_TABLE . '
+			FROM ' . AN602_BOOKMARKS_TABLE . '
 			WHERE topic_id = ' . $topic_id;
 		$result = $db->sql_query($sql);
 
@@ -725,7 +725,7 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 
 		if (count($sql_ary))
 		{
-			$db->sql_multi_insert(BOOKMARKS_TABLE, $sql_ary);
+			$db->sql_multi_insert(AN602_BOOKMARKS_TABLE, $sql_ary);
 		}
 
 		$success_msg = 'TOPIC_SPLIT_SUCCESS';
@@ -734,8 +734,8 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 		$config->increment('num_topics', 1, false);
 
 		// Link back to both topics
-		$return_link = sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $post_info['topic_id']) . '">', '</a>') . '<br /><br />' . sprintf($user->lang['RETURN_NEW_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $to_topic_id) . '">', '</a>');
-		$redirect = $request->variable('redirect', "{$phpbb_root_path}viewtopic.$phpEx?t=$to_topic_id");
+		$return_link = sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$an602_root_path}viewtopic.$phpEx", 't=' . $post_info['topic_id']) . '">', '</a>') . '<br /><br />' . sprintf($user->lang['RETURN_NEW_TOPIC'], '<a href="' . append_sid("{$an602_root_path}viewtopic.$phpEx", 't=' . $to_topic_id) . '">', '</a>');
+		$redirect = $request->variable('redirect', "{$an602_root_path}viewtopic.$phpEx?t=$to_topic_id");
 		$redirect = reapply_sid($redirect);
 
 		/**
@@ -762,7 +762,7 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 			'to_forum_id',
 			'to_topic_id',
 		];
-		extract($phpbb_dispatcher->trigger_event('core.mcp_topic_split_topic_after', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.mcp_topic_split_topic_after', compact($vars)));
 
 		meta_refresh(3, $redirect);
 		trigger_error($user->lang[$success_msg] . '<br /><br />' . $return_link);
@@ -778,7 +778,7 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 */
 function merge_posts($topic_id, $to_topic_id)
 {
-	global $db, $template, $user, $phpEx, $phpbb_root_path, $phpbb_log, $request, $phpbb_dispatcher;
+	global $db, $template, $user, $phpEx, $an602_root_path, $an602_log, $request, $an602_dispatcher;
 
 	if (!$to_topic_id)
 	{
@@ -788,7 +788,7 @@ function merge_posts($topic_id, $to_topic_id)
 
 	$sync_topics = array($topic_id, $to_topic_id);
 
-	$topic_data = phpbb_get_topic_data($sync_topics, 'm_merge');
+	$topic_data = an602_get_topic_data($sync_topics, 'm_merge');
 
 	if (!count($topic_data) || empty($topic_data[$to_topic_id]))
 	{
@@ -813,7 +813,7 @@ function merge_posts($topic_id, $to_topic_id)
 		return;
 	}
 
-	if (!phpbb_check_ids($post_id_list, POSTS_TABLE, 'post_id', array('m_merge')))
+	if (!an602_check_ids($post_id_list, AN602_POSTS_TABLE, 'post_id', array('m_merge')))
 	{
 		return;
 	}
@@ -838,7 +838,7 @@ function merge_posts($topic_id, $to_topic_id)
 
 		move_posts($post_id_list, $to_topic_id, false);
 
-		$phpbb_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_MERGE', false, array(
+		$an602_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_MERGE', false, array(
 			'forum_id' => $to_forum_id,
 			'topic_id' => $to_topic_id,
 			$topic_data['topic_title']
@@ -849,7 +849,7 @@ function merge_posts($topic_id, $to_topic_id)
 
 		// Does the original topic still exist? If yes, link back to it
 		$sql = 'SELECT forum_id
-			FROM ' . POSTS_TABLE . '
+			FROM ' . AN602_POSTS_TABLE . '
 			WHERE topic_id = ' . $topic_id;
 		$result = $db->sql_query_limit($sql, 1);
 		$row = $db->sql_fetchrow($result);
@@ -857,20 +857,20 @@ function merge_posts($topic_id, $to_topic_id)
 
 		if ($row)
 		{
-			$return_link .= sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $topic_id) . '">', '</a>');
+			$return_link .= sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$an602_root_path}viewtopic.$phpEx", 't=' . $topic_id) . '">', '</a>');
 		}
 		else
 		{
-			if (!function_exists('phpbb_update_rows_avoiding_duplicates_notify_status'))
+			if (!function_exists('an602_update_rows_avoiding_duplicates_notify_status'))
 			{
-				include($phpbb_root_path . 'includes/functions_database_helper.' . $phpEx);
+				include($an602_root_path . 'includes/functions_database_helper.' . $phpEx);
 			}
 
 			// If the topic no longer exist, we will update the topic watch table.
-			phpbb_update_rows_avoiding_duplicates_notify_status($db, TOPICS_WATCH_TABLE, 'topic_id', array($topic_id), $to_topic_id);
+			an602_update_rows_avoiding_duplicates_notify_status($db, AN602_TOPICS_WATCH_TABLE, 'topic_id', array($topic_id), $to_topic_id);
 
 			// If the topic no longer exist, we will update the bookmarks table.
-			phpbb_update_rows_avoiding_duplicates($db, BOOKMARKS_TABLE, 'topic_id', array($topic_id), $to_topic_id);
+			an602_update_rows_avoiding_duplicates($db, AN602_BOOKMARKS_TABLE, 'topic_id', array($topic_id), $to_topic_id);
 		}
 
 		// Re-sync the topics and forums because the auto-sync was deactivated in the call of move_posts()
@@ -880,8 +880,8 @@ function merge_posts($topic_id, $to_topic_id)
 		sync('forum', 'forum_id', $sync_forums, true, true);
 
 		// Link to the new topic
-		$return_link .= (($return_link) ? '<br /><br />' : '') . sprintf($user->lang['RETURN_NEW_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $to_topic_id) . '">', '</a>');
-		$redirect = $request->variable('redirect', "{$phpbb_root_path}viewtopic.$phpEx?t=$to_topic_id");
+		$return_link .= (($return_link) ? '<br /><br />' : '') . sprintf($user->lang['RETURN_NEW_TOPIC'], '<a href="' . append_sid("{$an602_root_path}viewtopic.$phpEx", 't=' . $to_topic_id) . '">', '</a>');
+		$redirect = $request->variable('redirect', "{$an602_root_path}viewtopic.$phpEx?t=$to_topic_id");
 		$redirect = reapply_sid($redirect);
 
 		/**
@@ -896,7 +896,7 @@ function merge_posts($topic_id, $to_topic_id)
 			'topic_id',
 			'to_topic_id',
 		);
-		extract($phpbb_dispatcher->trigger_event('core.mcp_topics_merge_posts_after', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.mcp_topics_merge_posts_after', compact($vars)));
 
 		meta_refresh(3, $redirect);
 		trigger_error($user->lang[$success_msg] . '<br /><br />' . $return_link);

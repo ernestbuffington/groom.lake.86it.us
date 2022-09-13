@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -26,7 +26,7 @@ class acp_reasons
 	function main($id, $mode)
 	{
 		global $db, $user, $template;
-		global $request, $phpbb_log;
+		global $request, $an602_log;
 
 		$user->add_lang(array('mcp', 'acp/posting'));
 
@@ -70,7 +70,7 @@ class acp_reasons
 					if ($action == 'edit')
 					{
 						$sql = 'SELECT reason_title
-							FROM ' . REPORTS_REASONS_TABLE . "
+							FROM ' . AN602_REPORTS_REASONS_TABLE . "
 							WHERE reason_id = $reason_id";
 						$result = $db->sql_query($sql);
 						$row = $db->sql_fetchrow($result);
@@ -91,7 +91,7 @@ class acp_reasons
 					if ($check_double)
 					{
 						$sql = 'SELECT reason_id
-							FROM ' . REPORTS_REASONS_TABLE . "
+							FROM ' . AN602_REPORTS_REASONS_TABLE . "
 							WHERE reason_title = '" . $db->sql_escape($reason_row['reason_title']) . "'";
 						$result = $db->sql_query($sql);
 						$row = $db->sql_fetchrow($result);
@@ -110,7 +110,7 @@ class acp_reasons
 						{
 							// Get new order...
 							$sql = 'SELECT MAX(reason_order) as max_reason_order
-								FROM ' . REPORTS_REASONS_TABLE;
+								FROM ' . AN602_REPORTS_REASONS_TABLE;
 							$result = $db->sql_query($sql);
 							$max_order = (int) $db->sql_fetchfield('max_reason_order');
 							$db->sql_freeresult($result);
@@ -121,7 +121,7 @@ class acp_reasons
 								'reason_order'			=> $max_order + 1
 							);
 
-							$db->sql_query('INSERT INTO ' . REPORTS_REASONS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
+							$db->sql_query('INSERT INTO ' . AN602_REPORTS_REASONS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
 
 							$log = 'ADDED';
 						}
@@ -132,20 +132,20 @@ class acp_reasons
 								'reason_description'	=> (string) $reason_row['reason_description'],
 							);
 
-							$db->sql_query('UPDATE ' . REPORTS_REASONS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
+							$db->sql_query('UPDATE ' . AN602_REPORTS_REASONS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 								WHERE reason_id = ' . $reason_id);
 
 							$log = 'UPDATED';
 						}
 
-						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_REASON_' . $log, false, array($reason_row['reason_title']));
+						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_REASON_' . $log, false, array($reason_row['reason_title']));
 						trigger_error($user->lang['REASON_' . $log] . adm_back_link($this->u_action));
 					}
 				}
 				else if ($reason_id)
 				{
 					$sql = 'SELECT *
-						FROM ' . REPORTS_REASONS_TABLE . '
+						FROM ' . AN602_REPORTS_REASONS_TABLE . '
 						WHERE reason_id = ' . $reason_id;
 					$result = $db->sql_query($sql);
 					$reason_row = $db->sql_fetchrow($result);
@@ -192,7 +192,7 @@ class acp_reasons
 			case 'delete':
 
 				$sql = 'SELECT *
-					FROM ' . REPORTS_REASONS_TABLE . '
+					FROM ' . AN602_REPORTS_REASONS_TABLE . '
 					WHERE reason_id = ' . $reason_id;
 				$result = $db->sql_query($sql);
 				$reason_row = $db->sql_fetchrow($result);
@@ -212,7 +212,7 @@ class acp_reasons
 				if (confirm_box(true))
 				{
 					$sql = 'SELECT reason_id
-						FROM ' . REPORTS_REASONS_TABLE . "
+						FROM ' . AN602_REPORTS_REASONS_TABLE . "
 						WHERE LOWER(reason_title) = 'other'";
 					$result = $db->sql_query($sql);
 					$other_reason_id = (int) $db->sql_fetchfield('reason_id');
@@ -223,7 +223,7 @@ class acp_reasons
 						// The ugly one!
 						case 'mysqli':
 							// Change the reports using this reason to 'other'
-							$sql = 'UPDATE ' . REPORTS_TABLE . '
+							$sql = 'UPDATE ' . AN602_REPORTS_TABLE . '
 								SET reason_id = ' . $other_reason_id . ", report_text = CONCAT('" . $db->sql_escape($reason_row['reason_description']) . "\n\n', report_text)
 								WHERE reason_id = $reason_id";
 						break;
@@ -235,12 +235,12 @@ class acp_reasons
 							$sql = "DECLARE @ptrval binary(16)
 
 									SELECT @ptrval = TEXTPTR(report_text)
-										FROM " . REPORTS_TABLE . "
+										FROM " . AN602_REPORTS_TABLE . "
 									WHERE reason_id = " . $reason_id . "
 
-									UPDATETEXT " . REPORTS_TABLE . ".report_text @ptrval 0 0 '" . $db->sql_escape($reason_row['reason_description']) . "\n\n'
+									UPDATETEXT " . AN602_REPORTS_TABLE . ".report_text @ptrval 0 0 '" . $db->sql_escape($reason_row['reason_description']) . "\n\n'
 
-									UPDATE " . REPORTS_TABLE . '
+									UPDATE " . AN602_REPORTS_TABLE . '
 										SET reason_id = ' . $other_reason_id . "
 									WHERE reason_id = $reason_id";
 						break;
@@ -250,16 +250,16 @@ class acp_reasons
 						case 'oracle':
 						case 'sqlite3':
 							// Change the reports using this reason to 'other'
-							$sql = 'UPDATE ' . REPORTS_TABLE . '
+							$sql = 'UPDATE ' . AN602_REPORTS_TABLE . '
 								SET reason_id = ' . $other_reason_id . ", report_text = '" . $db->sql_escape($reason_row['reason_description']) . "\n\n' || report_text
 								WHERE reason_id = $reason_id";
 						break;
 					}
 					$db->sql_query($sql);
 
-					$db->sql_query('DELETE FROM ' . REPORTS_REASONS_TABLE . ' WHERE reason_id = ' . $reason_id);
+					$db->sql_query('DELETE FROM ' . AN602_REPORTS_REASONS_TABLE . ' WHERE reason_id = ' . $reason_id);
 
-					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_REASON_REMOVED', false, array($reason_row['reason_title']));
+					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_REASON_REMOVED', false, array($reason_row['reason_title']));
 					trigger_error($user->lang['REASON_REMOVED'] . adm_back_link($this->u_action));
 				}
 				else
@@ -283,7 +283,7 @@ class acp_reasons
 				}
 
 				$sql = 'SELECT reason_order
-					FROM ' . REPORTS_REASONS_TABLE . "
+					FROM ' . AN602_REPORTS_REASONS_TABLE . "
 					WHERE reason_id = $reason_id";
 				$result = $db->sql_query($sql);
 				$order = $db->sql_fetchfield('reason_order');
@@ -296,14 +296,14 @@ class acp_reasons
 				$order = (int) $order;
 				$order_total = $order * 2 + (($action == 'move_up') ? -1 : 1);
 
-				$sql = 'UPDATE ' . REPORTS_REASONS_TABLE . '
+				$sql = 'UPDATE ' . AN602_REPORTS_REASONS_TABLE . '
 					SET reason_order = ' . $order_total . ' - reason_order
 					WHERE reason_order IN (' . $order . ', ' . (($action == 'move_up') ? $order - 1 : $order + 1) . ')';
 				$db->sql_query($sql);
 
 				if ($request->is_ajax())
 				{
-					$json_response = new \phpbb\json_response;
+					$json_response = new \an602\json_response;
 					$json_response->send(array(
 						'success'	=> (bool) $db->sql_affectedrows(),
 					));
@@ -313,7 +313,7 @@ class acp_reasons
 
 		// By default, check that order is valid and fix it if necessary
 		$sql = 'SELECT reason_id, reason_order
-			FROM ' . REPORTS_REASONS_TABLE . '
+			FROM ' . AN602_REPORTS_REASONS_TABLE . '
 			ORDER BY reason_order';
 		$result = $db->sql_query($sql);
 
@@ -326,7 +326,7 @@ class acp_reasons
 
 				if ($row['reason_order'] != $order)
 				{
-					$sql = 'UPDATE ' . REPORTS_REASONS_TABLE . "
+					$sql = 'UPDATE ' . AN602_REPORTS_REASONS_TABLE . "
 						SET reason_order = $order
 						WHERE reason_id = {$row['reason_id']}";
 					$db->sql_query($sql);
@@ -343,7 +343,7 @@ class acp_reasons
 
 		// Reason count
 		$sql = 'SELECT reason_id, COUNT(reason_id) AS reason_count
-			FROM ' . REPORTS_TABLE . '
+			FROM ' . AN602_REPORTS_TABLE . '
 			GROUP BY reason_id';
 		$result = $db->sql_query($sql);
 
@@ -355,7 +355,7 @@ class acp_reasons
 		$db->sql_freeresult($result);
 
 		$sql = 'SELECT *
-			FROM ' . REPORTS_REASONS_TABLE . '
+			FROM ' . AN602_REPORTS_REASONS_TABLE . '
 			ORDER BY reason_order ASC';
 		$result = $db->sql_query($sql);
 

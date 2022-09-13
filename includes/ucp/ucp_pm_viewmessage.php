@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -24,8 +24,8 @@ if (!defined('IN_PHPBB'))
 */
 function view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row)
 {
-	global $user, $template, $auth, $db, $phpbb_container;
-	global $phpbb_root_path, $request, $phpEx, $config, $phpbb_dispatcher;
+	global $user, $template, $auth, $db, $an602_container;
+	global $an602_root_path, $request, $phpEx, $config, $an602_dispatcher;
 
 	$user->add_lang(array('viewtopic', 'memberlist'));
 
@@ -53,12 +53,12 @@ function view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row)
 		'message_row',
 		'author_id',
 	];
-	extract($phpbb_dispatcher->trigger_event('core.ucp_pm_view_message_before', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.ucp_pm_view_message_before', compact($vars)));
 
 	// Not able to view message, it was deleted by the sender
 	if ($message_row['pm_deleted'])
 	{
-		$meta_info = append_sid("{$phpbb_root_path}ucp.$phpEx", "i=pm&amp;folder=$folder_id");
+		$meta_info = append_sid("{$an602_root_path}ucp.$phpEx", "i=pm&amp;folder=$folder_id");
 		$message = $user->lang['NO_AUTH_READ_REMOVED_MESSAGE'];
 
 		$message .= '<br /><br />' . sprintf($user->lang['RETURN_FOLDER'], '<a href="' . $meta_info . '">', '</a>');
@@ -75,8 +75,8 @@ function view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row)
 	// Load the custom profile fields
 	if ($config['load_cpf_pm'])
 	{
-		/* @var $cp \phpbb\profilefields\manager */
-		$cp = $phpbb_container->get('profilefields.manager');
+		/* @var $cp \an602\profilefields\manager */
+		$cp = $an602_container->get('profilefields.manager');
 
 		$profile_fields = $cp->grab_profile_fields_data($author_id);
 	}
@@ -121,7 +121,7 @@ function view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row)
 		if ($auth->acl_get('u_pm_download'))
 		{
 			$sql = 'SELECT *
-				FROM ' . ATTACHMENTS_TABLE . "
+				FROM ' . AN602_ATTACHMENTS_TABLE . "
 				WHERE post_msg_id = $msg_id
 					AND in_message = 1
 				ORDER BY filetime DESC, post_msg_id ASC";
@@ -136,7 +136,7 @@ function view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row)
 			// No attachments exist, but message table thinks they do so go ahead and reset attach flags
 			if (!count($attachments))
 			{
-				$sql = 'UPDATE ' . PRIVMSGS_TABLE . "
+				$sql = 'UPDATE ' . AN602_PRIVMSGS_TABLE . "
 					SET message_attachment = 0
 					WHERE msg_id = $msg_id";
 				$db->sql_query($sql);
@@ -157,7 +157,7 @@ function view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row)
 		// Update the attachment download counts
 		if (count($update_count))
 		{
-			$sql = 'UPDATE ' . ATTACHMENTS_TABLE . '
+			$sql = 'UPDATE ' . AN602_ATTACHMENTS_TABLE . '
 				SET download_count = download_count + 1
 				WHERE ' . $db->sql_in_set('attach_id', array_unique($update_count));
 			$db->sql_query($sql);
@@ -175,7 +175,7 @@ function view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row)
 		$signature = generate_text_for_display($signature, $user_info['user_sig_bbcode_uid'], $user_info['user_sig_bbcode_bitfield'], $parse_flags, true);
 	}
 
-	$url = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm');
+	$url = append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm');
 
 	// Number of "to" recipients
 	$num_recipients = (int) preg_match_all('/:?(u|g)_([0-9]+):?/', $message_row['to_address'], $match);
@@ -205,12 +205,12 @@ function view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row)
 
 	if ($config['allow_privmsg'] && $auth->acl_get('u_sendpm') && ($user_info['user_allow_pm'] || $auth->acl_gets('a_', 'm_') || $auth->acl_getf_global('m_')))
 	{
-		$u_pm = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;mode=compose&amp;u=' . $author_id);
+		$u_pm = append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;mode=compose&amp;u=' . $author_id);
 	}
 
 	if ($config['jab_enable'] && $user_info['user_jabber'] && $auth->acl_get('u_sendim'))
 	{
-		$u_jabber = append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=contact&amp;action=jabber&amp;u=' . $author_id);
+		$u_jabber = append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=contact&amp;action=jabber&amp;u=' . $author_id);
 	}
 
 	$msg_data = array(
@@ -224,7 +224,7 @@ function view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row)
 		'AUTHOR_AVATAR'		=> (isset($user_info['avatar'])) ? $user_info['avatar'] : '',
 		'AUTHOR_JOINED'		=> $user->format_date($user_info['user_regdate']),
 		'AUTHOR_POSTS'		=> (int) $user_info['user_posts'],
-		'U_AUTHOR_POSTS'	=> ($config['load_search'] && $auth->acl_get('u_search')) ? append_sid("{$phpbb_root_path}search.$phpEx", "author_id=$author_id&amp;sr=posts") : '',
+		'U_AUTHOR_POSTS'	=> ($config['load_search'] && $auth->acl_get('u_search')) ? append_sid("{$an602_root_path}search.$phpEx", "author_id=$author_id&amp;sr=posts") : '',
 		'CONTACT_USER'		=> $user->lang('CONTACT_USER', get_username_string('username', $author_id, $user_info['username'], $user_info['user_colour'], $user_info['username'])),
 
 		'ONLINE_IMG'		=> (!$config['load_onlinetrack']) ? '' : ((isset($user_info['online']) && $user_info['online']) ? $user->img('icon_user_online', $user->lang['ONLINE']) : $user->img('icon_user_offline', $user->lang['OFFLINE'])),
@@ -251,7 +251,7 @@ function view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row)
 
 		'U_DELETE'			=> ($auth->acl_get('u_pm_delete')) ? "$url&amp;mode=compose&amp;action=delete&amp;f=$folder_id&amp;p=" . $message_row['msg_id'] : '',
 		'U_EMAIL'			=> $user_info['email'],
-		'U_REPORT'			=> ($config['allow_pm_report']) ? $phpbb_container->get('controller.helper')->route('phpbb_report_pm_controller', array('id' => $message_row['msg_id'])) : '',
+		'U_REPORT'			=> ($config['allow_pm_report']) ? $an602_container->get('controller.helper')->route('an602_report_pm_controller', array('id' => $message_row['msg_id'])) : '',
 		'U_QUOTE'			=> ($auth->acl_get('u_sendpm') && $author_id != ANONYMOUS) ? "$url&amp;mode=compose&amp;action=quote&amp;f=$folder_id&amp;p=" . $message_row['msg_id'] : '',
 		'U_EDIT'			=> (($message_row['message_time'] > time() - ($config['pm_edit_time'] * 60) || !$config['pm_edit_time']) && $folder_id == PRIVMSGS_OUTBOX && $auth->acl_get('u_pm_edit')) ? "$url&amp;mode=compose&amp;action=edit&amp;f=$folder_id&amp;p=" . $message_row['msg_id'] : '',
 		'U_POST_REPLY_PM'	=> ($auth->acl_get('u_sendpm') && $author_id != ANONYMOUS) ? "$url&amp;mode=compose&amp;action=reply&amp;f=$folder_id&amp;p=" . $message_row['msg_id'] : '',
@@ -302,7 +302,7 @@ function view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row)
 		'msg_data',
 		'user_info',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.ucp_pm_view_messsage', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.ucp_pm_view_messsage', compact($vars)));
 
 	/**
 	 * Modify pm and sender data before it is assigned to the template
@@ -333,7 +333,7 @@ function view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row)
 		'user_info',
 		'attachments',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.ucp_pm_view_message', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.ucp_pm_view_message', compact($vars)));
 
 	$template->assign_vars($msg_data);
 
@@ -410,7 +410,7 @@ function view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row)
 function get_user_information($user_id, $user_row)
 {
 	global $db, $auth, $user;
-	global $phpbb_root_path, $phpEx, $config;
+	global $an602_root_path, $phpEx, $config;
 
 	if (!$user_id)
 	{
@@ -420,7 +420,7 @@ function get_user_information($user_id, $user_row)
 	if (empty($user_row))
 	{
 		$sql = 'SELECT *
-			FROM ' . USERS_TABLE . '
+			FROM ' . AN602_USERS_TABLE . '
 			WHERE user_id = ' . (int) $user_id;
 		$result = $db->sql_query($sql);
 		$user_row = $db->sql_fetchrow($result);
@@ -435,7 +435,7 @@ function get_user_information($user_id, $user_row)
 	if ($config['load_onlinetrack'])
 	{
 		$sql = 'SELECT session_user_id, MAX(session_time) as online_time, MIN(session_viewonline) AS viewonline
-			FROM ' . SESSIONS_TABLE . "
+			FROM ' . AN602_SESSIONS_TABLE . "
 			WHERE session_user_id = $user_id
 			GROUP BY session_user_id";
 		$result = $db->sql_query_limit($sql, 1);
@@ -449,21 +449,21 @@ function get_user_information($user_id, $user_row)
 		}
 	}
 
-	$user_row['avatar'] = ($user->optionget('viewavatars')) ? phpbb_get_user_avatar($user_row) : '';
+	$user_row['avatar'] = ($user->optionget('viewavatars')) ? an602_get_user_avatar($user_row) : '';
 
-	if (!function_exists('phpbb_get_user_rank'))
+	if (!function_exists('an602_get_user_rank'))
 	{
-		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+		include($an602_root_path . 'includes/functions_display.' . $phpEx);
 	}
 
-	$user_rank_data = phpbb_get_user_rank($user_row, $user_row['user_posts']);
+	$user_rank_data = an602_get_user_rank($user_row, $user_row['user_posts']);
 	$user_row['rank_title'] = $user_rank_data['title'];
 	$user_row['rank_image'] = $user_rank_data['img'];
 	$user_row['rank_image_src'] = $user_rank_data['img_src'];
 
 	if ((!empty($user_row['user_allow_viewemail']) && $auth->acl_get('u_sendemail')) || $auth->acl_get('a_email'))
 	{
-		$user_row['email'] = ($config['board_email_form'] && $config['email_enable']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=email&amp;u=$user_id") : ((($config['board_hide_emails'] && !$auth->acl_get('a_email')) || empty($user_row['user_email'])) ? '' : 'mailto:' . $user_row['user_email']);
+		$user_row['email'] = ($config['board_email_form'] && $config['email_enable']) ? append_sid("{$an602_root_path}memberlist.$phpEx", "mode=email&amp;u=$user_id") : ((($config['board_hide_emails'] && !$auth->acl_get('a_email')) || empty($user_row['user_email'])) ? '' : 'mailto:' . $user_row['user_email']);
 	}
 
 	return $user_row;

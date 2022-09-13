@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -65,11 +65,11 @@ function recalc_nested_sets(&$new_id, $pkey, $table, $parent_id = 0, $where = ar
 */
 function make_forum_select($select_id = false, $ignore_id = false, $ignore_acl = false, $ignore_nonpost = false, $ignore_emptycat = true, $only_acl_post = false, $return_array = false)
 {
-	global $db, $auth, $phpbb_dispatcher;
+	global $db, $auth, $an602_dispatcher;
 
 	// This query is identical to the jumpbox one
 	$sql = 'SELECT forum_id, forum_name, parent_id, forum_type, forum_flags, forum_options, left_id, right_id
-		FROM ' . FORUMS_TABLE . '
+		FROM ' . AN602_FORUMS_TABLE . '
 		ORDER BY left_id ASC';
 	$result = $db->sql_query($sql, 600);
 
@@ -93,7 +93,7 @@ function make_forum_select($select_id = false, $ignore_id = false, $ignore_acl =
 	* @since 3.1.10-RC1
 	*/
 	$vars = array('rowset');
-	extract($phpbb_dispatcher->trigger_event('core.make_forum_select_modify_forum_list', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.make_forum_select_modify_forum_list', compact($vars)));
 
 	// Sometimes it could happen that forums will be displayed here not be displayed within the index page
 	// This is the result of forums not displayed at index, having list permissions and a parent of a forum with no permissions.
@@ -187,17 +187,17 @@ function size_select_options($size_compare)
 */
 function group_select_options($group_id, $exclude_ids = false, $manage_founder = false)
 {
-	global $db, $config, $phpbb_container;
+	global $db, $config, $an602_container;
 
-	/** @var \phpbb\group\helper $group_helper */
-	$group_helper = $phpbb_container->get('group_helper');
+	/** @var \an602\group\helper $group_helper */
+	$group_helper = $an602_container->get('group_helper');
 
 	$exclude_sql = ($exclude_ids !== false && count($exclude_ids)) ? 'WHERE ' . $db->sql_in_set('group_id', array_map('intval', $exclude_ids), true) : '';
 	$sql_and = (!$config['coppa_enable']) ? (($exclude_sql) ? ' AND ' : ' WHERE ') . "group_name <> 'REGISTERED_COPPA'" : '';
 	$sql_founder = ($manage_founder !== false) ? (($exclude_sql || $sql_and) ? ' AND ' : ' WHERE ') . 'group_founder_manage = ' . (int) $manage_founder : '';
 
 	$sql = 'SELECT group_id, group_name, group_type
-		FROM ' . GROUPS_TABLE . "
+		FROM ' . AN602_GROUPS_TABLE . "
 		$exclude_sql
 		$sql_and
 		$sql_founder
@@ -220,7 +220,7 @@ function group_select_options($group_id, $exclude_ids = false, $manage_founder =
 */
 function get_forum_list($acl_list = 'f_list', $id_only = true, $postable_only = false, $no_cache = false)
 {
-	global $db, $auth, $phpbb_dispatcher;
+	global $db, $auth, $an602_dispatcher;
 	static $forum_rows;
 
 	if (!isset($forum_rows))
@@ -229,7 +229,7 @@ function get_forum_list($acl_list = 'f_list', $id_only = true, $postable_only = 
 		$expire_time = ($no_cache) ? 0 : 600;
 
 		$sql = 'SELECT forum_id, forum_name, parent_id, forum_type, left_id, right_id
-			FROM ' . FORUMS_TABLE . '
+			FROM ' . AN602_FORUMS_TABLE . '
 			ORDER BY left_id ASC';
 		$result = $db->sql_query($sql, $expire_time);
 
@@ -283,7 +283,7 @@ function get_forum_list($acl_list = 'f_list', $id_only = true, $postable_only = 
 	* @since 3.1.10-RC1
 	*/
 	$vars = array('rowset');
-	extract($phpbb_dispatcher->trigger_event('core.get_forum_list_modify_data', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.get_forum_list_modify_data', compact($vars)));
 
 	return $rowset;
 }
@@ -313,8 +313,8 @@ function get_forum_branch($forum_id, $type = 'all', $order = 'descending', $incl
 	$rows = array();
 
 	$sql = 'SELECT f2.*
-		FROM ' . FORUMS_TABLE . ' f1
-		LEFT JOIN ' . FORUMS_TABLE . " f2 ON ($condition)
+		FROM ' . AN602_FORUMS_TABLE . ' f1
+		LEFT JOIN ' . AN602_FORUMS_TABLE . " f2 ON ($condition)
 		WHERE f1.forum_id = $forum_id
 		ORDER BY f2.left_id " . (($order == 'descending') ? 'ASC' : 'DESC');
 	$result = $db->sql_query($sql);
@@ -345,7 +345,7 @@ function get_forum_branch($forum_id, $type = 'all', $order = 'descending', $incl
 */
 function copy_forum_permissions($src_forum_id, $dest_forum_ids, $clear_dest_perms = true, $add_log = true)
 {
-	global $db, $user, $phpbb_log;
+	global $db, $user, $an602_log;
 
 	// Only one forum id specified
 	if (!is_array($dest_forum_ids))
@@ -365,7 +365,7 @@ function copy_forum_permissions($src_forum_id, $dest_forum_ids, $clear_dest_perm
 
 	// Check if source forum exists
 	$sql = 'SELECT forum_name
-		FROM ' . FORUMS_TABLE . '
+		FROM ' . AN602_FORUMS_TABLE . '
 		WHERE forum_id = ' . $src_forum_id;
 	$result = $db->sql_query($sql);
 	$src_forum_name = $db->sql_fetchfield('forum_name');
@@ -379,7 +379,7 @@ function copy_forum_permissions($src_forum_id, $dest_forum_ids, $clear_dest_perm
 
 	// Check if destination forums exists
 	$sql = 'SELECT forum_id, forum_name
-		FROM ' . FORUMS_TABLE . '
+		FROM ' . AN602_FORUMS_TABLE . '
 		WHERE ' . $db->sql_in_set('forum_id', $dest_forum_ids);
 	$result = $db->sql_query($sql);
 
@@ -407,7 +407,7 @@ function copy_forum_permissions($src_forum_id, $dest_forum_ids, $clear_dest_perm
 
 	// Query acl users table for source forum data
 	$sql = 'SELECT user_id, auth_option_id, auth_role_id, auth_setting
-		FROM ' . ACL_USERS_TABLE . '
+		FROM ' . AN602_ACL_AN602_USERS_TABLE . '
 		WHERE forum_id = ' . $src_forum_id;
 	$result = $db->sql_query($sql);
 
@@ -429,7 +429,7 @@ function copy_forum_permissions($src_forum_id, $dest_forum_ids, $clear_dest_perm
 
 	// Query acl groups table for source forum data
 	$sql = 'SELECT group_id, auth_option_id, auth_role_id, auth_setting
-		FROM ' . ACL_GROUPS_TABLE . '
+		FROM ' . AN602_ACL_AN602_GROUPS_TABLE . '
 		WHERE forum_id = ' . $src_forum_id;
 	$result = $db->sql_query($sql);
 
@@ -454,21 +454,21 @@ function copy_forum_permissions($src_forum_id, $dest_forum_ids, $clear_dest_perm
 	// Clear current permissions of destination forums
 	if ($clear_dest_perms)
 	{
-		$sql = 'DELETE FROM ' . ACL_USERS_TABLE . '
+		$sql = 'DELETE FROM ' . AN602_ACL_AN602_USERS_TABLE . '
 			WHERE ' . $db->sql_in_set('forum_id', $dest_forum_ids);
 		$db->sql_query($sql);
 
-		$sql = 'DELETE FROM ' . ACL_GROUPS_TABLE . '
+		$sql = 'DELETE FROM ' . AN602_ACL_AN602_GROUPS_TABLE . '
 			WHERE ' . $db->sql_in_set('forum_id', $dest_forum_ids);
 		$db->sql_query($sql);
 	}
 
-	$db->sql_multi_insert(ACL_USERS_TABLE, $users_sql_ary);
-	$db->sql_multi_insert(ACL_GROUPS_TABLE, $groups_sql_ary);
+	$db->sql_multi_insert(AN602_ACL_AN602_USERS_TABLE, $users_sql_ary);
+	$db->sql_multi_insert(AN602_ACL_AN602_GROUPS_TABLE, $groups_sql_ary);
 
 	if ($add_log)
 	{
-		$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_COPIED_PERMISSIONS', false, array($src_forum_name, implode(', ', $dest_forum_names)));
+		$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_COPIED_PERMISSIONS', false, array($src_forum_name, implode(', ', $dest_forum_names)));
 	}
 
 	$db->sql_transaction('commit');
@@ -529,7 +529,7 @@ function filelist($rootdir, $dir = '', $type = 'gif|jpg|jpeg|png|svg|webp')
 */
 function move_topics($topic_ids, $forum_id, $auto_sync = true)
 {
-	global $db, $phpbb_dispatcher;
+	global $db, $an602_dispatcher;
 
 	if (empty($topic_ids))
 	{
@@ -555,9 +555,9 @@ function move_topics($topic_ids, $forum_id, $auto_sync = true)
 		'topic_ids',
 		'forum_id',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.move_topics_before', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.move_topics_before', compact($vars)));
 
-	$sql = 'DELETE FROM ' . TOPICS_TABLE . '
+	$sql = 'DELETE FROM ' . AN602_TOPICS_TABLE . '
 		WHERE ' . $db->sql_in_set('topic_moved_id', $topic_ids) . '
 			AND forum_id = ' . $forum_id;
 	$db->sql_query($sql);
@@ -565,7 +565,7 @@ function move_topics($topic_ids, $forum_id, $auto_sync = true)
 	if ($auto_sync)
 	{
 		$sql = 'SELECT DISTINCT forum_id
-			FROM ' . TOPICS_TABLE . '
+			FROM ' . AN602_TOPICS_TABLE . '
 			WHERE ' . $db->sql_in_set('topic_id', $topic_ids);
 		$result = $db->sql_query($sql);
 
@@ -576,7 +576,7 @@ function move_topics($topic_ids, $forum_id, $auto_sync = true)
 		$db->sql_freeresult($result);
 	}
 
-	$table_ary = array(TOPICS_TABLE, POSTS_TABLE, LOG_TABLE, DRAFTS_TABLE, TOPICS_TRACK_TABLE);
+	$table_ary = array(AN602_TOPICS_TABLE, AN602_POSTS_TABLE, AN602_LOG_TABLE, AN602_DRAFTS_TABLE, AN602_TOPICS_TRACK_TABLE);
 
 	/**
 	 * Perform additional actions before topics move
@@ -596,7 +596,7 @@ function move_topics($topic_ids, $forum_id, $auto_sync = true)
 			'forum_ids',
 			'auto_sync',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.move_topics_before_query', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.move_topics_before_query', compact($vars)));
 
 	foreach ($table_ary as $table)
 	{
@@ -621,7 +621,7 @@ function move_topics($topic_ids, $forum_id, $auto_sync = true)
 		'forum_id',
 		'forum_ids',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.move_topics_after', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.move_topics_after', compact($vars)));
 
 	if ($auto_sync)
 	{
@@ -635,7 +635,7 @@ function move_topics($topic_ids, $forum_id, $auto_sync = true)
 */
 function move_posts($post_ids, $topic_id, $auto_sync = true)
 {
-	global $db, $phpbb_dispatcher;
+	global $db, $an602_dispatcher;
 
 	if (!is_array($post_ids))
 	{
@@ -646,7 +646,7 @@ function move_posts($post_ids, $topic_id, $auto_sync = true)
 	$topic_ids = array($topic_id);
 
 	$sql = 'SELECT DISTINCT topic_id, forum_id
-		FROM ' . POSTS_TABLE . '
+		FROM ' . AN602_POSTS_TABLE . '
 		WHERE ' . $db->sql_in_set('post_id', $post_ids);
 	$result = $db->sql_query($sql);
 
@@ -658,7 +658,7 @@ function move_posts($post_ids, $topic_id, $auto_sync = true)
 	$db->sql_freeresult($result);
 
 	$sql = 'SELECT forum_id
-		FROM ' . TOPICS_TABLE . '
+		FROM ' . AN602_TOPICS_TABLE . '
 		WHERE topic_id = ' . $topic_id;
 	$result = $db->sql_query($sql);
 	$forum_row = $db->sql_fetchrow($result);
@@ -689,14 +689,14 @@ function move_posts($post_ids, $topic_id, $auto_sync = true)
 			'topic_ids',
 			'forum_row',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.move_posts_before', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.move_posts_before', compact($vars)));
 
-	$sql = 'UPDATE ' . POSTS_TABLE . '
+	$sql = 'UPDATE ' . AN602_POSTS_TABLE . '
 		SET forum_id = ' . (int) $forum_row['forum_id'] . ", topic_id = $topic_id
 		WHERE " . $db->sql_in_set('post_id', $post_ids);
 	$db->sql_query($sql);
 
-	$sql = 'UPDATE ' . ATTACHMENTS_TABLE . "
+	$sql = 'UPDATE ' . AN602_ATTACHMENTS_TABLE . "
 		SET topic_id = $topic_id, in_message = 0
 		WHERE " . $db->sql_in_set('post_msg_id', $post_ids);
 	$db->sql_query($sql);
@@ -721,7 +721,7 @@ function move_posts($post_ids, $topic_id, $auto_sync = true)
 			'topic_ids',
 			'forum_row',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.move_posts_after', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.move_posts_after', compact($vars)));
 
 	if ($auto_sync)
 	{
@@ -752,7 +752,7 @@ function move_posts($post_ids, $topic_id, $auto_sync = true)
 			'topic_ids',
 			'forum_row',
 		);
-		extract($phpbb_dispatcher->trigger_event('core.move_posts_sync_after', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.move_posts_sync_after', compact($vars)));
 	}
 
 	// Update posted information
@@ -764,7 +764,7 @@ function move_posts($post_ids, $topic_id, $auto_sync = true)
 */
 function delete_topics($where_type, $where_ids, $auto_sync = true, $post_count_sync = true, $call_delete_posts = true)
 {
-	global $db, $config, $phpbb_container, $phpbb_dispatcher;
+	global $db, $config, $an602_container, $an602_dispatcher;
 
 	$approved_topics = 0;
 	$forum_ids = $topic_ids = array();
@@ -791,7 +791,7 @@ function delete_topics($where_type, $where_ids, $auto_sync = true, $post_count_s
 	);
 
 	$sql = 'SELECT topic_id, forum_id, topic_visibility, topic_moved_id
-		FROM ' . TOPICS_TABLE . '
+		FROM ' . AN602_TOPICS_TABLE . '
 		WHERE ' . $where_clause;
 	$result = $db->sql_query($sql);
 
@@ -816,7 +816,7 @@ function delete_topics($where_type, $where_ids, $auto_sync = true, $post_count_s
 
 	$db->sql_transaction('begin');
 
-	$table_ary = array(BOOKMARKS_TABLE, TOPICS_TRACK_TABLE, TOPICS_POSTED_TABLE, POLL_VOTES_TABLE, POLL_OPTIONS_TABLE, TOPICS_WATCH_TABLE, TOPICS_TABLE);
+	$table_ary = array(AN602_BOOKMARKS_TABLE, AN602_TOPICS_TRACK_TABLE, AN602_TOPICS_POSTED_TABLE, AN602_POLL_VOTES_TABLE, AN602_POLL_OPTIONS_TABLE, AN602_TOPICS_WATCH_TABLE, AN602_TOPICS_TABLE);
 
 	/**
 	 * Perform additional actions before topic(s) deletion
@@ -830,7 +830,7 @@ function delete_topics($where_type, $where_ids, $auto_sync = true, $post_count_s
 			'table_ary',
 			'topic_ids',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.delete_topics_before_query', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.delete_topics_before_query', compact($vars)));
 
 	foreach ($table_ary as $table)
 	{
@@ -850,13 +850,13 @@ function delete_topics($where_type, $where_ids, $auto_sync = true, $post_count_s
 	$vars = array(
 			'topic_ids',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.delete_topics_after_query', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.delete_topics_after_query', compact($vars)));
 
 	$moved_topic_ids = array();
 
 	// update the other forums
 	$sql = 'SELECT topic_id, forum_id
-		FROM ' . TOPICS_TABLE . '
+		FROM ' . AN602_TOPICS_TABLE . '
 		WHERE ' . $db->sql_in_set('topic_moved_id', $topic_ids);
 	$result = $db->sql_query($sql);
 
@@ -869,7 +869,7 @@ function delete_topics($where_type, $where_ids, $auto_sync = true, $post_count_s
 
 	if (count($moved_topic_ids))
 	{
-		$sql = 'DELETE FROM ' . TOPICS_TABLE . '
+		$sql = 'DELETE FROM ' . AN602_TOPICS_TABLE . '
 			WHERE ' . $db->sql_in_set('topic_id', $moved_topic_ids);
 		$db->sql_query($sql);
 	}
@@ -887,10 +887,10 @@ function delete_topics($where_type, $where_ids, $auto_sync = true, $post_count_s
 		$config->increment('num_topics', $approved_topics * (-1), false);
 	}
 
-	/* @var $phpbb_notifications \phpbb\notification\manager */
-	$phpbb_notifications = $phpbb_container->get('notification_manager');
+	/* @var $an602_notifications \an602\notification\manager */
+	$an602_notifications = $an602_container->get('notification_manager');
 
-	$phpbb_notifications->delete_notifications(array(
+	$an602_notifications->delete_notifications(array(
 		'notification.type.topic',
 		'notification.type.approve_topic',
 		'notification.type.topic_in_queue',
@@ -904,7 +904,7 @@ function delete_topics($where_type, $where_ids, $auto_sync = true, $post_count_s
 */
 function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync = true, $post_count_sync = true, $call_delete_topics = true)
 {
-	global $db, $config, $phpbb_root_path, $phpEx, $auth, $user, $phpbb_container, $phpbb_dispatcher;
+	global $db, $config, $an602_root_path, $phpEx, $auth, $user, $an602_container, $an602_dispatcher;
 
 	// Notifications types to delete
 	$delete_notifications_types = array(
@@ -936,7 +936,7 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 		'call_delete_topics',
 		'delete_notifications_types',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.delete_posts_before', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.delete_posts_before', compact($vars)));
 
 	if ($where_type === 'range')
 	{
@@ -981,7 +981,7 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 	$post_ids = $topic_ids = $forum_ids = $post_counts = $remove_topics = array();
 
 	$sql = 'SELECT post_id, poster_id, post_visibility, post_postcount, topic_id, forum_id
-		FROM ' . POSTS_TABLE . '
+		FROM ' . AN602_POSTS_TABLE . '
 		WHERE ' . $where_clause;
 	$result = $db->sql_query($sql);
 
@@ -1011,7 +1011,7 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 
 	$db->sql_transaction('begin');
 
-	$table_ary = array(POSTS_TABLE, REPORTS_TABLE);
+	$table_ary = array(AN602_POSTS_TABLE, AN602_REPORTS_TABLE);
 
 	/**
 	* Perform additional actions during post(s) deletion before running the queries
@@ -1037,7 +1037,7 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 		'delete_notifications_types',
 		'table_ary',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.delete_posts_in_transaction_before', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.delete_posts_in_transaction_before', compact($vars)));
 
 	foreach ($table_ary as $table)
 	{
@@ -1052,13 +1052,13 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 	{
 		foreach ($post_counts as $poster_id => $substract)
 		{
-			$sql = 'UPDATE ' . USERS_TABLE . '
+			$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 				SET user_posts = 0
 				WHERE user_id = ' . $poster_id . '
 				AND user_posts < ' . $substract;
 			$db->sql_query($sql);
 
-			$sql = 'UPDATE ' . USERS_TABLE . '
+			$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 				SET user_posts = user_posts - ' . $substract . '
 				WHERE user_id = ' . $poster_id . '
 				AND user_posts >= ' . $substract;
@@ -1070,7 +1070,7 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 	if (count($topic_ids))
 	{
 		$sql = 'SELECT topic_id
-			FROM ' . POSTS_TABLE . '
+			FROM ' . AN602_POSTS_TABLE . '
 			WHERE ' . $db->sql_in_set('topic_id', $topic_ids) . '
 			GROUP BY topic_id';
 		$result = $db->sql_query($sql);
@@ -1094,7 +1094,7 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 	}
 
 	$error = false;
-	$search = new $search_type($error, $phpbb_root_path, $phpEx, $auth, $config, $db, $user, $phpbb_dispatcher);
+	$search = new $search_type($error, $an602_root_path, $phpEx, $auth, $config, $db, $user, $an602_dispatcher);
 
 	if ($error)
 	{
@@ -1103,8 +1103,8 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 
 	$search->index_remove($post_ids, $poster_ids, $forum_ids);
 
-	/** @var \phpbb\attachment\manager $attachment_manager */
-	$attachment_manager = $phpbb_container->get('attachment.manager');
+	/** @var \an602\attachment\manager $attachment_manager */
+	$attachment_manager = $an602_container->get('attachment.manager');
 	$attachment_manager->delete('post', $post_ids, false);
 	unset($attachment_manager);
 
@@ -1130,7 +1130,7 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 		'where_ids',
 		'delete_notifications_types',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.delete_posts_in_transaction', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.delete_posts_in_transaction', compact($vars)));
 
 	$db->sql_transaction('commit');
 
@@ -1156,7 +1156,7 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 		'where_ids',
 		'delete_notifications_types',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.delete_posts_after', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.delete_posts_after', compact($vars)));
 
 	// Resync topics_posted table
 	if ($posted_sync)
@@ -1182,10 +1182,10 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 		delete_topics('topic_id', $remove_topics, $auto_sync, $post_count_sync, false);
 	}
 
-	/* @var $phpbb_notifications \phpbb\notification\manager */
-	$phpbb_notifications = $phpbb_container->get('notification_manager');
+	/* @var $an602_notifications \an602\notification\manager */
+	$an602_notifications = $an602_container->get('notification_manager');
 
-	$phpbb_notifications->delete_notifications($delete_notifications_types, $post_ids);
+	$an602_notifications->delete_notifications($delete_notifications_types, $post_ids);
 
 	return count($post_ids);
 }
@@ -1218,7 +1218,7 @@ function delete_topic_shadows($forum_id, $sql_more = '', $auto_sync = true)
 	do
 	{
 		$sql = 'SELECT t2.forum_id, t2.topic_id
-			FROM ' . TOPICS_TABLE . ' t2, ' . TOPICS_TABLE . ' t
+			FROM ' . AN602_TOPICS_TABLE . ' t2, ' . AN602_TOPICS_TABLE . ' t
 			WHERE t2.topic_moved_id = t.topic_id
 				AND t.forum_id = ' . (int) $forum_id . '
 				' . (($sql_more) ? 'AND ' . $sql_more : '');
@@ -1235,7 +1235,7 @@ function delete_topic_shadows($forum_id, $sql_more = '', $auto_sync = true)
 
 		if (!empty($topic_ids))
 		{
-			$sql = 'DELETE FROM ' . TOPICS_TABLE . '
+			$sql = 'DELETE FROM ' . AN602_TOPICS_TABLE . '
 				WHERE ' . $db->sql_in_set('topic_id', $topic_ids);
 			$db->sql_query($sql);
 		}
@@ -1263,13 +1263,13 @@ function update_posted_info(&$topic_ids)
 	}
 
 	// First of all, let us remove any posted information for these topics
-	$sql = 'DELETE FROM ' . TOPICS_POSTED_TABLE . '
+	$sql = 'DELETE FROM ' . AN602_TOPICS_POSTED_TABLE . '
 		WHERE ' . $db->sql_in_set('topic_id', $topic_ids);
 	$db->sql_query($sql);
 
 	// Now, let us collect the user/topic combos for rebuilding the information
 	$sql = 'SELECT poster_id, topic_id
-		FROM ' . POSTS_TABLE . '
+		FROM ' . AN602_POSTS_TABLE . '
 		WHERE ' . $db->sql_in_set('topic_id', $topic_ids) . '
 			AND poster_id <> ' . ANONYMOUS . '
 		GROUP BY poster_id, topic_id';
@@ -1298,7 +1298,7 @@ function update_posted_info(&$topic_ids)
 	}
 	unset($posted);
 
-	$db->sql_multi_insert(TOPICS_POSTED_TABLE, $sql_ary);
+	$db->sql_multi_insert(AN602_TOPICS_POSTED_TABLE, $sql_ary);
 }
 
 /**
@@ -1324,7 +1324,7 @@ function update_posted_info(&$topic_ids)
 */
 function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false, $sync_extra = false)
 {
-	global $db, $phpbb_dispatcher;
+	global $db, $an602_dispatcher;
 
 	if (is_array($where_ids))
 	{
@@ -1385,8 +1385,8 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			switch ($db->get_sql_layer())
 			{
 				case 'mysqli':
-					$sql = 'DELETE FROM ' . TOPICS_TABLE . '
-						USING ' . TOPICS_TABLE . ' t1, ' . TOPICS_TABLE . " t2
+					$sql = 'DELETE FROM ' . AN602_TOPICS_TABLE . '
+						USING ' . AN602_TOPICS_TABLE . ' t1, ' . AN602_TOPICS_TABLE . " t2
 						WHERE t1.topic_moved_id = t2.topic_id
 							AND t1.forum_id = t2.forum_id";
 					$db->sql_query($sql);
@@ -1394,7 +1394,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 
 				default:
 					$sql = 'SELECT t1.topic_id
-						FROM ' .TOPICS_TABLE . ' t1, ' . TOPICS_TABLE . " t2
+						FROM ' .AN602_TOPICS_TABLE . ' t1, ' . AN602_TOPICS_TABLE . " t2
 						WHERE t1.topic_moved_id = t2.topic_id
 							AND t1.forum_id = t2.forum_id";
 					$result = $db->sql_query($sql);
@@ -1411,7 +1411,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 						return;
 					}
 
-					$sql = 'DELETE FROM ' . TOPICS_TABLE . '
+					$sql = 'DELETE FROM ' . AN602_TOPICS_TABLE . '
 						WHERE ' . $db->sql_in_set('topic_id', $topic_id_ary);
 					$db->sql_query($sql);
 
@@ -1426,7 +1426,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			$db->sql_transaction('begin');
 
 			$sql = 'SELECT t.topic_id, p.post_visibility
-				FROM ' . TOPICS_TABLE . ' t, ' . POSTS_TABLE . " p
+				FROM ' . AN602_TOPICS_TABLE . ' t, ' . AN602_POSTS_TABLE . " p
 				$where_sql_and p.topic_id = t.topic_id
 					AND p.post_visibility = " . ITEM_APPROVED;
 			$result = $db->sql_query($sql);
@@ -1439,7 +1439,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			$db->sql_freeresult($result);
 
 			$sql = 'SELECT t.topic_id, p.post_visibility
-				FROM ' . TOPICS_TABLE . ' t, ' . POSTS_TABLE . " p
+				FROM ' . AN602_TOPICS_TABLE . ' t, ' . AN602_POSTS_TABLE . " p
 				$where_sql_and " . $db->sql_in_set('t.topic_id', $topics_approved, true, true) . '
 					AND p.topic_id = t.topic_id
 					AND p.post_visibility = ' . ITEM_DELETED;
@@ -1465,7 +1465,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			{
 				if ($sql_where)
 				{
-					$sql = 'UPDATE ' . TOPICS_TABLE . '
+					$sql = 'UPDATE ' . AN602_TOPICS_TABLE . '
 						SET topic_visibility = ' . $visibility . '
 						' . $sql_where;
 					$db->sql_query($sql);
@@ -1481,7 +1481,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			$db->sql_transaction('begin');
 
 			$sql = 'SELECT p.post_id, p.post_reported
-				FROM ' . POSTS_TABLE . " p
+				FROM ' . AN602_POSTS_TABLE . " p
 				$where_sql
 				GROUP BY p.post_id, p.post_reported";
 			$result = $db->sql_query($sql);
@@ -1497,7 +1497,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			$db->sql_freeresult($result);
 
 			$sql = 'SELECT DISTINCT(post_id)
-				FROM ' . REPORTS_TABLE . '
+				FROM ' . AN602_REPORTS_TABLE . '
 				WHERE ' . $db->sql_in_set('post_id', $post_ids) . '
 					AND report_closed = 0';
 			$result = $db->sql_query($sql);
@@ -1525,7 +1525,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 
 			if (count($post_ids))
 			{
-				$sql = 'UPDATE ' . POSTS_TABLE . '
+				$sql = 'UPDATE ' . AN602_POSTS_TABLE . '
 					SET post_reported = 1 - post_reported
 					WHERE ' . $db->sql_in_set('post_id', $post_ids);
 				$db->sql_query($sql);
@@ -1545,7 +1545,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			$db->sql_transaction('begin');
 
 			$sql = 'SELECT DISTINCT(t.topic_id)
-				FROM ' . POSTS_TABLE . " t
+				FROM ' . AN602_POSTS_TABLE . " t
 				$where_sql_and t.post_reported = 1";
 			$result = $db->sql_query($sql);
 
@@ -1556,7 +1556,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			$db->sql_freeresult($result);
 
 			$sql = 'SELECT t.topic_id, t.topic_reported
-				FROM ' . TOPICS_TABLE . " t
+				FROM ' . AN602_TOPICS_TABLE . " t
 				$where_sql";
 			$result = $db->sql_query($sql);
 
@@ -1571,7 +1571,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 
 			if (count($topic_ids))
 			{
-				$sql = 'UPDATE ' . TOPICS_TABLE . '
+				$sql = 'UPDATE ' . AN602_TOPICS_TABLE . '
 					SET topic_reported = 1 - topic_reported
 					WHERE ' . $db->sql_in_set('topic_id', $topic_ids);
 				$db->sql_query($sql);
@@ -1586,7 +1586,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			$db->sql_transaction('begin');
 
 			$sql = 'SELECT p.post_id, p.post_attachment
-				FROM ' . POSTS_TABLE . " p
+				FROM ' . AN602_POSTS_TABLE . " p
 				$where_sql
 				GROUP BY p.post_id, p.post_attachment";
 			$result = $db->sql_query($sql);
@@ -1602,7 +1602,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			$db->sql_freeresult($result);
 
 			$sql = 'SELECT DISTINCT(post_msg_id)
-				FROM ' . ATTACHMENTS_TABLE . '
+				FROM ' . AN602_ATTACHMENTS_TABLE . '
 				WHERE ' . $db->sql_in_set('post_msg_id', $post_ids) . '
 					AND in_message = 0';
 			$result = $db->sql_query($sql);
@@ -1630,7 +1630,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 
 			if (count($post_ids))
 			{
-				$sql = 'UPDATE ' . POSTS_TABLE . '
+				$sql = 'UPDATE ' . AN602_POSTS_TABLE . '
 					SET post_attachment = 1 - post_attachment
 					WHERE ' . $db->sql_in_set('post_id', $post_ids);
 				$db->sql_query($sql);
@@ -1650,7 +1650,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			$db->sql_transaction('begin');
 
 			$sql = 'SELECT DISTINCT(t.topic_id)
-				FROM ' . POSTS_TABLE . " t
+				FROM ' . AN602_POSTS_TABLE . " t
 				$where_sql_and t.post_attachment = 1";
 			$result = $db->sql_query($sql);
 
@@ -1661,7 +1661,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			$db->sql_freeresult($result);
 
 			$sql = 'SELECT t.topic_id, t.topic_attachment
-				FROM ' . TOPICS_TABLE . " t
+				FROM ' . AN602_TOPICS_TABLE . " t
 				$where_sql";
 			$result = $db->sql_query($sql);
 
@@ -1676,7 +1676,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 
 			if (count($topic_ids))
 			{
-				$sql = 'UPDATE ' . TOPICS_TABLE . '
+				$sql = 'UPDATE ' . AN602_TOPICS_TABLE . '
 					SET topic_attachment = 1 - topic_attachment
 					WHERE ' . $db->sql_in_set('topic_id', $topic_ids);
 				$db->sql_query($sql);
@@ -1692,7 +1692,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 
 			// 1: Get the list of all forums
 			$sql = 'SELECT f.*
-				FROM ' . FORUMS_TABLE . " f
+				FROM ' . AN602_FORUMS_TABLE . " f
 				$where_sql";
 			$result = $db->sql_query($sql);
 
@@ -1737,7 +1737,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			if ($sync_extra)
 			{
 				$sql = 'SELECT forum_id, topic_visibility, COUNT(topic_id) AS total_topics
-					FROM ' . TOPICS_TABLE . '
+					FROM ' . AN602_TOPICS_TABLE . '
 					WHERE ' . $db->sql_in_set('forum_id', $forum_ids) . '
 					GROUP BY forum_id, topic_visibility';
 				$result = $db->sql_query($sql);
@@ -1768,14 +1768,14 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 				if (count($forum_ids) == 1)
 				{
 					$sql = 'SELECT SUM(t.topic_posts_approved) AS forum_posts_approved, SUM(t.topic_posts_unapproved) AS forum_posts_unapproved, SUM(t.topic_posts_softdeleted) AS forum_posts_softdeleted
-						FROM ' . TOPICS_TABLE . ' t
+						FROM ' . AN602_TOPICS_TABLE . ' t
 						WHERE ' . $db->sql_in_set('t.forum_id', $forum_ids) . '
 							AND t.topic_status <> ' . ITEM_MOVED;
 				}
 				else
 				{
 					$sql = 'SELECT t.forum_id, SUM(t.topic_posts_approved) AS forum_posts_approved, SUM(t.topic_posts_unapproved) AS forum_posts_unapproved, SUM(t.topic_posts_softdeleted) AS forum_posts_softdeleted
-						FROM ' . TOPICS_TABLE . ' t
+						FROM ' . AN602_TOPICS_TABLE . ' t
 						WHERE ' . $db->sql_in_set('t.forum_id', $forum_ids) . '
 							AND t.topic_status <> ' . ITEM_MOVED . '
 						GROUP BY t.forum_id';
@@ -1798,14 +1798,14 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			if (count($forum_ids) == 1)
 			{
 				$sql = 'SELECT MAX(t.topic_last_post_id) as last_post_id
-					FROM ' . TOPICS_TABLE . ' t
+					FROM ' . AN602_TOPICS_TABLE . ' t
 					WHERE ' . $db->sql_in_set('t.forum_id', $forum_ids) . '
 						AND t.topic_visibility = ' . ITEM_APPROVED;
 			}
 			else
 			{
 				$sql = 'SELECT t.forum_id, MAX(t.topic_last_post_id) as last_post_id
-					FROM ' . TOPICS_TABLE . ' t
+					FROM ' . AN602_TOPICS_TABLE . ' t
 					WHERE ' . $db->sql_in_set('t.forum_id', $forum_ids) . '
 						AND t.topic_visibility = ' . ITEM_APPROVED . '
 					GROUP BY t.forum_id';
@@ -1829,8 +1829,8 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 				$sql_ary = array(
 					'SELECT'	=> 'p.post_id, p.poster_id, p.post_subject, p.post_time, p.post_username, u.username, u.user_colour',
 					'FROM'		=> array(
-						POSTS_TABLE	=> 'p',
-						USERS_TABLE => 'u',
+						AN602_POSTS_TABLE	=> 'p',
+						AN602_USERS_TABLE => 'u',
 					),
 					'WHERE'		=> $db->sql_in_set('p.post_id', $post_ids) . '
 						AND p.poster_id = u.user_id',
@@ -1844,7 +1844,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 				* @since 3.3.5-RC1
 				*/
 				$vars = ['sql_ary'];
-				extract($phpbb_dispatcher->trigger_event('core.sync_forum_last_post_info_sql', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.sync_forum_last_post_info_sql', compact($vars)));
 				$result = $db->sql_query($db->sql_build_query('SELECT', $sql_ary));
 
 				while ($row = $db->sql_fetchrow($result))
@@ -1901,7 +1901,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 				'post_info',
 				'fieldnames',
 			];
-			extract($phpbb_dispatcher->trigger_event('core.sync_modify_forum_data', compact($vars)));
+			extract($an602_dispatcher->trigger_event('core.sync_modify_forum_data', compact($vars)));
 			unset($post_info);
 
 			foreach ($forum_data as $forum_id => $row)
@@ -1925,7 +1925,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 
 				if (count($sql_ary))
 				{
-					$sql = 'UPDATE ' . FORUMS_TABLE . '
+					$sql = 'UPDATE ' . AN602_FORUMS_TABLE . '
 						SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 						WHERE forum_id = ' . $forum_id;
 					$db->sql_query($sql);
@@ -1941,7 +1941,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			$db->sql_transaction('begin');
 
 			$sql = 'SELECT t.topic_id, t.forum_id, t.topic_moved_id, t.topic_visibility, ' . (($sync_extra) ? 't.topic_attachment, t.topic_reported, ' : '') . 't.topic_poster, t.topic_time, t.topic_posts_approved, t.topic_posts_unapproved, t.topic_posts_softdeleted, t.topic_first_post_id, t.topic_first_poster_name, t.topic_first_poster_colour, t.topic_last_post_id, t.topic_last_post_subject, t.topic_last_poster_id, t.topic_last_poster_name, t.topic_last_poster_colour, t.topic_last_post_time
-				FROM ' . TOPICS_TABLE . " t
+				FROM ' . AN602_TOPICS_TABLE . " t
 				$where_sql";
 			$result = $db->sql_query($sql);
 
@@ -1977,7 +1977,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			// Use "t" as table alias because of the $where_sql clause
 			// NOTE: 't.post_visibility' in the GROUP BY is causing a major slowdown.
 			$sql = 'SELECT t.topic_id, t.post_visibility, COUNT(t.post_id) AS total_posts, MIN(t.post_id) AS first_post_id, MAX(t.post_id) AS last_post_id
-				FROM ' . POSTS_TABLE . " t
+				FROM ' . AN602_POSTS_TABLE . " t
 				$where_sql
 				GROUP BY t.topic_id, t.post_visibility";
 			$result = $db->sql_query($sql);
@@ -2075,8 +2075,8 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			$sql_ary = array(
 				'SELECT'	=> 'p.post_id, p.topic_id, p.post_visibility, p.poster_id, p.post_subject, p.post_username, p.post_time, u.username, u.user_colour',
 				'FROM'		=> array(
-					POSTS_TABLE	=> 'p',
-					USERS_TABLE => 'u',
+					AN602_POSTS_TABLE	=> 'p',
+					AN602_USERS_TABLE => 'u',
 				),
 				'WHERE'		=> $db->sql_in_set('p.post_id', $post_ids) . '
 					AND u.user_id = p.poster_id',
@@ -2095,7 +2095,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 				'sql_ary',
 				'custom_fieldnames',
 			];
-			extract($phpbb_dispatcher->trigger_event('core.sync_topic_last_post_info_sql', compact($vars)));
+			extract($an602_dispatcher->trigger_event('core.sync_topic_last_post_info_sql', compact($vars)));
 			$result = $db->sql_query($db->sql_build_query('SELECT', $sql_ary));
 
 			while ($row = $db->sql_fetchrow($result))
@@ -2133,7 +2133,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 					'row',
 					'topic_id',
 				];
-				extract($phpbb_dispatcher->trigger_event('core.sync_modify_topic_data', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.sync_modify_topic_data', compact($vars)));
 			}
 			$db->sql_freeresult($result);
 
@@ -2143,8 +2143,8 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 				$delete_topics = array();
 
 				$sql = 'SELECT t1.topic_id, t1.topic_moved_id
-					FROM ' . TOPICS_TABLE . ' t1
-					LEFT JOIN ' . TOPICS_TABLE . ' t2 ON (t2.topic_id = t1.topic_moved_id)
+					FROM ' . AN602_TOPICS_TABLE . ' t1
+					LEFT JOIN ' . AN602_TOPICS_TABLE . ' t2 ON (t2.topic_id = t1.topic_moved_id)
 					WHERE ' . $db->sql_in_set('t1.topic_id', $moved_topics) . '
 						AND t2.topic_id IS NULL';
 				$result = $db->sql_query($sql);
@@ -2163,7 +2163,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 
 				// Make sure shadow topics having no last post data being updated (this only rarely happens...)
 				$sql = 'SELECT topic_id, topic_moved_id, topic_last_post_id, topic_first_post_id
-					FROM ' . TOPICS_TABLE . '
+					FROM ' . AN602_TOPICS_TABLE . '
 					WHERE ' . $db->sql_in_set('topic_id', $moved_topics) . '
 						AND topic_last_post_time = 0';
 				$result = $db->sql_query($sql);
@@ -2181,7 +2181,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 				if (count($post_ids))
 				{
 					$sql = 'SELECT p.post_id, p.topic_id, p.post_visibility, p.poster_id, p.post_subject, p.post_username, p.post_time, u.username, u.user_colour
-						FROM ' . POSTS_TABLE . ' p, ' . USERS_TABLE . ' u
+						FROM ' . AN602_POSTS_TABLE . ' p, ' . AN602_USERS_TABLE . ' u
 						WHERE ' . $db->sql_in_set('p.post_id', $post_ids) . '
 							AND u.user_id = p.poster_id';
 					$result = $db->sql_query($sql);
@@ -2235,7 +2235,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 					{
 						foreach ($sync_shadow_topics as $sync_topic_id => $sql_ary)
 						{
-							$sql = 'UPDATE ' . TOPICS_TABLE . '
+							$sql = 'UPDATE ' . AN602_TOPICS_TABLE . '
 								SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 								WHERE topic_id = ' . $sync_topic_id;
 							$db->sql_query($sql);
@@ -2258,7 +2258,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 				// This routine assumes that post_reported values are correct
 				// if they are not, use sync('post_reported') first
 				$sql = 'SELECT t.topic_id, p.post_id
-					FROM ' . TOPICS_TABLE . ' t, ' . POSTS_TABLE . " p
+					FROM ' . AN602_TOPICS_TABLE . ' t, ' . AN602_POSTS_TABLE . " p
 					$where_sql_and p.topic_id = t.topic_id
 						AND p.post_reported = 1
 					GROUP BY t.topic_id, p.post_id";
@@ -2274,7 +2274,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 				// This routine assumes that post_attachment values are correct
 				// if they are not, use sync('post_attachment') first
 				$sql = 'SELECT t.topic_id, p.post_id
-					FROM ' . TOPICS_TABLE . ' t, ' . POSTS_TABLE . " p
+					FROM ' . AN602_TOPICS_TABLE . ' t, ' . AN602_POSTS_TABLE . " p
 					$where_sql_and p.topic_id = t.topic_id
 						AND p.post_attachment = 1
 					GROUP BY t.topic_id, p.post_id";
@@ -2302,7 +2302,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 
 				if (count($sql_ary))
 				{
-					$sql = 'UPDATE ' . TOPICS_TABLE . '
+					$sql = 'UPDATE ' . AN602_TOPICS_TABLE . '
 						SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 						WHERE topic_id = ' . $topic_id;
 					$db->sql_query($sql);
@@ -2332,7 +2332,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 */
 function prune($forum_id, $prune_mode, $prune_date, $prune_flags = 0, $auto_sync = true, $prune_limit = 0)
 {
-	global $db, $phpbb_dispatcher;
+	global $db, $an602_dispatcher;
 
 	if (!is_array($forum_id))
 	{
@@ -2395,10 +2395,10 @@ function prune($forum_id, $prune_mode, $prune_date, $prune_flags = 0, $auto_sync
 		'sql_and',
 		'prune_limit',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.prune_sql', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.prune_sql', compact($vars)));
 
 	$sql = 'SELECT topic_id
-		FROM ' . TOPICS_TABLE . '
+		FROM ' . AN602_TOPICS_TABLE . '
 		WHERE ' . $db->sql_in_set('forum_id', $forum_id) . "
 			AND poll_start = 0
 			$sql_and";
@@ -2414,7 +2414,7 @@ function prune($forum_id, $prune_mode, $prune_date, $prune_flags = 0, $auto_sync
 	if ($prune_flags & FORUM_FLAG_PRUNE_POLL)
 	{
 		$sql = 'SELECT topic_id
-			FROM ' . TOPICS_TABLE . '
+			FROM ' . AN602_TOPICS_TABLE . '
 			WHERE ' . $db->sql_in_set('forum_id', $forum_id) . "
 				AND poll_start > 0
 				AND poll_last_vote < $prune_date
@@ -2438,7 +2438,7 @@ function prune($forum_id, $prune_mode, $prune_date, $prune_flags = 0, $auto_sync
 	 * @since 3.2.2-RC1
 	 */
 	$vars = array('topic_list');
-	extract($phpbb_dispatcher->trigger_event('core.prune_delete_before', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.prune_delete_before', compact($vars)));
 
 	return delete_topics('topic_id', $topic_list, $auto_sync, false);
 }
@@ -2448,10 +2448,10 @@ function prune($forum_id, $prune_mode, $prune_date, $prune_flags = 0, $auto_sync
 */
 function auto_prune($forum_id, $prune_mode, $prune_flags, $prune_days, $prune_freq, $log_prune = true)
 {
-	global $db, $user, $phpbb_log;
+	global $db, $user, $an602_log;
 
 	$sql = 'SELECT forum_name
-		FROM ' . FORUMS_TABLE . "
+		FROM ' . AN602_FORUMS_TABLE . "
 		WHERE forum_id = $forum_id";
 	$result = $db->sql_query($sql, 3600);
 	$row = $db->sql_fetchrow($result);
@@ -2468,7 +2468,7 @@ function auto_prune($forum_id, $prune_mode, $prune_flags, $prune_days, $prune_fr
 		{
 			$column = $prune_mode === 'shadow' ? 'prune_shadow_next' : 'prune_next';
 
-			$sql = 'UPDATE ' . FORUMS_TABLE . "
+			$sql = 'UPDATE ' . AN602_FORUMS_TABLE . "
 				SET $column = $next_prune
 				WHERE forum_id = $forum_id";
 			$db->sql_query($sql);
@@ -2476,7 +2476,7 @@ function auto_prune($forum_id, $prune_mode, $prune_flags, $prune_days, $prune_fr
 
 		if ($log_prune)
 		{
-			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_AUTO_PRUNE', false, [$row['forum_name']]);
+			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_AUTO_PRUNE', false, [$row['forum_name']]);
 		}
 	}
 
@@ -2488,29 +2488,29 @@ function auto_prune($forum_id, $prune_mode, $prune_flags, $prune_days, $prune_fr
 * via admin_permissions. Changes of usernames and group names
 * must be carried through for the moderators table.
 *
-* @param \phpbb\db\driver\driver_interface $db Database connection
-* @param \phpbb\cache\driver\driver_interface $cache Cache driver
-* @param \phpbb\auth\auth $auth Authentication object
+* @param \an602\db\driver\driver_interface $db Database connection
+* @param \an602\cache\driver\driver_interface $cache Cache driver
+* @param \an602\auth\auth $auth Authentication object
 * @return null
 */
-function phpbb_cache_moderators($db, $cache, $auth)
+function an602_cache_moderators($db, $cache, $auth)
 {
 	// Remove cached sql results
-	$cache->destroy('sql', MODERATOR_CACHE_TABLE);
+	$cache->destroy('sql', AN602_MODERATOR_CACHE_TABLE);
 
 	// Clear table
 	switch ($db->get_sql_layer())
 	{
 		case 'sqlite3':
-			$db->sql_query('DELETE FROM ' . MODERATOR_CACHE_TABLE);
+			$db->sql_query('DELETE FROM ' . AN602_MODERATOR_CACHE_TABLE);
 		break;
 
 		default:
-			$db->sql_query('TRUNCATE TABLE ' . MODERATOR_CACHE_TABLE);
+			$db->sql_query('TRUNCATE TABLE ' . AN602_MODERATOR_CACHE_TABLE);
 		break;
 	}
 
-	// We add moderators who have forum moderator permissions without an explicit ACL_NEVER setting
+	// We add moderators who have forum moderator permissions without an explicit AN602_ACL_NEVER setting
 	$sql_ary = array();
 
 	// Grab all users having moderative options...
@@ -2527,22 +2527,22 @@ function phpbb_cache_moderators($db, $cache, $auth)
 			'SELECT'	=> 'a.forum_id, ug.user_id, g.group_id',
 
 			'FROM'		=> array(
-				ACL_OPTIONS_TABLE	=> 'o',
-				USER_GROUP_TABLE	=> 'ug',
-				GROUPS_TABLE		=> 'g',
-				ACL_GROUPS_TABLE	=> 'a',
+				AN602_ACL_OPTIONS_TABLE	=> 'o',
+				AN602_USER_GROUP_TABLE	=> 'ug',
+				AN602_GROUPS_TABLE		=> 'g',
+				AN602_ACL_AN602_GROUPS_TABLE	=> 'a',
 			),
 
 			'LEFT_JOIN'	=> array(
 				array(
-					'FROM'	=> array(ACL_ROLES_DATA_TABLE => 'r'),
+					'FROM'	=> array(AN602_ACL_ROLES_DATA_TABLE => 'r'),
 					'ON'	=> 'a.auth_role_id = r.role_id',
 				),
 			),
 
 			'WHERE'		=> '(o.auth_option_id = a.auth_option_id OR o.auth_option_id = r.auth_option_id)
-				AND ((a.auth_setting = ' . ACL_NEVER . ' AND r.auth_setting IS NULL)
-					OR r.auth_setting = ' . ACL_NEVER . ')
+				AND ((a.auth_setting = ' . AN602_ACL_NEVER . ' AND r.auth_setting IS NULL)
+					OR r.auth_setting = ' . AN602_ACL_NEVER . ')
 				AND a.group_id = ug.group_id
 				AND g.group_id = ug.group_id
 				AND NOT (ug.group_leader = 1 AND g.group_skip_auth = 1)
@@ -2566,7 +2566,7 @@ function phpbb_cache_moderators($db, $cache, $auth)
 		{
 			// Get usernames...
 			$sql = 'SELECT user_id, username
-				FROM ' . USERS_TABLE . '
+				FROM ' . AN602_USERS_TABLE . '
 				WHERE ' . $db->sql_in_set('user_id', array_keys($hold_ary));
 			$result = $db->sql_query($sql);
 
@@ -2608,7 +2608,7 @@ function phpbb_cache_moderators($db, $cache, $auth)
 
 		// Make sure not hidden or special groups are involved...
 		$sql = 'SELECT group_name, group_id, group_type
-			FROM ' . GROUPS_TABLE . '
+			FROM ' . AN602_GROUPS_TABLE . '
 			WHERE ' . $db->sql_in_set('group_id', $ug_id_ary);
 		$result = $db->sql_query($sql);
 
@@ -2637,8 +2637,8 @@ function phpbb_cache_moderators($db, $cache, $auth)
 				$flag = false;
 				foreach ($auth_ary as $auth_option => $setting)
 				{
-					// Make sure at least one ACL_YES option is set...
-					if ($setting == ACL_YES)
+					// Make sure at least one AN602_ACL_YES option is set...
+					if ($setting == AN602_ACL_YES)
 					{
 						$flag = true;
 						break;
@@ -2661,7 +2661,7 @@ function phpbb_cache_moderators($db, $cache, $auth)
 		}
 	}
 
-	$db->sql_multi_insert(MODERATOR_CACHE_TABLE, $sql_ary);
+	$db->sql_multi_insert(AN602_MODERATOR_CACHE_TABLE, $sql_ary);
 }
 
 /**
@@ -2684,31 +2684,31 @@ function phpbb_cache_moderators($db, $cache, $auth)
 */
 function view_log($mode, &$log, &$log_count, $limit = 0, $offset = 0, $forum_id = 0, $topic_id = 0, $user_id = 0, $limit_days = 0, $sort_by = 'l.log_time DESC', $keywords = '')
 {
-	global $phpbb_log;
+	global $an602_log;
 
 	$count_logs = ($log_count !== false);
 
-	$log = $phpbb_log->get_logs($mode, $count_logs, $limit, $offset, $forum_id, $topic_id, $user_id, $limit_days, $sort_by, $keywords);
-	$log_count = $phpbb_log->get_log_count();
+	$log = $an602_log->get_logs($mode, $count_logs, $limit, $offset, $forum_id, $topic_id, $user_id, $limit_days, $sort_by, $keywords);
+	$log_count = $an602_log->get_log_count();
 
-	return $phpbb_log->get_valid_offset();
+	return $an602_log->get_valid_offset();
 }
 
 /**
 * Removes moderators and administrators from foe lists.
 *
-* @param \phpbb\db\driver\driver_interface $db Database connection
-* @param \phpbb\auth\auth $auth Authentication object
+* @param \an602\db\driver\driver_interface $db Database connection
+* @param \an602\auth\auth $auth Authentication object
 * @param array|bool $group_id If an array, remove all members of this group from foe lists, or false to ignore
 * @param array|bool $user_id If an array, remove this user from foe lists, or false to ignore
 * @return null
 */
-function phpbb_update_foes($db, $auth, $group_id = false, $user_id = false)
+function an602_update_foes($db, $auth, $group_id = false, $user_id = false)
 {
 	// update foes for some user
 	if (is_array($user_id) && count($user_id))
 	{
-		$sql = 'DELETE FROM ' . ZEBRA_TABLE . '
+		$sql = 'DELETE FROM ' . AN602_ZEBRA_TABLE . '
 			WHERE ' . $db->sql_in_set('zebra_id', $user_id) . '
 				AND foe = 1';
 		$db->sql_query($sql);
@@ -2723,13 +2723,13 @@ function phpbb_update_foes($db, $auth, $group_id = false, $user_id = false)
 			'SELECT'	=> 'a.group_id',
 
 			'FROM'		=> array(
-				ACL_OPTIONS_TABLE	=> 'ao',
-				ACL_GROUPS_TABLE	=> 'a',
+				AN602_ACL_OPTIONS_TABLE	=> 'ao',
+				AN602_ACL_AN602_GROUPS_TABLE	=> 'a',
 			),
 
 			'LEFT_JOIN'	=> array(
 				array(
-					'FROM'	=> array(ACL_ROLES_DATA_TABLE => 'r'),
+					'FROM'	=> array(AN602_ACL_ROLES_DATA_TABLE => 'r'),
 					'ON'	=> 'a.auth_role_id = r.role_id',
 				),
 			),
@@ -2759,7 +2759,7 @@ function phpbb_update_foes($db, $auth, $group_id = false, $user_id = false)
 		{
 			case 'mysqli':
 				$sql = 'DELETE z.*
-					FROM ' . ZEBRA_TABLE . ' z, ' . USER_GROUP_TABLE . ' ug
+					FROM ' . AN602_ZEBRA_TABLE . ' z, ' . AN602_USER_GROUP_TABLE . ' ug
 					WHERE z.zebra_id = ug.user_id
 						AND z.foe = 1
 						AND ' . $db->sql_in_set('ug.group_id', $groups);
@@ -2768,7 +2768,7 @@ function phpbb_update_foes($db, $auth, $group_id = false, $user_id = false)
 
 			default:
 				$sql = 'SELECT user_id
-					FROM ' . USER_GROUP_TABLE . '
+					FROM ' . AN602_USER_GROUP_TABLE . '
 					WHERE ' . $db->sql_in_set('group_id', $groups);
 				$result = $db->sql_query($sql);
 
@@ -2781,7 +2781,7 @@ function phpbb_update_foes($db, $auth, $group_id = false, $user_id = false)
 
 				if (count($users))
 				{
-					$sql = 'DELETE FROM ' . ZEBRA_TABLE . '
+					$sql = 'DELETE FROM ' . AN602_ZEBRA_TABLE . '
 						WHERE ' . $db->sql_in_set('zebra_id', $users) . '
 							AND foe = 1';
 					$db->sql_query($sql);
@@ -2804,7 +2804,7 @@ function phpbb_update_foes($db, $auth, $group_id = false, $user_id = false)
 
 	if (count($perms))
 	{
-		$sql = 'DELETE FROM ' . ZEBRA_TABLE . '
+		$sql = 'DELETE FROM ' . AN602_ZEBRA_TABLE . '
 			WHERE ' . $db->sql_in_set('zebra_id', array_unique($perms)) . '
 				AND foe = 1';
 		$db->sql_query($sql);
@@ -2820,7 +2820,7 @@ function view_inactive_users(&$users, &$user_count, $limit = 0, $offset = 0, $li
 	global $db, $user;
 
 	$sql = 'SELECT COUNT(user_id) AS user_count
-		FROM ' . USERS_TABLE . '
+		FROM ' . AN602_USERS_TABLE . '
 		WHERE user_type = ' . USER_INACTIVE .
 		(($limit_days) ? " AND user_inactive_time >= $limit_days" : '');
 	$result = $db->sql_query($sql);
@@ -2839,7 +2839,7 @@ function view_inactive_users(&$users, &$user_count, $limit = 0, $offset = 0, $li
 	}
 
 	$sql = 'SELECT *
-		FROM ' . USERS_TABLE . '
+		FROM ' . AN602_USERS_TABLE . '
 		WHERE user_type = ' . USER_INACTIVE .
 		(($limit_days) ? " AND user_inactive_time >= $limit_days" : '') . "
 		ORDER BY $sort_by";
@@ -2882,7 +2882,7 @@ function view_warned_users(&$users, &$user_count, $limit = 0, $offset = 0, $limi
 	global $db;
 
 	$sql = 'SELECT user_id, username, user_colour, user_warnings, user_last_warning
-		FROM ' . USERS_TABLE . '
+		FROM ' . AN602_USERS_TABLE . '
 		WHERE user_warnings > 0
 		' . (($limit_days) ? "AND user_last_warning >= $limit_days" : '') . "
 		ORDER BY $sort_by";
@@ -2891,7 +2891,7 @@ function view_warned_users(&$users, &$user_count, $limit = 0, $offset = 0, $limi
 	$db->sql_freeresult($result);
 
 	$sql = 'SELECT count(user_id) AS user_count
-		FROM ' . USERS_TABLE . '
+		FROM ' . AN602_USERS_TABLE . '
 		WHERE user_warnings > 0
 		' . (($limit_days) ? "AND user_last_warning >= $limit_days" : '');
 	$result = $db->sql_query($sql);
@@ -3013,7 +3013,7 @@ function tidy_warnings()
 	$expire_date = time() - ($config['warnings_expire_days'] * 86400);
 	$warning_list = $user_list = array();
 
-	$sql = 'SELECT * FROM ' . WARNINGS_TABLE . "
+	$sql = 'SELECT * FROM ' . AN602_WARNINGS_TABLE . "
 		WHERE warning_time < $expire_date";
 	$result = $db->sql_query($sql);
 
@@ -3028,13 +3028,13 @@ function tidy_warnings()
 	{
 		$db->sql_transaction('begin');
 
-		$sql = 'DELETE FROM ' . WARNINGS_TABLE . '
+		$sql = 'DELETE FROM ' . AN602_WARNINGS_TABLE . '
 			WHERE ' . $db->sql_in_set('warning_id', $warning_list);
 		$db->sql_query($sql);
 
 		foreach ($user_list as $user_id => $value)
 		{
-			$sql = 'UPDATE ' . USERS_TABLE . " SET user_warnings = user_warnings - $value
+			$sql = 'UPDATE ' . AN602_USERS_TABLE . " SET user_warnings = user_warnings - $value
 				WHERE user_id = $user_id";
 			$db->sql_query($sql);
 		}
@@ -3056,7 +3056,7 @@ function tidy_database()
 
 	// Sometimes, it can happen permission tables having forums listed which do not exist
 	$sql = 'SELECT forum_id
-		FROM ' . FORUMS_TABLE;
+		FROM ' . AN602_FORUMS_TABLE;
 	$result = $db->sql_query($sql);
 
 	$forum_ids = array(0);
@@ -3069,11 +3069,11 @@ function tidy_database()
 	$db->sql_transaction('begin');
 
 	// Delete those rows from the acl tables not having listed the forums above
-	$sql = 'DELETE FROM ' . ACL_GROUPS_TABLE . '
+	$sql = 'DELETE FROM ' . AN602_ACL_AN602_GROUPS_TABLE . '
 		WHERE ' . $db->sql_in_set('forum_id', $forum_ids, true);
 	$db->sql_query($sql);
 
-	$sql = 'DELETE FROM ' . ACL_USERS_TABLE . '
+	$sql = 'DELETE FROM ' . AN602_ACL_AN602_USERS_TABLE . '
 		WHERE ' . $db->sql_in_set('forum_id', $forum_ids, true);
 	$db->sql_query($sql);
 
@@ -3087,10 +3087,10 @@ function tidy_database()
 */
 function add_permission_language()
 {
-	global $user, $phpEx, $phpbb_extension_manager;
+	global $user, $phpEx, $an602_extension_manager;
 
 	// add permission language files from extensions
-	$finder = $phpbb_extension_manager->get_finder();
+	$finder = $an602_extension_manager->get_finder();
 
 	$lang_files = $finder
 		->prefix('permissions_')
@@ -3164,7 +3164,7 @@ function display_ban_options($mode)
 			$field = 'username';
 
 			$sql = 'SELECT b.*, u.user_id, u.username, u.username_clean
-				FROM ' . BANLIST_TABLE . ' b, ' . USERS_TABLE . ' u
+				FROM ' . AN602_BANLIST_TABLE . ' b, ' . AN602_USERS_TABLE . ' u
 				WHERE (b.ban_end >= ' . time() . '
 						OR b.ban_end = 0)
 					AND u.user_id = b.ban_userid
@@ -3176,7 +3176,7 @@ function display_ban_options($mode)
 			$field = 'ban_ip';
 
 			$sql = 'SELECT *
-				FROM ' . BANLIST_TABLE . '
+				FROM ' . AN602_BANLIST_TABLE . '
 				WHERE (ban_end >= ' . time() . "
 						OR ban_end = 0)
 					AND ban_ip <> ''
@@ -3188,7 +3188,7 @@ function display_ban_options($mode)
 			$field = 'ban_email';
 
 			$sql = 'SELECT *
-				FROM ' . BANLIST_TABLE . '
+				FROM ' . AN602_BANLIST_TABLE . '
 				WHERE (ban_end >= ' . time() . "
 						OR ban_end = 0)
 					AND ban_email <> ''

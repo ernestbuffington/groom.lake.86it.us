@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -25,7 +25,7 @@ class acp_disallow
 
 	function main($id, $mode)
 	{
-		global $db, $user, $template, $cache, $phpbb_log, $request;
+		global $db, $user, $template, $cache, $an602_log, $request;
 
 		$user->add_lang('acp/posting');
 
@@ -54,7 +54,7 @@ class acp_disallow
 			}
 
 			$sql = 'SELECT disallow_id
-				FROM ' . DISALLOW_TABLE . "
+				FROM ' . AN602_DISALLOW_TABLE . "
 				WHERE disallow_username = '" . $db->sql_escape($disallowed_user) . "'";
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
@@ -65,13 +65,13 @@ class acp_disallow
 				trigger_error($user->lang['DISALLOWED_ALREADY'] . adm_back_link($this->u_action), E_USER_WARNING);
 			}
 
-			$sql = 'INSERT INTO ' . DISALLOW_TABLE . ' ' . $db->sql_build_array('INSERT', array('disallow_username' => $disallowed_user));
+			$sql = 'INSERT INTO ' . AN602_DISALLOW_TABLE . ' ' . $db->sql_build_array('INSERT', array('disallow_username' => $disallowed_user));
 			$db->sql_query($sql);
 
 			$cache->destroy('_disallowed_usernames');
 
 			$message = $user->lang['DISALLOW_SUCCESSFUL'];
-			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_DISALLOW_ADD', false, array(str_replace('%', '*', $disallowed_user)));
+			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_DISALLOW_ADD', false, array(str_replace('%', '*', $disallowed_user)));
 
 			trigger_error($message . adm_back_link($this->u_action));
 		}
@@ -84,20 +84,20 @@ class acp_disallow
 				trigger_error($user->lang['NO_USERNAME_SPECIFIED'] . adm_back_link($this->u_action), E_USER_WARNING);
 			}
 
-			$sql = 'DELETE FROM ' . DISALLOW_TABLE . '
+			$sql = 'DELETE FROM ' . AN602_DISALLOW_TABLE . '
 				WHERE disallow_id = ' . $disallowed_id;
 			$db->sql_query($sql);
 
 			$cache->destroy('_disallowed_usernames');
 
-			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_DISALLOW_DELETE');
+			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_DISALLOW_DELETE');
 
 			trigger_error($user->lang['DISALLOWED_DELETED'] . adm_back_link($this->u_action));
 		}
 
 		// Grab the current list of disallowed usernames...
 		$sql = 'SELECT *
-			FROM ' . DISALLOW_TABLE;
+			FROM ' . AN602_DISALLOW_TABLE;
 		$result = $db->sql_query($sql);
 
 		$disallow_select = '';

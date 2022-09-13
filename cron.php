@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -15,10 +15,10 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
 */
-define('IN_PHPBB', true);
-$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
+define('IN_AN602', true);
+$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-include($phpbb_root_path . 'common.' . $phpEx);
+include($an602_root_path . 'common.' . $phpEx);
 
 // Do not update users last page entry
 $user->session_begin(false);
@@ -26,12 +26,12 @@ $auth->acl($user->data);
 
 $cron_type = $request->variable('cron_type', '');
 
-$get_params_array = $request->get_super_global(\phpbb\request\request_interface::GET);
+$get_params_array = $request->get_super_global(\an602\request\request_interface::GET);
 
-/** @var \phpbb\controller\helper $controller_helper */
-$controller_helper = $phpbb_container->get('controller.helper');
+/** @var \an602\controller\helper $controller_helper */
+$controller_helper = $an602_container->get('controller.helper');
 $response = new RedirectResponse(
-	$controller_helper->route('phpbb_cron_run', $get_params_array, false),
+	$controller_helper->route('an602_cron_run', $get_params_array, false),
 	301
 );
 $response->send();

@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -29,7 +29,7 @@ class acp_contact
 	public function main($id, $mode)
 	{
 		global $user, $request, $template;
-		global $config, $phpbb_root_path, $phpEx, $phpbb_container;
+		global $config, $an602_root_path, $phpEx, $an602_container;
 
 		$user->add_lang(array('acp/board', 'posting'));
 
@@ -41,15 +41,15 @@ class acp_contact
 
 		if (!function_exists('display_custom_bbcodes'))
 		{
-			include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+			include($an602_root_path . 'includes/functions_display.' . $phpEx);
 		}
 		if (!class_exists('parse_message'))
 		{
-			include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+			include($an602_root_path . 'includes/message_parser.' . $phpEx);
 		}
 
-		/* @var $config_text \phpbb\config\db_text */
-		$config_text = $phpbb_container->get('config_text');
+		/* @var $config_text \an602\config\db_text */
+		$config_text = $an602_container->get('config_text');
 
 		$contact_admin_data			= $config_text->get_array(array(
 			'contact_admin_info',
@@ -105,8 +105,8 @@ class acp_contact
 
 		$contact_admin_edit = generate_text_for_edit($contact_admin_info, $contact_admin_info_uid, $contact_admin_info_flags);
 
-		/** @var \phpbb\controller\helper $controller_helper */
-		$controller_helper = $phpbb_container->get('controller.helper');
+		/** @var \an602\controller\helper $controller_helper */
+		$controller_helper = $an602_container->get('controller.helper');
 
 		$template->assign_vars(array(
 			'ERRORS'			=> $error,
@@ -119,7 +119,7 @@ class acp_contact
 			'S_SMILIES_DISABLE_CHECKED'		=> !$contact_admin_edit['allow_smilies'],
 			'S_MAGIC_URL_DISABLE_CHECKED'	=> !$contact_admin_edit['allow_urls'],
 
-			'BBCODE_STATUS'			=> $user->lang('BBCODE_IS_ON', '<a href="' . $controller_helper->route('phpbb_help_bbcode_controller') . '">', '</a>'),
+			'BBCODE_STATUS'			=> $user->lang('BBCODE_IS_ON', '<a href="' . $controller_helper->route('an602_help_bbcode_controller') . '">', '</a>'),
 			'SMILIES_STATUS'		=> $user->lang['SMILIES_ARE_ON'],
 			'IMG_STATUS'			=> $user->lang['IMAGES_ARE_ON'],
 			'FLASH_STATUS'			=> $user->lang['FLASH_IS_ON'],

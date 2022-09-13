@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -26,14 +26,14 @@ if (!defined('IN_PHPBB'))
 *
 * The only supported table is bookmarks.
 *
-* @param \phpbb\db\driver\driver_interface $db Database object
+* @param \an602\db\driver\driver_interface $db Database object
 * @param string $table Table on which to perform the update
 * @param string $column Column whose values to change
 * @param array $from_values An array of values that should be changed
 * @param int $to_value The new value
 * @return null
 */
-function phpbb_update_rows_avoiding_duplicates(\phpbb\db\driver\driver_interface $db, $table, $column, $from_values, $to_value)
+function an602_update_rows_avoiding_duplicates(\an602\db\driver\driver_interface $db, $table, $column, $from_values, $to_value)
 {
 	$sql = "SELECT $column, user_id
 		FROM $table
@@ -111,14 +111,14 @@ function phpbb_update_rows_avoiding_duplicates(\phpbb\db\driver\driver_interface
 *
 * The only supported table is topics_watch.
 *
-* @param \phpbb\db\driver\driver_interface $db Database object
+* @param \an602\db\driver\driver_interface $db Database object
 * @param string $table Table on which to perform the update
 * @param string $column Column whose values to change
 * @param array $from_values An array of values that should be changed
 * @param int $to_value The new value
 * @return null
 */
-function phpbb_update_rows_avoiding_duplicates_notify_status(\phpbb\db\driver\driver_interface $db, $table, $column, $from_values, $to_value)
+function an602_update_rows_avoiding_duplicates_notify_status(\an602\db\driver\driver_interface $db, $table, $column, $from_values, $to_value)
 {
 	$sql = "SELECT $column, user_id, notify_status
 		FROM $table

@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -36,10 +36,10 @@ class mcp_queue
 	public function main($id, $mode)
 	{
 		global $auth, $db, $user, $template, $request;
-		global $config, $phpbb_root_path, $phpEx, $action, $phpbb_container;
-		global $phpbb_dispatcher;
+		global $config, $an602_root_path, $phpEx, $action, $an602_container;
+		global $an602_dispatcher;
 
-		include_once($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+		include_once($an602_root_path . 'includes/functions_posting.' . $phpEx);
 
 		$forum_id = $request->variable('f', 0);
 		$start = $request->variable('start', 0);
@@ -50,7 +50,7 @@ class mcp_queue
 		{
 			case 'approve':
 			case 'restore':
-				include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+				include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
 
 				$post_id_list = $request->variable('post_id_list', array(0));
 				$topic_id_list = $request->variable('topic_id_list', array(0));
@@ -78,8 +78,8 @@ class mcp_queue
 				{
 					if (!function_exists('mcp_delete_post'))
 					{
-						global $phpbb_root_path, $phpEx;
-						include($phpbb_root_path . 'includes/mcp/mcp_main.' . $phpEx);
+						global $an602_root_path, $phpEx;
+						include($an602_root_path . 'includes/mcp/mcp_main.' . $phpEx);
 					}
 					mcp_delete_post($post_id_list, false, $delete_reason, $action);
 				}
@@ -87,8 +87,8 @@ class mcp_queue
 				{
 					if (!function_exists('mcp_delete_topic'))
 					{
-						global $phpbb_root_path, $phpEx;
-						include($phpbb_root_path . 'includes/mcp/mcp_main.' . $phpEx);
+						global $an602_root_path, $phpEx;
+						include($an602_root_path . 'includes/mcp/mcp_main.' . $phpEx);
 					}
 					mcp_delete_topic($topic_id_list, false, $delete_reason, $action);
 				}
@@ -106,8 +106,8 @@ class mcp_queue
 				{
 					if (!function_exists('mcp_delete_topic'))
 					{
-						global $phpbb_root_path, $phpEx;
-						include($phpbb_root_path . 'includes/mcp/mcp_main.' . $phpEx);
+						global $an602_root_path, $phpEx;
+						include($an602_root_path . 'includes/mcp/mcp_main.' . $phpEx);
 					}
 					mcp_delete_topic($topic_id_list, false, '', 'disapprove');
 					return;
@@ -115,14 +115,14 @@ class mcp_queue
 
 				if (!class_exists('messenger'))
 				{
-					include($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+					include($an602_root_path . 'includes/functions_messenger.' . $phpEx);
 				}
 
 				if (!empty($topic_id_list))
 				{
 					$post_visibility = ($mode == 'deleted_topics') ? ITEM_DELETED : array(ITEM_UNAPPROVED, ITEM_REAPPROVE);
 					$sql = 'SELECT post_id
-						FROM ' . POSTS_TABLE . '
+						FROM ' . AN602_POSTS_TABLE . '
 						WHERE ' . $db->sql_in_set('post_visibility', $post_visibility) . '
 							AND ' . $db->sql_in_set('topic_id', $topic_id_list);
 					$result = $db->sql_query($sql);
@@ -158,17 +158,17 @@ class mcp_queue
 				$topic_id = $request->variable('t', 0);
 				$topic_info = [];
 
-				/* @var $phpbb_notifications \phpbb\notification\manager */
-				$phpbb_notifications = $phpbb_container->get('notification_manager');
+				/* @var $an602_notifications \an602\notification\manager */
+				$an602_notifications = $an602_container->get('notification_manager');
 
 				if ($topic_id)
 				{
-					$topic_info = phpbb_get_topic_data(array($topic_id), 'm_approve');
+					$topic_info = an602_get_topic_data(array($topic_id), 'm_approve');
 					if (isset($topic_info[$topic_id]['topic_first_post_id']))
 					{
 						$post_id = (int) $topic_info[$topic_id]['topic_first_post_id'];
 
-						$phpbb_notifications->mark_notifications('topic_in_queue', $topic_id, $user->data['user_id']);
+						$an602_notifications->mark_notifications('topic_in_queue', $topic_id, $user->data['user_id']);
 					}
 					else
 					{
@@ -176,9 +176,9 @@ class mcp_queue
 					}
 				}
 
-				$phpbb_notifications->mark_notifications('post_in_queue', $post_id, $user->data['user_id']);
+				$an602_notifications->mark_notifications('post_in_queue', $post_id, $user->data['user_id']);
 
-				$post_info = phpbb_get_post_data(array($post_id), 'm_approve', true);
+				$post_info = an602_get_post_data(array($post_id), 'm_approve', true);
 
 				if (!count($post_info))
 				{
@@ -219,7 +219,7 @@ class mcp_queue
 				if ($post_info['post_attachment'] && $auth->acl_get('u_download') && $auth->acl_get('f_download', $post_info['forum_id']))
 				{
 					$sql = 'SELECT *
-						FROM ' . ATTACHMENTS_TABLE . '
+						FROM ' . AN602_ATTACHMENTS_TABLE . '
 						WHERE post_msg_id = ' . $post_id . '
 							AND in_message = 0
 						ORDER BY filetime DESC, post_msg_id ASC';
@@ -262,7 +262,7 @@ class mcp_queue
 					else
 					{
 						$sql = 'SELECT u.user_id, u.username, u.user_colour
-							FROM ' . POSTS_TABLE . ' p, ' . USERS_TABLE . ' u
+							FROM ' . AN602_POSTS_TABLE . ' p, ' . AN602_USERS_TABLE . ' u
 							WHERE p.post_id =  ' . $post_info['post_id'] . '
 								AND p.post_delete_user = u.user_id';
 						$result = $db->sql_query($sql);
@@ -278,12 +278,12 @@ class mcp_queue
 					$l_deleted_by = '';
 				}
 
-				$post_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'p=' . $post_info['post_id'] . '#p' . $post_info['post_id']);
-				$topic_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $post_info['topic_id']);
+				$post_url = append_sid("{$an602_root_path}viewtopic.$phpEx", 'p=' . $post_info['post_id'] . '#p' . $post_info['post_id']);
+				$topic_url = append_sid("{$an602_root_path}viewtopic.$phpEx", 't=' . $post_info['topic_id']);
 
 				$post_data = array(
 					'S_MCP_QUEUE'			=> true,
-					'U_APPROVE_ACTION'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", "i=queue&amp;p=$post_id"),
+					'U_APPROVE_ACTION'		=> append_sid("{$an602_root_path}mcp.$phpEx", "i=queue&amp;p=$post_id"),
 					'S_CAN_DELETE_POST'		=> $auth->acl_get('m_delete', $post_info['forum_id']),
 					'S_CAN_VIEWIP'			=> $auth->acl_get('m_info', $post_info['forum_id']),
 					'S_POST_REPORTED'		=> $post_info['post_reported'],
@@ -294,17 +294,17 @@ class mcp_queue
 					'DELETED_MESSAGE'		=> $l_deleted_by,
 					'DELETE_REASON'			=> $post_info['post_delete_reason'],
 
-					'U_EDIT'				=> ($auth->acl_get('m_edit', $post_info['forum_id'])) ? append_sid("{$phpbb_root_path}posting.$phpEx", "mode=edit&amp;p={$post_info['post_id']}") : '',
-					'U_MCP_APPROVE'			=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue&amp;mode=approve_details&amp;p=' . $post_id),
-					'U_MCP_REPORT'			=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=reports&amp;mode=report_details&amp;p=' . $post_id),
-					'U_MCP_USER_NOTES'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes&amp;u=' . $post_info['user_id']),
-					'U_MCP_WARN_USER'		=> ($auth->acl_get('m_warn')) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=warn&amp;mode=warn_user&amp;u=' . $post_info['user_id']) : '',
+					'U_EDIT'				=> ($auth->acl_get('m_edit', $post_info['forum_id'])) ? append_sid("{$an602_root_path}posting.$phpEx", "mode=edit&amp;p={$post_info['post_id']}") : '',
+					'U_MCP_APPROVE'			=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=queue&amp;mode=approve_details&amp;p=' . $post_id),
+					'U_MCP_REPORT'			=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=reports&amp;mode=report_details&amp;p=' . $post_id),
+					'U_MCP_USER_NOTES'		=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes&amp;u=' . $post_info['user_id']),
+					'U_MCP_WARN_USER'		=> ($auth->acl_get('m_warn')) ? append_sid("{$an602_root_path}mcp.$phpEx", 'i=warn&amp;mode=warn_user&amp;u=' . $post_info['user_id']) : '',
 					'U_VIEW_POST'			=> $post_url,
 					'U_VIEW_TOPIC'			=> $topic_url,
 
 					'MINI_POST_IMG'			=> ($post_unread) ? $user->img('icon_post_target_unread', 'UNREAD_POST') : $user->img('icon_post_target', 'POST'),
 
-					'RETURN_QUEUE'			=> sprintf($user->lang['RETURN_QUEUE'], '<a href="' . append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue' . (($topic_id) ? '&amp;mode=unapproved_topics' : '&amp;mode=unapproved_posts')) . '&amp;start=' . $start . '">', '</a>'),
+					'RETURN_QUEUE'			=> sprintf($user->lang['RETURN_QUEUE'], '<a href="' . append_sid("{$an602_root_path}mcp.$phpEx", 'i=queue' . (($topic_id) ? '&amp;mode=unapproved_topics' : '&amp;mode=unapproved_posts')) . '&amp;start=' . $start . '">', '</a>'),
 					'RETURN_POST'			=> sprintf($user->lang['RETURN_POST'], '<a href="' . $post_url . '">', '</a>'),
 					'RETURN_TOPIC_SIMPLE'	=> sprintf($user->lang['RETURN_TOPIC_SIMPLE'], '<a href="' . $topic_url . '">', '</a>'),
 					'REPORTED_IMG'			=> $user->img('icon_topic_reported', $user->lang['POST_REPORTED']),
@@ -324,7 +324,7 @@ class mcp_queue
 					'POST_ID'				=> $post_info['post_id'],
 					'S_FIRST_POST'			=> ($post_info['topic_first_post_id'] == $post_id),
 
-					'U_LOOKUP_IP'			=> ($auth->acl_get('m_info', $post_info['forum_id'])) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue&amp;mode=approve_details&amp;p=' . $post_id . '&amp;lookup=' . $post_info['poster_ip']) . '#ip' : '',
+					'U_LOOKUP_IP'			=> ($auth->acl_get('m_info', $post_info['forum_id'])) ? append_sid("{$an602_root_path}mcp.$phpEx", 'i=queue&amp;mode=approve_details&amp;p=' . $post_id . '&amp;lookup=' . $post_info['poster_ip']) . '#ip' : '',
 				);
 
 				/**
@@ -351,7 +351,7 @@ class mcp_queue
 					'post_url',
 					'topic_url',
 				);
-				extract($phpbb_dispatcher->trigger_event('core.mcp_queue_approve_details_template', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.mcp_queue_approve_details_template', compact($vars)));
 
 				$template->assign_vars($post_data);
 
@@ -377,7 +377,7 @@ class mcp_queue
 
 				if ($topic_id)
 				{
-					$topic_info = phpbb_get_topic_data(array($topic_id));
+					$topic_info = an602_get_topic_data(array($topic_id));
 
 					if (!count($topic_info))
 					{
@@ -415,7 +415,7 @@ class mcp_queue
 					}
 
 					$sql = 'SELECT SUM(forum_topics_approved) as sum_forum_topics
-						FROM ' . FORUMS_TABLE . '
+						FROM ' . AN602_FORUMS_TABLE . '
 						WHERE ' . $db->sql_in_set('forum_id', $forum_list);
 					$result = $db->sql_query($sql);
 					$forum_info['forum_topics_approved'] = (int) $db->sql_fetchfield('sum_forum_topics');
@@ -423,7 +423,7 @@ class mcp_queue
 				}
 				else
 				{
-					$forum_info = phpbb_get_forum_data(array($forum_id), $m_perm);
+					$forum_info = an602_get_forum_data(array($forum_id), $m_perm);
 
 					if (!count($forum_info))
 					{
@@ -442,7 +442,7 @@ class mcp_queue
 				$sort_days = $total = 0;
 				$sort_key = $sort_dir = '';
 				$sort_by_sql = $sort_order_sql = array();
-				phpbb_mcp_sorting($mode, $sort_days, $sort_key, $sort_dir, $sort_by_sql, $sort_order_sql, $total, $forum_id, $topic_id);
+				an602_mcp_sorting($mode, $sort_days, $sort_key, $sort_dir, $sort_by_sql, $sort_order_sql, $total, $forum_id, $topic_id);
 
 				$limit_time_sql = ($sort_days) ? 'AND t.topic_last_post_time >= ' . (time() - ($sort_days * 86400)) : '';
 
@@ -451,7 +451,7 @@ class mcp_queue
 				if (!$is_topics)
 				{
 					$sql = 'SELECT p.post_id
-						FROM ' . POSTS_TABLE . ' p, ' . TOPICS_TABLE . ' t' . (($sort_order_sql[0] == 'u') ? ', ' . USERS_TABLE . ' u' : '') . '
+						FROM ' . AN602_POSTS_TABLE . ' p, ' . AN602_TOPICS_TABLE . ' t' . (($sort_order_sql[0] == 'u') ? ', ' . AN602_USERS_TABLE . ' u' : '') . '
 						WHERE ' . $db->sql_in_set('p.forum_id', $forum_list) . '
 							AND ' . $db->sql_in_set('p.post_visibility', $visibility_const) . '
 							' . (($sort_order_sql[0] == 'u') ? 'AND u.user_id = p.poster_id' : '') . '
@@ -482,7 +482,7 @@ class mcp_queue
 						'limit_time_sql',
 						'sort_order_sql',
 					);
-					extract($phpbb_dispatcher->trigger_event('core.mcp_queue_get_posts_query_before', compact($vars)));
+					extract($an602_dispatcher->trigger_event('core.mcp_queue_get_posts_query_before', compact($vars)));
 
 					$result = $db->sql_query_limit($sql, $config['topics_per_page'], $start);
 
@@ -498,7 +498,7 @@ class mcp_queue
 					if (count($post_ids))
 					{
 						$sql = 'SELECT t.topic_id, t.topic_title, t.forum_id, p.post_id, p.post_subject, p.post_username, p.poster_id, p.post_time, p.post_attachment, u.username, u.username_clean, u.user_colour
-							FROM ' . POSTS_TABLE . ' p, ' . TOPICS_TABLE . ' t, ' . USERS_TABLE . ' u
+							FROM ' . AN602_POSTS_TABLE . ' p, ' . AN602_TOPICS_TABLE . ' t, ' . AN602_USERS_TABLE . ' u
 							WHERE ' . $db->sql_in_set('p.post_id', $post_ids) . '
 								AND t.topic_id = p.topic_id
 								AND u.user_id = p.poster_id
@@ -524,7 +524,7 @@ class mcp_queue
 							'limit_time_sql',
 							'sort_order_sql',
 						);
-						extract($phpbb_dispatcher->trigger_event('core.mcp_queue_get_posts_for_posts_query_before', compact($vars)));
+						extract($an602_dispatcher->trigger_event('core.mcp_queue_get_posts_for_posts_query_before', compact($vars)));
 
 						$result = $db->sql_query($sql);
 
@@ -550,7 +550,7 @@ class mcp_queue
 				else
 				{
 					$sql = 'SELECT t.forum_id, t.topic_id, t.topic_title, t.topic_title AS post_subject, t.topic_time AS post_time, t.topic_poster AS poster_id, t.topic_first_post_id AS post_id, t.topic_attachment AS post_attachment, t.topic_first_poster_name AS username, t.topic_first_poster_colour AS user_colour
-						FROM ' . TOPICS_TABLE . ' t
+						FROM ' . AN602_TOPICS_TABLE . ' t
 						WHERE ' . $db->sql_in_set('forum_id', $forum_list) . '
 							AND  ' . $db->sql_in_set('topic_visibility', $visibility_const) . "
 							AND topic_delete_user <> 0
@@ -577,7 +577,7 @@ class mcp_queue
 						'limit_time_sql',
 						'sort_order_sql',
 					);
-					extract($phpbb_dispatcher->trigger_event('core.mcp_queue_get_posts_for_topics_query_before', compact($vars)));
+					extract($an602_dispatcher->trigger_event('core.mcp_queue_get_posts_for_topics_query_before', compact($vars)));
 
 					$result = $db->sql_query_limit($sql, $config['topics_per_page'], $start);
 
@@ -594,7 +594,7 @@ class mcp_queue
 				{
 					// Select the names for the forum_ids
 					$sql = 'SELECT forum_id, forum_name
-						FROM ' . FORUMS_TABLE . '
+						FROM ' . AN602_FORUMS_TABLE . '
 						WHERE ' . $db->sql_in_set('forum_id', $forum_names);
 					$result = $db->sql_query($sql, 3600);
 
@@ -614,10 +614,10 @@ class mcp_queue
 					}
 
 					$post_row = array(
-						'U_TOPIC'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $row['topic_id']),
-						'U_VIEWFORUM'		=> append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $row['forum_id']),
-						'U_VIEWPOST'		=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'p=' . $row['post_id']) . (($mode == 'unapproved_posts') ? '#p' . $row['post_id'] : ''),
-						'U_VIEW_DETAILS'	=> append_sid("{$phpbb_root_path}mcp.$phpEx", "i=queue&amp;start=$start&amp;mode=approve_details&amp;p={$row['post_id']}" . (($mode == 'unapproved_topics') ? "&amp;t={$row['topic_id']}" : '')),
+						'U_TOPIC'			=> append_sid("{$an602_root_path}viewtopic.$phpEx", 't=' . $row['topic_id']),
+						'U_VIEWFORUM'		=> append_sid("{$an602_root_path}viewforum.$phpEx", 'f=' . $row['forum_id']),
+						'U_VIEWPOST'		=> append_sid("{$an602_root_path}viewtopic.$phpEx", 'p=' . $row['post_id']) . (($mode == 'unapproved_posts') ? '#p' . $row['post_id'] : ''),
+						'U_VIEW_DETAILS'	=> append_sid("{$an602_root_path}mcp.$phpEx", "i=queue&amp;start=$start&amp;mode=approve_details&amp;p={$row['post_id']}" . (($mode == 'unapproved_topics') ? "&amp;t={$row['topic_id']}" : '')),
 
 						'POST_AUTHOR_FULL'		=> get_username_string('full', $row['poster_id'], $row['username'], $row['user_colour'], $row['post_username']),
 						'POST_AUTHOR_COLOUR'	=> get_username_string('colour', $row['poster_id'], $row['username'], $row['user_colour'], $row['post_username']),
@@ -647,14 +647,14 @@ class mcp_queue
 						'row',
 						'forum_names',
 					);
-					extract($phpbb_dispatcher->trigger_event('core.mcp_queue_get_posts_modify_post_row', compact($vars)));
+					extract($an602_dispatcher->trigger_event('core.mcp_queue_get_posts_modify_post_row', compact($vars)));
 
 					$template->assign_block_vars('postrow', $post_row);
 				}
 				unset($rowset, $forum_names);
 
-				/* @var \phpbb\pagination $pagination */
-				$pagination = $phpbb_container->get('pagination');
+				/* @var \an602\pagination $pagination */
+				$pagination = $an602_container->get('pagination');
 
 				$base_url = $this->u_action . "&amp;f=$forum_id&amp;st=$sort_days&amp;sk=$sort_key&amp;sd=$sort_dir";
 				$pagination->generate_template_pagination($base_url, 'pagination', 'start', $total, $config['topics_per_page'], $start);
@@ -691,10 +691,10 @@ class mcp_queue
 	*/
 	static public function approve_posts($action, $post_id_list, $id, $mode)
 	{
-		global $template, $user, $request, $phpbb_container, $phpbb_dispatcher;
-		global $phpEx, $phpbb_root_path, $phpbb_log;
+		global $template, $user, $request, $an602_container, $an602_dispatcher;
+		global $phpEx, $an602_root_path, $an602_log;
 
-		if (!phpbb_check_ids($post_id_list, POSTS_TABLE, 'post_id', array('m_approve')))
+		if (!an602_check_ids($post_id_list, AN602_POSTS_TABLE, 'post_id', array('m_approve')))
 		{
 			send_status_line(403, 'Forbidden');
 			trigger_error('NOT_AUTHORISED');
@@ -714,7 +714,7 @@ class mcp_queue
 			'redirect'		=> $redirect,
 		));
 
-		$post_info = phpbb_get_post_data($post_id_list, 'm_approve');
+		$post_info = an602_get_post_data($post_id_list, 'm_approve');
 
 		if (confirm_box(true))
 		{
@@ -746,7 +746,7 @@ class mcp_queue
 					$topic_info[$topic_id]['last_post'] = true;
 				}
 
-				$post_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", "p={$post_data['post_id']}") . '#p' . $post_data['post_id'];
+				$post_url = append_sid("{$an602_root_path}viewtopic.$phpEx", "p={$post_data['post_id']}") . '#p' . $post_data['post_id'];
 
 				$approve_log[] = array(
 					'forum_id'		=> $post_data['forum_id'],
@@ -756,16 +756,16 @@ class mcp_queue
 				);
 			}
 
-			/* @var $phpbb_content_visibility \phpbb\content_visibility */
-			$phpbb_content_visibility = $phpbb_container->get('content.visibility');
+			/* @var $an602_content_visibility \an602\content_visibility */
+			$an602_content_visibility = $an602_container->get('content.visibility');
 			foreach ($topic_info as $topic_id => $topic_data)
 			{
-				$phpbb_content_visibility->set_post_visibility(ITEM_APPROVED, $topic_data['posts'], $topic_id, $topic_data['forum_id'], $user->data['user_id'], time(), '', isset($topic_data['first_post']), isset($topic_data['last_post']));
+				$an602_content_visibility->set_post_visibility(ITEM_APPROVED, $topic_data['posts'], $topic_id, $topic_data['forum_id'], $user->data['user_id'], time(), '', isset($topic_data['first_post']), isset($topic_data['last_post']));
 			}
 
 			foreach ($approve_log as $log_data)
 			{
-				$phpbb_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_POST_' . strtoupper($action) . 'D', false, array(
+				$an602_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_POST_' . strtoupper($action) . 'D', false, array(
 					'forum_id' => $log_data['forum_id'],
 					'topic_id' => $log_data['topic_id'],
 					'post_id'  => $log_data['post_id'],
@@ -776,8 +776,8 @@ class mcp_queue
 			// Only send out the mails, when the posts are being approved
 			if ($action == 'approve')
 			{
-				/* @var $phpbb_notifications \phpbb\notification\manager */
-				$phpbb_notifications = $phpbb_container->get('notification_manager');
+				/* @var $an602_notifications \an602\notification\manager */
+				$an602_notifications = $an602_container->get('notification_manager');
 
 				// Handle notifications
 				foreach ($post_info as $post_id => $post_data)
@@ -785,11 +785,11 @@ class mcp_queue
 					// A single topic approval may also happen here, so handle deleting the respective notification.
 					if (!$post_data['topic_posts_approved'])
 					{
-						$phpbb_notifications->delete_notifications('notification.type.topic_in_queue', $post_data['topic_id']);
+						$an602_notifications->delete_notifications('notification.type.topic_in_queue', $post_data['topic_id']);
 
 						if ($post_data['post_visibility'] == ITEM_UNAPPROVED)
 						{
-							$phpbb_notifications->add_notifications(array('notification.type.topic'), $post_data);
+							$an602_notifications->add_notifications(array('notification.type.topic'), $post_data);
 						}
 						if ($post_data['post_visibility'] != ITEM_APPROVED)
 						{
@@ -804,16 +804,16 @@ class mcp_queue
 						// again.
 						if ($post_data['post_visibility'] == ITEM_UNAPPROVED)
 						{
-							$phpbb_notifications->add_notifications(array(
+							$an602_notifications->add_notifications(array(
 								'notification.type.bookmark',
 								'notification.type.post',
 							), $post_data);
 						}
 					}
-					$phpbb_notifications->add_notifications(array('notification.type.quote'), $post_data);
-					$phpbb_notifications->delete_notifications('notification.type.post_in_queue', $post_id);
+					$an602_notifications->add_notifications(array('notification.type.quote'), $post_data);
+					$an602_notifications->delete_notifications('notification.type.post_in_queue', $post_id);
 
-					$phpbb_notifications->mark_notifications(array(
+					$an602_notifications->mark_notifications(array(
 						'notification.type.quote',
 						'notification.type.bookmark',
 						'notification.type.post',
@@ -829,11 +829,11 @@ class mcp_queue
 
 						if (!$post_data['topic_posts_approved'])
 						{
-							$phpbb_notifications->add_notifications('notification.type.approve_topic', $post_data);
+							$an602_notifications->add_notifications('notification.type.approve_topic', $post_data);
 						}
 						else
 						{
-							$phpbb_notifications->add_notifications('notification.type.approve_post', $post_data);
+							$an602_notifications->add_notifications('notification.type.approve_post', $post_data);
 						}
 					}
 				}
@@ -870,14 +870,14 @@ class mcp_queue
 				'success_msg',
 				'redirect',
 			);
-			extract($phpbb_dispatcher->trigger_event('core.approve_posts_after', compact($vars)));
+			extract($an602_dispatcher->trigger_event('core.approve_posts_after', compact($vars)));
 
 			meta_refresh(3, $redirect);
 			$message = $user->lang[$success_msg];
 
 			if ($request->is_ajax())
 			{
-				$json_response = new \phpbb\json_response;
+				$json_response = new \an602\json_response;
 				$json_response->send(array(
 					'MESSAGE_TITLE'		=> $user->lang['INFORMATION'],
 					'MESSAGE_TEXT'		=> $message,
@@ -947,10 +947,10 @@ class mcp_queue
 	*/
 	static public function approve_topics($action, $topic_id_list, $id, $mode)
 	{
-		global $db, $template, $user, $phpbb_log;
-		global $phpEx, $phpbb_root_path, $request, $phpbb_container, $phpbb_dispatcher;
+		global $db, $template, $user, $an602_log;
+		global $phpEx, $an602_root_path, $request, $an602_container, $an602_dispatcher;
 
-		if (!phpbb_check_ids($topic_id_list, TOPICS_TABLE, 'topic_id', array('m_approve')))
+		if (!an602_check_ids($topic_id_list, AN602_TOPICS_TABLE, 'topic_id', array('m_approve')))
 		{
 			send_status_line(403, 'Forbidden');
 			trigger_error('NOT_AUTHORISED');
@@ -969,22 +969,22 @@ class mcp_queue
 			'redirect'		=> $redirect,
 		));
 
-		$topic_info = phpbb_get_topic_data($topic_id_list, 'm_approve');
+		$topic_info = an602_get_topic_data($topic_id_list, 'm_approve');
 
 		if (confirm_box(true))
 		{
 			$notify_poster = ($action == 'approve' && isset($_REQUEST['notify_poster'])) ? true : false;
 
-			/* @var $phpbb_content_visibility \phpbb\content_visibility */
-			$phpbb_content_visibility = $phpbb_container->get('content.visibility');
+			/* @var $an602_content_visibility \an602\content_visibility */
+			$an602_content_visibility = $an602_container->get('content.visibility');
 			$first_post_ids = array();
 
 			foreach ($topic_info as $topic_id => $topic_data)
 			{
-				$phpbb_content_visibility->set_topic_visibility(ITEM_APPROVED, $topic_id, $topic_data['forum_id'], $user->data['user_id'], time(), '');
+				$an602_content_visibility->set_topic_visibility(ITEM_APPROVED, $topic_id, $topic_data['forum_id'], $user->data['user_id'], time(), '');
 				$first_post_ids[$topic_id] = (int) $topic_data['topic_first_post_id'];
 
-				$topic_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", "t={$topic_id}");
+				$topic_url = append_sid("{$an602_root_path}viewtopic.$phpEx", "t={$topic_id}");
 
 				$approve_log[] = array(
 					'forum_id'		=> $topic_data['forum_id'],
@@ -1000,7 +1000,7 @@ class mcp_queue
 
 			foreach ($approve_log as $log_data)
 			{
-				$phpbb_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_TOPIC_' . strtoupper($action) . 'D', false, array(
+				$an602_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_TOPIC_' . strtoupper($action) . 'D', false, array(
 					'forum_id' => $log_data['forum_id'],
 					'topic_id' => $log_data['topic_id'],
 					$log_data['topic_title']
@@ -1012,7 +1012,7 @@ class mcp_queue
 			{
 				// Grab the first post text as it's needed for the quote notification.
 				$sql = 'SELECT topic_id, post_text
-					FROM ' . POSTS_TABLE . '
+					FROM ' . AN602_POSTS_TABLE . '
 					WHERE ' . $db->sql_in_set('post_id', $first_post_ids);
 				$result = $db->sql_query($sql);
 
@@ -1023,8 +1023,8 @@ class mcp_queue
 				$db->sql_freeresult($result);
 
 				// Handle notifications
-				/* @var $phpbb_notifications \phpbb\notification\manager */
-				$phpbb_notifications = $phpbb_container->get('notification_manager');
+				/* @var $an602_notifications \an602\notification\manager */
+				$an602_notifications = $an602_container->get('notification_manager');
 
 				foreach ($topic_info as $topic_id => $topic_data)
 				{
@@ -1036,7 +1036,7 @@ class mcp_queue
 						'post_username'	=> $topic_data['topic_first_poster_name'],
 					));
 
-					$phpbb_notifications->delete_notifications('notification.type.topic_in_queue', $topic_id);
+					$an602_notifications->delete_notifications('notification.type.topic_in_queue', $topic_id);
 
 					// Only add notifications, if we are not reapproving post
 					// When the topic was already approved, but was edited and
@@ -1044,18 +1044,18 @@ class mcp_queue
 					// again.
 					if ($topic_data['topic_visibility'] == ITEM_UNAPPROVED)
 					{
-						$phpbb_notifications->add_notifications(array(
+						$an602_notifications->add_notifications(array(
 							'notification.type.quote',
 							'notification.type.topic',
 						), $topic_data);
 					}
 
-					$phpbb_notifications->mark_notifications('quote', $topic_data['post_id'], $user->data['user_id']);
-					$phpbb_notifications->mark_notifications('topic', $topic_id, $user->data['user_id']);
+					$an602_notifications->mark_notifications('quote', $topic_data['post_id'], $user->data['user_id']);
+					$an602_notifications->mark_notifications('topic', $topic_id, $user->data['user_id']);
 
 					if ($notify_poster)
 					{
-						$phpbb_notifications->add_notifications('notification.type.approve_topic', $topic_data);
+						$an602_notifications->add_notifications('notification.type.approve_topic', $topic_data);
 					}
 				}
 			}
@@ -1080,14 +1080,14 @@ class mcp_queue
 				'success_msg',
 				'redirect',
 			);
-			extract($phpbb_dispatcher->trigger_event('core.approve_topics_after', compact($vars)));
+			extract($an602_dispatcher->trigger_event('core.approve_topics_after', compact($vars)));
 
 			meta_refresh(3, $redirect);
 			$message = $user->lang[$success_msg];
 
 			if ($request->is_ajax())
 			{
-				$json_response = new \phpbb\json_response;
+				$json_response = new \an602\json_response;
 				$json_response->send(array(
 					'MESSAGE_TITLE'		=> $user->lang['INFORMATION'],
 					'MESSAGE_TEXT'		=> $message,
@@ -1145,10 +1145,10 @@ class mcp_queue
 	*/
 	static public function disapprove_posts($post_id_list, $id, $mode)
 	{
-		global $db, $template, $user, $phpbb_container, $phpbb_dispatcher;
-		global $phpEx, $phpbb_root_path, $request, $phpbb_log;
+		global $db, $template, $user, $an602_container, $an602_dispatcher;
+		global $phpEx, $an602_root_path, $request, $an602_log;
 
-		if (!phpbb_check_ids($post_id_list, POSTS_TABLE, 'post_id', array('m_approve')))
+		if (!an602_check_ids($post_id_list, AN602_POSTS_TABLE, 'post_id', array('m_approve')))
 		{
 			send_status_line(403, 'Forbidden');
 			trigger_error('NOT_AUTHORISED');
@@ -1174,7 +1174,7 @@ class mcp_queue
 		if ($reason_id)
 		{
 			$sql = 'SELECT reason_title, reason_description
-				FROM ' . REPORTS_REASONS_TABLE . "
+				FROM ' . AN602_REPORTS_REASONS_TABLE . "
 				WHERE reason_id = $reason_id";
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
@@ -1184,9 +1184,9 @@ class mcp_queue
 			{
 				$additional_msg = $user->lang['NO_REASON_DISAPPROVAL'];
 
-				$request->overwrite('confirm', null, \phpbb\request\request_interface::POST);
-				$request->overwrite('confirm_key', null, \phpbb\request\request_interface::POST);
-				$request->overwrite('confirm_key', null, \phpbb\request\request_interface::REQUEST);
+				$request->overwrite('confirm', null, \an602\request\request_interface::POST);
+				$request->overwrite('confirm_key', null, \an602\request\request_interface::POST);
+				$request->overwrite('confirm_key', null, \an602\request\request_interface::REQUEST);
 			}
 			else
 			{
@@ -1201,7 +1201,7 @@ class mcp_queue
 			}
 		}
 
-		$post_info = phpbb_get_post_data($post_id_list, 'm_approve');
+		$post_info = an602_get_post_data($post_id_list, 'm_approve');
 
 		$is_disapproving = false;
 		foreach ($post_info as $post_id => $post_data)
@@ -1294,7 +1294,7 @@ class mcp_queue
 			{
 				if (!function_exists('delete_posts'))
 				{
-					include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+					include($an602_root_path . 'includes/functions_admin.' . $phpEx);
 				}
 
 				// We do not check for permissions here, because the moderator allowed approval/disapproval should be allowed to delete the disapproved posts
@@ -1307,7 +1307,7 @@ class mcp_queue
 					if ($is_disapproving)
 					{
 						$l_log_message = ($log_data['type'] == 'topic') ? 'LOG_TOPIC_DISAPPROVED' : 'LOG_POST_DISAPPROVED';
-						$phpbb_log->add('mod', $user->data['user_id'], $user->ip, $l_log_message, false, array(
+						$an602_log->add('mod', $user->data['user_id'], $user->ip, $l_log_message, false, array(
 							'forum_id' => $log_data['forum_id'],
 							'topic_id' => $log_data['topic_id'],
 							$log_data['post_subject'],
@@ -1318,7 +1318,7 @@ class mcp_queue
 					else
 					{
 						$l_log_message = ($log_data['type'] == 'topic') ? 'LOG_DELETE_TOPIC' : 'LOG_DELETE_POST';
-						$phpbb_log->add('mod', $user->data['user_id'], $user->ip, $l_log_message, false, array(
+						$an602_log->add('mod', $user->data['user_id'], $user->ip, $l_log_message, false, array(
 							'forum_id' => $log_data['forum_id'],
 							'topic_id' => $log_data['topic_id'],
 							$log_data['post_subject'],
@@ -1328,8 +1328,8 @@ class mcp_queue
 				}
 			}
 
-			/* @var $phpbb_notifications \phpbb\notification\manager */
-			$phpbb_notifications = $phpbb_container->get('notification_manager');
+			/* @var $an602_notifications \an602\notification\manager */
+			$an602_notifications = $an602_container->get('notification_manager');
 
 			$lang_reasons = array();
 
@@ -1339,12 +1339,12 @@ class mcp_queue
 					$topic_information[$topic_id]['topic_posts_softdeleted'] == 0 &&
 					$topic_information[$topic_id]['topic_posts_unapproved'] == $topic_posts_unapproved[$topic_id];
 
-				$phpbb_notifications->delete_notifications('notification.type.post_in_queue', $post_id);
+				$an602_notifications->delete_notifications('notification.type.post_in_queue', $post_id);
 
 				// Do we disapprove the whole topic? Remove potential notifications
 				if ($disapprove_all_posts_in_topic)
 				{
-					$phpbb_notifications->delete_notifications('notification.type.topic_in_queue', $post_data['topic_id']);
+					$an602_notifications->delete_notifications('notification.type.topic_in_queue', $post_data['topic_id']);
 				}
 
 				// Notify Poster?
@@ -1365,11 +1365,11 @@ class mcp_queue
 							$lang_reasons[$post_data['user_lang']] = $user->lang['report_reasons']['DESCRIPTION'][$disapprove_reason_lang];
 
 							// Only load up the language pack if the language is different to the current one
-							if ($post_data['user_lang'] != $user->lang_name && file_exists($phpbb_root_path . '/language/' . $post_data['user_lang'] . '/mcp.' . $phpEx))
+							if ($post_data['user_lang'] != $user->lang_name && file_exists($an602_root_path . '/language/' . $post_data['user_lang'] . '/mcp.' . $phpEx))
 							{
 								// Load up the language pack
 								$lang = array();
-								@include($phpbb_root_path . '/language/' . basename($post_data['user_lang']) . '/mcp.' . $phpEx);
+								@include($an602_root_path . '/language/' . basename($post_data['user_lang']) . '/mcp.' . $phpEx);
 
 								// If we find the reason in this language pack use it
 								if (isset($lang['report_reasons']['DESCRIPTION'][$disapprove_reason_lang]))
@@ -1389,13 +1389,13 @@ class mcp_queue
 					{
 						// If there is only 1 post when disapproving the topic,
 						// we send the user a "disapprove topic" notification...
-						$phpbb_notifications->add_notifications('notification.type.disapprove_topic', $post_data);
+						$an602_notifications->add_notifications('notification.type.disapprove_topic', $post_data);
 					}
 					else
 					{
 						// ... otherwise there are multiple unapproved posts and
 						// all of them are disapproved as posts.
-						$phpbb_notifications->add_notifications('notification.type.disapprove_post', $post_data);
+						$an602_notifications->add_notifications('notification.type.disapprove_post', $post_data);
 					}
 				}
 			}
@@ -1419,7 +1419,7 @@ class mcp_queue
 			}
 
 			// If we came from viewtopic, we try to go back to it.
-			if (strpos($redirect, $phpbb_root_path . 'viewtopic.' . $phpEx) === 0)
+			if (strpos($redirect, $an602_root_path . 'viewtopic.' . $phpEx) === 0)
 			{
 				if ($num_disapproved_topics == 0)
 				{
@@ -1430,7 +1430,7 @@ class mcp_queue
 				{
 					// However this is only possible if the topic still exists,
 					// Otherwise we go back to the viewforum page
-					$redirect = append_sid($phpbb_root_path . 'viewforum.' . $phpEx, 'f=' . $post_data['forum_id']);
+					$redirect = append_sid($an602_root_path . 'viewforum.' . $phpEx, 'f=' . $post_data['forum_id']);
 				}
 			}
 
@@ -1470,7 +1470,7 @@ class mcp_queue
 				'success_msg',
 				'redirect',
 			);
-			extract($phpbb_dispatcher->trigger_event('core.disapprove_posts_after', compact($vars)));
+			extract($an602_dispatcher->trigger_event('core.disapprove_posts_after', compact($vars)));
 
 			unset($lang_reasons, $post_info, $disapprove_reason, $disapprove_reason_lang);
 
@@ -1479,7 +1479,7 @@ class mcp_queue
 
 			if ($request->is_ajax())
 			{
-				$json_response = new \phpbb\json_response;
+				$json_response = new \an602\json_response;
 				$json_response->send(array(
 					'MESSAGE_TITLE'		=> $user->lang['INFORMATION'],
 					'MESSAGE_TEXT'		=> $message,
@@ -1511,7 +1511,7 @@ class mcp_queue
 			$confirm_template = 'mcp_approve.html';
 			if ($is_disapproving)
 			{
-				$phpbb_container->get('phpbb.report.report_reason_list_provider')->display_reasons($reason_id);
+				$an602_container->get('an602.report.report_reason_list_provider')->display_reasons($reason_id);
 			}
 			else
 			{

@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -37,7 +37,7 @@ if (empty($lang) || !is_array($lang))
 // in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
 
 $lang = array_merge($lang, [
-	'ACP_STYLES_EXPLAIN'						=> 'Here you can manage the styles available on your board.<br>Please note you cannot uninstall the “<strong>prosilver</strong>” style as it is phpBB’s default and primary parent style.',
+	'ACP_STYLES_EXPLAIN'						=> 'Here you can manage the styles available on your board.<br>Please note you cannot uninstall the “<strong>prosilver</strong>” style as it is AN602’s default and primary parent style.',
 
 	'CANNOT_BE_INSTALLED'						=> 'Cannot be installed',
 	'CONFIRM_UNINSTALL_STYLES'					=> 'Are you sure you wish to uninstall selected styles?',
@@ -80,7 +80,7 @@ $lang = array_merge($lang, [
 	'STYLE_UNINSTALL'							=> 'Uninstall',
 	'STYLE_UNINSTALL_DEPENDENT'					=> 'Style "%s" cannot be uninstalled because it has one or more child styles.',
 	'STYLE_UNINSTALLED'							=> 'Style "%s" uninstalled successfully.',
-	'STYLE_PHPBB_VERSION'						=> 'phpBB Version',
+	'STYLE_AN602_VERSION'						=> 'AN602 Version',
 	'STYLE_USED_BY'								=> 'Used by (including robots)',
 	'STYLE_VERSION'								=> 'Style version',
 

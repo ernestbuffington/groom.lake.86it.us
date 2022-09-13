@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -25,7 +25,7 @@ if (!defined('IN_PHPBB'))
 */
 function send_avatar_to_browser($file, $browser)
 {
-	global $config, $phpbb_root_path;
+	global $config, $an602_root_path;
 
 	$prefix = $config['avatar_salt'] . '_';
 	$image_dir = $config['avatar_path'];
@@ -41,7 +41,7 @@ function send_avatar_to_browser($file, $browser)
 	{
 		$image_dir = '';
 	}
-	$file_path = $phpbb_root_path . $image_dir . '/' . $prefix . $file;
+	$file_path = $an602_root_path . $image_dir . '/' . $prefix . $file;
 
 	if ((@file_exists($file_path) && @is_readable($file_path)) && !headers_sent())
 	{
@@ -50,7 +50,7 @@ function send_avatar_to_browser($file, $browser)
 		$image_data = @getimagesize($file_path);
 		header('Content-Type: ' . image_type_to_mime_type($image_data[2]));
 
-		if ((strpos(strtolower($browser), 'msie') !== false) && !phpbb_is_greater_ie_version($browser, 7))
+		if ((strpos(strtolower($browser), 'msie') !== false) && !an602_is_greater_ie_version($browser, 7))
 		{
 			header('Content-Disposition: attachment; ' . header_filename($file));
 
@@ -124,9 +124,9 @@ function wrap_img_in_html($src, $title)
 */
 function send_file_to_browser($attachment, $upload_dir, $category)
 {
-	global $user, $db, $phpbb_dispatcher, $phpbb_root_path, $request;
+	global $user, $db, $an602_dispatcher, $an602_root_path, $request;
 
-	$filename = $phpbb_root_path . $upload_dir . '/' . $attachment['physical_filename'];
+	$filename = $an602_root_path . $upload_dir . '/' . $attachment['physical_filename'];
 
 	if (!@file_exists($filename))
 	{
@@ -167,7 +167,7 @@ function send_file_to_browser($attachment, $upload_dir, $category)
 		'filename',
 		'size',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.send_file_to_browser_before', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.send_file_to_browser_before', compact($vars)));
 
 	// To correctly display further errors we need to make sure we are using the correct headers for both (unsetting content-length may not work)
 
@@ -189,7 +189,7 @@ function send_file_to_browser($attachment, $upload_dir, $category)
 	if ($size > 0 && $size != $attachment['filesize'] && strpos($attachment['physical_filename'], 'thumb_') === false)
 	{
 		// Update database record
-		$sql = 'UPDATE ' . ATTACHMENTS_TABLE . '
+		$sql = 'UPDATE ' . AN602_ATTACHMENTS_TABLE . '
 			SET filesize = ' . (int) $size . '
 			WHERE attach_id = ' . (int) $attachment['attach_id'];
 		$db->sql_query($sql);
@@ -201,12 +201,12 @@ function send_file_to_browser($attachment, $upload_dir, $category)
 	// Send out the Headers. Do not set Content-Disposition to inline please, it is a security measure for users using the Internet Explorer.
 	header('Content-Type: ' . $attachment['mimetype']);
 
-	if (phpbb_is_greater_ie_version($user->browser, 7))
+	if (an602_is_greater_ie_version($user->browser, 7))
 	{
 		header('X-Content-Type-Options: nosniff');
 	}
 
-	if (empty($user->browser) || ((strpos(strtolower($user->browser), 'msie') !== false) && !phpbb_is_greater_ie_version($user->browser, 7)))
+	if (empty($user->browser) || ((strpos(strtolower($user->browser), 'msie') !== false) && !an602_is_greater_ie_version($user->browser, 7)))
 	{
 		header('Content-Disposition: attachment; ' . header_filename(html_entity_decode($attachment['real_filename'], ENT_COMPAT)));
 		if (empty($user->browser) || (strpos(strtolower($user->browser), 'msie 6.0') !== false))
@@ -217,7 +217,7 @@ function send_file_to_browser($attachment, $upload_dir, $category)
 	else
 	{
 		header('Content-Disposition: ' . ((strpos($attachment['mimetype'], 'image') === 0) ? 'inline' : 'attachment') . '; ' . header_filename(html_entity_decode($attachment['real_filename'], ENT_COMPAT)));
-		if (phpbb_is_greater_ie_version($user->browser, 7) && (strpos($attachment['mimetype'], 'image') !== 0))
+		if (an602_is_greater_ie_version($user->browser, 7) && (strpos($attachment['mimetype'], 'image') !== 0))
 		{
 			header('X-Download-Options: noopen');
 		}
@@ -231,13 +231,13 @@ function send_file_to_browser($attachment, $upload_dir, $category)
 		// We make sure those have to be enabled manually by defining a constant
 		// because of the potential disclosure of full attachment path
 		// in case support for features is absent in the webserver software.
-		if (defined('PHPBB_ENABLE_X_ACCEL_REDIRECT') && PHPBB_ENABLE_X_ACCEL_REDIRECT)
+		if (defined('AN602_ENABLE_X_ACCEL_REDIRECT') && AN602_ENABLE_X_ACCEL_REDIRECT)
 		{
 			// X-Accel-Redirect - http://wiki.nginx.org/XSendfile
 			header('X-Accel-Redirect: ' . $user->page['root_script_path'] . $upload_dir . '/' . $attachment['physical_filename']);
 			exit;
 		}
-		else if (defined('PHPBB_ENABLE_X_SENDFILE') && PHPBB_ENABLE_X_SENDFILE && !phpbb_http_byte_range($size))
+		else if (defined('AN602_ENABLE_X_SENDFILE') && AN602_ENABLE_X_SENDFILE && !an602_http_byte_range($size))
 		{
 			// X-Sendfile - http://blog.lighttpd.net/articles/2006/07/02/x-sendfile
 			// Lighttpd's X-Sendfile does not support range requests as of 1.4.26
@@ -259,7 +259,7 @@ function send_file_to_browser($attachment, $upload_dir, $category)
 		if ($fp !== false)
 		{
 			// Deliver file partially if requested
-			if ($range = phpbb_http_byte_range($size))
+			if ($range = an602_http_byte_range($size))
 			{
 				fseek($fp, $range['byte_pos_start']);
 
@@ -377,7 +377,7 @@ function download_allowed()
 	if (!$allowed)
 	{
 		$sql = 'SELECT site_ip, site_hostname, ip_exclude
-			FROM ' . SITELIST_TABLE;
+			FROM ' . AN602_SITELIST_TABLE;
 		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
@@ -437,7 +437,7 @@ function set_modified_headers($stamp, $browser)
 	// let's see if we have to send the file at all
 	$last_load 	=  $request->header('If-Modified-Since') ? strtotime(trim($request->header('If-Modified-Since'))) : false;
 
-	if (strpos(strtolower($browser), 'msie 6.0') === false && !phpbb_is_greater_ie_version($browser, 7))
+	if (strpos(strtolower($browser), 'msie 6.0') === false && !an602_is_greater_ie_version($browser, 7))
 	{
 		if ($last_load !== false && $last_load >= $stamp)
 		{
@@ -490,7 +490,7 @@ function file_gc($exit = true)
 * @return mixed		false if the whole file has to be delivered
 *					associative array on success
 */
-function phpbb_http_byte_range($filesize)
+function an602_http_byte_range($filesize)
 {
 	// Only call find_range_request() once.
 	static $request_array;
@@ -502,10 +502,10 @@ function phpbb_http_byte_range($filesize)
 
 	if (!isset($request_array))
 	{
-		$request_array = phpbb_find_range_request();
+		$request_array = an602_find_range_request();
 	}
 
-	return (empty($request_array)) ? false : phpbb_parse_range_request($request_array, $filesize);
+	return (empty($request_array)) ? false : an602_parse_range_request($request_array, $filesize);
 }
 
 /**
@@ -515,7 +515,7 @@ function phpbb_http_byte_range($filesize)
 *					array of strings containing the requested ranges otherwise
 *					e.g. array(0 => '0-0', 1 => '123-125')
 */
-function phpbb_find_range_request()
+function an602_find_range_request()
 {
 	global $request;
 
@@ -549,7 +549,7 @@ function phpbb_find_range_request()
 *						bytes_requested		the number of bytes requested
 *						bytes_total			the full size of the file
 */
-function phpbb_parse_range_request($request_array, $filesize)
+function an602_parse_range_request($request_array, $filesize)
 {
 	$first_byte_pos	= -1;
 	$last_byte_pos	= -1;
@@ -625,19 +625,19 @@ function phpbb_parse_range_request($request_array, $filesize)
 /**
 * Increments the download count of all provided attachments
 *
-* @param \phpbb\db\driver\driver_interface $db The database object
+* @param \an602\db\driver\driver_interface $db The database object
 * @param array|int $ids The attach_id of each attachment
 *
 * @return null
 */
-function phpbb_increment_downloads($db, $ids)
+function an602_increment_downloads($db, $ids)
 {
 	if (!is_array($ids))
 	{
 		$ids = array($ids);
 	}
 
-	$sql = 'UPDATE ' . ATTACHMENTS_TABLE . '
+	$sql = 'UPDATE ' . AN602_ATTACHMENTS_TABLE . '
 		SET download_count = download_count + 1
 		WHERE ' . $db->sql_in_set('attach_id', $ids);
 	$db->sql_query($sql);
@@ -646,21 +646,21 @@ function phpbb_increment_downloads($db, $ids)
 /**
 * Handles authentication when downloading attachments from a post or topic
 *
-* @param \phpbb\db\driver\driver_interface $db The database object
-* @param \phpbb\auth\auth $auth The authentication object
+* @param \an602\db\driver\driver_interface $db The database object
+* @param \an602\auth\auth $auth The authentication object
 * @param int $topic_id The id of the topic that we are downloading from
 *
 * @return null
 */
-function phpbb_download_handle_forum_auth($db, $auth, $topic_id)
+function an602_download_handle_forum_auth($db, $auth, $topic_id)
 {
-	global $phpbb_container;
+	global $an602_container;
 
 	$sql_array = [
 		'SELECT'	=> 't.forum_id, t.topic_poster, t.topic_visibility, f.forum_name, f.forum_password, f.parent_id',
 		'FROM'		=> [
-			TOPICS_TABLE => 't',
-			FORUMS_TABLE => 'f',
+			AN602_TOPICS_TABLE => 't',
+			AN602_FORUMS_TABLE => 'f',
 		],
 		'WHERE'		=> 't.topic_id = ' . (int) $topic_id . '
 			AND t.forum_id = f.forum_id',
@@ -671,9 +671,9 @@ function phpbb_download_handle_forum_auth($db, $auth, $topic_id)
 	$row = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
 
-	$phpbb_content_visibility = $phpbb_container->get('content.visibility');
+	$an602_content_visibility = $an602_container->get('content.visibility');
 
-	if ($row && !$phpbb_content_visibility->is_visible('topic', $row['forum_id'], $row))
+	if ($row && !$an602_content_visibility->is_visible('topic', $row['forum_id'], $row))
 	{
 		send_status_line(404, 'Not Found');
 		trigger_error('ERROR_NO_ATTACHMENT');
@@ -696,16 +696,16 @@ function phpbb_download_handle_forum_auth($db, $auth, $topic_id)
 /**
 * Handles authentication when downloading attachments from PMs
 *
-* @param \phpbb\db\driver\driver_interface $db The database object
-* @param \phpbb\auth\auth $auth The authentication object
+* @param \an602\db\driver\driver_interface $db The database object
+* @param \an602\auth\auth $auth The authentication object
 * @param int $user_id The user id
 * @param int $msg_id The id of the PM that we are downloading from
 *
 * @return null
 */
-function phpbb_download_handle_pm_auth($db, $auth, $user_id, $msg_id)
+function an602_download_handle_pm_auth($db, $auth, $user_id, $msg_id)
 {
-	global $phpbb_dispatcher;
+	global $an602_dispatcher;
 
 	if (!$auth->acl_get('u_pm_download'))
 	{
@@ -713,7 +713,7 @@ function phpbb_download_handle_pm_auth($db, $auth, $user_id, $msg_id)
 		trigger_error('SORRY_AUTH_VIEW_ATTACH');
 	}
 
-	$allowed = phpbb_download_check_pm_auth($db, $user_id, $msg_id);
+	$allowed = an602_download_check_pm_auth($db, $user_id, $msg_id);
 
 	/**
 	* Event to modify PM attachments download auth
@@ -725,7 +725,7 @@ function phpbb_download_handle_pm_auth($db, $auth, $user_id, $msg_id)
 	* @since 3.1.11-RC1
 	*/
 	$vars = array('allowed', 'msg_id', 'user_id');
-	extract($phpbb_dispatcher->trigger_event('core.modify_pm_attach_download_auth', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.modify_pm_attach_download_auth', compact($vars)));
 
 	if (!$allowed)
 	{
@@ -737,17 +737,17 @@ function phpbb_download_handle_pm_auth($db, $auth, $user_id, $msg_id)
 /**
 * Checks whether a user can download from a particular PM
 *
-* @param \phpbb\db\driver\driver_interface $db The database object
+* @param \an602\db\driver\driver_interface $db The database object
 * @param int $user_id The user id
 * @param int $msg_id The id of the PM that we are downloading from
 *
 * @return bool Whether the user is allowed to download from that PM or not
 */
-function phpbb_download_check_pm_auth($db, $user_id, $msg_id)
+function an602_download_check_pm_auth($db, $user_id, $msg_id)
 {
 	// Check if the attachment is within the users scope...
 	$sql = 'SELECT msg_id
-		FROM ' . PRIVMSGS_TO_TABLE . '
+		FROM ' . AN602_PRIVMSGS_TO_TABLE . '
 		WHERE msg_id = ' . (int) $msg_id . '
 			AND (
 				user_id = ' . (int) $user_id . '
@@ -768,7 +768,7 @@ function phpbb_download_check_pm_auth($db, $user_id, $msg_id)
 *
 * @return bool true if internet explorer version is greater than $version
 */
-function phpbb_is_greater_ie_version($user_agent, $version)
+function an602_is_greater_ie_version($user_agent, $version)
 {
 	if (preg_match('/msie (\d+)/', strtolower($user_agent), $matches))
 	{

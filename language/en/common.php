@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -48,7 +48,7 @@ $lang = array_merge($lang, array(
 	'USER_LANG'			=> 'en-gb',
 
 	// You can define different rules for the determination of plural forms here.
-	// See https://area51.phpbb.com/docs/dev/3.3.x/language/plurals.html for more information
+	// See https://area51.an602.com/docs/dev/3.3.x/language/plurals.html for more information
 	// or ask the translation manager for help.
 	'PLURAL_RULE'		=> 1,
 
@@ -236,7 +236,7 @@ $lang = array_merge($lang, array(
 	'ERR_UNABLE_TO_LOGIN'				=> 'The specified username or password is incorrect.',
 	'ERR_UNWATCHING'					=> 'An error occurred while trying to unsubscribe.',
 	'ERR_WATCHING'						=> 'An error occurred while trying to subscribe.',
-	'ERR_WRONG_PATH_TO_PHPBB'			=> 'The phpBB path specified appears to be invalid.',
+	'ERR_WRONG_PATH_TO_AN602'			=> 'The AN602 path specified appears to be invalid.',
 	'ERROR'									=> 'Error',
 	'EXPAND_VIEW'						=> 'Expand view',
 	'EXTENSION'							=> 'Extension',
@@ -290,8 +290,8 @@ $lang = array_merge($lang, array(
 	'FTP_FSOCK_PASSWORD_EXPLAIN'	=> 'Password for your FTP username.',
 	'FTP_FSOCK_PORT'				=> 'FTP port',
 	'FTP_FSOCK_PORT_EXPLAIN'		=> 'Port used to connect to your server.',
-	'FTP_FSOCK_ROOT_PATH'			=> 'Path to phpBB',
-	'FTP_FSOCK_ROOT_PATH_EXPLAIN'	=> 'Path from the root to your phpBB board.',
+	'FTP_FSOCK_ROOT_PATH'			=> 'Path to AN602',
+	'FTP_FSOCK_ROOT_PATH_EXPLAIN'	=> 'Path from the root to your AN602 board.',
 	'FTP_FSOCK_TIMEOUT'				=> 'FTP timeout',
 	'FTP_FSOCK_TIMEOUT_EXPLAIN'		=> 'The amount of time, in seconds, that the system will wait for a reply from your server.',
 	'FTP_FSOCK_USERNAME'			=> 'FTP username',
@@ -303,8 +303,8 @@ $lang = array_merge($lang, array(
 	'FTP_PASSWORD_EXPLAIN'		=> 'Password for your FTP username.',
 	'FTP_PORT'					=> 'FTP port',
 	'FTP_PORT_EXPLAIN'			=> 'Port used to connect to your server.',
-	'FTP_ROOT_PATH'				=> 'Path to phpBB',
-	'FTP_ROOT_PATH_EXPLAIN'		=> 'Path from the root to your phpBB board.',
+	'FTP_ROOT_PATH'				=> 'Path to AN602',
+	'FTP_ROOT_PATH_EXPLAIN'		=> 'Path from the root to your AN602 board.',
 	'FTP_TIMEOUT'				=> 'FTP timeout',
 	'FTP_TIMEOUT_EXPLAIN'		=> 'The amount of time, in seconds, that the system will wait for a reply from your server.',
 	'FTP_USERNAME'				=> 'FTP username',

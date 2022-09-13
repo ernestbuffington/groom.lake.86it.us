@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -36,7 +36,7 @@ if (!defined('IN_PHPBB'))
 */
 function get_user_avatar($avatar, $avatar_type, $avatar_width, $avatar_height, $alt = 'USER_AVATAR', $ignore_config = false, $lazy = false)
 {
-	// map arguments to new function phpbb_get_avatar()
+	// map arguments to new function an602_get_avatar()
 	$row = array(
 		'avatar'		=> $avatar,
 		'avatar_type'	=> $avatar_type,
@@ -44,7 +44,7 @@ function get_user_avatar($avatar, $avatar_type, $avatar_width, $avatar_height, $
 		'avatar_height'	=> $avatar_height,
 	);
 
-	return phpbb_get_avatar($row, $alt, $ignore_config, $lazy);
+	return an602_get_avatar($row, $alt, $ignore_config, $lazy);
 }
 
 /**
@@ -56,12 +56,12 @@ function get_user_avatar($avatar, $avatar_type, $avatar_width, $avatar_height, $
 *
 * @return string|bool Password hash or false if something went wrong during hashing
 */
-function phpbb_hash($password)
+function an602_hash($password)
 {
-	global $phpbb_container;
+	global $an602_container;
 
-	/* @var $passwords_manager \phpbb\passwords\manager */
-	$passwords_manager = $phpbb_container->get('passwords.manager');
+	/* @var $passwords_manager \an602\passwords\manager */
+	$passwords_manager = $an602_container->get('passwords.manager');
 	return $passwords_manager->hash($password);
 }
 
@@ -75,12 +75,12 @@ function phpbb_hash($password)
 *
 * @return bool Returns true if the password is correct, false if not.
 */
-function phpbb_check_hash($password, $hash)
+function an602_check_hash($password, $hash)
 {
-	global $phpbb_container;
+	global $an602_container;
 
-	/* @var $passwords_manager \phpbb\passwords\manager */
-	$passwords_manager = $phpbb_container->get('passwords.manager');
+	/* @var $passwords_manager \an602\passwords\manager */
+	$passwords_manager = $an602_container->get('passwords.manager');
 	return $passwords_manager->check($password, $hash);
 }
 
@@ -94,38 +94,38 @@ function phpbb_check_hash($password, $hash)
 *
 * @deprecated 3.1.0 (To be removed: 4.0.0)
 */
-function phpbb_clean_path($path)
+function an602_clean_path($path)
 {
-	global $phpbb_path_helper, $phpbb_container;
+	global $an602_path_helper, $an602_container;
 
-	if (!$phpbb_path_helper && $phpbb_container)
+	if (!$an602_path_helper && $an602_container)
 	{
-		/* @var $phpbb_path_helper \phpbb\path_helper */
-		$phpbb_path_helper = $phpbb_container->get('path_helper');
+		/* @var $an602_path_helper \an602\path_helper */
+		$an602_path_helper = $an602_container->get('path_helper');
 	}
-	else if (!$phpbb_path_helper)
+	else if (!$an602_path_helper)
 	{
-		global $phpbb_root_path, $phpEx;
+		global $an602_root_path, $phpEx;
 
 		// The container is not yet loaded, use a new instance
-		if (!class_exists('\phpbb\path_helper'))
+		if (!class_exists('\an602\path_helper'))
 		{
-			require($phpbb_root_path . 'phpbb/path_helper.' . $phpEx);
+			require($an602_root_path . 'an602/path_helper.' . $phpEx);
 		}
 
-		$request = new phpbb\request\request();
-		$phpbb_path_helper = new phpbb\path_helper(
-			new phpbb\symfony_request(
+		$request = new an602\request\request();
+		$an602_path_helper = new an602\path_helper(
+			new an602\symfony_request(
 				$request
 			),
-			new phpbb\filesystem\filesystem(),
+			new an602\filesystem\filesystem(),
 			$request,
-			$phpbb_root_path,
+			$an602_root_path,
 			$phpEx
 		);
 	}
 
-	return $phpbb_path_helper->clean_path($path);
+	return $an602_path_helper->clean_path($path);
 }
 
 /**
@@ -142,7 +142,7 @@ function tz_select($default = '', $truncate = false)
 {
 	global $template, $user;
 
-	return phpbb_timezone_select($template, $user, $default, $truncate);
+	return an602_timezone_select($template, $user, $default, $truncate);
 }
 
 /**
@@ -156,7 +156,7 @@ function tz_select($default = '', $truncate = false)
 function cache_moderators()
 {
 	global $db, $cache, $auth;
-	return phpbb_cache_moderators($db, $cache, $auth);
+	return an602_cache_moderators($db, $cache, $auth);
 }
 
 /**
@@ -170,7 +170,7 @@ function cache_moderators()
 function update_foes($group_id = false, $user_id = false)
 {
 	global $db, $auth;
-	return phpbb_update_foes($db, $auth, $group_id, $user_id);
+	return an602_update_foes($db, $auth, $group_id, $user_id);
 }
 
 /**
@@ -188,13 +188,13 @@ function update_foes($group_id = false, $user_id = false)
 */
 function get_user_rank($user_rank, $user_posts, &$rank_title, &$rank_img, &$rank_img_src)
 {
-	global $phpbb_root_path, $phpEx;
-	if (!function_exists('phpbb_get_user_rank'))
+	global $an602_root_path, $phpEx;
+	if (!function_exists('an602_get_user_rank'))
 	{
-		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+		include($an602_root_path . 'includes/functions_display.' . $phpEx);
 	}
 
-	$rank_data = phpbb_get_user_rank(array('user_rank' => $user_rank), $user_posts);
+	$rank_data = an602_get_user_rank(array('user_rank' => $user_rank), $user_posts);
 	$rank_title = $rank_data['title'];
 	$rank_img = $rank_data['img'];
 	$rank_img_src = $rank_data['img_src'];
@@ -207,11 +207,11 @@ function get_user_rank($user_rank, $user_posts, &$rank_title, &$rank_img, &$rank
  */
 function get_remote_file($host, $directory, $filename, &$errstr, &$errno, $port = 80, $timeout = 6)
 {
-	global $phpbb_container;
+	global $an602_container;
 
 	// Get file downloader and assign $errstr and $errno
-	/* @var $file_downloader \phpbb\file_downloader */
-	$file_downloader = $phpbb_container->get('file_downloader');
+	/* @var $file_downloader \an602\file_downloader */
+	$file_downloader = $an602_container->get('file_downloader');
 
 	$file_data = $file_downloader->get($host, $directory, $filename, $port, $timeout);
 	$errstr = $file_downloader->get_error_string();
@@ -236,7 +236,7 @@ function get_remote_file($host, $directory, $filename, &$errstr, &$errno, $port 
  */
 function add_log()
 {
-	global $phpbb_log, $user;
+	global $an602_log, $user;
 
 	$args = func_get_args();
 	$mode = array_shift($args);
@@ -263,7 +263,7 @@ function add_log()
 	$user_id = (empty($user->data)) ? ANONYMOUS : $user->data['user_id'];
 	$user_ip = (empty($user->ip)) ? '' : $user->ip;
 
-	return $phpbb_log->add($mode, $user_id, $user_ip, $log_operation, time(), $additional_data);
+	return $an602_log->add($mode, $user_id, $user_ip, $log_operation, time(), $additional_data);
 }
 
 /**
@@ -282,7 +282,7 @@ function add_log()
  *
  * @deprecated 3.1.0 (To be removed: 4.0.0)
  */
-function set_config($config_name, $config_value, $is_dynamic = false, \phpbb\config\config $set_config = null)
+function set_config($config_name, $config_value, $is_dynamic = false, \an602\config\config $set_config = null)
 {
 	static $config = null;
 
@@ -312,7 +312,7 @@ function set_config($config_name, $config_value, $is_dynamic = false, \phpbb\con
  *
  * @deprecated 3.1.0 (To be removed: 4.0.0)
  */
-function set_config_count($config_name, $increment, $is_dynamic = false, \phpbb\config\config $set_config = null)
+function set_config_count($config_name, $increment, $is_dynamic = false, \an602\config\config $set_config = null)
 {
 	static $config = null;
 	if ($set_config !== null)
@@ -327,8 +327,8 @@ function set_config_count($config_name, $increment, $is_dynamic = false, \phpbb\
 }
 
 /**
- * Wrapper function of \phpbb\request\request::variable which exists for backwards compatability.
- * See {@link \phpbb\request\request_interface::variable \phpbb\request\request_interface::variable} for
+ * Wrapper function of \an602\request\request::variable which exists for backwards compatability.
+ * See {@link \an602\request\request_interface::variable \an602\request\request_interface::variable} for
  * documentation of this function's use.
  *
  * @deprecated 3.1.0 (To be removed: 4.0.0)
@@ -336,21 +336,21 @@ function set_config_count($config_name, $increment, $is_dynamic = false, \phpbb\
  * 										If the value is an array this may be an array of indizes which will give
  * 										direct access to a value at any depth. E.g. if the value of "var" is array(1 => "a")
  * 										then specifying array("var", 1) as the name will return "a".
- * 										If you pass an instance of {@link \phpbb\request\request_interface phpbb_request_interface}
+ * 										If you pass an instance of {@link \an602\request\request_interface an602_request_interface}
  * 										as this parameter it will overwrite the current request class instance. If you do
  * 										not do so, it will create its own instance (but leave superglobals enabled).
  * @param	mixed			$default	A default value that is returned if the variable was not set.
  * 										This function will always return a value of the same type as the default.
  * @param	bool			$multibyte	If $default is a string this paramater has to be true if the variable may contain any UTF-8 characters
  *										Default is false, causing all bytes outside the ASCII range (0-127) to be replaced with question marks
- * @param	bool			$cookie		This param is mapped to \phpbb\request\request_interface::COOKIE as the last param for
- * 										\phpbb\request\request_interface::variable for backwards compatability reasons.
- * @param	\phpbb\request\request_interface|null|false	$request
- * 										If an instance of \phpbb\request\request_interface is given the instance is stored in
+ * @param	bool			$cookie		This param is mapped to \an602\request\request_interface::COOKIE as the last param for
+ * 										\an602\request\request_interface::variable for backwards compatability reasons.
+ * @param	\an602\request\request_interface|null|false	$request
+ * 										If an instance of \an602\request\request_interface is given the instance is stored in
  *										a static variable and used for all further calls where this parameters is null. Until
- *										the function is called with an instance it automatically creates a new \phpbb\request\request
+ *										the function is called with an instance it automatically creates a new \an602\request\request
  *										instance on every call. By passing false this per-call instantiation can be restored
- *										after having passed in a \phpbb\request\request_interface instance.
+ *										after having passed in a \an602\request\request_interface instance.
  *
  * @return	mixed	The value of $_REQUEST[$var_name] run through {@link set_var set_var} to ensure that the type is the
  * 					the same as that of $default. If the variable is not set $default is returned.
@@ -360,7 +360,7 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false, $
 	// This is all just an ugly hack to add "Dependency Injection" to a function
 	// the only real code is the function call which maps this function to a method.
 	static $static_request = null;
-	if ($request instanceof \phpbb\request\request_interface)
+	if ($request instanceof \an602\request\request_interface)
 	{
 		$static_request = $request;
 		if (empty($var_name))
@@ -382,9 +382,9 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false, $
 	{
 		// false param: enable super globals, so the created request class does not
 		// make super globals inaccessible everywhere outside this function.
-		$tmp_request = new \phpbb\request\request(new \phpbb\request\type_cast_helper(), false);
+		$tmp_request = new \an602\request\request(new \an602\request\type_cast_helper(), false);
 	}
-	return $tmp_request->variable($var_name, $default, $multibyte, ($cookie) ? \phpbb\request\request_interface::COOKIE : \phpbb\request\request_interface::REQUEST);
+	return $tmp_request->variable($var_name, $default, $multibyte, ($cookie) ? \an602\request\request_interface::COOKIE : \an602\request\request_interface::REQUEST);
 }
 
 /**
@@ -394,7 +394,7 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false, $
  */
 function get_tables($db)
 {
-	$db_tools_factory = new \phpbb\db\tools\factory();
+	$db_tools_factory = new \an602\db\tools\factory();
 	$db_tools = $db_tools_factory->get($db);
 
 	return $db_tools->sql_list_tables();
@@ -422,17 +422,17 @@ function get_tables($db)
  *
  * @return bool	true on success, otherwise false
  *
- * @deprecated 3.2.0-dev	use \phpbb\filesystem\filesystem::phpbb_chmod() instead
+ * @deprecated 3.2.0-dev	use \an602\filesystem\filesystem::an602_chmod() instead
  */
-function phpbb_chmod($filename, $perms = CHMOD_READ)
+function an602_chmod($filename, $perms = CHMOD_READ)
 {
-	global $phpbb_filesystem;
+	global $an602_filesystem;
 
 	try
 	{
-		$phpbb_filesystem->phpbb_chmod($filename, $perms);
+		$an602_filesystem->an602_chmod($filename, $perms);
 	}
-	catch (\phpbb\filesystem\exception\filesystem_exception $e)
+	catch (\an602\filesystem\exception\filesystem_exception $e)
 	{
 		return false;
 	}
@@ -449,13 +449,13 @@ function phpbb_chmod($filename, $perms = CHMOD_READ)
  * @param string $file Path to perform write test on
  * @return bool True when the path is writable, otherwise false.
  *
- * @deprecated 3.2.0-dev	use \phpbb\filesystem\filesystem::is_writable() instead
+ * @deprecated 3.2.0-dev	use \an602\filesystem\filesystem::is_writable() instead
  */
-function phpbb_is_writable($file)
+function an602_is_writable($file)
 {
-	global $phpbb_filesystem;
+	global $an602_filesystem;
 
-	return $phpbb_filesystem->is_writable($file);
+	return $an602_filesystem->is_writable($file);
 }
 
 /**
@@ -464,43 +464,43 @@ function phpbb_is_writable($file)
  * @param string $path Path to check absoluteness of
  * @return boolean
  *
- * @deprecated 3.2.0-dev	use \phpbb\filesystem\filesystem::is_absolute_path() instead
+ * @deprecated 3.2.0-dev	use \an602\filesystem\filesystem::is_absolute_path() instead
  */
-function phpbb_is_absolute($path)
+function an602_is_absolute($path)
 {
-	global $phpbb_filesystem;
+	global $an602_filesystem;
 
-	return $phpbb_filesystem->is_absolute_path($path);
+	return $an602_filesystem->is_absolute_path($path);
 }
 
 /**
  * A wrapper for realpath
  *
- * @deprecated 3.2.0-dev	use \phpbb\filesystem\filesystem::realpath() instead
+ * @deprecated 3.2.0-dev	use \an602\filesystem\filesystem::realpath() instead
  */
-function phpbb_realpath($path)
+function an602_realpath($path)
 {
-	global $phpbb_filesystem;
+	global $an602_filesystem;
 
-	return $phpbb_filesystem->realpath($path);
+	return $an602_filesystem->realpath($path);
 }
 
 /**
  * Determine which plural form we should use.
  * For some languages this is not as simple as for English.
  *
- * @param	int			$rule	ID of the plural rule we want to use, see https://area51.phpbb.com/docs/dev/3.3.x/language/plurals.html
+ * @param	int			$rule	ID of the plural rule we want to use, see https://area51.an602.com/docs/dev/3.3.x/language/plurals.html
  * @param	int|float	$number	The number we want to get the plural case for. Float numbers are floored.
  * @return	int		The plural-case we need to use for the number plural-rule combination
  *
  * @deprecated 3.2.0-dev (To be removed: 4.0.0)
  */
-function phpbb_get_plural_form($rule, $number)
+function an602_get_plural_form($rule, $number)
 {
-	global $phpbb_container;
+	global $an602_container;
 
-	/** @var \phpbb\language\language $language */
-	$language = $phpbb_container->get('language');
+	/** @var \an602\language\language $language */
+	$language = $an602_container->get('language');
 	return $language->get_plural_form($number, $rule);
 }
 
@@ -508,7 +508,7 @@ function phpbb_get_plural_form($rule, $number)
 * @return bool Always true
 * @deprecated 3.2.0-dev
 */
-function phpbb_pcre_utf8_support()
+function an602_pcre_utf8_support()
 {
 	return true;
 }
@@ -521,7 +521,7 @@ function phpbb_pcre_utf8_support()
 function set_var(&$result, $var, $type, $multibyte = false)
 {
 	// no need for dependency injection here, if you have the object, call the method yourself!
-	$type_cast_helper = new \phpbb\request\type_cast_helper();
+	$type_cast_helper = new \an602\request\type_cast_helper();
 	$type_cast_helper->set_var($result, $var, $type, $multibyte);
 }
 
@@ -536,10 +536,10 @@ function set_var(&$result, $var, $type, $multibyte = false)
  */
 function delete_attachments($mode, $ids, $resync = true)
 {
-	global $phpbb_container;
+	global $an602_container;
 
-	/** @var \phpbb\attachment\manager $attachment_manager */
-	$attachment_manager = $phpbb_container->get('attachment.manager');
+	/** @var \an602\attachment\manager $attachment_manager */
+	$attachment_manager = $an602_container->get('attachment.manager');
 	$num_deleted = $attachment_manager->delete($mode, $ids, $resync);
 
 	unset($attachment_manager);
@@ -552,12 +552,12 @@ function delete_attachments($mode, $ids, $resync = true)
  *
  * @deprecated 3.2.0-a1 (To be removed: 4.0.0)
  */
-function phpbb_unlink($filename, $mode = 'file', $entry_removed = false)
+function an602_unlink($filename, $mode = 'file', $entry_removed = false)
 {
-	global $phpbb_container;
+	global $an602_container;
 
-	/** @var \phpbb\attachment\manager $attachment_manager */
-	$attachment_manager = $phpbb_container->get('attachment.manager');
+	/** @var \an602\attachment\manager $attachment_manager */
+	$attachment_manager = $an602_container->get('attachment.manager');
 	$unlink = $attachment_manager->unlink($filename, $mode, $entry_removed);
 	unset($attachment_manager);
 
@@ -571,9 +571,9 @@ function phpbb_unlink($filename, $mode = 'file', $entry_removed = false)
  */
 function display_reasons($reason_id = 0)
 {
-	global $phpbb_container;
+	global $an602_container;
 
-	$phpbb_container->get('phpbb.report.report_reason_list_provider')->display_reasons($reason_id);
+	$an602_container->get('an602.report.report_reason_list_provider')->display_reasons($reason_id);
 }
 
 /**
@@ -593,10 +593,10 @@ function display_reasons($reason_id = 0)
  */
 function upload_attachment($form_name, $forum_id, $local = false, $local_storage = '', $is_message = false, $local_filedata = false)
 {
-	global $phpbb_container;
+	global $an602_container;
 
-	/** @var \phpbb\attachment\manager $attachment_manager */
-	$attachment_manager = $phpbb_container->get('attachment.manager');
+	/** @var \an602\attachment\manager $attachment_manager */
+	$attachment_manager = $an602_container->get('attachment.manager');
 	$file = $attachment_manager->upload($form_name, $forum_id, $local, $local_storage, $is_message, $local_filedata);
 	unset($attachment_manager);
 
@@ -620,7 +620,7 @@ function upload_attachment($form_name, $forum_id, $local = false, $local_storage
 *
 * @deprecated 3.3.0-b2 (To be removed: 4.0.0)
 */
-function phpbb_checkdnsrr($host, $type = 'MX')
+function an602_checkdnsrr($host, $type = 'MX')
 {
 	return checkdnsrr($host, $type);
 }
@@ -638,7 +638,7 @@ function phpbb_checkdnsrr($host, $type = 'MX')
   *
  * @deprecated 3.3.0-b2 (To be removed: 4.0.0)
  */
-function phpbb_inet_ntop($in_addr)
+function an602_inet_ntop($in_addr)
 {
 	return inet_ntop($in_addr);
 }
@@ -656,7 +656,7 @@ function phpbb_inet_ntop($in_addr)
  *
  * @deprecated 3.3.0-b2 (To be removed: 4.0.0)
  */
-function phpbb_inet_pton($address)
+function an602_inet_pton($address)
 {
 	return inet_pton($address);
 }
@@ -670,7 +670,7 @@ function phpbb_inet_pton($address)
  *
  * @deprecated 3.3.0-b2 (To be removed: 4.0.0)
  */
-function phpbb_email_hash($email)
+function an602_email_hash($email)
 {
 	return sprintf('%u', crc32(strtolower($email))) . strlen($email);
 }
@@ -678,14 +678,14 @@ function phpbb_email_hash($email)
 /**
  * Load the autoloaders added by the extensions.
  *
- * @param string $phpbb_root_path Path to the phpbb root directory.
+ * @param string $an602_root_path Path to the an602 root directory.
  */
-function phpbb_load_extensions_autoloaders($phpbb_root_path)
+function an602_load_extensions_autoloaders($an602_root_path)
 {
 	$iterator = new \RecursiveIteratorIterator(
-		new \phpbb\recursive_dot_prefix_filter_iterator(
+		new \an602\recursive_dot_prefix_filter_iterator(
 			new \RecursiveDirectoryIterator(
-				$phpbb_root_path . 'ext/',
+				$an602_root_path . 'ext/',
 				\FilesystemIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS
 			)
 		),
@@ -715,7 +715,7 @@ function phpbb_load_extensions_autoloaders($phpbb_root_path)
 *
 * @deprecated 3.2.10 (To be removed 4.0.0)
 */
-function phpbb_http_login($param)
+function an602_http_login($param)
 {
 	global $auth, $user, $request;
 	global $config;
@@ -757,7 +757,7 @@ function phpbb_http_login($param)
 	$username = null;
 	foreach ($username_keys as $k)
 	{
-		if ($request->is_set($k, \phpbb\request\request_interface::SERVER))
+		if ($request->is_set($k, \an602\request\request_interface::SERVER))
 		{
 			$username = html_entity_decode($request->server($k), ENT_COMPAT);
 			break;
@@ -767,7 +767,7 @@ function phpbb_http_login($param)
 	$password = null;
 	foreach ($password_keys as $k)
 	{
-		if ($request->is_set($k, \phpbb\request\request_interface::SERVER))
+		if ($request->is_set($k, \an602\request\request_interface::SERVER))
 		{
 			$password = html_entity_decode($request->server($k), ENT_COMPAT);
 			break;
@@ -821,15 +821,15 @@ function phpbb_http_login($param)
 *
 * sid is always omitted.
 *
-* @param \phpbb\request\request $request Request object
+* @param \an602\request\request $request Request object
 * @param array $exclude A list of variable names that should not be forwarded
 * @return string HTML with hidden fields
 *
 * @deprecated 3.2.10 (To be removed 4.0.0)
 */
-function phpbb_build_hidden_fields_for_query_params($request, $exclude = null)
+function an602_build_hidden_fields_for_query_params($request, $exclude = null)
 {
-	$names = $request->variable_names(\phpbb\request\request_interface::GET);
+	$names = $request->variable_names(\an602\request\request_interface::GET);
 	$hidden = '';
 	foreach ($names as $name)
 	{
@@ -845,16 +845,16 @@ function phpbb_build_hidden_fields_for_query_params($request, $exclude = null)
 			continue;
 		}
 
-		$escaped_name = phpbb_quoteattr($name);
+		$escaped_name = an602_quoteattr($name);
 
 		// Note: we might retrieve the variable from POST or cookies
 		// here. To avoid exposing cookies, skip variables that are
 		// overwritten somewhere other than GET entirely.
 		$value = $request->variable($name, '', true);
-		$get_value = $request->variable($name, '', true, \phpbb\request\request_interface::GET);
+		$get_value = $request->variable($name, '', true, \an602\request\request_interface::GET);
 		if ($value === $get_value)
 		{
-			$escaped_value = phpbb_quoteattr($value);
+			$escaped_value = an602_quoteattr($value);
 			$hidden .= "<input type='hidden' name=$escaped_name value=$escaped_value />";
 		}
 	}
@@ -870,7 +870,7 @@ function phpbb_build_hidden_fields_for_query_params($request, $exclude = null)
 *
 * @deprecated 3.2.10 (To be removed 4.0.0)
 */
-function phpbb_delete_user_pms($user_id)
+function an602_delete_user_pms($user_id)
 {
 	$user_id = (int) $user_id;
 
@@ -879,5 +879,5 @@ function phpbb_delete_user_pms($user_id)
 		return false;
 	}
 
-	return phpbb_delete_users_pms(array($user_id));
+	return an602_delete_users_pms(array($user_id));
 }

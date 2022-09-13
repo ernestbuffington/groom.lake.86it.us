@@ -1,9 +1,9 @@
 <?php
 /**
  *
- * VigLink extension for the phpBB Forum Software package.
+ * VigLink extension for the AN602 CMS Software package.
  *
- * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
+ * @copyright (c) 2014 PHP-AN602 <https://groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
@@ -11,7 +11,7 @@
 /**
  * DO NOT CHANGE
  */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -39,5 +39,5 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	'ACP_VIGLINK_SETTINGS'		=> 'VigLink settings',
-	'LOG_VIGLINK_CHECK_FAIL'	=> '<strong>VigLink settings could not be verified with phpBB.com</strong><br />» %s',
+	'LOG_VIGLINK_CHECK_FAIL'	=> '<strong>VigLink settings could not be verified with AN602.com</strong><br />» %s',
 ));

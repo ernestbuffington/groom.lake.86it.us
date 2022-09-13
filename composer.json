@@ -1,29 +1,29 @@
 {
-	"name": "phpbb/phpbb",
-	"description": "phpBB Forum Software application",
+	"name": "an602/an602",
+	"description": "PHP=AN602 CMS Software application",
 	"type": "project",
-	"keywords": ["phpbb", "forum"],
-	"homepage": "https://www.phpbb.com",
+	"keywords": ["php7","phpbb","phpbb2","phpbb3","programmers-sanbox","advanced-sitemap","amortization","advertising","downloads","blogs","cms","an602","phpbb", "forum"],
+	"homepage": "https://groom.lake.86it.us",
 	"license": "GPL-2.0-only",
 	"authors": [
 		{
-			"name": "phpBB Limited",
-			"email": "operations@phpbb.com",
-			"homepage": "https://www.phpbb.com/go/authors"
+			"name": "PHP-AN602",
+			"email": "operations@groom.lake.86it.us",
+			"homepage": "https://groom.lake.86it.us/go/authors"
 		}
 	],
 	"support": {
-		"issues": "https://tracker.phpbb.com",
-		"forum": "https://www.phpbb.com/community/",
-		"docs": "https://www.phpbb.com/support/docs/",
-		"irc": "irc://irc.libera.chat/phpbb",
-		"chat": "https://www.phpbb.com/support/chat/"
+		"issues": "https://tracker.groom.lake.86it.us",
+		"forum": "https://groom.lake.86it.us/community/",
+		"docs": "https://groom.lake.86it.us/support/docs/",
+		"irc": "irc://irc.libera.chat/an602",
+		"chat": "https://groom.lake.86it.us/support/chat/"
 	},
 	"scripts": {
 		"post-update-cmd": "echo 'You MUST manually modify the clean-vendor-dir target in build/build.xml when adding or upgrading dependencies.'"
 	},
 	"replace": {
-		"phpbb/phpbb-core": "self.version"
+		"an602/an602-core": "self.version"
 	},
 	"require": {
 		"php": "^7.1.3",

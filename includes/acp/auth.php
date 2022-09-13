@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -22,7 +22,7 @@ if (!defined('IN_PHPBB'))
 /**
 * ACP Permission/Auth class
 */
-class auth_admin extends \phpbb\auth\auth
+class auth_admin extends \an602\auth\auth
 {
 	/**
 	* Init auth settings
@@ -34,7 +34,7 @@ class auth_admin extends \phpbb\auth\auth
 		if (($this->acl_options = $cache->get('_acl_options')) === false)
 		{
 			$sql = 'SELECT auth_option_id, auth_option, is_global, is_local
-				FROM ' . ACL_OPTIONS_TABLE . '
+				FROM ' . AN602_ACL_OPTIONS_TABLE . '
 				ORDER BY auth_option_id';
 			$result = $db->sql_query($sql);
 
@@ -71,9 +71,9 @@ class auth_admin extends \phpbb\auth\auth
 	* @param mixed $forum_id forum_ids to search for. Defining a forum id also means getting local settings
 	* @param string $auth_option the auth_option defines the permission setting to look for (a_ for example)
 	* @param local|global $scope the scope defines the permission scope. If local, a forum_id is additionally required
-	* @param ACL_NEVER|ACL_NO|ACL_YES $acl_fill defines the mode those permissions not set are getting filled with
+	* @param AN602_ACL_NEVER|AN602_ACL_NO|AN602_ACL_YES $acl_fill defines the mode those permissions not set are getting filled with
 	*/
-	function get_mask($mode, $user_id = false, $group_id = false, $forum_id = false, $auth_option = false, $scope = false, $acl_fill = ACL_NEVER)
+	function get_mask($mode, $user_id = false, $group_id = false, $forum_id = false, $auth_option = false, $scope = false, $acl_fill = AN602_ACL_NEVER)
 	{
 		global $db, $user;
 
@@ -110,7 +110,7 @@ class auth_admin extends \phpbb\auth\auth
 		if ($scope == 'local' && !count($forum_ids))
 		{
 			$sql = 'SELECT forum_id
-				FROM ' . FORUMS_TABLE;
+				FROM ' . AN602_FORUMS_TABLE;
 			$result = $db->sql_query($sql, 120);
 
 			while ($row = $db->sql_fetchrow($result))
@@ -125,7 +125,7 @@ class auth_admin extends \phpbb\auth\auth
 			$auth2 = null;
 
 			$sql = 'SELECT user_id, user_permissions, user_type
-				FROM ' . USERS_TABLE . '
+				FROM ' . AN602_USERS_TABLE . '
 				WHERE ' . $db->sql_in_set('user_id', $ug_id);
 			$result = $db->sql_query($sql);
 
@@ -133,7 +133,7 @@ class auth_admin extends \phpbb\auth\auth
 			{
 				if ($user->data['user_id'] != $userdata['user_id'])
 				{
-					$auth2 = new \phpbb\auth\auth();
+					$auth2 = new \an602\auth\auth();
 					$auth2->acl($userdata);
 				}
 				else
@@ -234,7 +234,7 @@ class auth_admin extends \phpbb\auth\auth
 
 		// Get users having this role set...
 		$sql = 'SELECT user_id, forum_id
-			FROM ' . ACL_USERS_TABLE . '
+			FROM ' . AN602_ACL_AN602_USERS_TABLE . '
 			WHERE auth_role_id = ' . $role_id . '
 			ORDER BY forum_id';
 		$result = $db->sql_query($sql);
@@ -247,7 +247,7 @@ class auth_admin extends \phpbb\auth\auth
 
 		// Now grab groups...
 		$sql = 'SELECT group_id, forum_id
-			FROM ' . ACL_GROUPS_TABLE . '
+			FROM ' . AN602_ACL_AN602_GROUPS_TABLE . '
 			WHERE auth_role_id = ' . $role_id . '
 			ORDER BY forum_id';
 		$result = $db->sql_query($sql);
@@ -266,13 +266,13 @@ class auth_admin extends \phpbb\auth\auth
 	*/
 	function display_mask($mode, $permission_type, &$hold_ary, $user_mode = 'user', $local = false, $group_display = true)
 	{
-		global $template, $user, $db, $phpbb_container;
+		global $template, $user, $db, $an602_container;
 
-		/* @var $phpbb_permissions \phpbb\permissions */
-		$phpbb_permissions = $phpbb_container->get('acl.permissions');
+		/* @var $an602_permissions \an602\permissions */
+		$an602_permissions = $an602_container->get('acl.permissions');
 
-		/** @var \phpbb\group\helper $group_helper */
-		$group_helper = $phpbb_container->get('group_helper');
+		/** @var \an602\group\helper $group_helper */
+		$group_helper = $an602_container->get('group_helper');
 
 		// Define names for template loops, might be able to be set
 		$tpl_pmask = 'p_mask';
@@ -280,7 +280,7 @@ class auth_admin extends \phpbb\auth\auth
 		$tpl_category = 'category';
 		$tpl_mask = 'mask';
 
-		$l_acl_type = $phpbb_permissions->get_type_lang($permission_type, (($local) ? 'local' : 'global'));
+		$l_acl_type = $an602_permissions->get_type_lang($permission_type, (($local) ? 'local' : 'global'));
 
 		// Allow trace for viewing permissions and in user mode
 		$show_trace = ($mode == 'view' && $user_mode == 'user') ? true : false;
@@ -289,14 +289,14 @@ class auth_admin extends \phpbb\auth\auth
 		if ($user_mode == 'user')
 		{
 			$sql = 'SELECT user_id as ug_id, username as ug_name
-				FROM ' . USERS_TABLE . '
+				FROM ' . AN602_USERS_TABLE . '
 				WHERE ' . $db->sql_in_set('user_id', array_keys($hold_ary)) . '
 				ORDER BY username_clean ASC';
 		}
 		else
 		{
 			$sql = 'SELECT group_id as ug_id, group_name as ug_name, group_type
-				FROM ' . GROUPS_TABLE . '
+				FROM ' . AN602_GROUPS_TABLE . '
 				WHERE ' . $db->sql_in_set('group_id', array_keys($hold_ary)) . '
 				ORDER BY group_type DESC, group_name ASC';
 		}
@@ -339,7 +339,7 @@ class auth_admin extends \phpbb\auth\auth
 
 		// Get available roles
 		$sql = 'SELECT *
-			FROM ' . ACL_ROLES_TABLE . "
+			FROM ' . AN602_ACL_ROLES_TABLE . "
 			WHERE role_type = '" . $db->sql_escape($permission_type) . "'
 			ORDER BY role_order ASC";
 		$result = $db->sql_query($sql);
@@ -367,7 +367,7 @@ class auth_admin extends \phpbb\auth\auth
 			}
 
 			$sql = 'SELECT r.role_id, o.auth_option, r.auth_setting
-				FROM ' . ACL_ROLES_DATA_TABLE . ' r, ' . ACL_OPTIONS_TABLE . ' o
+				FROM ' . AN602_ACL_ROLES_DATA_TABLE . ' r, ' . AN602_ACL_OPTIONS_TABLE . ' o
 				WHERE o.auth_option_id = r.auth_option_id
 					AND ' . $db->sql_in_set('r.role_id', array_keys($roles));
 			$result = $db->sql_query($sql);
@@ -395,7 +395,7 @@ class auth_admin extends \phpbb\auth\auth
 		if ($user_mode == 'user' && $group_display)
 		{
 			$sql = 'SELECT group_id, group_name, group_type
-				FROM ' . GROUPS_TABLE . '
+				FROM ' . AN602_GROUPS_TABLE . '
 				ORDER BY group_type DESC, group_name ASC';
 			$result = $db->sql_query($sql);
 
@@ -449,7 +449,7 @@ class auth_admin extends \phpbb\auth\auth
 
 					'CATEGORIES'	=> implode('</th><th>', $categories),
 
-					'L_ACL_TYPE'	=> $l_acl_type,
+					'L_AN602_ACL_TYPE'	=> $l_acl_type,
 
 					'S_LOCAL'		=> ($local) ? true : false,
 					'S_GLOBAL'		=> (!$local) ? true : false,
@@ -546,7 +546,7 @@ class auth_admin extends \phpbb\auth\auth
 
 					'USER_GROUPS_DEFAULT'	=> ($user_mode == 'user' && isset($user_groups_default[$ug_id]) && count($user_groups_default[$ug_id])) ? implode($user->lang['COMMA_SEPARATOR'], $user_groups_default[$ug_id]) : '',
 					'USER_GROUPS_CUSTOM'	=> ($user_mode == 'user' && isset($user_groups_custom[$ug_id]) && count($user_groups_custom[$ug_id])) ? implode($user->lang['COMMA_SEPARATOR'], $user_groups_custom[$ug_id]) : '',
-					'L_ACL_TYPE'			=> $l_acl_type,
+					'L_AN602_ACL_TYPE'			=> $l_acl_type,
 
 					'S_LOCAL'		=> ($local) ? true : false,
 					'S_GLOBAL'		=> (!$local) ? true : false,
@@ -630,20 +630,20 @@ class auth_admin extends \phpbb\auth\auth
 	*/
 	function display_role_mask(&$hold_ary)
 	{
-		global $db, $template, $user, $phpbb_root_path, $phpEx;
-		global $phpbb_container;
+		global $db, $template, $user, $an602_root_path, $phpEx;
+		global $an602_container;
 
 		if (!count($hold_ary))
 		{
 			return;
 		}
 
-		/** @var \phpbb\group\helper $group_helper */
-		$group_helper = $phpbb_container->get('group_helper');
+		/** @var \an602\group\helper $group_helper */
+		$group_helper = $an602_container->get('group_helper');
 
 		// Get forum names
 		$sql = 'SELECT forum_id, forum_name
-			FROM ' . FORUMS_TABLE . '
+			FROM ' . AN602_FORUMS_TABLE . '
 			WHERE ' . $db->sql_in_set('forum_id', array_keys($hold_ary)) . '
 			ORDER BY left_id';
 		$result = $db->sql_query($sql);
@@ -668,7 +668,7 @@ class auth_admin extends \phpbb\auth\auth
 			if (isset($auth_ary['users']) && count($auth_ary['users']))
 			{
 				$sql = 'SELECT user_id, username
-					FROM ' . USERS_TABLE . '
+					FROM ' . AN602_USERS_TABLE . '
 					WHERE ' . $db->sql_in_set('user_id', $auth_ary['users']) . '
 					ORDER BY username_clean ASC';
 				$result = $db->sql_query($sql);
@@ -687,7 +687,7 @@ class auth_admin extends \phpbb\auth\auth
 			if (isset($auth_ary['groups']) && count($auth_ary['groups']))
 			{
 				$sql = 'SELECT group_id, group_name, group_type
-					FROM ' . GROUPS_TABLE . '
+					FROM ' . AN602_GROUPS_TABLE . '
 					WHERE ' . $db->sql_in_set('group_id', $auth_ary['groups']) . '
 					ORDER BY group_type ASC, group_name';
 				$result = $db->sql_query($sql);
@@ -697,7 +697,7 @@ class auth_admin extends \phpbb\auth\auth
 					$template->assign_block_vars('role_mask.groups', array(
 						'GROUP_ID'		=> $row['group_id'],
 						'GROUP_NAME'	=> $group_helper->get_name($row['group_name']),
-						'U_PROFILE'		=> append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=group&amp;g={$row['group_id']}"))
+						'U_PROFILE'		=> append_sid("{$an602_root_path}memberlist.$phpEx", "mode=group&amp;g={$row['group_id']}"))
 					);
 				}
 				$db->sql_freeresult($result);
@@ -726,7 +726,7 @@ class auth_admin extends \phpbb\auth\auth
 
 		// Determine current options
 		$sql = 'SELECT auth_option, is_global, is_local
-			FROM ' . ACL_OPTIONS_TABLE . '
+			FROM ' . AN602_ACL_OPTIONS_TABLE . '
 			ORDER BY auth_option_id';
 		$result = $db->sql_query($sql);
 
@@ -799,12 +799,12 @@ class auth_admin extends \phpbb\auth\auth
 
 		if (!empty($add_options))
 		{
-			$db->sql_multi_insert(ACL_OPTIONS_TABLE, $add_options);
+			$db->sql_multi_insert(AN602_ACL_OPTIONS_TABLE, $add_options);
 		}
 
 		if (!empty($update_options))
 		{
-			$sql = 'UPDATE ' . ACL_OPTIONS_TABLE . '
+			$sql = 'UPDATE ' . AN602_ACL_OPTIONS_TABLE . '
 				SET is_global = 1, is_local = 1
 				WHERE ' . $db->sql_in_set('auth_option', $update_options);
 			$db->sql_query($sql);
@@ -843,7 +843,7 @@ class auth_admin extends \phpbb\auth\auth
 		$forum_sql = $db->sql_in_set('forum_id', array_map('intval', $forum_id));
 
 		// Instead of updating, inserting, removing we just remove all current settings and re-set everything...
-		$table = ($ug_type == 'user') ? ACL_USERS_TABLE : ACL_GROUPS_TABLE;
+		$table = ($ug_type == 'user') ? AN602_ACL_AN602_USERS_TABLE : AN602_ACL_AN602_GROUPS_TABLE;
 		$id_field = $ug_type . '_id';
 
 		// Get any flags as required
@@ -875,7 +875,7 @@ class auth_admin extends \phpbb\auth\auth
 
 		// Remove those having a role assigned... the correct type of course...
 		$sql = 'SELECT role_id
-			FROM ' . ACL_ROLES_TABLE . "
+			FROM ' . AN602_ACL_ROLES_TABLE . "
 			WHERE role_type = '" . $db->sql_escape($flag) . "'";
 		$result = $db->sql_query($sql);
 
@@ -899,9 +899,9 @@ class auth_admin extends \phpbb\auth\auth
 		// Ok, include the any-flag if one or more auth options are set to yes...
 		foreach ($auth as $auth_option => $setting)
 		{
-			if ($setting == ACL_YES && (!isset($auth[$flag]) || $auth[$flag] == ACL_NEVER))
+			if ($setting == AN602_ACL_YES && (!isset($auth[$flag]) || $auth[$flag] == AN602_ACL_NEVER))
 			{
-				$auth[$flag] = ACL_YES;
+				$auth[$flag] = AN602_ACL_YES;
 			}
 		}
 
@@ -929,7 +929,7 @@ class auth_admin extends \phpbb\auth\auth
 				{
 					$auth_option_id = (int) $this->acl_options['id'][$auth_option];
 
-					if ($setting != ACL_NO)
+					if ($setting != AN602_ACL_NO)
 					{
 						foreach ($ug_id as $id)
 						{
@@ -974,9 +974,9 @@ class auth_admin extends \phpbb\auth\auth
 		// Re-set any flag...
 		foreach ($auth as $auth_option => $setting)
 		{
-			if ($setting == ACL_YES && (!isset($auth[$flag]) || $auth[$flag] == ACL_NEVER))
+			if ($setting == AN602_ACL_YES && (!isset($auth[$flag]) || $auth[$flag] == AN602_ACL_NEVER))
 			{
-				$auth[$flag] = ACL_YES;
+				$auth[$flag] = AN602_ACL_YES;
 			}
 		}
 
@@ -985,7 +985,7 @@ class auth_admin extends \phpbb\auth\auth
 		{
 			$auth_option_id = (int) $this->acl_options['id'][$auth_option];
 
-			if ($setting != ACL_NO)
+			if ($setting != AN602_ACL_NO)
 			{
 				$sql_ary[] = array(
 					'role_id'			=> (int) $role_id,
@@ -995,23 +995,23 @@ class auth_admin extends \phpbb\auth\auth
 			}
 		}
 
-		// If no data is there, we set the any-flag to ACL_NEVER...
+		// If no data is there, we set the any-flag to AN602_ACL_NEVER...
 		if (!count($sql_ary))
 		{
 			$sql_ary[] = array(
 				'role_id'			=> (int) $role_id,
 				'auth_option_id'	=> (int) $this->acl_options['id'][$flag],
-				'auth_setting'		=> ACL_NEVER
+				'auth_setting'		=> AN602_ACL_NEVER
 			);
 		}
 
 		// Remove current auth options...
-		$sql = 'DELETE FROM ' . ACL_ROLES_DATA_TABLE . '
+		$sql = 'DELETE FROM ' . AN602_ACL_ROLES_DATA_TABLE . '
 			WHERE role_id = ' . $role_id;
 		$db->sql_query($sql);
 
 		// Now insert the new values
-		$db->sql_multi_insert(ACL_ROLES_DATA_TABLE, $sql_ary);
+		$db->sql_multi_insert(AN602_ACL_ROLES_DATA_TABLE, $sql_ary);
 
 		$this->acl_clear_prefetch();
 	}
@@ -1029,7 +1029,7 @@ class auth_admin extends \phpbb\auth\auth
 		}
 
 		$option_id_ary = array();
-		$table = ($mode == 'user') ? ACL_USERS_TABLE : ACL_GROUPS_TABLE;
+		$table = ($mode == 'user') ? AN602_ACL_AN602_USERS_TABLE : AN602_ACL_AN602_GROUPS_TABLE;
 		$id_field = $mode . '_id';
 
 		$where_sql = array();
@@ -1049,7 +1049,7 @@ class auth_admin extends \phpbb\auth\auth
 		{
 			// Get permission type
 			$sql = 'SELECT auth_option, auth_option_id
-				FROM ' . ACL_OPTIONS_TABLE . "
+				FROM ' . AN602_ACL_OPTIONS_TABLE . "
 				WHERE auth_option " . $db->sql_like_expression($permission_type . $db->get_any_char());
 			$result = $db->sql_query($sql);
 
@@ -1057,13 +1057,13 @@ class auth_admin extends \phpbb\auth\auth
 			while ($row = $db->sql_fetchrow($result))
 			{
 				$option_id_ary[] = $row['auth_option_id'];
-				$auth_id_ary[$row['auth_option']] = ACL_NO;
+				$auth_id_ary[$row['auth_option']] = AN602_ACL_NO;
 			}
 			$db->sql_freeresult($result);
 
 			// First of all, lets grab the items having roles with the specified auth options assigned
 			$sql = "SELECT auth_role_id, $id_field, forum_id
-				FROM $table, " . ACL_ROLES_TABLE . " r
+				FROM $table, " . AN602_ACL_ROLES_TABLE . " r
 				WHERE auth_role_id <> 0
 					AND auth_role_id = r.role_id
 					AND r.role_type = '{$permission_type}'
@@ -1082,7 +1082,7 @@ class auth_admin extends \phpbb\auth\auth
 			if (count($cur_role_auth))
 			{
 				$sql = 'SELECT ao.auth_option, rd.role_id, rd.auth_setting
-					FROM ' . ACL_OPTIONS_TABLE . ' ao, ' . ACL_ROLES_DATA_TABLE . ' rd
+					FROM ' . AN602_ACL_OPTIONS_TABLE . ' ao, ' . AN602_ACL_ROLES_DATA_TABLE . ' rd
 					WHERE ao.auth_option_id = rd.auth_option_id
 						AND ' . $db->sql_in_set('rd.role_id', array_keys($cur_role_auth));
 				$result = $db->sql_query($sql);
@@ -1129,16 +1129,16 @@ class auth_admin extends \phpbb\auth\auth
 	*/
 	function assign_cat_array(&$category_array, $tpl_cat, $tpl_mask, $ug_id, $forum_id, $s_view, $show_trace = false)
 	{
-		global $template, $phpbb_admin_path, $phpEx, $phpbb_container;
+		global $template, $an602_admin_path, $phpEx, $an602_container;
 
-		/** @var \phpbb\permissions $phpbb_permissions */
-		$phpbb_permissions = $phpbb_container->get('acl.permissions');
+		/** @var \an602\permissions $an602_permissions */
+		$an602_permissions = $an602_container->get('acl.permissions');
 
-		$order = array_flip(array_keys($phpbb_permissions->get_permissions()));
+		$order = array_flip(array_keys($an602_permissions->get_permissions()));
 
 		foreach ($category_array as $cat => $cat_array)
 		{
-			if (!$phpbb_permissions->category_defined($cat))
+			if (!$an602_permissions->category_defined($cat))
 			{
 				continue;
 			}
@@ -1148,10 +1148,10 @@ class auth_admin extends \phpbb\auth\auth
 				'S_NEVER'	=> ($cat_array['S_NEVER'] && !$cat_array['S_YES'] && !$cat_array['S_NO']) ? true : false,
 				'S_NO'		=> ($cat_array['S_NO'] && !$cat_array['S_NEVER'] && !$cat_array['S_YES']) ? true : false,
 
-				'CAT_NAME'	=> $phpbb_permissions->get_category_lang($cat),
+				'CAT_NAME'	=> $an602_permissions->get_category_lang($cat),
 			));
 
-			$permissions = array_filter($cat_array['permissions'], [$phpbb_permissions, 'permission_defined'], ARRAY_FILTER_USE_KEY);
+			$permissions = array_filter($cat_array['permissions'], [$an602_permissions, 'permission_defined'], ARRAY_FILTER_USE_KEY);
 
 			uksort($permissions, function($a, $b) use ($order) {
 				return $order[$a] <=> $order[$b];
@@ -1162,36 +1162,36 @@ class auth_admin extends \phpbb\auth\auth
 				if ($s_view)
 				{
 					$template->assign_block_vars($tpl_cat . '.' . $tpl_mask, array(
-						'S_YES'		=> ($allowed == ACL_YES) ? true : false,
-						'S_NEVER'	=> ($allowed == ACL_NEVER) ? true : false,
+						'S_YES'		=> ($allowed == AN602_ACL_YES) ? true : false,
+						'S_NEVER'	=> ($allowed == AN602_ACL_NEVER) ? true : false,
 
 						'UG_ID'			=> $ug_id,
 						'FORUM_ID'		=> $forum_id,
 						'FIELD_NAME'	=> $permission,
 						'S_FIELD_NAME'	=> 'setting[' . $ug_id . '][' . $forum_id . '][' . $permission . ']',
 
-						'U_TRACE'		=> ($show_trace) ? append_sid("{$phpbb_admin_path}index.$phpEx", "i=permissions&amp;mode=trace&amp;u=$ug_id&amp;f=$forum_id&amp;auth=$permission") : '',
-						'UA_TRACE'		=> ($show_trace) ? append_sid("{$phpbb_admin_path}index.$phpEx", "i=permissions&mode=trace&u=$ug_id&f=$forum_id&auth=$permission", false) : '',
+						'U_TRACE'		=> ($show_trace) ? append_sid("{$an602_admin_path}index.$phpEx", "i=permissions&amp;mode=trace&amp;u=$ug_id&amp;f=$forum_id&amp;auth=$permission") : '',
+						'UA_TRACE'		=> ($show_trace) ? append_sid("{$an602_admin_path}index.$phpEx", "i=permissions&mode=trace&u=$ug_id&f=$forum_id&auth=$permission", false) : '',
 
-						'PERMISSION'	=> $phpbb_permissions->get_permission_lang($permission),
+						'PERMISSION'	=> $an602_permissions->get_permission_lang($permission),
 					));
 				}
 				else
 				{
 					$template->assign_block_vars($tpl_cat . '.' . $tpl_mask, array(
-						'S_YES'		=> ($allowed == ACL_YES) ? true : false,
-						'S_NEVER'	=> ($allowed == ACL_NEVER) ? true : false,
-						'S_NO'		=> ($allowed == ACL_NO) ? true : false,
+						'S_YES'		=> ($allowed == AN602_ACL_YES) ? true : false,
+						'S_NEVER'	=> ($allowed == AN602_ACL_NEVER) ? true : false,
+						'S_NO'		=> ($allowed == AN602_ACL_NO) ? true : false,
 
 						'UG_ID'			=> $ug_id,
 						'FORUM_ID'		=> $forum_id,
 						'FIELD_NAME'	=> $permission,
 						'S_FIELD_NAME'	=> 'setting[' . $ug_id . '][' . $forum_id . '][' . $permission . ']',
 
-						'U_TRACE'		=> ($show_trace) ? append_sid("{$phpbb_admin_path}index.$phpEx", "i=permissions&amp;mode=trace&amp;u=$ug_id&amp;f=$forum_id&amp;auth=$permission") : '',
-						'UA_TRACE'		=> ($show_trace) ? append_sid("{$phpbb_admin_path}index.$phpEx", "i=permissions&mode=trace&u=$ug_id&f=$forum_id&auth=$permission", false) : '',
+						'U_TRACE'		=> ($show_trace) ? append_sid("{$an602_admin_path}index.$phpEx", "i=permissions&amp;mode=trace&amp;u=$ug_id&amp;f=$forum_id&amp;auth=$permission") : '',
+						'UA_TRACE'		=> ($show_trace) ? append_sid("{$an602_admin_path}index.$phpEx", "i=permissions&mode=trace&u=$ug_id&f=$forum_id&auth=$permission", false) : '',
 
-						'PERMISSION'	=> $phpbb_permissions->get_permission_lang($permission),
+						'PERMISSION'	=> $an602_permissions->get_permission_lang($permission),
 					));
 				}
 			}
@@ -1204,12 +1204,12 @@ class auth_admin extends \phpbb\auth\auth
 	*/
 	function build_permission_array(&$permission_row, &$content_array, &$categories, $key_sort_array)
 	{
-		global $phpbb_container;
+		global $an602_container;
 
-		/** @var \phpbb\permissions $phpbb_permissions */
-		$phpbb_permissions = $phpbb_container->get('acl.permissions');
+		/** @var \an602\permissions $an602_permissions */
+		$an602_permissions = $an602_container->get('acl.permissions');
 
-		$order = array_flip(array_keys($phpbb_permissions->get_permissions()));
+		$order = array_flip(array_keys($an602_permissions->get_permissions()));
 
 		foreach ($key_sort_array as $forum_id)
 		{
@@ -1218,7 +1218,7 @@ class auth_admin extends \phpbb\auth\auth
 				continue;
 			}
 
-			$permissions = array_filter($permission_row[$forum_id], [$phpbb_permissions, 'permission_defined'], ARRAY_FILTER_USE_KEY);
+			$permissions = array_filter($permission_row[$forum_id], [$an602_permissions, 'permission_defined'], ARRAY_FILTER_USE_KEY);
 
 			uksort($permissions, function($a, $b) use ($order) {
 				return $order[$a] <=> $order[$b];
@@ -1226,12 +1226,12 @@ class auth_admin extends \phpbb\auth\auth
 
 			foreach ($permissions as $permission => $auth_setting)
 			{
-				$cat = $phpbb_permissions->get_permission_category($permission);
+				$cat = $an602_permissions->get_permission_category($permission);
 
 				// Build our categories array
 				if (!isset($categories[$cat]))
 				{
-					$categories[$cat] = $phpbb_permissions->get_category_lang($cat);
+					$categories[$cat] = $an602_permissions->get_category_lang($cat);
 				}
 
 				// Build our content array
@@ -1250,9 +1250,9 @@ class auth_admin extends \phpbb\auth\auth
 					);
 				}
 
-				$content_array[$forum_id][$cat]['S_YES'] |= ($auth_setting == ACL_YES) ? true : false;
-				$content_array[$forum_id][$cat]['S_NEVER'] |= ($auth_setting == ACL_NEVER) ? true : false;
-				$content_array[$forum_id][$cat]['S_NO'] |= ($auth_setting == ACL_NO) ? true : false;
+				$content_array[$forum_id][$cat]['S_YES'] |= ($auth_setting == AN602_ACL_YES) ? true : false;
+				$content_array[$forum_id][$cat]['S_NEVER'] |= ($auth_setting == AN602_ACL_NEVER) ? true : false;
+				$content_array[$forum_id][$cat]['S_NO'] |= ($auth_setting == AN602_ACL_NO) ? true : false;
 
 				$content_array[$forum_id][$cat]['permissions'][$permission] = $auth_setting;
 			}
@@ -1284,12 +1284,12 @@ class auth_admin extends \phpbb\auth\auth
 		{
 			if (strpos($opt, 'a_') === 0)
 			{
-				$hold_ary[0][$this->acl_options['id'][$opt]] = ACL_NEVER;
+				$hold_ary[0][$this->acl_options['id'][$opt]] = AN602_ACL_NEVER;
 			}
 		}
 
 		// Force a_switchperm to be allowed
-		$hold_ary[0][$this->acl_options['id']['a_switchperm']] = ACL_YES;
+		$hold_ary[0][$this->acl_options['id']['a_switchperm']] = AN602_ACL_YES;
 
 		$user_permissions = $this->build_bitstring($hold_ary);
 
@@ -1298,7 +1298,7 @@ class auth_admin extends \phpbb\auth\auth
 			return false;
 		}
 
-		$sql = 'UPDATE ' . USERS_TABLE . "
+		$sql = 'UPDATE ' . AN602_USERS_TABLE . "
 			SET user_permissions = '" . $db->sql_escape($user_permissions) . "',
 				user_perm_from = $from_user_id
 			WHERE user_id = " . $to_user_id;

@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -11,13 +11,13 @@
 *
 */
 
-use phpbb\exception\exception_interface;
-use phpbb\exception\version_check_exception;
+use an602\exception\exception_interface;
+use an602\exception\version_check_exception;
 
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -33,25 +33,25 @@ class acp_extensions
 	private $user;
 	private $log;
 	private $request;
-	private $phpbb_dispatcher;
+	private $an602_dispatcher;
 	private $ext_manager;
-	private $phpbb_container;
+	private $an602_container;
 	private $php_ini;
 
 	function main($id, $mode)
 	{
 		// Start the page
-		global $config, $user, $template, $request, $phpbb_extension_manager, $phpbb_root_path, $phpbb_log, $phpbb_dispatcher, $phpbb_container;
+		global $config, $user, $template, $request, $an602_extension_manager, $an602_root_path, $an602_log, $an602_dispatcher, $an602_container;
 
 		$this->config = $config;
 		$this->template = $template;
 		$this->user = $user;
 		$this->request = $request;
-		$this->log = $phpbb_log;
-		$this->phpbb_dispatcher = $phpbb_dispatcher;
-		$this->ext_manager = $phpbb_extension_manager;
-		$this->phpbb_container = $phpbb_container;
-		$this->php_ini = $this->phpbb_container->get('php_ini');
+		$this->log = $an602_log;
+		$this->an602_dispatcher = $an602_dispatcher;
+		$this->ext_manager = $an602_extension_manager;
+		$this->an602_container = $an602_container;
+		$this->php_ini = $this->an602_container->get('php_ini');
 
 		$this->user->add_lang(array('install', 'acp/extensions', 'acp/modules', 'migrator'));
 
@@ -92,7 +92,7 @@ class acp_extensions
 		$u_action = $this->u_action;
 		$tpl_name = '';
 		$vars = array('action', 'u_action', 'ext_name', 'safe_time_limit', 'start_time', 'tpl_name');
-		extract($this->phpbb_dispatcher->trigger_event('core.acp_extensions_run_action_before', compact($vars)));
+		extract($this->an602_dispatcher->trigger_event('core.acp_extensions_run_action_before', compact($vars)));
 
 		// In case they have been updated by the event
 		$this->u_action = $u_action;
@@ -221,13 +221,13 @@ class acp_extensions
 					$this->template->set_custom_style(array(
 						array(
 							'name' 		=> 'adm',
-							'ext_path' 	=> 'adm/style/',
+							'ext_path' 	=> 'admin/adm/style/',
 						),
-					), array($phpbb_root_path . 'adm/style'));
+					), array($an602_root_path . 'admin/adm/style'));
 
 					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_EXT_ENABLE', time(), array($ext_name));
 				}
-				catch (\phpbb\db\migration\exception $e)
+				catch (\an602\db\migration\exception $e)
 				{
 					$this->template->assign_var('MIGRATOR_ERROR', $e->getLocalisedMessage($this->user));
 				}
@@ -314,7 +314,7 @@ class acp_extensions
 					}
 					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_EXT_PURGE', time(), array($ext_name));
 				}
-				catch (\phpbb\db\migration\exception $e)
+				catch (\an602\db\migration\exception $e)
 				{
 					$this->template->assign_var('MIGRATOR_ERROR', $e->getLocalisedMessage($this->user));
 				}
@@ -384,7 +384,7 @@ class acp_extensions
 		$u_action = $this->u_action;
 		$tpl_name = $this->tpl_name;
 		$vars = array('action', 'u_action', 'ext_name', 'safe_time_limit', 'start_time', 'tpl_name');
-		extract($this->phpbb_dispatcher->trigger_event('core.acp_extensions_run_action_after', compact($vars)));
+		extract($this->an602_dispatcher->trigger_event('core.acp_extensions_run_action_after', compact($vars)));
 
 		// In case they have been updated by the event
 		$this->u_action = $u_action;
@@ -643,8 +643,8 @@ class acp_extensions
 			'META_REQUIRE_PHP'		=> (isset($metadata['require']['php'])) ? $metadata['require']['php'] : '',
 			'META_REQUIRE_PHP_FAIL'	=> (isset($metadata['require']['php'])) ? false : true,
 
-			'META_REQUIRE_PHPBB'		=> (isset($metadata['extra']['soft-require']['phpbb/phpbb'])) ? $metadata['extra']['soft-require']['phpbb/phpbb'] : '',
-			'META_REQUIRE_PHPBB_FAIL'	=> (isset($metadata['extra']['soft-require']['phpbb/phpbb'])) ? false : true,
+			'META_REQUIRE_AN602'		=> (isset($metadata['extra']['soft-require']['an602/an602'])) ? $metadata['extra']['soft-require']['an602/an602'] : '',
+			'META_REQUIRE_AN602_FAIL'	=> (isset($metadata['extra']['soft-require']['an602/an602'])) ? false : true,
 
 			'META_DISPLAY_NAME'	=> (isset($metadata['extra']['display-name'])) ? $metadata['extra']['display-name'] : '',
 		));
@@ -664,9 +664,9 @@ class acp_extensions
 	* Checks whether the extension can be enabled. Triggers error if not.
 	* Error message can be set by the extension.
 	*
-	* @param \phpbb\extension\extension_interface $extension Extension to check
+	* @param \an602\extension\extension_interface $extension Extension to check
 	*/
-	protected function check_is_enableable(\phpbb\extension\extension_interface $extension)
+	protected function check_is_enableable(\an602\extension\extension_interface $extension)
 	{
 		$message = $extension->is_enableable();
 		if ($message !== true)

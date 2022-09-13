@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -86,7 +86,7 @@ function unique_id()
 *
 * @return int			Random integer between $min and $max (or $max and $min)
 */
-function phpbb_mt_rand($min, $max)
+function an602_mt_rand($min, $max)
 {
 	return ($min > $max) ? mt_rand($max, $min) : mt_rand($min, $max);
 }
@@ -99,7 +99,7 @@ function phpbb_mt_rand($min, $max)
 * @return array			Returns an associative array of information related to the timestamp.
 *						See http://www.php.net/manual/en/function.getdate.php
 */
-function phpbb_gmgetdate($time = false)
+function an602_gmgetdate($time = false)
 {
 	if ($time === false)
 	{
@@ -245,7 +245,7 @@ function still_on_time($extra_time = 15)
 * @return mixed					Boolean (true, false) if comparison operator is specified.
 *								Integer (-1, 0, 1) otherwise.
 */
-function phpbb_version_compare($version1, $version2, $operator = null)
+function an602_version_compare($version1, $version2, $operator = null)
 {
 	$version1 = strtolower($version1);
 	$version2 = strtolower($version2);
@@ -277,7 +277,7 @@ function language_select($default = '', array $langdata = [])
 	if (empty($langdata))
 	{
 		$sql = 'SELECT lang_iso, lang_local_name
-			FROM ' . LANG_TABLE . '
+			FROM ' . AN602_LANG_TABLE . '
 			ORDER BY lang_english_name';
 		$result = $db->sql_query($sql);
 		$langdata = (array) $db->sql_fetchrowset($result);
@@ -311,7 +311,7 @@ function style_select($default = '', $all = false, array $styledata = [])
 	{
 		$sql_where = (!$all) ? 'WHERE style_active = 1 ' : '';
 		$sql = 'SELECT style_id, style_name
-			FROM ' . STYLES_TABLE . "
+			FROM ' . AN602_STYLES_TABLE . "
 			$sql_where
 			ORDER BY style_name";
 		$result = $db->sql_query($sql);
@@ -337,7 +337,7 @@ function style_select($default = '', $all = false, array $styledata = [])
 * @return	string		Normalized offset string:	-7200 => -02:00
 *													16200 => +04:30
 */
-function phpbb_format_timezone_offset($tz_offset, $show_null = false)
+function an602_format_timezone_offset($tz_offset, $show_null = false)
 {
 	$sign = ($tz_offset < 0) ? '-' : '+';
 	$time_offset = abs($tz_offset);
@@ -360,7 +360,7 @@ function phpbb_format_timezone_offset($tz_offset, $show_null = false)
 * Arranges them in increasing order by timezone offset.
 * Places UTC before other timezones in the same offset.
 */
-function phpbb_tz_select_compare($a, $b)
+function an602_tz_select_compare($a, $b)
 {
 	$a_sign = $a[3];
 	$b_sign = $b[3];
@@ -418,7 +418,7 @@ function phpbb_tz_select_compare($a, $b)
 * @return		array		DateTimeZone::listIdentifiers and additional
 *							selected_timezone if it is a valid timezone.
 */
-function phpbb_get_timezone_identifiers($selected_timezone)
+function an602_get_timezone_identifiers($selected_timezone)
 {
 	$timezones = DateTimeZone::listIdentifiers();
 
@@ -442,21 +442,21 @@ function phpbb_get_timezone_identifiers($selected_timezone)
 /**
 * Options to pick a timezone and date/time
 *
-* @param	\phpbb\template\template $template	phpBB template object
-* @param	\phpbb\user	$user				Object of the current user
+* @param	\an602\template\template $template	AN602 template object
+* @param	\an602\user	$user				Object of the current user
 * @param	string		$default			A timezone to select
 * @param	boolean		$truncate			Shall we truncate the options text
 *
 * @return		array		Returns an array containing the options for the time selector.
 */
-function phpbb_timezone_select($template, $user, $default = '', $truncate = false)
+function an602_timezone_select($template, $user, $default = '', $truncate = false)
 {
 	static $timezones;
 
 	$default_offset = '';
 	if (!isset($timezones))
 	{
-		$unsorted_timezones = phpbb_get_timezone_identifiers($default);
+		$unsorted_timezones = an602_get_timezone_identifiers($default);
 
 		$timezones = array();
 		foreach ($unsorted_timezones as $timezone)
@@ -465,7 +465,7 @@ function phpbb_timezone_select($template, $user, $default = '', $truncate = fals
 			$dt = $user->create_datetime('now', $tz);
 			$offset = $dt->getOffset();
 			$current_time = $dt->format($user->lang['DATETIME_FORMAT'], true);
-			$offset_string = phpbb_format_timezone_offset($offset, true);
+			$offset_string = an602_format_timezone_offset($offset, true);
 			$timezones['UTC' . $offset_string . ' - ' . $timezone] = array(
 				'tz'		=> $timezone,
 				'offset'	=> $offset_string,
@@ -478,7 +478,7 @@ function phpbb_timezone_select($template, $user, $default = '', $truncate = fals
 		}
 		unset($unsorted_timezones);
 
-		uksort($timezones, 'phpbb_tz_select_compare');
+		uksort($timezones, 'an602_tz_select_compare');
 	}
 
 	$tz_select = $opt_group = '';
@@ -546,7 +546,7 @@ function phpbb_timezone_select($template, $user, $default = '', $truncate = fals
 function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $user_id = 0)
 {
 	global $db, $user, $config;
-	global $request, $phpbb_container, $phpbb_dispatcher;
+	global $request, $an602_container, $an602_dispatcher;
 
 	$post_time = ($post_time === 0 || $post_time > time()) ? time() : (int) $post_time;
 
@@ -576,7 +576,7 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 		'user_id',
 		'should_markread',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.markread_before', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.markread_before', compact($vars)));
 
 	if (!$should_markread)
 	{
@@ -588,11 +588,11 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 		if (empty($forum_id))
 		{
 			// Mark all forums read (index page)
-			/* @var $phpbb_notifications \phpbb\notification\manager */
-			$phpbb_notifications = $phpbb_container->get('notification_manager');
+			/* @var $an602_notifications \an602\notification\manager */
+			$an602_notifications = $an602_container->get('notification_manager');
 
 			// Mark all topic notifications read for this user
-			$phpbb_notifications->mark_notifications(array(
+			$an602_notifications->mark_notifications(array(
 				'notification.type.topic',
 				'notification.type.quote',
 				'notification.type.bookmark',
@@ -605,7 +605,7 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 			if ($config['load_db_lastread'] && $user->data['is_registered'])
 			{
 				// Mark all forums read (index page)
-				$tables = array(TOPICS_TRACK_TABLE, FORUMS_TRACK_TABLE);
+				$tables = array(AN602_TOPICS_TRACK_TABLE, AN602_FORUMS_TRACK_TABLE);
 				foreach ($tables as $table)
 				{
 					$sql = 'DELETE FROM ' . $table . "
@@ -614,7 +614,7 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 					$db->sql_query($sql);
 				}
 
-				$sql = 'UPDATE ' . USERS_TABLE . "
+				$sql = 'UPDATE ' . AN602_USERS_TABLE . "
 					SET user_lastmark = $post_time
 					WHERE user_id = {$user->data['user_id']}
 						AND user_lastmark < $post_time";
@@ -622,7 +622,7 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 			}
 			else if ($config['load_anon_lastread'] || $user->data['is_registered'])
 			{
-				$tracking_topics = $request->variable($config['cookie_name'] . '_track', '', true, \phpbb\request\request_interface::COOKIE);
+				$tracking_topics = $request->variable($config['cookie_name'] . '_track', '', true, \an602\request\request_interface::COOKIE);
 				$tracking_topics = ($tracking_topics) ? tracking_unserialize($tracking_topics) : array();
 
 				unset($tracking_topics['tf']);
@@ -631,13 +631,13 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 				$tracking_topics['l'] = base_convert($post_time - $config['board_startdate'], 10, 36);
 
 				$user->set_cookie('track', tracking_serialize($tracking_topics), $post_time + 31536000);
-				$request->overwrite($config['cookie_name'] . '_track', tracking_serialize($tracking_topics), \phpbb\request\request_interface::COOKIE);
+				$request->overwrite($config['cookie_name'] . '_track', tracking_serialize($tracking_topics), \an602\request\request_interface::COOKIE);
 
 				unset($tracking_topics);
 
 				if ($user->data['is_registered'])
 				{
-					$sql = 'UPDATE ' . USERS_TABLE . "
+					$sql = 'UPDATE ' . AN602_USERS_TABLE . "
 						SET user_lastmark = $post_time
 						WHERE user_id = {$user->data['user_id']}
 							AND user_lastmark < $post_time";
@@ -658,10 +658,10 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 			$forum_id = array_unique($forum_id);
 		}
 
-		/* @var $phpbb_notifications \phpbb\notification\manager */
-		$phpbb_notifications = $phpbb_container->get('notification_manager');
+		/* @var $an602_notifications \an602\notification\manager */
+		$an602_notifications = $an602_container->get('notification_manager');
 
-		$phpbb_notifications->mark_notifications_by_parent(array(
+		$an602_notifications->mark_notifications_by_parent(array(
 			'notification.type.topic',
 			'notification.type.approve_topic',
 		), $forum_id, $user->data['user_id'], $post_time);
@@ -669,7 +669,7 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 		// Mark all post/quote notifications read for this user in this forum
 		$topic_ids = array();
 		$sql = 'SELECT topic_id
-			FROM ' . TOPICS_TABLE . '
+			FROM ' . AN602_TOPICS_TABLE . '
 			WHERE ' . $db->sql_in_set('forum_id', $forum_id);
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
@@ -678,7 +678,7 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 		}
 		$db->sql_freeresult($result);
 
-		$phpbb_notifications->mark_notifications_by_parent(array(
+		$an602_notifications->mark_notifications_by_parent(array(
 			'notification.type.quote',
 			'notification.type.bookmark',
 			'notification.type.post',
@@ -691,14 +691,14 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 
 		if ($config['load_db_lastread'] && $user->data['is_registered'])
 		{
-			$sql = 'DELETE FROM ' . TOPICS_TRACK_TABLE . "
+			$sql = 'DELETE FROM ' . AN602_TOPICS_TRACK_TABLE . "
 				WHERE user_id = {$user->data['user_id']}
 					AND mark_time < $post_time
 					AND " . $db->sql_in_set('forum_id', $forum_id);
 			$db->sql_query($sql);
 
 			$sql = 'SELECT forum_id
-				FROM ' . FORUMS_TRACK_TABLE . "
+				FROM ' . AN602_FORUMS_TRACK_TABLE . "
 				WHERE user_id = {$user->data['user_id']}
 					AND " . $db->sql_in_set('forum_id', $forum_id);
 			$result = $db->sql_query($sql);
@@ -712,7 +712,7 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 
 			if (count($sql_update))
 			{
-				$sql = 'UPDATE ' . FORUMS_TRACK_TABLE . "
+				$sql = 'UPDATE ' . AN602_FORUMS_TRACK_TABLE . "
 					SET mark_time = $post_time
 					WHERE user_id = {$user->data['user_id']}
 						AND mark_time < $post_time
@@ -732,12 +732,12 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 					);
 				}
 
-				$db->sql_multi_insert(FORUMS_TRACK_TABLE, $sql_ary);
+				$db->sql_multi_insert(AN602_FORUMS_TRACK_TABLE, $sql_ary);
 			}
 		}
 		else if ($config['load_anon_lastread'] || $user->data['is_registered'])
 		{
-			$tracking = $request->variable($config['cookie_name'] . '_track', '', true, \phpbb\request\request_interface::COOKIE);
+			$tracking = $request->variable($config['cookie_name'] . '_track', '', true, \an602\request\request_interface::COOKIE);
 			$tracking = ($tracking) ? tracking_unserialize($tracking) : array();
 
 			foreach ($forum_id as $f_id)
@@ -768,7 +768,7 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 			}
 
 			$user->set_cookie('track', tracking_serialize($tracking), $post_time + 31536000);
-			$request->overwrite($config['cookie_name'] . '_track', tracking_serialize($tracking), \phpbb\request\request_interface::COOKIE);
+			$request->overwrite($config['cookie_name'] . '_track', tracking_serialize($tracking), \an602\request\request_interface::COOKIE);
 
 			unset($tracking);
 		}
@@ -780,16 +780,16 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 			return;
 		}
 
-		/* @var $phpbb_notifications \phpbb\notification\manager */
-		$phpbb_notifications = $phpbb_container->get('notification_manager');
+		/* @var $an602_notifications \an602\notification\manager */
+		$an602_notifications = $an602_container->get('notification_manager');
 
 		// Mark post notifications read for this user in this topic
-		$phpbb_notifications->mark_notifications(array(
+		$an602_notifications->mark_notifications(array(
 			'notification.type.topic',
 			'notification.type.approve_topic',
 		), $topic_id, $user->data['user_id'], $post_time);
 
-		$phpbb_notifications->mark_notifications_by_parent(array(
+		$an602_notifications->mark_notifications_by_parent(array(
 			'notification.type.quote',
 			'notification.type.bookmark',
 			'notification.type.post',
@@ -799,7 +799,7 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 
 		if ($config['load_db_lastread'] && $user->data['is_registered'])
 		{
-			$sql = 'UPDATE ' . TOPICS_TRACK_TABLE . "
+			$sql = 'UPDATE ' . AN602_TOPICS_TRACK_TABLE . "
 				SET mark_time = $post_time
 				WHERE user_id = {$user->data['user_id']}
 					AND mark_time < $post_time
@@ -818,14 +818,14 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 					'mark_time'		=> $post_time,
 				);
 
-				$db->sql_query('INSERT INTO ' . TOPICS_TRACK_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
+				$db->sql_query('INSERT INTO ' . AN602_TOPICS_TRACK_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
 
 				$db->sql_return_on_error(false);
 			}
 		}
 		else if ($config['load_anon_lastread'] || $user->data['is_registered'])
 		{
-			$tracking = $request->variable($config['cookie_name'] . '_track', '', true, \phpbb\request\request_interface::COOKIE);
+			$tracking = $request->variable($config['cookie_name'] . '_track', '', true, \an602\request\request_interface::COOKIE);
 			$tracking = ($tracking) ? tracking_unserialize($tracking) : array();
 
 			$topic_id36 = base_convert($topic_id, 10, 36);
@@ -839,7 +839,7 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 
 			// If the cookie grows larger than 10000 characters we will remove the smallest value
 			// This can result in old topics being unread - but most of the time it should be accurate...
-			if (strlen($request->variable($config['cookie_name'] . '_track', '', true, \phpbb\request\request_interface::COOKIE)) > 10000)
+			if (strlen($request->variable($config['cookie_name'] . '_track', '', true, \an602\request\request_interface::COOKIE)) > 10000)
 			{
 				//echo 'Cookie grown too large' . print_r($tracking, true);
 
@@ -871,7 +871,7 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 				{
 					$user->data['user_lastmark'] = intval(base_convert(max($time_keys) + $config['board_startdate'], 36, 10));
 
-					$sql = 'UPDATE ' . USERS_TABLE . "
+					$sql = 'UPDATE ' . AN602_USERS_TABLE . "
 						SET user_lastmark = $post_time
 						WHERE user_id = {$user->data['user_id']}
 							AND mark_time < $post_time";
@@ -884,7 +884,7 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 			}
 
 			$user->set_cookie('track', tracking_serialize($tracking), $post_time + 31536000);
-			$request->overwrite($config['cookie_name'] . '_track', tracking_serialize($tracking), \phpbb\request\request_interface::COOKIE);
+			$request->overwrite($config['cookie_name'] . '_track', tracking_serialize($tracking), \an602\request\request_interface::COOKIE);
 		}
 	}
 	else if ($mode == 'post')
@@ -906,7 +906,7 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 				'topic_posted'	=> 1,
 			);
 
-			$db->sql_query('INSERT INTO ' . TOPICS_POSTED_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
+			$db->sql_query('INSERT INTO ' . AN602_TOPICS_POSTED_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
 
 			$db->sql_return_on_error(false);
 		}
@@ -931,7 +931,7 @@ function markread($mode, $forum_id = false, $topic_id = false, $post_time = 0, $
 		'post_time',
 		'user_id',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.markread_after', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.markread_after', compact($vars)));
 }
 
 /**
@@ -997,7 +997,7 @@ function get_complete_topic_tracking($forum_id, $topic_ids, $global_announce_lis
 		global $db;
 
 		$sql = 'SELECT topic_id, mark_time
-			FROM ' . TOPICS_TRACK_TABLE . "
+			FROM ' . AN602_TOPICS_TRACK_TABLE . "
 			WHERE user_id = {$user->data['user_id']}
 				AND " . $db->sql_in_set('topic_id', $topic_ids);
 		$result = $db->sql_query($sql);
@@ -1013,7 +1013,7 @@ function get_complete_topic_tracking($forum_id, $topic_ids, $global_announce_lis
 		if (count($topic_ids))
 		{
 			$sql = 'SELECT forum_id, mark_time
-				FROM ' . FORUMS_TRACK_TABLE . "
+				FROM ' . AN602_FORUMS_TRACK_TABLE . "
 				WHERE user_id = {$user->data['user_id']}
 					AND forum_id = $forum_id";
 			$result = $db->sql_query($sql);
@@ -1039,7 +1039,7 @@ function get_complete_topic_tracking($forum_id, $topic_ids, $global_announce_lis
 
 		if (!isset($tracking_topics) || !count($tracking_topics))
 		{
-			$tracking_topics = $request->variable($config['cookie_name'] . '_track', '', true, \phpbb\request\request_interface::COOKIE);
+			$tracking_topics = $request->variable($config['cookie_name'] . '_track', '', true, \an602\request\request_interface::COOKIE);
 			$tracking_topics = ($tracking_topics) ? tracking_unserialize($tracking_topics) : array();
 		}
 
@@ -1099,7 +1099,7 @@ function get_complete_topic_tracking($forum_id, $topic_ids, $global_announce_lis
 function get_unread_topics($user_id = false, $sql_extra = '', $sql_sort = '', $sql_limit = 1001, $sql_limit_offset = 0)
 {
 	global $config, $db, $user, $request;
-	global $phpbb_dispatcher;
+	global $an602_dispatcher;
 
 	$user_id = ($user_id === false) ? (int) $user->data['user_id'] : (int) $user_id;
 
@@ -1119,15 +1119,15 @@ function get_unread_topics($user_id = false, $sql_extra = '', $sql_sort = '', $s
 		$sql_array = array(
 			'SELECT'		=> 't.topic_id, t.topic_last_post_time, tt.mark_time as topic_mark_time, ft.mark_time as forum_mark_time',
 
-			'FROM'			=> array(TOPICS_TABLE => 't'),
+			'FROM'			=> array(AN602_TOPICS_TABLE => 't'),
 
 			'LEFT_JOIN'		=> array(
 				array(
-					'FROM'	=> array(TOPICS_TRACK_TABLE => 'tt'),
+					'FROM'	=> array(AN602_TOPICS_TRACK_TABLE => 'tt'),
 					'ON'	=> "tt.user_id = $user_id AND t.topic_id = tt.topic_id",
 				),
 				array(
-					'FROM'	=> array(FORUMS_TRACK_TABLE => 'ft'),
+					'FROM'	=> array(AN602_FORUMS_TRACK_TABLE => 'ft'),
 					'ON'	=> "ft.user_id = $user_id AND t.forum_id = ft.forum_id",
 				),
 			),
@@ -1159,7 +1159,7 @@ function get_unread_topics($user_id = false, $sql_extra = '', $sql_sort = '', $s
 			'sql_extra',
 			'sql_sort',
 		);
-		extract($phpbb_dispatcher->trigger_event('core.get_unread_topics_modify_sql', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.get_unread_topics_modify_sql', compact($vars)));
 
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		$result = $db->sql_query_limit($sql, $sql_limit, $sql_limit_offset);
@@ -1177,7 +1177,7 @@ function get_unread_topics($user_id = false, $sql_extra = '', $sql_sort = '', $s
 
 		if (empty($tracking_topics))
 		{
-			$tracking_topics = $request->variable($config['cookie_name'] . '_track', '', false, \phpbb\request\request_interface::COOKIE);
+			$tracking_topics = $request->variable($config['cookie_name'] . '_track', '', false, \an602\request\request_interface::COOKIE);
 			$tracking_topics = ($tracking_topics) ? tracking_unserialize($tracking_topics) : array();
 		}
 
@@ -1191,7 +1191,7 @@ function get_unread_topics($user_id = false, $sql_extra = '', $sql_sort = '', $s
 		}
 
 		$sql = 'SELECT t.topic_id, t.forum_id, t.topic_last_post_time
-			FROM ' . TOPICS_TABLE . ' t
+			FROM ' . AN602_TOPICS_TABLE . ' t
 			WHERE t.topic_last_post_time > ' . $user_lastmark . "
 			$sql_extra
 			$sql_sort";
@@ -1244,7 +1244,7 @@ function get_unread_topics($user_id = false, $sql_extra = '', $sql_sort = '', $s
 */
 function update_forum_tracking_info($forum_id, $forum_last_post_time, $f_mark_time = false, $mark_time_forum = false)
 {
-	global $db, $tracking_topics, $user, $config, $request, $phpbb_container;
+	global $db, $tracking_topics, $user, $config, $request, $an602_container;
 
 	// Determine the users last forum mark time if not given.
 	if ($mark_time_forum === false)
@@ -1255,7 +1255,7 @@ function update_forum_tracking_info($forum_id, $forum_last_post_time, $f_mark_ti
 		}
 		else if ($config['load_anon_lastread'] || $user->data['is_registered'])
 		{
-			$tracking_topics = $request->variable($config['cookie_name'] . '_track', '', true, \phpbb\request\request_interface::COOKIE);
+			$tracking_topics = $request->variable($config['cookie_name'] . '_track', '', true, \an602\request\request_interface::COOKIE);
 			$tracking_topics = ($tracking_topics) ? tracking_unserialize($tracking_topics) : array();
 
 			if (!$user->data['is_registered'])
@@ -1269,8 +1269,8 @@ function update_forum_tracking_info($forum_id, $forum_last_post_time, $f_mark_ti
 
 	// Handle update of unapproved topics info.
 	// Only update for moderators having m_approve permission for the forum.
-	/* @var $phpbb_content_visibility \phpbb\content_visibility */
-	$phpbb_content_visibility = $phpbb_container->get('content.visibility');
+	/* @var $an602_content_visibility \an602\content_visibility */
+	$an602_content_visibility = $an602_container->get('content.visibility');
 
 	// Check the forum for any left unread topics.
 	// If there are none, we mark the forum as read.
@@ -1284,14 +1284,14 @@ function update_forum_tracking_info($forum_id, $forum_last_post_time, $f_mark_ti
 		else
 		{
 			$sql = 'SELECT t.forum_id
-				FROM ' . TOPICS_TABLE . ' t
-				LEFT JOIN ' . TOPICS_TRACK_TABLE . ' tt
+				FROM ' . AN602_TOPICS_TABLE . ' t
+				LEFT JOIN ' . AN602_TOPICS_TRACK_TABLE . ' tt
 					ON (tt.topic_id = t.topic_id
 						AND tt.user_id = ' . $user->data['user_id'] . ')
 				WHERE t.forum_id = ' . $forum_id . '
 					AND t.topic_last_post_time > ' . $mark_time_forum . '
 					AND t.topic_moved_id = 0
-					AND ' . $phpbb_content_visibility->get_visibility_sql('topic', $forum_id, 't.') . '
+					AND ' . $an602_content_visibility->get_visibility_sql('topic', $forum_id, 't.') . '
 					AND (tt.topic_id IS NULL
 						OR tt.mark_time < t.topic_last_post_time)';
 			$result = $db->sql_query_limit($sql, 1);
@@ -1310,11 +1310,11 @@ function update_forum_tracking_info($forum_id, $forum_last_post_time, $f_mark_ti
 		else
 		{
 			$sql = 'SELECT t.topic_id
-				FROM ' . TOPICS_TABLE . ' t
+				FROM ' . AN602_TOPICS_TABLE . ' t
 				WHERE t.forum_id = ' . $forum_id . '
 					AND t.topic_last_post_time > ' . $mark_time_forum . '
 					AND t.topic_moved_id = 0
-					AND ' . $phpbb_content_visibility->get_visibility_sql('topic', $forum_id, 't.');
+					AND ' . $an602_content_visibility->get_visibility_sql('topic', $forum_id, 't.');
 			$result = $db->sql_query($sql);
 
 			$check_forum = $tracking_topics['tf'][$forum_id];
@@ -1483,17 +1483,17 @@ function tracking_unserialize($string, $max_depth = 3)
 * @return string The corrected url.
 *
 * Examples:
-* <code> append_sid("{$phpbb_root_path}viewtopic.$phpEx?t=1");
-* append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=1');
-* append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=1', false);
-* append_sid("{$phpbb_root_path}viewtopic.$phpEx", array('t' => 1, 'f' => 2));
+* <code> append_sid("{$an602_root_path}viewtopic.$phpEx?t=1");
+* append_sid("{$an602_root_path}viewtopic.$phpEx", 't=1');
+* append_sid("{$an602_root_path}viewtopic.$phpEx", 't=1', false);
+* append_sid("{$an602_root_path}viewtopic.$phpEx", array('t' => 1, 'f' => 2));
 * </code>
 *
 */
 function append_sid($url, $params = false, $is_amp = true, $session_id = false, $is_route = false)
 {
-	global $_SID, $_EXTRA_URL, $phpbb_hook, $phpbb_path_helper;
-	global $phpbb_dispatcher;
+	global $_SID, $_EXTRA_URL, $an602_hook, $an602_path_helper;
+	global $an602_dispatcher;
 
 	if ($params === '' || (is_array($params) && empty($params)))
 	{
@@ -1502,9 +1502,9 @@ function append_sid($url, $params = false, $is_amp = true, $session_id = false, 
 	}
 
 	// Update the root path with the correct relative web path
-	if (!$is_route && $phpbb_path_helper instanceof \phpbb\path_helper)
+	if (!$is_route && $an602_path_helper instanceof \an602\path_helper)
 	{
-		$url = $phpbb_path_helper->update_web_root_path($url);
+		$url = $an602_path_helper->update_web_root_path($url);
 	}
 
 	$append_sid_overwrite = false;
@@ -1532,7 +1532,7 @@ function append_sid($url, $params = false, $is_amp = true, $session_id = false, 
 	* @since 3.1.0-a1
 	*/
 	$vars = array('url', 'params', 'is_amp', 'session_id', 'append_sid_overwrite', 'is_route');
-	extract($phpbb_dispatcher->trigger_event('core.append_sid', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.append_sid', compact($vars)));
 
 	if ($append_sid_overwrite)
 	{
@@ -1543,11 +1543,11 @@ function append_sid($url, $params = false, $is_amp = true, $session_id = false, 
 	// the event above is preferred.
 	// Developers using the hook function need to globalise the $_SID and $_EXTRA_URL on their own and also handle it appropriately.
 	// They could mimic most of what is within this function
-	if (!empty($phpbb_hook) && $phpbb_hook->call_hook(__FUNCTION__, $url, $params, $is_amp, $session_id))
+	if (!empty($an602_hook) && $an602_hook->call_hook(__FUNCTION__, $url, $params, $is_amp, $session_id))
 	{
-		if ($phpbb_hook->hook_return(__FUNCTION__))
+		if ($an602_hook->hook_return(__FUNCTION__))
 		{
-			return $phpbb_hook->hook_return_result(__FUNCTION__);
+			return $an602_hook->hook_return_result(__FUNCTION__);
 		}
 	}
 
@@ -1634,7 +1634,7 @@ function append_sid($url, $params = false, $is_amp = true, $session_id = false, 
 }
 
 /**
-* Generate board url (example: http://www.example.com/phpBB)
+* Generate board url (example: http://www.example.com/AN602)
 *
 * @param bool $without_script_path if set to true the script path gets not appended (example: http://www.example.com)
 *
@@ -1707,7 +1707,7 @@ function generate_board_url($without_script_path = false)
 */
 function redirect($url, $return = false, $disable_cd_check = false)
 {
-	global $user, $phpbb_path_helper, $phpbb_dispatcher;
+	global $user, $an602_path_helper, $an602_dispatcher;
 
 	if (!$user->is_setup())
 	{
@@ -1755,7 +1755,7 @@ function redirect($url, $return = false, $disable_cd_check = false)
 			}
 		}
 
-		$url = $phpbb_path_helper->remove_web_root_path($url);
+		$url = $an602_path_helper->remove_web_root_path($url);
 
 		if ($user->page['page_dir'])
 		{
@@ -1766,7 +1766,7 @@ function redirect($url, $return = false, $disable_cd_check = false)
 	}
 
 	// Clean URL and check if we go outside the forum directory
-	$url = $phpbb_path_helper->clean_url($url);
+	$url = $an602_path_helper->clean_url($url);
 
 	if (!$disable_cd_check && strpos($url, generate_board_url(true) . '/') !== 0)
 	{
@@ -1798,7 +1798,7 @@ function redirect($url, $return = false, $disable_cd_check = false)
 	* @since 3.1.0-RC3
 	*/
 	$vars = array('url', 'return', 'disable_cd_check');
-	extract($phpbb_dispatcher->trigger_event('core.functions.redirect', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.functions.redirect', compact($vars)));
 
 	if ($return)
 	{
@@ -1819,15 +1819,15 @@ function redirect($url, $return = false, $disable_cd_check = false)
 */
 function reapply_sid($url, $is_route = false)
 {
-	global $phpEx, $phpbb_root_path;
+	global $phpEx, $an602_root_path;
 
 	if ($url === "index.$phpEx")
 	{
 		return append_sid("index.$phpEx");
 	}
-	else if ($url === "{$phpbb_root_path}index.$phpEx")
+	else if ($url === "{$an602_root_path}index.$phpEx")
 	{
-		return append_sid("{$phpbb_root_path}index.$phpEx");
+		return append_sid("{$an602_root_path}index.$phpEx");
 	}
 
 	// Remove previously added sid
@@ -1847,16 +1847,16 @@ function reapply_sid($url, $is_route = false)
 */
 function build_url($strip_vars = false)
 {
-	global $config, $user, $phpbb_path_helper;
+	global $config, $user, $an602_path_helper;
 
-	$page = $phpbb_path_helper->get_valid_page($user->page['page'], $config['enable_mod_rewrite']);
+	$page = $an602_path_helper->get_valid_page($user->page['page'], $config['enable_mod_rewrite']);
 
 	// Append SID
 	$redirect = append_sid($page, false, false);
 
 	if ($strip_vars !== false)
 	{
-		$redirect = $phpbb_path_helper->strip_url_params($redirect, $strip_vars, false);
+		$redirect = $an602_path_helper->strip_url_params($redirect, $strip_vars, false);
 	}
 	else
 	{
@@ -1928,7 +1928,7 @@ function send_status_line($code, $message)
 	}
 	else
 	{
-		$version = phpbb_request_http_version();
+		$version = an602_request_http_version();
 		header("$version $code $message", true, $code);
 	}
 }
@@ -1941,7 +1941,7 @@ function send_status_line($code, $message)
 *
 * @return string HTTP version
 */
-function phpbb_request_http_version()
+function an602_request_http_version()
 {
 	global $request;
 
@@ -2003,7 +2003,7 @@ function check_link_hash($token, $link_name)
 */
 function add_form_key($form_name, $template_variable_suffix = '')
 {
-	global $config, $template, $user, $phpbb_dispatcher;
+	global $config, $template, $user, $an602_dispatcher;
 
 	$now = time();
 	$token_sid = ($user->data['user_id'] == ANONYMOUS && !empty($config['form_token_sid_guests'])) ? $user->session_id : '';
@@ -2036,7 +2036,7 @@ function add_form_key($form_name, $template_variable_suffix = '')
 		'token_sid',
 		'template_variable_suffix',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.add_form_key', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.add_form_key', compact($vars)));
 
 	$template->assign_var('S_FORM_TOKEN' . $template_variable_suffix, $s_fields);
 }
@@ -2103,14 +2103,14 @@ function check_form_key($form_name, $timespan = false)
 function confirm_box($check, $title = '', $hidden = '', $html_body = 'confirm_body.html', $u_action = '')
 {
 	global $user, $template, $db, $request;
-	global $config, $language, $phpbb_path_helper, $phpbb_dispatcher;
+	global $config, $language, $an602_path_helper, $an602_dispatcher;
 
 	if (isset($_POST['cancel']))
 	{
 		return false;
 	}
 
-	$confirm = ($language->lang('YES') === $request->variable('confirm', '', true, \phpbb\request\request_interface::POST));
+	$confirm = ($language->lang('YES') === $request->variable('confirm', '', true, \an602\request\request_interface::POST));
 
 	if ($check && $confirm)
 	{
@@ -2124,7 +2124,7 @@ function confirm_box($check, $title = '', $hidden = '', $html_body = 'confirm_bo
 		}
 
 		// Reset user_last_confirm_key
-		$sql = 'UPDATE ' . USERS_TABLE . " SET user_last_confirm_key = ''
+		$sql = 'UPDATE ' . AN602_USERS_TABLE . " SET user_last_confirm_key = ''
 			WHERE user_id = " . $user->data['user_id'];
 		$db->sql_query($sql);
 
@@ -2180,7 +2180,7 @@ function confirm_box($check, $title = '', $hidden = '', $html_body = 'confirm_bo
 
 	// re-add sid / transform & to &amp; for user->page (user->page is always using &)
 	$use_page = ($u_action) ? $u_action : str_replace('&', '&amp;', $user->page['page']);
-	$u_action = reapply_sid($phpbb_path_helper->get_valid_page($use_page, $config['enable_mod_rewrite']));
+	$u_action = reapply_sid($an602_path_helper->get_valid_page($use_page, $config['enable_mod_rewrite']));
 	$u_action .= ((strpos($u_action, '?') === false) ? '?' : '&amp;') . 'confirm_key=' . $confirm_key;
 
 	$template->assign_vars(array(
@@ -2193,7 +2193,7 @@ function confirm_box($check, $title = '', $hidden = '', $html_body = 'confirm_bo
 		'S_AJAX_REQUEST'	=> $request->is_ajax(),
 	));
 
-	$sql = 'UPDATE ' . USERS_TABLE . " SET user_last_confirm_key = '" . $db->sql_escape($confirm_key) . "'
+	$sql = 'UPDATE ' . AN602_USERS_TABLE . " SET user_last_confirm_key = '" . $db->sql_escape($confirm_key) . "'
 		WHERE user_id = " . $user->data['user_id'];
 	$db->sql_query($sql);
 
@@ -2226,9 +2226,9 @@ function confirm_box($check, $title = '', $hidden = '', $html_body = 'confirm_bo
 			'hidden',
 			's_hidden_fields',
 		);
-		extract($phpbb_dispatcher->trigger_event('core.confirm_box_ajax_before', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.confirm_box_ajax_before', compact($vars)));
 
-		$json_response = new \phpbb\json_response;
+		$json_response = new \an602\json_response;
 		$json_response->send($data);
 	}
 
@@ -2249,8 +2249,8 @@ function confirm_box($check, $title = '', $hidden = '', $html_body = 'confirm_bo
 */
 function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = false, $s_display = true)
 {
-	global $user, $template, $auth, $phpEx, $phpbb_root_path, $config;
-	global $request, $phpbb_container, $phpbb_dispatcher, $phpbb_log;
+	global $user, $template, $auth, $phpEx, $an602_root_path, $config;
+	global $request, $an602_container, $an602_dispatcher, $an602_log;
 
 	$err = '';
 	$form_name = 'login';
@@ -2275,7 +2275,7 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 	 * @since 3.1.9-RC1
 	 */
 	$vars = array('redirect', 'l_explain', 'l_success', 'admin', 's_display', 'err');
-	extract($phpbb_dispatcher->trigger_event('core.login_box_before', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.login_box_before', compact($vars)));
 
 	// Print out error if user tries to authenticate as an administrator without having the privileges...
 	if ($admin && !$auth->acl_get('a_'))
@@ -2284,7 +2284,7 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 		// anonymous/inactive users are never able to go to the ACP even if they have the relevant permissions
 		if ($user->data['is_registered'])
 		{
-			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ADMIN_AUTH_FAIL');
+			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ADMIN_AUTH_FAIL');
 		}
 		send_status_line(403, 'Forbidden');
 		trigger_error('NO_AUTH_ADMIN');
@@ -2301,7 +2301,7 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 			{
 				if ($user->data['is_registered'])
 				{
-					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ADMIN_AUTH_FAIL');
+					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ADMIN_AUTH_FAIL');
 				}
 				send_status_line(403, 'Forbidden');
 				trigger_error('NO_AUTH_ADMIN');
@@ -2324,7 +2324,7 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 		if ($admin && utf8_clean_string($username) != utf8_clean_string($user->data['username']))
 		{
 			// We log the attempt to use a different username...
-			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ADMIN_AUTH_FAIL');
+			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ADMIN_AUTH_FAIL');
 
 			send_status_line(403, 'Forbidden');
 			trigger_error('NO_AUTH_ADMIN_USER_DIFFER');
@@ -2350,7 +2350,7 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 		{
 			if ($result['status'] == LOGIN_SUCCESS)
 			{
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ADMIN_AUTH_SUCCESS');
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ADMIN_AUTH_SUCCESS');
 			}
 			else
 			{
@@ -2358,7 +2358,7 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 				// anonymous/inactive users are never able to go to the ACP even if they have the relevant permissions
 				if ($user->data['is_registered'])
 				{
-					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ADMIN_AUTH_FAIL');
+					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ADMIN_AUTH_FAIL');
 				}
 			}
 		}
@@ -2366,7 +2366,7 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 		// The result parameter is always an array, holding the relevant information...
 		if ($result['status'] == LOGIN_SUCCESS)
 		{
-			$redirect = $request->variable('redirect', "{$phpbb_root_path}index.$phpEx");
+			$redirect = $request->variable('redirect', "{$an602_root_path}index.$phpEx");
 
 			/**
 			* This event allows an extension to modify the redirection when a user successfully logs in
@@ -2380,7 +2380,7 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 			* @changed 3.2.4-RC1 Added result
 			*/
 			$vars = array('redirect', 'admin', 'result');
-			extract($phpbb_dispatcher->trigger_event('core.login_box_redirect', compact($vars)));
+			extract($an602_dispatcher->trigger_event('core.login_box_redirect', compact($vars)));
 
 			// append/replace SID (may change during the session for AOL users)
 			$redirect = reapply_sid($redirect);
@@ -2406,16 +2406,16 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 			case LOGIN_ERROR_PASSWORD_CONVERT:
 				$err = sprintf(
 					$user->lang[$result['error_msg']],
-					($config['email_enable']) ? '<a href="' . append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=sendpassword') . '">' : '',
+					($config['email_enable']) ? '<a href="' . append_sid("{$an602_root_path}ucp.$phpEx", 'mode=sendpassword') . '">' : '',
 					($config['email_enable']) ? '</a>' : '',
-					'<a href="' . phpbb_get_board_contact_link($config, $phpbb_root_path, $phpEx) . '">',
+					'<a href="' . an602_get_board_contact_link($config, $an602_root_path, $phpEx) . '">',
 					'</a>'
 				);
 			break;
 
 			case LOGIN_ERROR_ATTEMPTS:
 
-				$captcha = $phpbb_container->get('captcha.factory')->get_instance($config['captcha_plugin']);
+				$captcha = $an602_container->get('captcha.factory')->get_instance($config['captcha_plugin']);
 				$captcha->init(CONFIRM_LOGIN);
 				// $captcha->reset();
 
@@ -2431,7 +2431,7 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 				// Assign admin contact to some error messages
 				if ($result['error_msg'] == 'LOGIN_ERROR_USERNAME' || $result['error_msg'] == 'LOGIN_ERROR_PASSWORD')
 				{
-					$err = sprintf($user->lang[$result['error_msg']], '<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=contactadmin') . '">', '</a>');
+					$err = sprintf($user->lang[$result['error_msg']], '<a href="' . append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=contactadmin') . '">', '</a>');
 				}
 
 			break;
@@ -2448,7 +2448,7 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 		 * @since 3.1.3-RC1
 		 */
 		$vars = array('result', 'username', 'password', 'err');
-		extract($phpbb_dispatcher->trigger_event('core.login_box_failed', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.login_box_failed', compact($vars)));
 	}
 
 	// Assign credential for username/password pair
@@ -2468,8 +2468,8 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 		$s_hidden_fields['credential'] = $credential;
 	}
 
-	/* @var $provider_collection \phpbb\auth\provider_collection */
-	$provider_collection = $phpbb_container->get('auth.provider_collection');
+	/* @var $provider_collection \an602\auth\provider_collection */
+	$provider_collection = $an602_container->get('auth.provider_collection');
 	$auth_provider = $provider_collection->get_provider();
 
 	$auth_provider_data = $auth_provider->get_login_data();
@@ -2495,18 +2495,18 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 
 	$s_hidden_fields = build_hidden_fields($s_hidden_fields);
 
-	/** @var \phpbb\controller\helper $controller_helper */
-	$controller_helper = $phpbb_container->get('controller.helper');
+	/** @var \an602\controller\helper $controller_helper */
+	$controller_helper = $an602_container->get('controller.helper');
 
 	$login_box_template_data = array(
 		'LOGIN_ERROR'		=> $err,
 		'LOGIN_EXPLAIN'		=> $l_explain,
 
-		'U_SEND_PASSWORD' 		=> ($config['email_enable'] && $config['allow_password_reset']) ? $controller_helper->route('phpbb_ucp_forgot_password_controller') : '',
-		'U_RESEND_ACTIVATION'	=> ($config['require_activation'] == USER_ACTIVATION_SELF && $config['email_enable']) ? append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=resend_act') : '',
-		'U_TERMS_USE'			=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=terms'),
-		'U_PRIVACY'				=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=privacy'),
-		'UA_PRIVACY'			=> addslashes(append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=privacy')),
+		'U_SEND_PASSWORD' 		=> ($config['email_enable'] && $config['allow_password_reset']) ? $controller_helper->route('an602_ucp_forgot_password_controller') : '',
+		'U_RESEND_ACTIVATION'	=> ($config['require_activation'] == USER_ACTIVATION_SELF && $config['email_enable']) ? append_sid("{$an602_root_path}ucp.$phpEx", 'mode=resend_act') : '',
+		'U_TERMS_USE'			=> append_sid("{$an602_root_path}ucp.$phpEx", 'mode=terms'),
+		'U_PRIVACY'				=> append_sid("{$an602_root_path}ucp.$phpEx", 'mode=privacy'),
+		'UA_PRIVACY'			=> addslashes(append_sid("{$an602_root_path}ucp.$phpEx", 'mode=privacy')),
 
 		'S_DISPLAY_FULL_LOGIN'	=> ($s_display) ? true : false,
 		'S_HIDDEN_FIELDS' 		=> $s_hidden_fields,
@@ -2536,7 +2536,7 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 		'redirect',
 		'login_box_template_data',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.login_box_modify_template_data', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.login_box_modify_template_data', compact($vars)));
 
 	$template->assign_vars($login_box_template_data);
 
@@ -2545,7 +2545,7 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 	$template->set_filenames(array(
 		'body' => 'login_body.html')
 	);
-	make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
+	make_jumpbox(append_sid("{$an602_root_path}viewforum.$phpEx"));
 
 	page_footer();
 }
@@ -2555,12 +2555,12 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 */
 function login_forum_box($forum_data)
 {
-	global $db, $phpbb_container, $request, $template, $user, $phpbb_dispatcher, $phpbb_root_path, $phpEx;
+	global $db, $an602_container, $request, $template, $user, $an602_dispatcher, $an602_root_path, $phpEx;
 
 	$password = $request->variable('password', '', true);
 
 	$sql = 'SELECT forum_id
-		FROM ' . FORUMS_ACCESS_TABLE . '
+		FROM ' . AN602_FORUMS_ACCESS_TABLE . '
 		WHERE forum_id = ' . $forum_data['forum_id'] . '
 			AND user_id = ' . $user->data['user_id'] . "
 			AND session_id = '" . $db->sql_escape($user->session_id) . "'";
@@ -2577,8 +2577,8 @@ function login_forum_box($forum_data)
 	{
 		// Remove expired authorised sessions
 		$sql = 'SELECT f.session_id
-			FROM ' . FORUMS_ACCESS_TABLE . ' f
-			LEFT JOIN ' . SESSIONS_TABLE . ' s ON (f.session_id = s.session_id)
+			FROM ' . AN602_FORUMS_ACCESS_TABLE . ' f
+			LEFT JOIN ' . AN602_SESSIONS_TABLE . ' s ON (f.session_id = s.session_id)
 			WHERE s.session_id IS NULL';
 		$result = $db->sql_query($sql);
 
@@ -2592,14 +2592,14 @@ function login_forum_box($forum_data)
 			while ($row = $db->sql_fetchrow($result));
 
 			// Remove expired sessions
-			$sql = 'DELETE FROM ' . FORUMS_ACCESS_TABLE . '
+			$sql = 'DELETE FROM ' . AN602_FORUMS_ACCESS_TABLE . '
 				WHERE ' . $db->sql_in_set('session_id', $sql_in);
 			$db->sql_query($sql);
 		}
 		$db->sql_freeresult($result);
 
-		/* @var $passwords_manager \phpbb\passwords\manager */
-		$passwords_manager = $phpbb_container->get('passwords.manager');
+		/* @var $passwords_manager \an602\passwords\manager */
+		$passwords_manager = $an602_container->get('passwords.manager');
 
 		if ($passwords_manager->check($password, $forum_data['forum_password']))
 		{
@@ -2609,7 +2609,7 @@ function login_forum_box($forum_data)
 				'session_id'	=> (string) $user->session_id,
 			);
 
-			$db->sql_query('INSERT INTO ' . FORUMS_ACCESS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
+			$db->sql_query('INSERT INTO ' . AN602_FORUMS_ACCESS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
 
 			return true;
 		}
@@ -2626,7 +2626,7 @@ function login_forum_box($forum_data)
 	* @since 3.1.0-RC3
 	*/
 	$vars = array('forum_data', 'password');
-	extract($phpbb_dispatcher->trigger_event('core.login_forum_box', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.login_forum_box', compact($vars)));
 
 	page_header($user->lang['LOGIN']);
 
@@ -2640,7 +2640,7 @@ function login_forum_box($forum_data)
 		'body' => 'login_forum.html')
 	);
 
-	make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"), $forum_data['forum_id']);
+	make_jumpbox(append_sid("{$an602_root_path}viewforum.$phpEx"), $forum_data['forum_id']);
 
 	page_footer();
 }
@@ -2760,7 +2760,7 @@ function parse_cfg_file($filename, $lines = false)
 * Return a nicely formatted backtrace.
 *
 * Turns the array returned by debug_backtrace() into HTML markup.
-* Also filters out absolute paths to phpBB root.
+* Also filters out absolute paths to AN602 root.
 *
 * @return string	HTML markup
 */
@@ -2775,7 +2775,7 @@ function get_backtrace()
 	foreach ($backtrace as $trace)
 	{
 		// Strip the current directory from path
-		$trace['file'] = (empty($trace['file'])) ? '(not given by php)' : htmlspecialchars(phpbb_filter_root_path($trace['file']), ENT_COMPAT);
+		$trace['file'] = (empty($trace['file'])) ? '(not given by php)' : htmlspecialchars(an602_filter_root_path($trace['file']), ENT_COMPAT);
 		$trace['line'] = (empty($trace['line'])) ? '(not given by php)' : $trace['line'];
 
 		// Only show function arguments for include etc.
@@ -2783,7 +2783,7 @@ function get_backtrace()
 		$argument = '';
 		if (!empty($trace['args'][0]) && in_array($trace['function'], array('include', 'require', 'include_once', 'require_once')))
 		{
-			$argument = htmlspecialchars(phpbb_filter_root_path($trace['args'][0]), ENT_COMPAT);
+			$argument = htmlspecialchars(an602_filter_root_path($trace['args'][0]), ENT_COMPAT);
 		}
 
 		$trace['class'] = (!isset($trace['class'])) ? '' : $trace['class'];
@@ -2962,7 +2962,7 @@ function short_ipv6($ip, $length)
 * @return mixed		false if specified address is not valid,
 *					string otherwise
 */
-function phpbb_ip_normalise(string $address)
+function an602_ip_normalise(string $address)
 {
 	$ip_normalised = false;
 
@@ -2992,8 +2992,8 @@ function phpbb_ip_normalise(string $address)
 function msg_handler($errno, $msg_text, $errfile, $errline)
 {
 	global $cache, $db, $auth, $template, $config, $user, $request;
-	global $phpbb_root_path, $msg_title, $msg_long_text, $phpbb_log;
-	global $phpbb_container;
+	global $an602_root_path, $msg_title, $msg_long_text, $an602_log;
+	global $an602_container;
 
 	// Do not display notices if we suppress them via @
 	if (error_reporting() == 0 && $errno != E_USER_ERROR && $errno != E_USER_WARNING && $errno != E_USER_NOTICE)
@@ -3014,22 +3014,22 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 
 			// Check the error reporting level and return if the error level does not match
 			// If DEBUG is defined the default level is E_ALL
-			if (($errno & ($phpbb_container != null && $phpbb_container->getParameter('debug.show_errors') ? E_ALL : error_reporting())) == 0)
+			if (($errno & ($an602_container != null && $an602_container->getParameter('debug.show_errors') ? E_ALL : error_reporting())) == 0)
 			{
 				return;
 			}
 
 			if (strpos($errfile, 'cache') === false && strpos($errfile, 'template.') === false)
 			{
-				$errfile = phpbb_filter_root_path($errfile);
-				$msg_text = phpbb_filter_root_path($msg_text);
+				$errfile = an602_filter_root_path($errfile);
+				$msg_text = an602_filter_root_path($msg_text);
 				$error_name = ($errno === E_WARNING) ? 'PHP Warning' : 'PHP Notice';
-				echo '<b>[phpBB Debug] ' . $error_name . '</b>: in file <b>' . $errfile . '</b> on line <b>' . $errline . '</b>: <b>' . $msg_text . '</b><br />' . "\n";
+				echo '<b>[AN602 Debug] ' . $error_name . '</b>: in file <b>' . $errfile . '</b> on line <b>' . $errline . '</b>: <b>' . $msg_text . '</b><br />' . "\n";
 
 				// we are writing an image - the user won't see the debug, so let's place it in the log
 				if (defined('IMAGE_OUTPUT') || defined('IN_CRON'))
 				{
-					$phpbb_log->add('critical', $user->data['user_id'], $user->ip, 'LOG_IMAGE_GENERATION_ERROR', false, array($errfile, $errline, $msg_text));
+					$an602_log->add('critical', $user->data['user_id'], $user->ip, 'LOG_IMAGE_GENERATION_ERROR', false, array($errfile, $errline, $msg_text));
 				}
 				// echo '<br /><br />BACKTRACE<br />' . get_backtrace() . '<br />' . "\n";
 			}
@@ -3045,7 +3045,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 				$msg_text = (!empty($user->lang[$msg_text])) ? $user->lang[$msg_text] : $msg_text;
 				$msg_title = (!isset($msg_title)) ? $user->lang['GENERAL_ERROR'] : ((!empty($user->lang[$msg_title])) ? $user->lang[$msg_title] : $msg_title);
 
-				$l_return_index = sprintf($user->lang['RETURN_INDEX'], '<a href="' . $phpbb_root_path . '">', '</a>');
+				$l_return_index = sprintf($user->lang['RETURN_INDEX'], '<a href="' . $an602_root_path . '">', '</a>');
 				$l_notify = '';
 
 				if (!empty($config['board_contact']))
@@ -3056,7 +3056,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 			else
 			{
 				$msg_title = 'General Error';
-				$l_return_index = '<a href="' . $phpbb_root_path . '">Return to index page</a>';
+				$l_return_index = '<a href="' . $an602_root_path . '">Return to index page</a>';
 				$l_notify = '';
 
 				if (!empty($config['board_contact']))
@@ -3072,7 +3072,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 				$log_text .= '<br /><br />BACKTRACE<br />' . $backtrace;
 			}
 
-			if (defined('IN_INSTALL') || ($phpbb_container != null && $phpbb_container->getParameter('debug.show_errors')) || isset($auth) && $auth->acl_get('a_'))
+			if (defined('IN_INSTALL') || ($an602_container != null && $an602_container->getParameter('debug.show_errors')) || isset($auth) && $auth->acl_get('a_'))
 			{
 				$msg_text = $log_text;
 
@@ -3083,7 +3083,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 					echo '<div class="errorbox">' . $msg_text . '</div>';
 
 					$db->sql_return_on_error(true);
-					phpbb_end_update($cache, $config);
+					an602_end_update($cache, $config);
 				}
 			}
 
@@ -3091,7 +3091,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 			{
 				// let's avoid loops
 				$db->sql_return_on_error(true);
-				$phpbb_log->add('critical', $user->data['user_id'], $user->ip, 'LOG_GENERAL_ERROR', false, array($msg_title, $log_text));
+				$an602_log->add('critical', $user->data['user_id'], $user->ip, 'LOG_GENERAL_ERROR', false, array($msg_title, $log_text));
 				$db->sql_return_on_error(false);
 			}
 
@@ -3136,7 +3136,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 			echo '	</div>';
 			echo '	</div>';
 			echo '	<div id="page-footer">';
-			echo '		Powered by <a href="https://www.phpbb.com/">phpBB</a>&reg; Forum Software &copy; phpBB Limited';
+			echo '		Powered by <a href="https://groom.lake.86it.us/">AN602</a>&reg; Forum Software &copy; PHP-AN602';
 			echo '	</div>';
 			echo '</div>';
 			echo '</body>';
@@ -3201,7 +3201,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 			{
 				global $refresh_data;
 
-				$json_response = new \phpbb\json_response;
+				$json_response = new \an602\json_response;
 				$json_response->send(array(
 					'MESSAGE_TITLE'		=> $msg_title,
 					'MESSAGE_TEXT'		=> $msg_text,
@@ -3238,31 +3238,31 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 }
 
 /**
-* Removes absolute path to phpBB root directory from error messages
+* Removes absolute path to AN602 root directory from error messages
 * and converts backslashes to forward slashes.
 *
 * @param string $errfile	Absolute file path
-*							(e.g. /var/www/phpbb3/phpBB/includes/functions.php)
-*							Please note that if $errfile is outside of the phpBB root,
+*							(e.g. /var/www/an6023/AN602/includes/functions.php)
+*							Please note that if $errfile is outside of the AN602 root,
 *							the root path will not be found and can not be filtered.
 * @return string			Relative file path
 *							(e.g. /includes/functions.php)
 */
-function phpbb_filter_root_path($errfile)
+function an602_filter_root_path($errfile)
 {
-	global $phpbb_filesystem;
+	global $an602_filesystem;
 
 	static $root_path;
 
 	if (empty($root_path))
 	{
-		if ($phpbb_filesystem)
+		if ($an602_filesystem)
 		{
-			$root_path = $phpbb_filesystem->realpath(__DIR__ . '/../');
+			$root_path = $an602_filesystem->realpath(__DIR__ . '/../');
 		}
 		else
 		{
-			$filesystem = new \phpbb\filesystem\filesystem();
+			$filesystem = new \an602\filesystem\filesystem();
 			$root_path = $filesystem->realpath(__DIR__ . '/../');
 		}
 	}
@@ -3297,7 +3297,7 @@ function obtain_guest_count($item_id = 0, $item = 'forum')
 		$sql = 'SELECT COUNT(session_ip) as num_guests
 			FROM (
 				SELECT DISTINCT s.session_ip
-				FROM ' . SESSIONS_TABLE . ' s
+				FROM ' . AN602_SESSIONS_TABLE . ' s
 				WHERE s.session_user_id = ' . ANONYMOUS . '
 					AND s.session_time >= ' . ($time - ((int) ($time % 60))) .
 				$reading_sql .
@@ -3306,7 +3306,7 @@ function obtain_guest_count($item_id = 0, $item = 'forum')
 	else
 	{
 		$sql = 'SELECT COUNT(DISTINCT s.session_ip) as num_guests
-			FROM ' . SESSIONS_TABLE . ' s
+			FROM ' . AN602_SESSIONS_TABLE . ' s
 			WHERE s.session_user_id = ' . ANONYMOUS . '
 				AND s.session_time >= ' . ($time - ((int) ($time % 60))) .
 			$reading_sql;
@@ -3352,7 +3352,7 @@ function obtain_users_online($item_id = 0, $item = 'forum')
 	$time = (time() - (intval($config['load_online_time']) * 60));
 
 	$sql = 'SELECT s.session_user_id, s.session_ip, s.session_viewonline
-		FROM ' . SESSIONS_TABLE . ' s
+		FROM ' . AN602_SESSIONS_TABLE . ' s
 		WHERE s.session_time >= ' . ($time - ((int) ($time % 30))) .
 			$reading_sql .
 		' AND s.session_user_id <> ' . ANONYMOUS;
@@ -3390,7 +3390,7 @@ function obtain_users_online($item_id = 0, $item = 'forum')
 */
 function obtain_users_online_string($online_users, $item_id = 0, $item = 'forum')
 {
-	global $config, $db, $user, $auth, $phpbb_dispatcher;
+	global $config, $db, $user, $auth, $an602_dispatcher;
 
 	$user_online_link = $rowset = array();
 	// Need caps version of $item for language-strings
@@ -3401,7 +3401,7 @@ function obtain_users_online_string($online_users, $item_id = 0, $item = 'forum'
 		$sql_ary = array(
 			'SELECT'	=> 'u.username, u.username_clean, u.user_id, u.user_type, u.user_allow_viewonline, u.user_colour',
 			'FROM'		=> array(
-				USERS_TABLE	=> 'u',
+				AN602_USERS_TABLE	=> 'u',
 			),
 			'WHERE'		=> $db->sql_in_set('u.user_id', $online_users['online_users']),
 			'ORDER_BY'	=> 'u.username_clean ASC',
@@ -3422,7 +3422,7 @@ function obtain_users_online_string($online_users, $item_id = 0, $item = 'forum'
 		* @changed 3.1.7-RC1			Change sql query into array and adjust var accordingly. Allows extension authors the ability to adjust the sql_ary.
 		*/
 		$vars = array('online_users', 'item_id', 'item', 'sql_ary');
-		extract($phpbb_dispatcher->trigger_event('core.obtain_users_online_string_sql', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.obtain_users_online_string_sql', compact($vars)));
 
 		$result = $db->sql_query($db->sql_build_query('SELECT', $sql_ary));
 		$rowset = $db->sql_fetchrowset($result);
@@ -3467,7 +3467,7 @@ function obtain_users_online_string($online_users, $item_id = 0, $item = 'forum'
 		'rowset',
 		'user_online_link',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.obtain_users_online_string_before_modify', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.obtain_users_online_string_before_modify', compact($vars)));
 
 	$online_userlist = implode(', ', $user_online_link);
 
@@ -3527,7 +3527,7 @@ function obtain_users_online_string($online_users, $item_id = 0, $item = 'forum'
 		'online_userlist',
 		'l_online_users',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.obtain_users_online_string_modify', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.obtain_users_online_string_modify', compact($vars)));
 
 	return array(
 		'online_userlist'	=> $online_userlist,
@@ -3542,7 +3542,7 @@ function obtain_users_online_string($online_users, $item_id = 0, $item = 'forum'
 * @param int	$data		Current bitfield to check
 * @return bool	Returns true if value of constant is set in bitfield, else false
 */
-function phpbb_optionget($bit, $data)
+function an602_optionget($bit, $data)
 {
 	return ($data & 1 << (int) $bit) ? true : false;
 }
@@ -3556,7 +3556,7 @@ function phpbb_optionget($bit, $data)
 *
 * @return int	The new bitfield
 */
-function phpbb_optionset($bit, $set, $data)
+function an602_optionset($bit, $set, $data)
 {
 	if ($set && !($data & 1 << $bit))
 	{
@@ -3584,7 +3584,7 @@ function phpbb_optionset($bit, $set, $data)
 * @param array $entities Associative array of additional entities to be escaped
 * @return string Escaped and quoted string
 */
-function phpbb_quoteattr($data, $entities = null)
+function an602_quoteattr($data, $entities = null)
 {
 	$data = str_replace('&', '&amp;', $data);
 	$data = str_replace('>', '&gt;', $data);
@@ -3628,10 +3628,10 @@ function phpbb_quoteattr($data, $entities = null)
 *
 * @return string Avatar html
 */
-function phpbb_get_user_avatar($user_row, $alt = 'USER_AVATAR', $ignore_config = false, $lazy = false)
+function an602_get_user_avatar($user_row, $alt = 'USER_AVATAR', $ignore_config = false, $lazy = false)
 {
-	$row = \phpbb\avatar\manager::clean_row($user_row, 'user');
-	return phpbb_get_avatar($row, $alt, $ignore_config, $lazy);
+	$row = \an602\avatar\manager::clean_row($user_row, 'user');
+	return an602_get_avatar($row, $alt, $ignore_config, $lazy);
 }
 
 /**
@@ -3644,26 +3644,26 @@ function phpbb_get_user_avatar($user_row, $alt = 'USER_AVATAR', $ignore_config =
 *
 * @return string Avatar html
 */
-function phpbb_get_group_avatar($group_row, $alt = 'GROUP_AVATAR', $ignore_config = false, $lazy = false)
+function an602_get_group_avatar($group_row, $alt = 'GROUP_AVATAR', $ignore_config = false, $lazy = false)
 {
-	$row = \phpbb\avatar\manager::clean_row($group_row, 'group');
-	return phpbb_get_avatar($row, $alt, $ignore_config, $lazy);
+	$row = \an602\avatar\manager::clean_row($group_row, 'group');
+	return an602_get_avatar($row, $alt, $ignore_config, $lazy);
 }
 
 /**
 * Get avatar
 *
-* @param array $row Row cleaned by \phpbb\avatar\manager::clean_row
+* @param array $row Row cleaned by \an602\avatar\manager::clean_row
 * @param string $alt Optional language string for alt tag within image, can be a language key or text
 * @param bool $ignore_config Ignores the config-setting, to be still able to view the avatar in the UCP
 * @param bool $lazy If true, will be lazy loaded (requires JS)
 *
 * @return string Avatar html
 */
-function phpbb_get_avatar($row, $alt, $ignore_config = false, $lazy = false)
+function an602_get_avatar($row, $alt, $ignore_config = false, $lazy = false)
 {
 	global $user, $config;
-	global $phpbb_container, $phpbb_dispatcher;
+	global $an602_container, $an602_dispatcher;
 
 	if (!$config['allow_avatar'] && !$ignore_config)
 	{
@@ -3676,9 +3676,9 @@ function phpbb_get_avatar($row, $alt, $ignore_config = false, $lazy = false)
 		'height' => $row['avatar_height'],
 	);
 
-	/* @var $phpbb_avatar_manager \phpbb\avatar\manager */
-	$phpbb_avatar_manager = $phpbb_container->get('avatar.manager');
-	$driver = $phpbb_avatar_manager->get_driver($row['avatar_type'], !$ignore_config);
+	/* @var $an602_avatar_manager \an602\avatar\manager */
+	$an602_avatar_manager = $an602_container->get('avatar.manager');
+	$driver = $an602_avatar_manager->get_driver($row['avatar_type'], !$ignore_config);
 	$html = '';
 
 	if ($driver)
@@ -3700,12 +3700,12 @@ function phpbb_get_avatar($row, $alt, $ignore_config = false, $lazy = false)
 			// This path is sent with the base template paths in the assign_vars()
 			// call below. We need to correct it in case we are accessing from a
 			// controller because the web paths will be incorrect otherwise.
-			$phpbb_path_helper = $phpbb_container->get('path_helper');
-			$corrected_path = $phpbb_path_helper->get_web_root_path();
+			$an602_path_helper = $an602_container->get('path_helper');
+			$corrected_path = $an602_path_helper->get_web_root_path();
 
-			$web_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? $board_url : $corrected_path;
+			$web_path = (defined('AN602_USE_BOARD_URL_PATH') && AN602_USE_BOARD_URL_PATH) ? $board_url : $corrected_path;
 
-			$theme = "{$web_path}styles/" . rawurlencode($user->style['style_path']) . '/theme';
+			$theme = "{$web_path}themes/theme_core/styles/" . rawurlencode($user->style['style_path']) . '/theme';
 
 			$src = 'src="' . $theme . '/images/no_avatar.gif" data-src="' . $avatar_data['src'] . '"';
 		}
@@ -3724,7 +3724,7 @@ function phpbb_get_avatar($row, $alt, $ignore_config = false, $lazy = false)
 	* Event to modify HTML <img> tag of avatar
 	*
 	* @event core.get_avatar_after
-	* @var	array	row				Row cleaned by \phpbb\avatar\manager::clean_row
+	* @var	array	row				Row cleaned by \an602\avatar\manager::clean_row
 	* @var	string	alt				Optional language string for alt tag within image, can be a language key or text
 	* @var	bool	ignore_config	Ignores the config-setting, to be still able to view the avatar in the UCP
 	* @var	array	avatar_data		The HTML attributes for avatar <img> tag
@@ -3732,7 +3732,7 @@ function phpbb_get_avatar($row, $alt, $ignore_config = false, $lazy = false)
 	* @since 3.1.6-RC1
 	*/
 	$vars = array('row', 'alt', 'ignore_config', 'avatar_data', 'html');
-	extract($phpbb_dispatcher->trigger_event('core.get_avatar_after', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.get_avatar_after', compact($vars)));
 
 	return $html;
 }
@@ -3742,8 +3742,8 @@ function phpbb_get_avatar($row, $alt, $ignore_config = false, $lazy = false)
 */
 function page_header($page_title = '', $display_online_list = false, $item_id = 0, $item = 'forum', $send_headers = true)
 {
-	global $db, $config, $template, $SID, $_SID, $_EXTRA_URL, $user, $auth, $phpEx, $phpbb_root_path;
-	global $phpbb_dispatcher, $request, $phpbb_container, $phpbb_admin_path;
+	global $db, $config, $template, $SID, $_SID, $_EXTRA_URL, $user, $auth, $phpEx, $an602_root_path;
+	global $an602_dispatcher, $request, $an602_container, $an602_admin_path;
 
 	if (defined('HEADER_INC'))
 	{
@@ -3770,7 +3770,7 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 	* @since 3.1.0-a1
 	*/
 	$vars = array('page_title', 'display_online_list', 'item_id', 'item', 'page_header_override');
-	extract($phpbb_dispatcher->trigger_event('core.page_header', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.page_header', compact($vars)));
 
 	if ($page_header_override)
 	{
@@ -3791,7 +3791,7 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 		// 3) if more than one level of output buffering is used because we
 		//    cannot test all output buffer level content lengths. One level
 		//    could be caused by php.ini output_buffering. Anything
-		//    beyond that is manual, so the code wrapping phpBB in output buffering
+		//    beyond that is manual, so the code wrapping AN602 in output buffering
 		//    can easily compress the output itself.
 		//
 		if (@extension_loaded('zlib') && !headers_sent() && ob_get_level() <= 1 && ob_get_length() == 0)
@@ -3805,13 +3805,13 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 	// Generate logged in/logged out status
 	if ($user->data['user_id'] != ANONYMOUS)
 	{
-		$u_login_logout = append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=logout', true, $user->session_id);
+		$u_login_logout = append_sid("{$an602_root_path}ucp.$phpEx", 'mode=logout', true, $user->session_id);
 		$l_login_logout = $user->lang['LOGOUT'];
 	}
 	else
 	{
 		$redirect = $request->variable('redirect', rawurlencode($user->page['page']));
-		$u_login_logout = append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=login&amp;redirect=' . $redirect);
+		$u_login_logout = append_sid("{$an602_root_path}ucp.$phpEx", 'mode=login&amp;redirect=' . $redirect);
 		$l_login_logout = $user->lang['LOGIN'];
 	}
 
@@ -3856,7 +3856,7 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 		{
 			if (!$user->data['user_last_privmsg'] || $user->data['user_last_privmsg'] > $user->data['session_last_visit'])
 			{
-				$sql = 'UPDATE ' . USERS_TABLE . '
+				$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 					SET user_last_privmsg = ' . $user->data['session_last_visit'] . '
 					WHERE user_id = ' . $user->data['user_id'];
 				$db->sql_query($sql);
@@ -3884,7 +3884,7 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 	if ($config['feed_enable'])
 	{
 		$sql = 'SELECT forum_id
-			FROM ' . FORUMS_TABLE . '
+			FROM ' . AN602_FORUMS_TABLE . '
 			WHERE ' . $db->sql_bit_and('forum_options', FORUM_OPTION_FEED_NEWS, '<> 0');
 		$result = $db->sql_query_limit($sql, 1, 0, 600);
 		$s_feed_news = (int) $db->sql_fetchfield('forum_id');
@@ -3896,10 +3896,10 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 	// This path is sent with the base template paths in the assign_vars()
 	// call below. We need to correct it in case we are accessing from a
 	// controller because the web paths will be incorrect otherwise.
-	/* @var $phpbb_path_helper \phpbb\path_helper */
-	$phpbb_path_helper = $phpbb_container->get('path_helper');
-	$corrected_path = $phpbb_path_helper->get_web_root_path();
-	$web_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? $board_url : $corrected_path;
+	/* @var $an602_path_helper \an602\path_helper */
+	$an602_path_helper = $an602_container->get('path_helper');
+	$corrected_path = $an602_path_helper->get_web_root_path();
+	$web_path = (defined('AN602_USE_BOARD_URL_PATH') && AN602_USE_BOARD_URL_PATH) ? $board_url : $corrected_path;
 
 	// Send a proper content-language to the output
 	$user_lang = $user->lang['USER_LANG'];
@@ -3924,7 +3924,7 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 	}
 
 	$dt = $user->create_datetime();
-	$timezone_offset = $user->lang(array('timezones', 'UTC_OFFSET'), phpbb_format_timezone_offset($dt->getOffset()));
+	$timezone_offset = $user->lang(array('timezones', 'UTC_OFFSET'), an602_format_timezone_offset($dt->getOffset()));
 	$timezone_name = $user->timezone->getName();
 	if (isset($user->lang['timezones'][$timezone_name]))
 	{
@@ -3935,10 +3935,10 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 	$notifications = false;
 	if ($config['load_notifications'] && $config['allow_board_notifications'] && $user->data['user_id'] != ANONYMOUS && $user->data['user_type'] != USER_IGNORE)
 	{
-		/* @var $phpbb_notifications \phpbb\notification\manager */
-		$phpbb_notifications = $phpbb_container->get('notification_manager');
+		/* @var $an602_notifications \an602\notification\manager */
+		$an602_notifications = $an602_container->get('notification_manager');
 
-		$notifications = $phpbb_notifications->load_notifications('notification.method.board', array(
+		$notifications = $an602_notifications->load_notifications('notification.method.board', array(
 			'all_unread'	=> true,
 			'limit'			=> 5,
 		));
@@ -3949,17 +3949,17 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 		}
 	}
 
-	/** @var \phpbb\controller\helper $controller_helper */
-	$controller_helper = $phpbb_container->get('controller.helper');
+	/** @var \an602\controller\helper $controller_helper */
+	$controller_helper = $an602_container->get('controller.helper');
 	$notification_mark_hash = generate_link_hash('mark_all_notifications_read');
 
-	$s_login_redirect = build_hidden_fields(array('redirect' => $phpbb_path_helper->remove_web_root_path(build_url())));
+	$s_login_redirect = build_hidden_fields(array('redirect' => $an602_path_helper->remove_web_root_path(build_url())));
 
 	// Add form token for login box, in case page is presenting a login form.
 	add_form_key('login', '_LOGIN');
 
 	/**
-	 * Workaround for missing template variable in pre phpBB 3.2.6 styles.
+	 * Workaround for missing template variable in pre AN602 3.2.6 styles.
 	 * @deprecated 3.2.7 (To be removed: 4.0.0-a1)
 	 */
 	$form_token_login = $template->retrieve_var('S_FORM_TOKEN_LOGIN');
@@ -3984,14 +3984,14 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 		'RECORD_USERS'					=> $l_online_record,
 
 		'PRIVATE_MESSAGE_COUNT'			=> (!empty($user->data['user_unread_privmsg'])) ? $user->data['user_unread_privmsg'] : 0,
-		'CURRENT_USER_AVATAR'			=> phpbb_get_user_avatar($user->data),
+		'CURRENT_USER_AVATAR'			=> an602_get_user_avatar($user->data),
 		'CURRENT_USERNAME_SIMPLE'		=> get_username_string('no_profile', $user->data['user_id'], $user->data['username'], $user->data['user_colour']),
 		'CURRENT_USERNAME_FULL'			=> get_username_string('full', $user->data['user_id'], $user->data['username'], $user->data['user_colour']),
 		'UNREAD_NOTIFICATIONS_COUNT'	=> ($notifications !== false) ? $notifications['unread_count'] : '',
 		'NOTIFICATIONS_COUNT'			=> ($notifications !== false) ? $notifications['unread_count'] : '',
-		'U_VIEW_ALL_NOTIFICATIONS'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=ucp_notifications'),
-		'U_MARK_ALL_NOTIFICATIONS'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=ucp_notifications&amp;mode=notification_list&amp;mark=all&amp;token=' . $notification_mark_hash),
-		'U_NOTIFICATION_SETTINGS'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=ucp_notifications&amp;mode=notification_options'),
+		'U_VIEW_ALL_NOTIFICATIONS'		=> append_sid("{$an602_root_path}ucp.$phpEx", 'i=ucp_notifications'),
+		'U_MARK_ALL_NOTIFICATIONS'		=> append_sid("{$an602_root_path}ucp.$phpEx", 'i=ucp_notifications&amp;mode=notification_list&amp;mark=all&amp;token=' . $notification_mark_hash),
+		'U_NOTIFICATION_SETTINGS'		=> append_sid("{$an602_root_path}ucp.$phpEx", 'i=ucp_notifications&amp;mode=notification_options'),
 		'S_NOTIFICATIONS_DISPLAY'		=> $config['load_notifications'] && $config['allow_board_notifications'],
 
 		'S_USER_NEW_PRIVMSG'			=> $user->data['user_new_privmsg'],
@@ -4009,32 +4009,32 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 		'L_SITE_HOME'		=> ($config['site_home_text'] !== '') ? $config['site_home_text'] : $user->lang['HOME'],
 		'L_ONLINE_EXPLAIN'	=> $l_online_time,
 
-		'U_PRIVATEMSGS'			=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=inbox'),
-		'U_RETURN_INBOX'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=inbox'),
-		'U_MEMBERLIST'			=> append_sid("{$phpbb_root_path}memberlist.$phpEx"),
-		'U_VIEWONLINE'			=> ($auth->acl_gets('u_viewprofile', 'a_user', 'a_useradd', 'a_userdel')) ? append_sid("{$phpbb_root_path}viewonline.$phpEx") : '',
+		'U_PRIVATEMSGS'			=> append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;folder=inbox'),
+		'U_RETURN_INBOX'		=> append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;folder=inbox'),
+		'U_MEMBERLIST'			=> append_sid("{$an602_root_path}memberlist.$phpEx"),
+		'U_VIEWONLINE'			=> ($auth->acl_gets('u_viewprofile', 'a_user', 'a_useradd', 'a_userdel')) ? append_sid("{$an602_root_path}viewonline.$phpEx") : '',
 		'U_LOGIN_LOGOUT'		=> $u_login_logout,
-		'U_INDEX'				=> append_sid("{$phpbb_root_path}index.$phpEx"),
-		'U_SEARCH'				=> append_sid("{$phpbb_root_path}search.$phpEx"),
+		'U_INDEX'				=> append_sid("{$an602_root_path}index.$phpEx"),
+		'U_SEARCH'				=> append_sid("{$an602_root_path}search.$phpEx"),
 		'U_SITE_HOME'			=> $config['site_home_url'],
-		'U_REGISTER'			=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=register'),
-		'U_PROFILE'				=> append_sid("{$phpbb_root_path}ucp.$phpEx"),
+		'U_REGISTER'			=> append_sid("{$an602_root_path}ucp.$phpEx", 'mode=register'),
+		'U_PROFILE'				=> append_sid("{$an602_root_path}ucp.$phpEx"),
 		'U_USER_PROFILE'		=> get_username_string('profile', $user->data['user_id'], $user->data['username'], $user->data['user_colour']),
-		'U_MODCP'				=> append_sid("{$phpbb_root_path}mcp.$phpEx", false, true, $user->session_id),
-		'U_FAQ'					=> $controller_helper->route('phpbb_help_faq_controller'),
-		'U_SEARCH_SELF'			=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=egosearch'),
-		'U_SEARCH_NEW'			=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=newposts'),
-		'U_SEARCH_UNANSWERED'	=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=unanswered'),
-		'U_SEARCH_UNREAD'		=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=unreadposts'),
-		'U_SEARCH_ACTIVE_TOPICS'=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=active_topics'),
-		'U_DELETE_COOKIES'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=delete_cookies'),
-		'U_CONTACT_US'			=> ($config['contact_admin_form_enable'] && $config['email_enable']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=contactadmin') : '',
-		'U_TEAM'				=> (!$auth->acl_get('u_viewprofile')) ? '' : append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=team'),
-		'U_TERMS_USE'			=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=terms'),
-		'U_PRIVACY'				=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=privacy'),
-		'UA_PRIVACY'			=> addslashes(append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=privacy')),
-		'U_RESTORE_PERMISSIONS'	=> ($user->data['user_perm_from'] && $auth->acl_get('a_switchperm')) ? append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=restore_perm') : '',
-		'U_FEED'				=> $controller_helper->route('phpbb_feed_index'),
+		'U_MODCP'				=> append_sid("{$an602_root_path}mcp.$phpEx", false, true, $user->session_id),
+		'U_FAQ'					=> $controller_helper->route('an602_help_faq_controller'),
+		'U_SEARCH_SELF'			=> append_sid("{$an602_root_path}search.$phpEx", 'search_id=egosearch'),
+		'U_SEARCH_NEW'			=> append_sid("{$an602_root_path}search.$phpEx", 'search_id=newposts'),
+		'U_SEARCH_UNANSWERED'	=> append_sid("{$an602_root_path}search.$phpEx", 'search_id=unanswered'),
+		'U_SEARCH_UNREAD'		=> append_sid("{$an602_root_path}search.$phpEx", 'search_id=unreadposts'),
+		'U_SEARCH_ACTIVE_TOPICS'=> append_sid("{$an602_root_path}search.$phpEx", 'search_id=active_topics'),
+		'U_DELETE_COOKIES'		=> append_sid("{$an602_root_path}ucp.$phpEx", 'mode=delete_cookies'),
+		'U_CONTACT_US'			=> ($config['contact_admin_form_enable'] && $config['email_enable']) ? append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=contactadmin') : '',
+		'U_TEAM'				=> (!$auth->acl_get('u_viewprofile')) ? '' : append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=team'),
+		'U_TERMS_USE'			=> append_sid("{$an602_root_path}ucp.$phpEx", 'mode=terms'),
+		'U_PRIVACY'				=> append_sid("{$an602_root_path}ucp.$phpEx", 'mode=privacy'),
+		'UA_PRIVACY'			=> addslashes(append_sid("{$an602_root_path}ucp.$phpEx", 'mode=privacy')),
+		'U_RESTORE_PERMISSIONS'	=> ($user->data['user_perm_from'] && $auth->acl_get('a_switchperm')) ? append_sid("{$an602_root_path}ucp.$phpEx", 'mode=restore_perm') : '',
+		'U_FEED'				=> $controller_helper->route('an602_feed_index'),
 
 		'S_USER_LOGGED_IN'		=> ($user->data['user_id'] != ANONYMOUS) ? true : false,
 		'S_AUTOLOGIN_ENABLED'	=> ($config['allow_autologin']) ? true : false,
@@ -4058,7 +4058,7 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 		'S_FORUM_ID'			=> $forum_id,
 		'S_TOPIC_ID'			=> $topic_id,
 
-		'S_LOGIN_ACTION'		=> ((!defined('ADMIN_START')) ? append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=login') : append_sid("{$phpbb_admin_path}index.$phpEx", false, true, $user->session_id)),
+		'S_LOGIN_ACTION'		=> ((!defined('ADMIN_START')) ? append_sid("{$an602_root_path}ucp.$phpEx", 'mode=login') : append_sid("{$an602_admin_path}index.$phpEx", false, true, $user->session_id)),
 		'S_LOGIN_REDIRECT'		=> $s_login_redirect,
 
 		'S_ENABLE_FEEDS'			=> ($config['feed_enable']) ? true : false,
@@ -4074,9 +4074,9 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 
 		'T_ASSETS_VERSION'		=> $config['assets_version'],
 		'T_ASSETS_PATH'			=> "{$web_path}assets",
-		'T_THEME_PATH'			=> "{$web_path}styles/" . rawurlencode($user->style['style_path']) . '/theme',
-		'T_TEMPLATE_PATH'		=> "{$web_path}styles/" . rawurlencode($user->style['style_path']) . '/template',
-		'T_SUPER_TEMPLATE_PATH'	=> "{$web_path}styles/" . rawurlencode($user->style['style_path']) . '/template',
+		'T_THEME_PATH'			=> "{$web_path}themes/theme_core/styles/" . rawurlencode($user->style['style_path']) . '/theme',
+		'T_TEMPLATE_PATH'		=> "{$web_path}themes/theme_core/styles/" . rawurlencode($user->style['style_path']) . '/template',
+		'T_SUPER_TEMPLATE_PATH'	=> "{$web_path}themes/theme_core/styles/" . rawurlencode($user->style['style_path']) . '/template',
 		'T_IMAGES_PATH'			=> "{$web_path}images/",
 		'T_SMILIES_PATH'		=> "{$web_path}{$config['smilies_path']}/",
 		'T_AVATAR_PATH'			=> "{$web_path}{$config['avatar_path']}/",
@@ -4084,8 +4084,8 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 		'T_ICONS_PATH'			=> "{$web_path}{$config['icons_path']}/",
 		'T_RANKS_PATH'			=> "{$web_path}{$config['ranks_path']}/",
 		'T_UPLOAD_PATH'			=> "{$web_path}{$config['upload_path']}/",
-		'T_STYLESHEET_LINK'		=> "{$web_path}styles/" . rawurlencode($user->style['style_path']) . '/theme/stylesheet.css?assets_version=' . $config['assets_version'],
-		'T_STYLESHEET_LANG_LINK'=> "{$web_path}styles/" . rawurlencode($user->style['style_path']) . '/theme/' . $user->lang_name . '/stylesheet.css?assets_version=' . $config['assets_version'],
+		'T_STYLESHEET_LINK'		=> "{$web_path}themes/theme_core/styles/" . rawurlencode($user->style['style_path']) . '/theme/stylesheet.css?assets_version=' . $config['assets_version'],
+		'T_STYLESHEET_LANG_LINK'=> "{$web_path}themes/theme_core/styles/" . rawurlencode($user->style['style_path']) . '/theme/' . $user->lang_name . '/stylesheet.css?assets_version=' . $config['assets_version'],
 
 		'T_FONT_AWESOME_LINK'	=> !empty($config['allow_cdn']) && !empty($config['load_font_awesome_url']) ? $config['load_font_awesome_url'] : "{$web_path}assets/css/font-awesome.min.css?assets_version=" . $config['assets_version'],
 
@@ -4112,7 +4112,7 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 
 	if ($send_headers)
 	{
-		// An array of http headers that phpBB will set. The following event may override these.
+		// An array of http headers that AN602 will set. The following event may override these.
 		$http_headers += array(
 			// application/xhtml+xml not used because of IE
 			'Content-type' => 'text/html; charset=UTF-8',
@@ -4123,7 +4123,7 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 		if (!empty($user->data['is_bot']))
 		{
 			// Let reverse proxies know we detected a bot.
-			$http_headers['X-PHPBB-IS-BOT'] = 'yes';
+			$http_headers['X-AN602-IS-BOT'] = 'yes';
 		}
 	}
 
@@ -4137,12 +4137,12 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 	*									session item, e.g. forum for
 	*									session_forum_id
 	* @var	int		item_id				Restrict online users to item id
-	* @var	array		http_headers			HTTP headers that should be set by phpbb
+	* @var	array		http_headers			HTTP headers that should be set by an602
 	*
 	* @since 3.1.0-b3
 	*/
 	$vars = array('page_title', 'display_online_list', 'item_id', 'item', 'http_headers');
-	extract($phpbb_dispatcher->trigger_event('core.page_header_after', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.page_header_after', compact($vars)));
 
 	foreach ($http_headers as $hname => $hval)
 	{
@@ -4155,18 +4155,18 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 /**
 * Check and display the SQL report if requested.
 *
-* @param \phpbb\request\request_interface		$request	Request object
-* @param \phpbb\auth\auth						$auth		Auth object
-* @param \phpbb\db\driver\driver_interface		$db			Database connection
+* @param \an602\request\request_interface		$request	Request object
+* @param \an602\auth\auth						$auth		Auth object
+* @param \an602\db\driver\driver_interface		$db			Database connection
  *
  * @deprecated 3.3.1 (To be removed: 4.0.0-a1); use controller helper's display_sql_report()
 */
-function phpbb_check_and_display_sql_report(\phpbb\request\request_interface $request, \phpbb\auth\auth $auth, \phpbb\db\driver\driver_interface $db)
+function an602_check_and_display_sql_report(\an602\request\request_interface $request, \an602\auth\auth $auth, \an602\db\driver\driver_interface $db)
 {
-	global $phpbb_container;
+	global $an602_container;
 
-	/** @var \phpbb\controller\helper $controller_helper */
-	$controller_helper = $phpbb_container->get('controller.helper');
+	/** @var \an602\controller\helper $controller_helper */
+	$controller_helper = $an602_container->get('controller.helper');
 
 	$controller_helper->display_sql_report();
 }
@@ -4174,21 +4174,21 @@ function phpbb_check_and_display_sql_report(\phpbb\request\request_interface $re
 /**
 * Generate the debug output string
 *
-* @param \phpbb\db\driver\driver_interface	$db			Database connection
-* @param \phpbb\config\config				$config		Config object
-* @param \phpbb\auth\auth					$auth		Auth object
-* @param \phpbb\user						$user		User object
-* @param \phpbb\event\dispatcher_interface	$phpbb_dispatcher	Event dispatcher
+* @param \an602\db\driver\driver_interface	$db			Database connection
+* @param \an602\config\config				$config		Config object
+* @param \an602\auth\auth					$auth		Auth object
+* @param \an602\user						$user		User object
+* @param \an602\event\dispatcher_interface	$an602_dispatcher	Event dispatcher
 * @return string
 */
-function phpbb_generate_debug_output(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config, \phpbb\auth\auth $auth, \phpbb\user $user, \phpbb\event\dispatcher_interface $phpbb_dispatcher)
+function an602_generate_debug_output(\an602\db\driver\driver_interface $db, \an602\config\config $config, \an602\auth\auth $auth, \an602\user $user, \an602\event\dispatcher_interface $an602_dispatcher)
 {
-	global $phpbb_container;
+	global $an602_container;
 
 	$debug_info = array();
 
 	// Output page creation time
-	if ($phpbb_container->getParameter('debug.load_time'))
+	if ($an602_container->getParameter('debug.load_time'))
 	{
 		if (isset($GLOBALS['starttime']))
 		{
@@ -4197,7 +4197,7 @@ function phpbb_generate_debug_output(\phpbb\db\driver\driver_interface $db, \php
 		}
 	}
 
-	if ($phpbb_container->getParameter('debug.memory'))
+	if ($an602_container->getParameter('debug.memory'))
 	{
 		$memory_usage = memory_get_peak_usage();
 		if ($memory_usage)
@@ -4215,7 +4215,7 @@ function phpbb_generate_debug_output(\phpbb\db\driver\driver_interface $db, \php
 		}
 	}
 
-	if ($phpbb_container->getParameter('debug.sql_explain'))
+	if ($an602_container->getParameter('debug.sql_explain'))
 	{
 		$debug_info[] = sprintf('<span title="Cached: %d">Queries: %d</span>', $db->sql_num_queries(true), $db->sql_num_queries());
 
@@ -4228,13 +4228,13 @@ function phpbb_generate_debug_output(\phpbb\db\driver\driver_interface $db, \php
 	/**
 	* Modify debug output information
 	*
-	* @event core.phpbb_generate_debug_output
+	* @event core.an602_generate_debug_output
 	* @var	array	debug_info		Array of strings with debug information
 	*
 	* @since 3.1.0-RC3
 	*/
 	$vars = array('debug_info');
-	extract($phpbb_dispatcher->trigger_event('core.phpbb_generate_debug_output', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.an602_generate_debug_output', compact($vars)));
 
 	return implode(' | ', $debug_info);
 }
@@ -4248,7 +4248,7 @@ function phpbb_generate_debug_output(\phpbb\db\driver\driver_interface $db, \php
 */
 function page_footer($run_cron = true, $display_template = true, $exit_handler = true)
 {
-	global $phpbb_dispatcher, $phpbb_container, $template;
+	global $an602_dispatcher, $an602_container, $template;
 
 	// A listener can set this variable to `true` when it overrides this function
 	$page_footer_override = false;
@@ -4263,15 +4263,15 @@ function page_footer($run_cron = true, $display_template = true, $exit_handler =
 	* @since 3.1.0-a1
 	*/
 	$vars = array('run_cron', 'page_footer_override');
-	extract($phpbb_dispatcher->trigger_event('core.page_footer', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.page_footer', compact($vars)));
 
 	if ($page_footer_override)
 	{
 		return;
 	}
 
-	/** @var \phpbb\controller\helper $controller_helper */
-	$controller_helper = $phpbb_container->get('controller.helper');
+	/** @var \an602\controller\helper $controller_helper */
+	$controller_helper = $an602_container->get('controller.helper');
 
 	$controller_helper->display_footer($run_cron);
 
@@ -4285,7 +4285,7 @@ function page_footer($run_cron = true, $display_template = true, $exit_handler =
 	* @since 3.1.0-RC5
 	*/
 	$vars = array('display_template', 'exit_handler');
-	extract($phpbb_dispatcher->trigger_event('core.page_footer_after', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.page_footer_after', compact($vars)));
 
 	if ($display_template)
 	{
@@ -4307,9 +4307,9 @@ function page_footer($run_cron = true, $display_template = true, $exit_handler =
 function garbage_collection()
 {
 	global $cache, $db;
-	global $phpbb_dispatcher;
+	global $an602_dispatcher;
 
-	if (!empty($phpbb_dispatcher))
+	if (!empty($an602_dispatcher))
 	{
 		/**
 		* Unload some objects, to free some memory, before we finish our task
@@ -4317,7 +4317,7 @@ function garbage_collection()
 		* @event core.garbage_collection
 		* @since 3.1.0-a1
 		*/
-		$phpbb_dispatcher->dispatch('core.garbage_collection');
+		$an602_dispatcher->dispatch('core.garbage_collection');
 	}
 
 	// Unload cache, must be done before the DB connection if closed
@@ -4334,20 +4334,20 @@ function garbage_collection()
 }
 
 /**
-* Handler for exit calls in phpBB.
+* Handler for exit calls in AN602.
 * This function supports hooks.
 *
 * Note: This function is called after the template has been outputted.
 */
 function exit_handler()
 {
-	global $phpbb_hook;
+	global $an602_hook;
 
-	if (!empty($phpbb_hook) && $phpbb_hook->call_hook(__FUNCTION__))
+	if (!empty($an602_hook) && $an602_hook->call_hook(__FUNCTION__))
 	{
-		if ($phpbb_hook->hook_return(__FUNCTION__))
+		if ($an602_hook->hook_return(__FUNCTION__))
 		{
-			return $phpbb_hook->hook_return_result(__FUNCTION__);
+			return $an602_hook->hook_return_result(__FUNCTION__);
 		}
 	}
 
@@ -4358,18 +4358,18 @@ function exit_handler()
 }
 
 /**
-* Handler for init calls in phpBB. This function is called in \phpbb\user::setup();
+* Handler for init calls in AN602. This function is called in \an602\user::setup();
 * This function supports hooks.
 */
-function phpbb_user_session_handler()
+function an602_user_session_handler()
 {
-	global $phpbb_hook;
+	global $an602_hook;
 
-	if (!empty($phpbb_hook) && $phpbb_hook->call_hook(__FUNCTION__))
+	if (!empty($an602_hook) && $an602_hook->call_hook(__FUNCTION__))
 	{
-		if ($phpbb_hook->hook_return(__FUNCTION__))
+		if ($an602_hook->hook_return(__FUNCTION__))
 		{
-			return $phpbb_hook->hook_return_result(__FUNCTION__);
+			return $an602_hook->hook_return_result(__FUNCTION__);
 		}
 	}
 
@@ -4384,7 +4384,7 @@ function phpbb_user_session_handler()
 * @return int|float			Integer $input if $input fits integer,
 *							float $input otherwise.
 */
-function phpbb_to_numeric($input)
+function an602_to_numeric($input)
 {
 	return ($input > PHP_INT_MAX) ? (float) $input : (int) $input;
 }
@@ -4392,11 +4392,11 @@ function phpbb_to_numeric($input)
 /**
 * Get the board contact details (e.g. for emails)
 *
-* @param \phpbb\config\config	$config
+* @param \an602\config\config	$config
 * @param string					$phpEx
 * @return string
 */
-function phpbb_get_board_contact(\phpbb\config\config $config, $phpEx)
+function an602_get_board_contact(\an602\config\config $config, $phpEx)
 {
 	if ($config['contact_admin_form_enable'])
 	{
@@ -4411,16 +4411,16 @@ function phpbb_get_board_contact(\phpbb\config\config $config, $phpEx)
 /**
 * Get a clickable board contact details link
 *
-* @param \phpbb\config\config	$config
-* @param string					$phpbb_root_path
+* @param \an602\config\config	$config
+* @param string					$an602_root_path
 * @param string					$phpEx
 * @return string
 */
-function phpbb_get_board_contact_link(\phpbb\config\config $config, $phpbb_root_path, $phpEx)
+function an602_get_board_contact_link(\an602\config\config $config, $an602_root_path, $phpEx)
 {
 	if ($config['contact_admin_form_enable'] && $config['email_enable'])
 	{
-		return append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=contactadmin');
+		return append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=contactadmin');
 	}
 	else
 	{

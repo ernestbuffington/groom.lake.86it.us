@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -25,8 +25,8 @@ class acp_ranks
 
 	function main($id, $mode)
 	{
-		global $db, $user, $template, $cache, $request, $phpbb_dispatcher;
-		global $config, $phpbb_root_path, $phpbb_admin_path, $phpbb_log;
+		global $db, $user, $template, $cache, $request, $an602_dispatcher;
+		global $config, $an602_root_path, $an602_admin_path, $an602_log;
 
 		$user->add_lang('acp/posting');
 
@@ -82,21 +82,21 @@ class acp_ranks
 				* @since 3.1.0-RC3
 				*/
 				$vars = array('rank_id', 'sql_ary');
-				extract($phpbb_dispatcher->trigger_event('core.acp_ranks_save_modify_sql_ary', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_ranks_save_modify_sql_ary', compact($vars)));
 
 				if ($rank_id)
 				{
-					$sql = 'UPDATE ' . RANKS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . " WHERE rank_id = $rank_id";
+					$sql = 'UPDATE ' . AN602_RANKS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . " WHERE rank_id = $rank_id";
 					$message = $user->lang['RANK_UPDATED'];
 
-					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_RANK_UPDATED', false, array($rank_title));
+					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_RANK_UPDATED', false, array($rank_title));
 				}
 				else
 				{
-					$sql = 'INSERT INTO ' . RANKS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+					$sql = 'INSERT INTO ' . AN602_RANKS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 					$message = $user->lang['RANK_ADDED'];
 
-					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_RANK_ADDED', false, array($rank_title));
+					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_RANK_ADDED', false, array($rank_title));
 				}
 				$db->sql_query($sql);
 
@@ -116,28 +116,28 @@ class acp_ranks
 				if (confirm_box(true))
 				{
 					$sql = 'SELECT rank_title
-						FROM ' . RANKS_TABLE . '
+						FROM ' . AN602_RANKS_TABLE . '
 						WHERE rank_id = ' . $rank_id;
 					$result = $db->sql_query($sql);
 					$rank_title = (string) $db->sql_fetchfield('rank_title');
 					$db->sql_freeresult($result);
 
-					$sql = 'DELETE FROM ' . RANKS_TABLE . "
+					$sql = 'DELETE FROM ' . AN602_RANKS_TABLE . "
 						WHERE rank_id = $rank_id";
 					$db->sql_query($sql);
 
-					$sql = 'UPDATE ' . USERS_TABLE . "
+					$sql = 'UPDATE ' . AN602_USERS_TABLE . "
 						SET user_rank = 0
 						WHERE user_rank = $rank_id";
 					$db->sql_query($sql);
 
 					$cache->destroy('_ranks');
 
-					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_RANK_REMOVED', false, array($rank_title));
+					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_RANK_REMOVED', false, array($rank_title));
 
 					if ($request->is_ajax())
 					{
-						$json_response = new \phpbb\json_response;
+						$json_response = new \an602\json_response;
 						$json_response->send(array(
 							'MESSAGE_TITLE'	=> $user->lang['INFORMATION'],
 							'MESSAGE_TEXT'	=> $user->lang['RANK_REMOVED'],
@@ -165,7 +165,7 @@ class acp_ranks
 				$ranks = $existing_imgs = array();
 
 				$sql = 'SELECT *
-					FROM ' . RANKS_TABLE . '
+					FROM ' . AN602_RANKS_TABLE . '
 					ORDER BY rank_min ASC, rank_special ASC';
 				$result = $db->sql_query($sql);
 
@@ -180,7 +180,7 @@ class acp_ranks
 				}
 				$db->sql_freeresult($result);
 
-				$imglist = filelist($phpbb_root_path . $config['ranks_path'], '');
+				$imglist = filelist($an602_root_path . $config['ranks_path'], '');
 				$edit_img = $filename_list = '';
 
 				foreach ($imglist as $path => $img_ary)
@@ -216,12 +216,12 @@ class acp_ranks
 				$tpl_ary = array(
 					'S_EDIT'			=> true,
 					'U_BACK'			=> $this->u_action,
-					'RANKS_PATH'		=> $phpbb_root_path . $config['ranks_path'],
+					'RANKS_PATH'		=> $an602_root_path . $config['ranks_path'],
 					'U_ACTION'			=> $this->u_action . '&amp;id=' . $rank_id,
 
 					'RANK_TITLE'		=> (isset($ranks['rank_title'])) ? $ranks['rank_title'] : '',
 					'S_FILENAME_LIST'	=> $filename_list,
-					'RANK_IMAGE'		=> ($edit_img) ? $phpbb_root_path . $config['ranks_path'] . '/' . $edit_img : htmlspecialchars($phpbb_admin_path, ENT_COMPAT) . 'images/spacer.gif',
+					'RANK_IMAGE'		=> ($edit_img) ? $an602_root_path . $config['ranks_path'] . '/' . $edit_img : htmlspecialchars($an602_admin_path, ENT_COMPAT) . 'images/spacer.gif',
 					'S_SPECIAL_RANK'	=> (isset($ranks['rank_special']) && $ranks['rank_special']) ? true : false,
 					'MIN_POSTS'			=> (isset($ranks['rank_min']) && !$ranks['rank_special']) ? $ranks['rank_min'] : 0,
 				);
@@ -235,7 +235,7 @@ class acp_ranks
 				* @since 3.1.0-RC3
 				*/
 				$vars = array('ranks', 'tpl_ary');
-				extract($phpbb_dispatcher->trigger_event('core.acp_ranks_edit_modify_tpl_ary', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_ranks_edit_modify_tpl_ary', compact($vars)));
 
 				$template->assign_vars($tpl_ary);
 				return;
@@ -248,7 +248,7 @@ class acp_ranks
 		);
 
 		$sql = 'SELECT *
-			FROM ' . RANKS_TABLE . '
+			FROM ' . AN602_RANKS_TABLE . '
 			ORDER BY rank_special DESC, rank_min ASC, rank_title ASC';
 		$result = $db->sql_query($sql);
 
@@ -258,7 +258,7 @@ class acp_ranks
 				'S_RANK_IMAGE'		=> ($row['rank_image']) ? true : false,
 				'S_SPECIAL_RANK'	=> ($row['rank_special']) ? true : false,
 
-				'RANK_IMAGE'		=> $phpbb_root_path . $config['ranks_path'] . '/' . $row['rank_image'],
+				'RANK_IMAGE'		=> $an602_root_path . $config['ranks_path'] . '/' . $row['rank_image'],
 				'RANK_TITLE'		=> $row['rank_title'],
 				'MIN_POSTS'			=> $row['rank_min'],
 
@@ -275,7 +275,7 @@ class acp_ranks
 			* @since 3.1.0-RC3
 			*/
 			$vars = array('row', 'rank_row');
-			extract($phpbb_dispatcher->trigger_event('core.acp_ranks_list_modify_rank_row', compact($vars)));
+			extract($an602_dispatcher->trigger_event('core.acp_ranks_list_modify_rank_row', compact($vars)));
 
 			$template->assign_block_vars('ranks', $rank_row);
 		}

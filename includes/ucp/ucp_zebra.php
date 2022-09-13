@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -25,7 +25,7 @@ class ucp_zebra
 
 	function main($id, $mode)
 	{
-		global $db, $user, $auth, $template, $phpbb_root_path, $phpEx, $request, $phpbb_dispatcher;
+		global $db, $user, $auth, $template, $an602_root_path, $phpEx, $request, $an602_dispatcher;
 
 		$submit	= (isset($_POST['submit']) || isset($_GET['add']) || isset($_GET['remove'])) ? true : false;
 		$s_hidden_fields = '';
@@ -65,9 +65,9 @@ class ucp_zebra
 						* @since 3.1.0-a1
 						*/
 						$vars = array('mode', 'user_ids');
-						extract($phpbb_dispatcher->trigger_event('core.ucp_remove_zebra', compact($vars)));
+						extract($an602_dispatcher->trigger_event('core.ucp_remove_zebra', compact($vars)));
 
-						$sql = 'DELETE FROM ' . ZEBRA_TABLE . '
+						$sql = 'DELETE FROM ' . AN602_ZEBRA_TABLE . '
 							WHERE user_id = ' . $user->data['user_id'] . '
 								AND ' . $db->sql_in_set('zebra_id', $user_ids);
 						$db->sql_query($sql);
@@ -85,7 +85,7 @@ class ucp_zebra
 						// the other (by removing the existing one) ... but I have a feeling this
 						// may lead to complaints
 						$sql = 'SELECT z.*, u.username, u.username_clean
-							FROM ' . ZEBRA_TABLE . ' z, ' . USERS_TABLE . ' u
+							FROM ' . AN602_ZEBRA_TABLE . ' z, ' . AN602_USERS_TABLE . ' u
 							WHERE z.user_id = ' . $user->data['user_id'] . '
 								AND u.user_id = z.zebra_id';
 						$result = $db->sql_query($sql);
@@ -136,7 +136,7 @@ class ucp_zebra
 						if (count($data['add']))
 						{
 							$sql = 'SELECT user_id, user_type
-								FROM ' . USERS_TABLE . '
+								FROM ' . AN602_USERS_TABLE . '
 								WHERE ' . $db->sql_in_set('username_clean', $data['add']) . '
 									AND user_type <> ' . USER_INACTIVE;
 							$result = $db->sql_query($sql);
@@ -210,9 +210,9 @@ class ucp_zebra
 									* @since 3.1.0-a1
 									*/
 									$vars = array('mode', 'sql_ary');
-									extract($phpbb_dispatcher->trigger_event('core.ucp_add_zebra', compact($vars)));
+									extract($an602_dispatcher->trigger_event('core.ucp_add_zebra', compact($vars)));
 
-									$db->sql_multi_insert(ZEBRA_TABLE, $sql_ary);
+									$db->sql_multi_insert(AN602_ZEBRA_TABLE, $sql_ary);
 
 									$updated = true;
 								}
@@ -229,7 +229,7 @@ class ucp_zebra
 					{
 						$message = ($updated) ? $user->lang[$l_mode . '_UPDATED'] : implode('<br />', $error);
 
-						$json_response = new \phpbb\json_response;
+						$json_response = new \an602\json_response;
 						$json_response->send(array(
 							'success' => $updated,
 
@@ -266,7 +266,7 @@ class ucp_zebra
 
 		$sql_and = ($mode == 'friends') ? 'z.friend = 1' : 'z.foe = 1';
 		$sql = 'SELECT z.*, u.username, u.username_clean
-			FROM ' . ZEBRA_TABLE . ' z, ' . USERS_TABLE . ' u
+			FROM ' . AN602_ZEBRA_TABLE . ' z, ' . AN602_USERS_TABLE . ' u
 			WHERE z.user_id = ' . $user->data['user_id'] . "
 				AND $sql_and
 				AND u.user_id = z.zebra_id
@@ -283,7 +283,7 @@ class ucp_zebra
 		$template->assign_vars(array(
 			'L_TITLE'			=> $user->lang['UCP_ZEBRA_' . $l_mode],
 
-			'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=ucp&amp;field=add'),
+			'U_FIND_USERNAME'	=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=ucp&amp;field=add'),
 
 			'S_USERNAME_OPTIONS'	=> $s_username_options,
 			'S_HIDDEN_FIELDS'		=> $s_hidden_fields,

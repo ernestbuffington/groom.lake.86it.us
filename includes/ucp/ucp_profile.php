@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -31,12 +31,12 @@ class ucp_profile
 
 	function main($id, $mode)
 	{
-		global $config, $db, $user, $auth, $template, $phpbb_root_path, $phpEx;
-		global $request, $phpbb_container, $phpbb_log, $phpbb_dispatcher;
+		global $config, $db, $user, $auth, $template, $an602_root_path, $phpEx;
+		global $request, $an602_container, $an602_log, $an602_dispatcher;
 
 		$user->add_lang('posting');
 
-		$submit		= $request->variable('submit', false, false, \phpbb\request\request_interface::POST);
+		$submit		= $request->variable('submit', false, false, \an602\request\request_interface::POST);
 		$error = $data = array();
 		$s_hidden_fields = '';
 
@@ -61,7 +61,7 @@ class ucp_profile
 				* @since 3.1.4-RC1
 				*/
 				$vars = array('data', 'submit');
-				extract($phpbb_dispatcher->trigger_event('core.ucp_profile_reg_details_data', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.ucp_profile_reg_details_data', compact($vars)));
 
 				add_form_key('ucp_reg_details');
 
@@ -94,8 +94,8 @@ class ucp_profile
 					}
 
 					// Instantiate passwords manager
-					/* @var $passwords_manager \phpbb\passwords\manager */
-					$passwords_manager = $phpbb_container->get('passwords.manager');
+					/* @var $passwords_manager \an602\passwords\manager */
+					$passwords_manager = $an602_container->get('passwords.manager');
 
 					// Only check the new password against the previous password if there have been no errors
 					if (!count($error) && $auth->acl_get('u_chgpasswd') && $data['new_password'] && $passwords_manager->check($data['new_password'], $user->data['user_password']))
@@ -123,7 +123,7 @@ class ucp_profile
 					* @since 3.1.4-RC1
 					*/
 					$vars = array('data', 'submit', 'error');
-					extract($phpbb_dispatcher->trigger_event('core.ucp_profile_reg_details_validate', compact($vars)));
+					extract($an602_dispatcher->trigger_event('core.ucp_profile_reg_details_validate', compact($vars)));
 
 					if (!count($error))
 					{
@@ -136,7 +136,7 @@ class ucp_profile
 
 						if ($auth->acl_get('u_chgname') && $config['allow_namechange'] && $data['username'] != $user->data['username'])
 						{
-							$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_UPDATE_NAME', false, array(
+							$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_UPDATE_NAME', false, array(
 								'reportee_id' => $user->data['user_id'],
 								$user->data['username'],
 								$data['username']
@@ -148,7 +148,7 @@ class ucp_profile
 							$sql_ary['user_passchg'] = time();
 
 							$user->reset_login_keys();
-							$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_NEW_PASSWORD', false, array(
+							$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_NEW_PASSWORD', false, array(
 								'reportee_id' => $user->data['user_id'],
 								$user->data['username']
 							));
@@ -156,7 +156,7 @@ class ucp_profile
 
 						if ($auth->acl_get('u_chgemail') && $data['email'] != $user->data['user_email'])
 						{
-							$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_UPDATE_EMAIL', false, array(
+							$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_UPDATE_EMAIL', false, array(
 								'reportee_id' => $user->data['user_id'],
 								$user->data['username'],
 								$user->data['user_email'],
@@ -170,7 +170,7 @@ class ucp_profile
 						{
 							$message = ($config['require_activation'] == USER_ACTIVATION_SELF) ? 'ACCOUNT_EMAIL_CHANGED' : 'ACCOUNT_EMAIL_CHANGED_ADMIN';
 
-							include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+							include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
 
 							$server_url = generate_board_url();
 
@@ -194,7 +194,7 @@ class ucp_profile
 
 							if ($config['require_activation'] == USER_ACTIVATION_ADMIN)
 							{
-								$notifications_manager = $phpbb_container->get('notification_manager');
+								$notifications_manager = $an602_container->get('notification_manager');
 								$notifications_manager->add_notifications('notification.type.admin_activate_user', array(
 									'user_id'		=> $user->data['user_id'],
 									'user_actkey'	=> $user_actkey,
@@ -218,11 +218,11 @@ class ucp_profile
 						* @since 3.1.4-RC1
 						*/
 						$vars = array('data', 'sql_ary');
-						extract($phpbb_dispatcher->trigger_event('core.ucp_profile_reg_details_sql_ary', compact($vars)));
+						extract($an602_dispatcher->trigger_event('core.ucp_profile_reg_details_sql_ary', compact($vars)));
 
 						if (count($sql_ary))
 						{
-							$sql = 'UPDATE ' . USERS_TABLE . '
+							$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 								SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 								WHERE user_id = ' . $user->data['user_id'];
 							$db->sql_query($sql);
@@ -237,8 +237,8 @@ class ucp_profile
 						// Now, we can remove the user completely (kill the session) - NOT BEFORE!!!
 						if (!empty($sql_ary['user_actkey']))
 						{
-							meta_refresh(5, append_sid($phpbb_root_path . 'index.' . $phpEx));
-							$message = $user->lang[$message] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid($phpbb_root_path . 'index.' . $phpEx) . '">', '</a>');
+							meta_refresh(5, append_sid($an602_root_path . 'index.' . $phpEx));
+							$message = $user->lang[$message] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid($an602_root_path . 'index.' . $phpEx) . '">', '</a>');
 
 							// Because the user gets deactivated we log him out too, killing his session
 							$user->session_kill();
@@ -283,8 +283,8 @@ class ucp_profile
 					trigger_error('NO_AUTH_PROFILEINFO');
 				}
 
-				/* @var $cp \phpbb\profilefields\manager */
-				$cp = $phpbb_container->get('profilefields.manager');
+				/* @var $cp \an602\profilefields\manager */
+				$cp = $an602_container->get('profilefields.manager');
 
 				$cp_data = $cp_error = array();
 
@@ -316,7 +316,7 @@ class ucp_profile
 				* @since 3.1.4-RC1
 				*/
 				$vars = array('data', 'submit');
-				extract($phpbb_dispatcher->trigger_event('core.ucp_profile_modify_profile_info', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.ucp_profile_modify_profile_info', compact($vars)));
 
 				add_form_key('ucp_profile_info');
 
@@ -363,7 +363,7 @@ class ucp_profile
 					* @since 3.1.4-RC1
 					*/
 					$vars = array('data', 'submit', 'error');
-					extract($phpbb_dispatcher->trigger_event('core.ucp_profile_validate_profile_info', compact($vars)));
+					extract($an602_dispatcher->trigger_event('core.ucp_profile_validate_profile_info', compact($vars)));
 
 					if (!count($error))
 					{
@@ -396,9 +396,9 @@ class ucp_profile
 						* @since 3.1.4-RC1
 						*/
 						$vars = array('cp_data', 'data', 'sql_ary');
-						extract($phpbb_dispatcher->trigger_event('core.ucp_profile_info_modify_sql_ary', compact($vars)));
+						extract($an602_dispatcher->trigger_event('core.ucp_profile_info_modify_sql_ary', compact($vars)));
 
-						$sql = 'UPDATE ' . USERS_TABLE . '
+						$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 							SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 							WHERE user_id = ' . $user->data['user_id'];
 						$db->sql_query($sql);
@@ -471,12 +471,12 @@ class ucp_profile
 
 				if (!function_exists('generate_smilies'))
 				{
-					include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+					include($an602_root_path . 'includes/functions_posting.' . $phpEx);
 				}
 
 				if (!function_exists('display_custom_bbcodes'))
 				{
-					include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+					include($an602_root_path . 'includes/functions_display.' . $phpEx);
 				}
 
 				$preview	= $request->is_set_post('preview');
@@ -526,7 +526,7 @@ class ucp_profile
 					'submit',
 					'preview',
 				);
-				extract($phpbb_dispatcher->trigger_event('core.ucp_profile_modify_signature', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.ucp_profile_modify_signature', compact($vars)));
 
 				$bbcode_uid = $bbcode_bitfield = $bbcode_flags = '';
 				$warn_msg = generate_text_for_storage(
@@ -577,9 +577,9 @@ class ucp_profile
 						* @since 3.1.10-RC1
 						*/
 						$vars = array('sql_ary');
-						extract($phpbb_dispatcher->trigger_event('core.ucp_profile_modify_signature_sql_ary', compact($vars)));
+						extract($an602_dispatcher->trigger_event('core.ucp_profile_modify_signature_sql_ary', compact($vars)));
 
-						$sql = 'UPDATE ' . USERS_TABLE . '
+						$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 							SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 							WHERE user_id = ' . $user->data['user_id'];
 						$db->sql_query($sql);
@@ -597,8 +597,8 @@ class ucp_profile
 					$decoded_message = generate_text_for_edit($signature, $bbcode_uid, $bbcode_flags);
 				}
 
-				/** @var \phpbb\controller\helper $controller_helper */
-				$controller_helper = $phpbb_container->get('controller.helper');
+				/** @var \an602\controller\helper $controller_helper */
+				$controller_helper = $an602_container->get('controller.helper');
 
 				$template->assign_vars(array(
 					'ERROR'				=> (count($error)) ? implode('<br />', $error) : '',
@@ -609,7 +609,7 @@ class ucp_profile
 					'S_SMILIES_CHECKED' 	=> (!$enable_smilies) ? ' checked="checked"' : '',
 					'S_MAGIC_URL_CHECKED' 	=> (!$enable_urls) ? ' checked="checked"' : '',
 
-					'BBCODE_STATUS'			=> $user->lang(($config['allow_sig_bbcode'] ? 'BBCODE_IS_ON' : 'BBCODE_IS_OFF'), '<a href="' . $controller_helper->route('phpbb_help_bbcode_controller') . '">', '</a>'),
+					'BBCODE_STATUS'			=> $user->lang(($config['allow_sig_bbcode'] ? 'BBCODE_IS_ON' : 'BBCODE_IS_OFF'), '<a href="' . $controller_helper->route('an602_help_bbcode_controller') . '">', '</a>'),
 					'SMILIES_STATUS'		=> ($config['allow_sig_smilies']) ? $user->lang['SMILIES_ARE_ON'] : $user->lang['SMILIES_ARE_OFF'],
 					'IMG_STATUS'			=> ($config['allow_sig_img']) ? $user->lang['IMAGES_ARE_ON'] : $user->lang['IMAGES_ARE_OFF'],
 					'FLASH_STATUS'			=> ($config['allow_sig_flash']) ? $user->lang['FLASH_IS_ON'] : $user->lang['FLASH_IS_OFF'],
@@ -643,22 +643,22 @@ class ucp_profile
 
 				if ($config['allow_avatar'] && $auth->acl_get('u_chgavatar'))
 				{
-					/* @var $phpbb_avatar_manager \phpbb\avatar\manager */
-					$phpbb_avatar_manager = $phpbb_container->get('avatar.manager');
-					$avatar_drivers = $phpbb_avatar_manager->get_enabled_drivers();
+					/* @var $an602_avatar_manager \an602\avatar\manager */
+					$an602_avatar_manager = $an602_container->get('avatar.manager');
+					$avatar_drivers = $an602_avatar_manager->get_enabled_drivers();
 
 					// This is normalised data, without the user_ prefix
-					$avatar_data = \phpbb\avatar\manager::clean_row($user->data, 'user');
+					$avatar_data = \an602\avatar\manager::clean_row($user->data, 'user');
 
 					if ($submit)
 					{
 						if (check_form_key('ucp_avatar'))
 						{
-							$driver_name = $phpbb_avatar_manager->clean_driver_name($request->variable('avatar_driver', ''));
+							$driver_name = $an602_avatar_manager->clean_driver_name($request->variable('avatar_driver', ''));
 
 							if (in_array($driver_name, $avatar_drivers) && !$request->is_set_post('avatar_delete'))
 							{
-								$driver = $phpbb_avatar_manager->get_driver($driver_name);
+								$driver = $an602_avatar_manager->get_driver($driver_name);
 								$result = $driver->process_form($request, $template, $user, $avatar_data, $error);
 
 								if ($result && empty($error))
@@ -679,9 +679,9 @@ class ucp_profile
 									* @since 3.1.11-RC1
 									*/
 									$vars = array('result');
-									extract($phpbb_dispatcher->trigger_event('core.ucp_profile_avatar_sql', compact($vars)));
+									extract($an602_dispatcher->trigger_event('core.ucp_profile_avatar_sql', compact($vars)));
 
-									$sql = 'UPDATE ' . USERS_TABLE . '
+									$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 										SET ' . $db->sql_build_array('UPDATE', $result) . '
 										WHERE user_id = ' . (int) $user->data['user_id'];
 									$db->sql_query($sql);
@@ -711,7 +711,7 @@ class ucp_profile
 						}
 						else
 						{
-							$phpbb_avatar_manager->handle_avatar_delete($db, $user, $avatar_data, USERS_TABLE, 'user_');
+							$an602_avatar_manager->handle_avatar_delete($db, $user, $avatar_data, AN602_USERS_TABLE, 'user_');
 
 							meta_refresh(3, $this->u_action);
 							$message = $user->lang['PROFILE_UPDATED'] . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
@@ -719,7 +719,7 @@ class ucp_profile
 						}
 					}
 
-					$selected_driver = $phpbb_avatar_manager->clean_driver_name($request->variable('avatar_driver', $user->data['user_avatar_type']));
+					$selected_driver = $an602_avatar_manager->clean_driver_name($request->variable('avatar_driver', $user->data['user_avatar_type']));
 
 					$template->assign_vars(array(
 						'AVATAR_MIN_WIDTH'	=> $config['avatar_min_width'],
@@ -730,7 +730,7 @@ class ucp_profile
 
 					foreach ($avatar_drivers as $current_driver)
 					{
-						$driver = $phpbb_avatar_manager->get_driver($current_driver);
+						$driver = $an602_avatar_manager->get_driver($current_driver);
 
 						$avatars_enabled = true;
 						$template->set_filenames(array(
@@ -739,7 +739,7 @@ class ucp_profile
 
 						if ($driver->prepare_form($request, $template, $user, $avatar_data, $error))
 						{
-							$driver_name = $phpbb_avatar_manager->prepare_driver_name($current_driver);
+							$driver_name = $an602_avatar_manager->prepare_driver_name($current_driver);
 							$driver_upper = strtoupper($driver_name);
 
 							$template->assign_block_vars('avatar_drivers', array(
@@ -754,10 +754,10 @@ class ucp_profile
 					}
 
 					// Replace "error" strings with their real, localised form
-					$error = $phpbb_avatar_manager->localize_errors($user, $error);
+					$error = $an602_avatar_manager->localize_errors($user, $error);
 				}
 
-				$avatar = phpbb_get_user_avatar($user->data, 'USER_AVATAR', true);
+				$avatar = an602_get_user_avatar($user->data, 'USER_AVATAR', true);
 
 				$template->assign_vars(array(
 					'ERROR'			=> (count($error)) ? implode('<br />', $error) : '',
@@ -765,7 +765,7 @@ class ucp_profile
 
 					'S_FORM_ENCTYPE'	=> ' enctype="multipart/form-data"',
 
-					'L_AVATAR_EXPLAIN'	=> phpbb_avatar_explanation_string(),
+					'L_AVATAR_EXPLAIN'	=> an602_avatar_explanation_string(),
 
 					'S_AVATARS_ENABLED'		=> ($config['allow_avatar'] && $avatars_enabled),
 				));
@@ -794,7 +794,7 @@ class ucp_profile
 								$keys[$key] = $db->sql_like_expression($id . $db->get_any_char());
 							}
 							$sql_where = '(key_id ' . implode(' OR key_id ', $keys) . ')';
-							$sql = 'DELETE FROM ' . SESSIONS_KEYS_TABLE . '
+							$sql = 'DELETE FROM ' . AN602_SESSIONS_KEYS_TABLE . '
 								WHERE user_id = ' . (int) $user->data['user_id'] . '
 								AND ' . $sql_where ;
 
@@ -812,7 +812,7 @@ class ucp_profile
 
 				$sql_ary = [
 					'SELECT'	=> 'sk.key_id, sk.last_ip, sk.last_login',
-					'FROM'		=> [SESSIONS_KEYS_TABLE	=> 'sk'],
+					'FROM'		=> [AN602_SESSIONS_KEYS_TABLE	=> 'sk'],
 					'WHERE'		=> 'sk.user_id = ' . (int) $user->data['user_id'],
 					'ORDER_BY'	=> 'sk.last_login ASC',
 				];
@@ -825,7 +825,7 @@ class ucp_profile
 				 * @since 3.3.2-RC1
 				 */
 				$vars = ['sql_ary'];
-				extract($phpbb_dispatcher->trigger_event('core.ucp_profile_autologin_keys_sql', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.ucp_profile_autologin_keys_sql', compact($vars)));
 
 				$result = $db->sql_query($db->sql_build_query('SELECT', $sql_ary));
 				$sessions = (array) $db->sql_fetchrowset($result);
@@ -851,7 +851,7 @@ class ucp_profile
 				 * @since 3.3.2-RC1
 				 */
 				$vars = ['sessions', 'template_vars'];
-				extract($phpbb_dispatcher->trigger_event('core.ucp_profile_autologin_keys_template_vars', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.ucp_profile_autologin_keys_template_vars', compact($vars)));
 
 				$template->assign_block_vars_array('sessions', $template_vars);
 

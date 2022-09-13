@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -28,8 +28,8 @@ if (!defined('IN_PHPBB'))
 *	Display Messages (default to inbox) - mode=view
 *	Display single message - mode=view&p=[msg_id] or &p=[msg_id] (short linkage)
 *
-*	if the folder id with (&f=[folder_id]) is used when displaying messages, one query will be saved. If it is not used, phpBB needs to grab
-*	the folder id first in order to display the input boxes and folder names and such things. ;) phpBB always checks this against the database to make
+*	if the folder id with (&f=[folder_id]) is used when displaying messages, one query will be saved. If it is not used, AN602 needs to grab
+*	the folder id first in order to display the input boxes and folder names and such things. ;) AN602 always checks this against the database to make
 *	sure the user is able to view the message.
 *
 *	Composing Messages (mode=compose):
@@ -45,7 +45,7 @@ class ucp_pm
 
 	function main($id, $mode)
 	{
-		global $user, $template, $phpbb_root_path, $auth, $phpEx, $db, $config, $request;
+		global $user, $template, $an602_root_path, $auth, $phpEx, $db, $config, $request;
 
 		if (!$user->data['is_registered'])
 		{
@@ -84,7 +84,7 @@ class ucp_pm
 
 		if (!function_exists('get_folder'))
 		{
-			include($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
+			include($an602_root_path . 'includes/functions_privmsgs.' . $phpEx);
 		}
 
 		switch ($mode)
@@ -109,7 +109,7 @@ class ucp_pm
 
 				if (!function_exists('compose_pm'))
 				{
-					include($phpbb_root_path . 'includes/ucp/ucp_pm_compose.' . $phpEx);
+					include($an602_root_path . 'includes/ucp/ucp_pm_compose.' . $phpEx);
 				}
 				compose_pm($id, $mode, $action, $user_folders);
 
@@ -122,7 +122,7 @@ class ucp_pm
 
 				if (!function_exists('message_options'))
 				{
-					include($phpbb_root_path . 'includes/ucp/ucp_pm_options.' . $phpEx);
+					include($an602_root_path . 'includes/ucp/ucp_pm_options.' . $phpEx);
 				}
 				message_options($id, $mode, $global_privmsgs_rules, $global_rule_conditions);
 
@@ -136,7 +136,7 @@ class ucp_pm
 
 				if (!class_exists('ucp_main'))
 				{
-					include($phpbb_root_path . 'includes/ucp/ucp_main.' . $phpEx);
+					include($an602_root_path . 'includes/ucp/ucp_main.' . $phpEx);
 				}
 
 				$module = new ucp_main($this);
@@ -256,7 +256,7 @@ class ucp_pm
 				else if ($msg_id && $folder_id == PRIVMSGS_NO_BOX)
 				{
 					$sql = 'SELECT folder_id
-						FROM ' . PRIVMSGS_TO_TABLE . "
+						FROM ' . AN602_PRIVMSGS_TO_TABLE . "
 						WHERE msg_id = $msg_id
 							AND folder_id <> " . PRIVMSGS_NO_BOX . '
 							AND user_id = ' . $user->data['user_id'];
@@ -280,7 +280,7 @@ class ucp_pm
 
 					if ($request->is_ajax())
 					{
-						$json_response = new \phpbb\json_response();
+						$json_response = new \an602\json_response();
 						$json_response->send(array(
 							'MESSAGE_TITLE'	=> $user->lang['INFORMATION'],
 							'MESSAGE_TEXT'	=> $message,
@@ -302,7 +302,7 @@ class ucp_pm
 						$sql_ordering = ($view == 'next') ? 'ASC' : 'DESC';
 
 						$sql = 'SELECT t.msg_id
-							FROM ' . PRIVMSGS_TO_TABLE . ' t, ' . PRIVMSGS_TABLE . ' p, ' . PRIVMSGS_TABLE . " p2
+							FROM ' . AN602_PRIVMSGS_TO_TABLE . ' t, ' . AN602_PRIVMSGS_TABLE . ' p, ' . AN602_PRIVMSGS_TABLE . " p2
 							WHERE p2.msg_id = $msg_id
 								AND t.folder_id = $folder_id
 								AND t.user_id = " . $user->data['user_id'] . "
@@ -325,7 +325,7 @@ class ucp_pm
 					}
 
 					$sql = 'SELECT t.*, p.*, u.*
-						FROM ' . PRIVMSGS_TO_TABLE . ' t, ' . PRIVMSGS_TABLE . ' p, ' . USERS_TABLE . ' u
+						FROM ' . AN602_PRIVMSGS_TO_TABLE . ' t, ' . AN602_PRIVMSGS_TABLE . ' p, ' . AN602_USERS_TABLE . ' u
 						WHERE t.user_id = ' . $user->data['user_id'] . "
 							AND p.author_id = u.user_id
 							AND t.folder_id = $folder_id
@@ -395,7 +395,7 @@ class ucp_pm
 				{
 					if (!function_exists('view_folder'))
 					{
-						include($phpbb_root_path . 'includes/ucp/ucp_pm_viewfolder.' . $phpEx);
+						include($an602_root_path . 'includes/ucp/ucp_pm_viewfolder.' . $phpEx);
 					}
 					view_folder($id, $mode, $folder_id, $folder);
 
@@ -416,7 +416,7 @@ class ucp_pm
 
 					if (!function_exists('view_message'))
 					{
-						include($phpbb_root_path . 'includes/ucp/ucp_pm_viewmessage.' . $phpEx);
+						include($an602_root_path . 'includes/ucp/ucp_pm_viewmessage.' . $phpEx);
 					}
 					view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row);
 

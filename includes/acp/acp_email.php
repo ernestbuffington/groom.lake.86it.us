@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -25,8 +25,8 @@ class acp_email
 
 	function main($id, $mode)
 	{
-		global $config, $db, $user, $template, $phpbb_log, $request;
-		global $phpbb_root_path, $phpbb_admin_path, $phpEx, $phpbb_dispatcher;
+		global $config, $db, $user, $template, $an602_log, $request;
+		global $an602_root_path, $an602_admin_path, $phpEx, $an602_dispatcher;
 
 		$user->add_lang('acp/email');
 		$this->tpl_name = 'acp_email';
@@ -76,7 +76,7 @@ class acp_email
 					$sql_ary = array(
 						'SELECT'	=> 'username, user_email, user_jabber, user_notify_type, user_lang',
 						'FROM'		=> array(
-							USERS_TABLE		=> '',
+							AN602_USERS_TABLE		=> '',
 						),
 						'WHERE'		=> $db->sql_in_set('username_clean', array_map('utf8_clean_string', $usernames)) . '
 							AND user_allow_massemail = 1',
@@ -90,8 +90,8 @@ class acp_email
 						$sql_ary = array(
 							'SELECT'	=> 'u.user_email, u.username, u.username_clean, u.user_lang, u.user_jabber, u.user_notify_type',
 							'FROM'		=> array(
-								USERS_TABLE			=> 'u',
-								USER_GROUP_TABLE	=> 'ug',
+								AN602_USERS_TABLE			=> 'u',
+								AN602_USER_GROUP_TABLE	=> 'ug',
 							),
 							'WHERE'		=> 'ug.group_id = ' . $group_id . '
 								AND ug.user_pending = 0
@@ -106,7 +106,7 @@ class acp_email
 						$sql_ary = array(
 							'SELECT'	=> 'u.username, u.username_clean, u.user_email, u.user_jabber, u.user_lang, u.user_notify_type',
 							'FROM'		=> array(
-								USERS_TABLE	=> 'u',
+								AN602_USERS_TABLE	=> 'u',
 							),
 							'WHERE'		=> 'u.user_allow_massemail = 1
 								AND u.user_type IN (' . USER_NORMAL . ', ' . USER_FOUNDER . ')',
@@ -122,7 +122,7 @@ class acp_email
 						$sql_ary['LEFT_JOIN'] = array(
 							array(
 								'FROM'	=> array(
-									BANLIST_TABLE	=> 'b',
+									AN602_BANLIST_TABLE	=> 'b',
 								),
 								'ON'	=> 'u.user_id = b.ban_userid',
 							),
@@ -137,7 +137,7 @@ class acp_email
 				* @since 3.1.2-RC1
 				*/
 				$vars = array('sql_ary');
-				extract($phpbb_dispatcher->trigger_event('core.acp_email_modify_sql', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_email_modify_sql', compact($vars)));
 
 				$sql = $db->sql_build_query('SELECT', $sql_ary);
 				$result = $db->sql_query($sql);
@@ -191,12 +191,12 @@ class acp_email
 				// Send the messages
 				if (!class_exists('messenger'))
 				{
-					include($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+					include($an602_root_path . 'includes/functions_messenger.' . $phpEx);
 				}
 
 				if (!function_exists('get_group_name'))
 				{
-					include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+					include($an602_root_path . 'includes/functions_user.' . $phpEx);
 				}
 				$messenger = new messenger($use_queue);
 
@@ -204,7 +204,7 @@ class acp_email
 
 				$email_template = 'admin_send_email';
 				$template_data = array(
-					'CONTACT_EMAIL' => phpbb_get_board_contact($config, $phpEx),
+					'CONTACT_EMAIL' => an602_get_board_contact($config, $phpEx),
 					'MESSAGE'		=> html_entity_decode($message, ENT_COMPAT),
 				);
 				$generate_log_entry = true;
@@ -233,7 +233,7 @@ class acp_email
 					'use_queue',
 					'priority',
 				);
-				extract($phpbb_dispatcher->trigger_event('core.acp_email_send_before', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_email_send_before', compact($vars)));
 
 				for ($i = 0, $size = count($email_list); $i < $size; $i++)
 				{
@@ -270,7 +270,7 @@ class acp_email
 				{
 					if (!empty($usernames))
 					{
-						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_MASS_EMAIL', false, array(implode(', ', utf8_normalize_nfc($usernames))));
+						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_MASS_EMAIL', false, array(implode(', ', utf8_normalize_nfc($usernames))));
 					}
 					else
 					{
@@ -284,7 +284,7 @@ class acp_email
 							$group_name = $user->lang['ALL_USERS'];
 						}
 
-						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_MASS_EMAIL', false, array($group_name));
+						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_MASS_EMAIL', false, array($group_name));
 					}
 				}
 
@@ -295,7 +295,7 @@ class acp_email
 				}
 				else
 				{
-					$message = sprintf($user->lang['EMAIL_SEND_ERROR'], '<a href="' . append_sid("{$phpbb_admin_path}index.$phpEx", 'i=logs&amp;mode=critical') . '">', '</a>');
+					$message = sprintf($user->lang['EMAIL_SEND_ERROR'], '<a href="' . append_sid("{$an602_admin_path}index.$phpEx", 'i=logs&amp;mode=critical') . '">', '</a>');
 					trigger_error($message . adm_back_link($this->u_action), E_USER_WARNING);
 				}
 			}
@@ -303,7 +303,7 @@ class acp_email
 
 		// Exclude bots and guests...
 		$sql = 'SELECT group_id
-			FROM ' . GROUPS_TABLE . "
+			FROM ' . AN602_GROUPS_TABLE . "
 			WHERE group_name IN ('BOTS', 'GUESTS')";
 		$result = $db->sql_query($sql);
 
@@ -327,7 +327,7 @@ class acp_email
 			'U_ACTION'				=> $this->u_action,
 			'S_GROUP_OPTIONS'		=> $select_list,
 			'USERNAMES'				=> implode("\n", $usernames),
-			'U_FIND_USERNAME'		=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=acp_email&amp;field=usernames'),
+			'U_FIND_USERNAME'		=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=acp_email&amp;field=usernames'),
 			'SUBJECT'				=> $subject,
 			'MESSAGE'				=> $message,
 			'S_PRIORITY_OPTIONS'	=> $s_priority_options,
@@ -344,7 +344,7 @@ class acp_email
 		* @since 3.1.4-RC1
 		*/
 		$vars = array('template_data', 'exclude', 'usernames');
-		extract($phpbb_dispatcher->trigger_event('core.acp_email_display', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.acp_email_display', compact($vars)));
 
 		$template->assign_vars($template_data);
 	}

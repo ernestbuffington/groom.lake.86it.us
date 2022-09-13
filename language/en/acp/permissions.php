@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -54,29 +54,29 @@ $lang = array_merge($lang, array(
 
 		<br />
 
-		<p>For further information on setting up and managing permissions on your phpBB3 board, please see the section on <a href="https://www.phpbb.com/support/docs/en/3.3/ug/quickstart/permissions/">Setting permissions of our Quick Start Guide</a>.</p>
+		<p>For further information on setting up and managing permissions on your AN6023 board, please see the section on <a href="https://groom.lake.86it.us/support/docs/en/3.3/ug/quickstart/permissions/">Setting permissions of our Quick Start Guide</a>.</p>
 	',
 
-	'ACL_NEVER'				=> 'Never',
-	'ACL_SET'				=> 'Setting permissions',
-	'ACL_SET_EXPLAIN'		=> 'Permissions are based on a simple <strong>YES</strong>/<strong>NO</strong> system. Setting an option to <strong>NEVER</strong> for a user or usergroup overrides any other value assigned to it. If you do not wish to assign a value for an option for this user or group select <strong>NO</strong>. If values are assigned for this option elsewhere they will be used in preference, else <strong>NEVER</strong> is assumed. All objects marked (with the checkbox in front of them) will copy the permission set you defined.',
-	'ACL_SETTING'			=> 'Setting',
+	'AN602_ACL_NEVER'				=> 'Never',
+	'AN602_ACL_SET'				=> 'Setting permissions',
+	'AN602_ACL_SET_EXPLAIN'		=> 'Permissions are based on a simple <strong>YES</strong>/<strong>NO</strong> system. Setting an option to <strong>NEVER</strong> for a user or usergroup overrides any other value assigned to it. If you do not wish to assign a value for an option for this user or group select <strong>NO</strong>. If values are assigned for this option elsewhere they will be used in preference, else <strong>NEVER</strong> is assumed. All objects marked (with the checkbox in front of them) will copy the permission set you defined.',
+	'AN602_ACL_SETTING'			=> 'Setting',
 
-	'ACL_TYPE_A_'			=> 'Administrative permissions',
-	'ACL_TYPE_F_'			=> 'Forum permissions',
-	'ACL_TYPE_M_'			=> 'Moderative permissions',
-	'ACL_TYPE_U_'			=> 'User permissions',
+	'AN602_ACL_TYPE_A_'			=> 'Administrative permissions',
+	'AN602_ACL_TYPE_F_'			=> 'Forum permissions',
+	'AN602_ACL_TYPE_M_'			=> 'Moderative permissions',
+	'AN602_ACL_TYPE_U_'			=> 'User permissions',
 
-	'ACL_TYPE_GLOBAL_A_'	=> 'Administrative permissions',
-	'ACL_TYPE_GLOBAL_U_'	=> 'User permissions',
-	'ACL_TYPE_GLOBAL_M_'	=> 'Global Moderator permissions',
-	'ACL_TYPE_LOCAL_M_'		=> 'Forum Moderator permissions',
-	'ACL_TYPE_LOCAL_F_'		=> 'Forum permissions',
+	'AN602_ACL_TYPE_GLOBAL_A_'	=> 'Administrative permissions',
+	'AN602_ACL_TYPE_GLOBAL_U_'	=> 'User permissions',
+	'AN602_ACL_TYPE_GLOBAL_M_'	=> 'Global Moderator permissions',
+	'AN602_ACL_TYPE_LOCAL_M_'		=> 'Forum Moderator permissions',
+	'AN602_ACL_TYPE_LOCAL_F_'		=> 'Forum permissions',
 
-	'ACL_NO'				=> 'No',
-	'ACL_VIEW'				=> 'Viewing permissions',
-	'ACL_VIEW_EXPLAIN'		=> 'Here you can see the effective permissions the user/group is having. A red square indicates that the user/group does not have the permission, a green square indicates that the user/group does have the permission.',
-	'ACL_YES'				=> 'Yes',
+	'AN602_ACL_NO'				=> 'No',
+	'AN602_ACL_VIEW'				=> 'Viewing permissions',
+	'AN602_ACL_VIEW_EXPLAIN'		=> 'Here you can see the effective permissions the user/group is having. A red square indicates that the user/group does not have the permission, a green square indicates that the user/group does have the permission.',
+	'AN602_ACL_YES'				=> 'Yes',
 
 	'ACP_ADMINISTRATORS_EXPLAIN'				=> 'Here you can assign administrator permissions to users or groups. All users with administrator permissions can view the administration control panel.',
 	'ACP_FORUM_MODERATORS_EXPLAIN'				=> 'Here you can assign users and groups as forum moderators. To assign users access to forums, to define global moderative permissions or administrators please use the appropriate page.',
@@ -283,5 +283,5 @@ $lang = array_merge($lang, array(
 	'VIEW_PERMISSIONS'		=> 'View permissions',
 
 	'WRONG_PERMISSION_TYPE'				=> 'Wrong permission type selected.',
-	'WRONG_PERMISSION_SETTING_FORMAT'	=> 'The permission settings are in a wrong format, phpBB is not able to process them correctly.',
+	'WRONG_PERMISSION_SETTING_FORMAT'	=> 'The permission settings are in a wrong format, AN602 is not able to process them correctly.',
 ));

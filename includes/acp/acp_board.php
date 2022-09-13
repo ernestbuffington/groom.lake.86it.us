@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -18,7 +18,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -31,11 +31,11 @@ class acp_board
 	function main($id, $mode)
 	{
 		global $user, $template, $request, $language;
-		global $config, $phpbb_root_path, $phpEx;
-		global $cache, $phpbb_container, $phpbb_dispatcher, $phpbb_log;
+		global $config, $an602_root_path, $phpEx;
+		global $cache, $an602_container, $an602_dispatcher, $an602_log;
 
-		/** @var \phpbb\language\language $language Language object */
-		$language = $phpbb_container->get('language');
+		/** @var \an602\language\language $language Language object */
+		$language = $an602_container->get('language');
 
 		$user->add_lang('acp/board');
 
@@ -111,22 +111,22 @@ class acp_board
 			break;
 
 			case 'avatar':
-				/* @var $phpbb_avatar_manager \phpbb\avatar\manager */
-				$phpbb_avatar_manager = $phpbb_container->get('avatar.manager');
-				$avatar_drivers = $phpbb_avatar_manager->get_all_drivers();
+				/* @var $an602_avatar_manager \an602\avatar\manager */
+				$an602_avatar_manager = $an602_container->get('avatar.manager');
+				$avatar_drivers = $an602_avatar_manager->get_all_drivers();
 
 				$avatar_vars = array();
 				foreach ($avatar_drivers as $current_driver)
 				{
-					/** @var \phpbb\avatar\driver\driver_interface $driver */
-					$driver = $phpbb_avatar_manager->get_driver($current_driver, false);
+					/** @var \an602\avatar\driver\driver_interface $driver */
+					$driver = $an602_avatar_manager->get_driver($current_driver, false);
 
 					/*
 					* First grab the settings for enabling/disabling the avatar
 					* driver and afterwards grab additional settings the driver
 					* might have.
 					*/
-					$avatar_vars += $phpbb_avatar_manager->get_avatar_settings($driver);
+					$avatar_vars += $an602_avatar_manager->get_avatar_settings($driver);
 					$avatar_vars += $driver->prepare_form_acp($user);
 				}
 
@@ -486,7 +486,7 @@ class acp_board
 		* @since 3.1.0-a4
 		*/
 		$vars = array('display_vars', 'mode', 'submit');
-		extract($phpbb_dispatcher->trigger_event('core.acp_board_config_edit_add', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.acp_board_config_edit_add', compact($vars)));
 
 		if (isset($display_vars['lang']))
 		{
@@ -520,9 +520,9 @@ class acp_board
 			}
 			else if (!$submit)
 			{
-				$filesystem = $phpbb_container->get('filesystem');
-				$avatar_path_exists = $filesystem->exists($phpbb_root_path . $cfg_array['avatar_path']);
-				$avatar_path_writable = $filesystem->is_writable($phpbb_root_path . $cfg_array['avatar_path']);
+				$filesystem = $an602_container->get('filesystem');
+				$avatar_path_exists = $filesystem->exists($an602_root_path . $cfg_array['avatar_path']);
+				$avatar_path_writable = $filesystem->is_writable($an602_root_path . $cfg_array['avatar_path']);
 
 				// Not existing or writable path will be caught on submit by validate_config_vars().
 				// Display the warning if the directory was changed on the server afterwards
@@ -600,7 +600,7 @@ class acp_board
 				 * @since 3.3.3-RC1
 				 */
 				$vars = ['config_name_ary'];
-				extract($phpbb_dispatcher->trigger_event('core.acp_board_config_emoji_enabled', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_board_config_emoji_enabled', compact($vars)));
 
 				if (in_array($config_name, $config_name_ary))
 				{
@@ -617,7 +617,7 @@ class acp_board
 
 				if ($config_name == 'allow_quick_reply' && isset($_POST['allow_quick_reply_enable']))
 				{
-					enable_bitfield_column_flag(FORUMS_TABLE, 'forum_flags', round(log(FORUM_FLAG_QUICK_REPLY, 2)));
+					enable_bitfield_column_flag(AN602_FORUMS_TABLE, 'forum_flags', round(log(FORUM_FLAG_QUICK_REPLY, 2)));
 				}
 			}
 		}
@@ -625,7 +625,7 @@ class acp_board
 		// Invalidate the text_formatter cache when posting or server options are changed
 		if (preg_match('(^(?:post|server)$)', $mode) && $submit)
 		{
-			$phpbb_container->get('text_formatter.cache')->invalidate();
+			$an602_container->get('text_formatter.cache')->invalidate();
 		}
 
 		// Store news and exclude ids
@@ -641,14 +641,14 @@ class acp_board
 		if ($mode == 'auth')
 		{
 			// Retrieve a list of auth plugins and check their config values
-			/* @var $auth_providers \phpbb\auth\provider_collection */
-			$auth_providers = $phpbb_container->get('auth.provider_collection');
+			/* @var $auth_providers \an602\auth\provider_collection */
+			$auth_providers = $an602_container->get('auth.provider_collection');
 
 			$updated_auth_settings = false;
 			$old_auth_config = array();
 			foreach ($auth_providers as $provider)
 			{
-				/** @var \phpbb\auth\provider\provider_interface $provider */
+				/** @var \an602\auth\provider\provider_interface $provider */
 				if ($fields = $provider->acp())
 				{
 					// Check if we need to create config fields for this plugin and save config when submit was pressed
@@ -713,7 +713,7 @@ class acp_board
 		{
 			if ($config['email_enable'])
 			{
-				include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+				include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
 
 				$messenger = new messenger(false);
 				$messenger->template('test');
@@ -736,7 +736,7 @@ class acp_board
 
 		if ($submit)
 		{
-			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_CONFIG_' . strtoupper($mode));
+			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_CONFIG_' . strtoupper($mode));
 
 			$message = $user->lang('CONFIG_UPDATED');
 			$message_type = E_USER_NOTICE;
@@ -841,15 +841,15 @@ class acp_board
 	*/
 	function select_auth_method($selected_method, $key = '')
 	{
-		global $phpbb_container;
+		global $an602_container;
 
-		/* @var $auth_providers \phpbb\auth\provider_collection */
-		$auth_providers = $phpbb_container->get('auth.provider_collection');
+		/* @var $auth_providers \an602\auth\provider_collection */
+		$auth_providers = $an602_container->get('auth.provider_collection');
 		$auth_plugins = array();
 
 		foreach ($auth_providers as $key => $value)
 		{
-			if (!($value instanceof \phpbb\auth\provider\provider_interface))
+			if (!($value instanceof \an602\auth\provider\provider_interface))
 			{
 				continue;
 			}
@@ -1046,7 +1046,7 @@ class acp_board
 	{
 		global $template, $user;
 
-		$timezone_select = phpbb_timezone_select($template, $user, $value, true);
+		$timezone_select = an602_timezone_select($template, $user, $value, true);
 
 		return '<select name="config[' . $key . ']" id="' . $key . '">' . $timezone_select . '</select>';
 	}
@@ -1059,7 +1059,7 @@ class acp_board
 		global $db;
 
 		$sql = 'SELECT user_style
-			FROM ' . USERS_TABLE . '
+			FROM ' . AN602_USERS_TABLE . '
 			WHERE user_id = ' . ANONYMOUS;
 		$result = $db->sql_query($sql);
 
@@ -1078,7 +1078,7 @@ class acp_board
 	{
 		global $db;
 
-		$sql = 'UPDATE ' . USERS_TABLE . '
+		$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 			SET user_style = ' . (int) $style_id . '
 			WHERE user_id = ' . ANONYMOUS;
 		$db->sql_query($sql);
@@ -1136,7 +1136,7 @@ class acp_board
 		$s_forum_options = '<select id="' . $key . '" name="' . $key . '[]" multiple="multiple">';
 		foreach ($forum_list as $f_id => $f_row)
 		{
-			$f_row['selected'] = phpbb_optionget(FORUM_OPTION_FEED_NEWS, $f_row['forum_options']);
+			$f_row['selected'] = an602_optionget(FORUM_OPTION_FEED_NEWS, $f_row['forum_options']);
 
 			$s_forum_options .= '<option value="' . $f_id . '"' . (($f_row['selected']) ? ' selected="selected"' : '') . (($f_row['disabled']) ? ' disabled="disabled" class="disabled-option"' : '') . '>' . $f_row['padding'] . $f_row['forum_name'] . '</option>';
 		}
@@ -1153,7 +1153,7 @@ class acp_board
 		$s_forum_options = '<select id="' . $key . '" name="' . $key . '[]" multiple="multiple">';
 		foreach ($forum_list as $f_id => $f_row)
 		{
-			$f_row['selected'] = phpbb_optionget(FORUM_OPTION_FEED_EXCLUDE, $f_row['forum_options']);
+			$f_row['selected'] = an602_optionget(FORUM_OPTION_FEED_EXCLUDE, $f_row['forum_options']);
 
 			$s_forum_options .= '<option value="' . $f_id . '"' . (($f_row['selected']) ? ' selected="selected"' : '') . (($f_row['disabled']) ? ' disabled="disabled" class="disabled-option"' : '') . '>' . $f_row['padding'] . $f_row['forum_name'] . '</option>';
 		}
@@ -1170,7 +1170,7 @@ class acp_board
 		$values = $request->variable($key, array(0 => 0));
 
 		// Empty option bit for all forums
-		$sql = 'UPDATE ' . FORUMS_TABLE . '
+		$sql = 'UPDATE ' . AN602_FORUMS_TABLE . '
 			SET forum_options = forum_options - ' . (1 << $option) . '
 			WHERE ' . $db->sql_bit_and('forum_options', $option, '<> 0');
 		$db->sql_query($sql);
@@ -1179,14 +1179,14 @@ class acp_board
 		if (count($values))
 		{
 			// Set for selected forums
-			$sql = 'UPDATE ' . FORUMS_TABLE . '
+			$sql = 'UPDATE ' . AN602_FORUMS_TABLE . '
 				SET forum_options = forum_options + ' . (1 << $option) . '
 				WHERE ' . $db->sql_in_set('forum_id', $values);
 			$db->sql_query($sql);
 		}
 
 		// Empty sql cache for forums table because options changed
-		$cache->destroy('sql', FORUMS_TABLE);
+		$cache->destroy('sql', AN602_FORUMS_TABLE);
 	}
 
 	/**

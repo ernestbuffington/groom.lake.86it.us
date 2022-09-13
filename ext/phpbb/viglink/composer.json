@@ -1,27 +1,27 @@
 {
-	"name": "phpbb/viglink",
-	"type": "phpbb-extension",
-	"description": "The VigLink extension for phpBB makes it possible to earn revenue, without any change to the user experience, when users post and follow links to commercial sites.",
-	"homepage": "https://www.phpbb.com",
+	"name": "an602/viglink",
+	"type": "an602-extension",
+	"description": "The VigLink extension for AN602 makes it possible to earn revenue, without any change to the user experience, when users post and follow links to commercial sites.",
+	"homepage": "https://groom.lake.86it.us",
 	"version": "1.0.5",
-	"keywords": ["phpbb", "extension", "viglink"],
+	"keywords": ["an602", "extension", "viglink"],
 	"license": "GPL-2.0-only",
 	"authors": [
 		{
-			"name": "phpBB Limited",
-			"email": "operations@phpbb.com",
-			"homepage": "https://www.phpbb.com/go/authors"
+			"name": "PHP-AN602",
+			"email": "operations@an602.com",
+			"homepage": "https://groom.lake.86it.us/go/authors"
 		}
 	],
 	"require": {
 		"php": ">=5.4",
-		"phpbb/phpbb": ">=3.2.0",
+		"an602/an602": ">=3.2.0",
 		"composer/installers": "~1.0"
 	},
 	"extra": {
 		"display-name": "VigLink",
 		"soft-require": {
-			"phpbb/phpbb": ">=3.2.0-b1,<4.0.0@dev"
+			"an602/an602": ">=3.2.0-b1,<4.0.0@dev"
 		}
 	}
 }

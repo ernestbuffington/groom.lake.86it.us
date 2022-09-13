@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -25,23 +25,23 @@ class acp_permissions
 	var $permission_dropdown;
 
 	/**
-	 * @var $phpbb_permissions \phpbb\permissions
+	 * @var $an602_permissions \an602\permissions
 	 */
 	protected $permissions;
 
 	function main($id, $mode)
 	{
-		global $db, $user, $auth, $template, $phpbb_container, $request;
-		global $config, $phpbb_root_path, $phpEx;
+		global $db, $user, $auth, $template, $an602_container, $request;
+		global $config, $an602_root_path, $phpEx;
 
 		if (!function_exists('user_get_id_name'))
 		{
-			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		if (!class_exists('auth_admin'))
 		{
-			include($phpbb_root_path . 'includes/acp/auth.' . $phpEx);
+			include($an602_root_path . 'includes/acp/auth.' . $phpEx);
 		}
 
 		$auth_admin = new auth_admin();
@@ -51,7 +51,7 @@ class acp_permissions
 
 		$this->tpl_name = 'acp_permissions';
 
-		$this->permissions = $phpbb_container->get('acl.permissions');
+		$this->permissions = $an602_container->get('acl.permissions');
 
 		// Trace has other vars
 		if ($mode == 'trace')
@@ -112,7 +112,7 @@ class acp_permissions
 			$sql_and = (!$config['coppa_enable']) ? " AND group_name <> 'REGISTERED_COPPA'" : '';
 
 			$sql = 'SELECT group_id
-				FROM ' . GROUPS_TABLE . '
+				FROM ' . AN602_GROUPS_TABLE . '
 				WHERE group_type = ' . GROUP_SPECIAL . "
 				$sql_and";
 			$result = $db->sql_query($sql);
@@ -146,7 +146,7 @@ class acp_permissions
 		if ($all_forums)
 		{
 			$sql = 'SELECT forum_id
-				FROM ' . FORUMS_TABLE . '
+				FROM ' . AN602_FORUMS_TABLE . '
 				ORDER BY left_id';
 			$result = $db->sql_query($sql);
 
@@ -402,7 +402,7 @@ class acp_permissions
 
 					$template->assign_vars(array(
 						'S_SELECT_USER'			=> true,
-						'U_FIND_USERNAME'		=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=select_victim&amp;field=username&amp;select_single=true'),
+						'U_FIND_USERNAME'		=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=select_victim&amp;field=username&amp;select_single=true'),
 					));
 
 				break;
@@ -464,7 +464,7 @@ class acp_permissions
 						'S_DEFINED_USER_OPTIONS'	=> $items['user_ids_options'],
 						'S_DEFINED_GROUP_OPTIONS'	=> $items['group_ids_options'],
 						'S_ADD_GROUP_OPTIONS'		=> group_select_options(false, $items['group_ids'], false),	// Show all groups
-						'U_FIND_USERNAME'			=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=add_user&amp;field=username&amp;select_single=true'),
+						'U_FIND_USERNAME'			=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=add_user&amp;field=username&amp;select_single=true'),
 					));
 
 				break;
@@ -497,7 +497,7 @@ class acp_permissions
 			if (count($forum_id))
 			{
 				$sql = 'SELECT forum_name
-					FROM ' . FORUMS_TABLE . '
+					FROM ' . AN602_FORUMS_TABLE . '
 					WHERE ' . $db->sql_in_set('forum_id', $forum_id) . '
 					ORDER BY left_id ASC';
 				$result = $db->sql_query($sql);
@@ -546,7 +546,7 @@ class acp_permissions
 				'S_SETTING_PERMISSIONS'		=> true)
 			);
 
-			$hold_ary = $auth_admin->get_mask('set', (count($user_id)) ? $user_id : false, (count($group_id)) ? $group_id : false, (count($forum_id)) ? $forum_id : false, $permission_type, $permission_scope, ACL_NO);
+			$hold_ary = $auth_admin->get_mask('set', (count($user_id)) ? $user_id : false, (count($group_id)) ? $group_id : false, (count($forum_id)) ? $forum_id : false, $permission_type, $permission_scope, AN602_ACL_NO);
 			$auth_admin->display_mask('set', $permission_type, $hold_ary, ((count($user_id)) ? 'user' : 'group'), (($permission_scope == 'local') ? true : false));
 		}
 		else
@@ -555,7 +555,7 @@ class acp_permissions
 				'S_VIEWING_PERMISSIONS'		=> true)
 			);
 
-			$hold_ary = $auth_admin->get_mask('view', (count($user_id)) ? $user_id : false, (count($group_id)) ? $group_id : false, (count($forum_id)) ? $forum_id : false, $permission_type, $permission_scope, ACL_NEVER);
+			$hold_ary = $auth_admin->get_mask('view', (count($user_id)) ? $user_id : false, (count($group_id)) ? $group_id : false, (count($forum_id)) ? $forum_id : false, $permission_type, $permission_scope, AN602_ACL_NEVER);
 			$auth_admin->display_mask('view', $permission_type, $hold_ary, ((count($user_id)) ? 'user' : 'group'), (($permission_scope == 'local') ? true : false));
 		}
 	}
@@ -637,17 +637,17 @@ class acp_permissions
 		switch ($mode)
 		{
 			case 'user':
-				$table = USERS_TABLE;
+				$table = AN602_USERS_TABLE;
 				$sql_id = 'user_id';
 			break;
 
 			case 'group':
-				$table = GROUPS_TABLE;
+				$table = AN602_GROUPS_TABLE;
 				$sql_id = 'group_id';
 			break;
 
 			case 'forum':
-				$table = FORUMS_TABLE;
+				$table = AN602_FORUMS_TABLE;
 				$sql_id = 'forum_id';
 			break;
 		}
@@ -697,7 +697,7 @@ class acp_permissions
 		$ug_id = key($psubmit);
 		$forum_id = key($psubmit[$ug_id]);
 
-		$settings = $request->variable('setting', array(0 => array(0 => array('' => 0))), false, \phpbb\request\request_interface::POST);
+		$settings = $request->variable('setting', array(0 => array(0 => array('' => 0))), false, \an602\request\request_interface::POST);
 		if (empty($settings) || empty($settings[$ug_id]) || empty($settings[$ug_id][$forum_id]))
 		{
 			trigger_error('WRONG_PERMISSION_SETTING_FORMAT', E_USER_WARNING);
@@ -706,7 +706,7 @@ class acp_permissions
 		$auth_settings = $settings[$ug_id][$forum_id];
 
 		// Do we have a role we want to set?
-		$roles = $request->variable('role', array(0 => array(0 => 0)), false, \phpbb\request\request_interface::POST);
+		$roles = $request->variable('role', array(0 => array(0 => 0)), false, \an602\request\request_interface::POST);
 		$assigned_role = (isset($roles[$ug_id][$forum_id])) ? (int) $roles[$ug_id][$forum_id] : 0;
 
 		// Do the admin want to set these permissions to other items too?
@@ -747,13 +747,13 @@ class acp_permissions
 		// Do we need to recache the moderator lists?
 		if ($permission_type == 'm_')
 		{
-			phpbb_cache_moderators($db, $cache, $auth);
+			an602_cache_moderators($db, $cache, $auth);
 		}
 
 		// Remove users who are now moderators or admins from everyones foes list
 		if ($permission_type == 'm_' || $permission_type == 'a_')
 		{
-			phpbb_update_foes($db, $auth, $group_id, $user_id);
+			an602_update_foes($db, $auth, $group_id, $user_id);
 		}
 
 		$this->log_action($mode, 'add', $permission_type, $ug_type, $ug_id, $forum_id);
@@ -780,8 +780,8 @@ class acp_permissions
 			trigger_error($user->lang['NO_AUTH_OPERATION'] . adm_back_link($this->u_action), E_USER_WARNING);
 		}
 
-		$auth_settings = $request->variable('setting', array(0 => array(0 => array('' => 0))), false, \phpbb\request\request_interface::POST);
-		$auth_roles = $request->variable('role', array(0 => array(0 => 0)), false, \phpbb\request\request_interface::POST);
+		$auth_settings = $request->variable('setting', array(0 => array(0 => array('' => 0))), false, \an602\request\request_interface::POST);
+		$auth_roles = $request->variable('role', array(0 => array(0 => 0)), false, \an602\request\request_interface::POST);
 		$ug_ids = $forum_ids = array();
 
 		// We need to go through the auth settings
@@ -817,13 +817,13 @@ class acp_permissions
 		// Do we need to recache the moderator lists?
 		if ($permission_type == 'm_')
 		{
-			phpbb_cache_moderators($db, $cache, $auth);
+			an602_cache_moderators($db, $cache, $auth);
 		}
 
 		// Remove users who are now moderators or admins from everyones foes list
 		if ($permission_type == 'm_' || $permission_type == 'a_')
 		{
-			phpbb_update_foes($db, $auth, $group_id, $user_id);
+			an602_update_foes($db, $auth, $group_id, $user_id);
 		}
 
 		$this->log_action($mode, 'add', $permission_type, $ug_type, $ug_ids, $forum_ids);
@@ -849,7 +849,7 @@ class acp_permissions
 		global $db;
 
 		$sql = 'SELECT o.auth_option, r.auth_setting
-			FROM ' . ACL_OPTIONS_TABLE . ' o, ' . ACL_ROLES_DATA_TABLE . ' r
+			FROM ' . AN602_ACL_OPTIONS_TABLE . ' o, ' . AN602_ACL_ROLES_DATA_TABLE . ' r
 			WHERE o.auth_option_id = r.auth_option_id
 				AND r.role_id = ' . $role_id;
 		$result = $db->sql_query($sql);
@@ -861,10 +861,10 @@ class acp_permissions
 		}
 		$db->sql_freeresult($result);
 
-		// We need to add any ACL_NO setting from auth_settings to compare correctly
+		// We need to add any AN602_ACL_NO setting from auth_settings to compare correctly
 		foreach ($auth_settings as $option => $setting)
 		{
-			if ($setting == ACL_NO)
+			if ($setting == AN602_ACL_NO)
 			{
 				$test_auth_settings[$option] = $setting;
 			}
@@ -900,7 +900,7 @@ class acp_permissions
 		// Do we need to recache the moderator lists?
 		if ($permission_type == 'm_')
 		{
-			phpbb_cache_moderators($db, $cache, $auth);
+			an602_cache_moderators($db, $cache, $auth);
 		}
 
 		$this->log_action($mode, 'del', $permission_type, $ug_type, (($ug_type == 'user') ? $user_id : $group_id), (count($forum_id) ? $forum_id : array(0 => 0)));
@@ -922,7 +922,7 @@ class acp_permissions
 	*/
 	function log_action($mode, $action, $permission_type, $ug_type, $ug_id, $forum_id)
 	{
-		global $db, $user, $phpbb_log, $phpbb_container;
+		global $db, $user, $an602_log, $an602_container;
 
 		if (!is_array($ug_id))
 		{
@@ -935,12 +935,12 @@ class acp_permissions
 		}
 
 		// Logging ... first grab user or groupnames ...
-		$sql = ($ug_type == 'group') ? 'SELECT group_name as name, group_type FROM ' . GROUPS_TABLE . ' WHERE ' : 'SELECT username as name FROM ' . USERS_TABLE . ' WHERE ';
+		$sql = ($ug_type == 'group') ? 'SELECT group_name as name, group_type FROM ' . AN602_GROUPS_TABLE . ' WHERE ' : 'SELECT username as name FROM ' . AN602_USERS_TABLE . ' WHERE ';
 		$sql .= $db->sql_in_set(($ug_type == 'group') ? 'group_id' : 'user_id', array_map('intval', $ug_id));
 		$result = $db->sql_query($sql);
 
-		/** @var \phpbb\group\helper $group_helper */
-		$group_helper = $phpbb_container->get('group_helper');
+		/** @var \an602\group\helper $group_helper */
+		$group_helper = $an602_container->get('group_helper');
 
 		$l_ug_list = '';
 		while ($row = $db->sql_fetchrow($result))
@@ -954,13 +954,13 @@ class acp_permissions
 
 		if ($forum_id[0] == 0)
 		{
-			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ACL_' . strtoupper($action) . '_' . strtoupper($mode) . '_' . strtoupper($permission_type), false, array($l_ug_list));
+			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_AN602_ACL_' . strtoupper($action) . '_' . strtoupper($mode) . '_' . strtoupper($permission_type), false, array($l_ug_list));
 		}
 		else
 		{
 			// Grab the forum details if non-zero forum_id
 			$sql = 'SELECT forum_name
-				FROM ' . FORUMS_TABLE . '
+				FROM ' . AN602_FORUMS_TABLE . '
 				WHERE ' . $db->sql_in_set('forum_id', $forum_id);
 			$result = $db->sql_query($sql);
 
@@ -971,7 +971,7 @@ class acp_permissions
 			}
 			$db->sql_freeresult($result);
 
-			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ACL_' . strtoupper($action) . '_' . strtoupper($mode) . '_' . strtoupper($permission_type), false, array($l_forum_list, $l_ug_list));
+			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_AN602_ACL_' . strtoupper($action) . '_' . strtoupper($mode) . '_' . strtoupper($permission_type), false, array($l_forum_list, $l_ug_list));
 		}
 	}
 
@@ -980,7 +980,7 @@ class acp_permissions
 	*/
 	function permission_trace($user_id, $forum_id, $permission)
 	{
-		global $db, $template, $user, $auth, $request, $phpbb_container;
+		global $db, $template, $user, $auth, $request, $an602_container;
 
 		if ($user_id != $user->data['user_id'])
 		{
@@ -996,15 +996,15 @@ class acp_permissions
 			trigger_error('NO_USERS', E_USER_ERROR);
 		}
 
-		/** @var \phpbb\group\helper $group_helper */
-		$group_helper = $phpbb_container->get('group_helper');
+		/** @var \an602\group\helper $group_helper */
+		$group_helper = $an602_container->get('group_helper');
 
 		$forum_name = false;
 
 		if ($forum_id)
 		{
 			$sql = 'SELECT forum_name
-				FROM ' . FORUMS_TABLE . "
+				FROM ' . AN602_FORUMS_TABLE . "
 				WHERE forum_id = $forum_id";
 			$result = $db->sql_query($sql, 3600);
 			$forum_name = $db->sql_fetchfield('forum_name');
@@ -1032,8 +1032,8 @@ class acp_permissions
 		);
 
 		$sql = 'SELECT DISTINCT g.group_name, g.group_id, g.group_type
-			FROM ' . GROUPS_TABLE . ' g
-				LEFT JOIN ' . USER_GROUP_TABLE . ' ug ON (ug.group_id = g.group_id)
+			FROM ' . AN602_GROUPS_TABLE . ' g
+				LEFT JOIN ' . AN602_USER_GROUP_TABLE . ' ug ON (ug.group_id = g.group_id)
 			WHERE ug.user_id = ' . $user_id . '
 				AND ug.user_pending = 0
 				AND NOT (ug.group_leader = 1 AND g.group_skip_auth = 1)
@@ -1044,13 +1044,13 @@ class acp_permissions
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$groups[$row['group_id']] = array(
-				'auth_setting'		=> ACL_NO,
+				'auth_setting'		=> AN602_ACL_NO,
 				'group_name'		=> $group_helper->get_name($row['group_name']),
 			);
 		}
 		$db->sql_freeresult($result);
 
-		$total = ACL_NO;
+		$total = AN602_ACL_NO;
 		$add_key = (($forum_id) ? '_LOCAL' : '');
 
 		if (count($groups))
@@ -1068,18 +1068,18 @@ class acp_permissions
 			{
 				switch ($row['auth_setting'])
 				{
-					case ACL_NO:
+					case AN602_ACL_NO:
 						$information = $user->lang['TRACE_GROUP_NO' . $add_key];
 					break;
 
-					case ACL_YES:
-						$information = ($total == ACL_YES) ? $user->lang['TRACE_GROUP_YES_TOTAL_YES' . $add_key] : (($total == ACL_NEVER) ? $user->lang['TRACE_GROUP_YES_TOTAL_NEVER' . $add_key] : $user->lang['TRACE_GROUP_YES_TOTAL_NO' . $add_key]);
-						$total = ($total == ACL_NO) ? ACL_YES : $total;
+					case AN602_ACL_YES:
+						$information = ($total == AN602_ACL_YES) ? $user->lang['TRACE_GROUP_YES_TOTAL_YES' . $add_key] : (($total == AN602_ACL_NEVER) ? $user->lang['TRACE_GROUP_YES_TOTAL_NEVER' . $add_key] : $user->lang['TRACE_GROUP_YES_TOTAL_NO' . $add_key]);
+						$total = ($total == AN602_ACL_NO) ? AN602_ACL_YES : $total;
 					break;
 
-					case ACL_NEVER:
-						$information = ($total == ACL_YES) ? $user->lang['TRACE_GROUP_NEVER_TOTAL_YES' . $add_key] : (($total == ACL_NEVER) ? $user->lang['TRACE_GROUP_NEVER_TOTAL_NEVER' . $add_key] : $user->lang['TRACE_GROUP_NEVER_TOTAL_NO' . $add_key]);
-						$total = ACL_NEVER;
+					case AN602_ACL_NEVER:
+						$information = ($total == AN602_ACL_YES) ? $user->lang['TRACE_GROUP_NEVER_TOTAL_YES' . $add_key] : (($total == AN602_ACL_NEVER) ? $user->lang['TRACE_GROUP_NEVER_TOTAL_NEVER' . $add_key] : $user->lang['TRACE_GROUP_NEVER_TOTAL_NO' . $add_key]);
+						$total = AN602_ACL_NEVER;
 					break;
 				}
 
@@ -1087,35 +1087,35 @@ class acp_permissions
 					'WHO'			=> $row['group_name'],
 					'INFORMATION'	=> $information,
 
-					'S_SETTING_NO'		=> ($row['auth_setting'] == ACL_NO) ? true : false,
-					'S_SETTING_YES'		=> ($row['auth_setting'] == ACL_YES) ? true : false,
-					'S_SETTING_NEVER'	=> ($row['auth_setting'] == ACL_NEVER) ? true : false,
-					'S_TOTAL_NO'		=> ($total == ACL_NO) ? true : false,
-					'S_TOTAL_YES'		=> ($total == ACL_YES) ? true : false,
-					'S_TOTAL_NEVER'		=> ($total == ACL_NEVER) ? true : false)
+					'S_SETTING_NO'		=> ($row['auth_setting'] == AN602_ACL_NO) ? true : false,
+					'S_SETTING_YES'		=> ($row['auth_setting'] == AN602_ACL_YES) ? true : false,
+					'S_SETTING_NEVER'	=> ($row['auth_setting'] == AN602_ACL_NEVER) ? true : false,
+					'S_TOTAL_NO'		=> ($total == AN602_ACL_NO) ? true : false,
+					'S_TOTAL_YES'		=> ($total == AN602_ACL_YES) ? true : false,
+					'S_TOTAL_NEVER'		=> ($total == AN602_ACL_NEVER) ? true : false)
 				);
 			}
 		}
 
 		// Get user specific permission... globally or for this forum
 		$hold_ary = $auth->acl_user_raw_data($user_id, $permission, $forum_id);
-		$auth_setting = (!count($hold_ary)) ? ACL_NO : $hold_ary[$user_id][$forum_id][$permission];
+		$auth_setting = (!count($hold_ary)) ? AN602_ACL_NO : $hold_ary[$user_id][$forum_id][$permission];
 
 		switch ($auth_setting)
 		{
-			case ACL_NO:
-				$information = ($total == ACL_NO) ? $user->lang['TRACE_USER_NO_TOTAL_NO' . $add_key] : $user->lang['TRACE_USER_KEPT' . $add_key];
-				$total = ($total == ACL_NO) ? ACL_NEVER : $total;
+			case AN602_ACL_NO:
+				$information = ($total == AN602_ACL_NO) ? $user->lang['TRACE_USER_NO_TOTAL_NO' . $add_key] : $user->lang['TRACE_USER_KEPT' . $add_key];
+				$total = ($total == AN602_ACL_NO) ? AN602_ACL_NEVER : $total;
 			break;
 
-			case ACL_YES:
-				$information = ($total == ACL_YES) ? $user->lang['TRACE_USER_YES_TOTAL_YES' . $add_key] : (($total == ACL_NEVER) ? $user->lang['TRACE_USER_YES_TOTAL_NEVER' . $add_key] : $user->lang['TRACE_USER_YES_TOTAL_NO' . $add_key]);
-				$total = ($total == ACL_NO) ? ACL_YES : $total;
+			case AN602_ACL_YES:
+				$information = ($total == AN602_ACL_YES) ? $user->lang['TRACE_USER_YES_TOTAL_YES' . $add_key] : (($total == AN602_ACL_NEVER) ? $user->lang['TRACE_USER_YES_TOTAL_NEVER' . $add_key] : $user->lang['TRACE_USER_YES_TOTAL_NO' . $add_key]);
+				$total = ($total == AN602_ACL_NO) ? AN602_ACL_YES : $total;
 			break;
 
-			case ACL_NEVER:
-				$information = ($total == ACL_YES) ? $user->lang['TRACE_USER_NEVER_TOTAL_YES' . $add_key] : (($total == ACL_NEVER) ? $user->lang['TRACE_USER_NEVER_TOTAL_NEVER' . $add_key] : $user->lang['TRACE_USER_NEVER_TOTAL_NO' . $add_key]);
-				$total = ACL_NEVER;
+			case AN602_ACL_NEVER:
+				$information = ($total == AN602_ACL_YES) ? $user->lang['TRACE_USER_NEVER_TOTAL_YES' . $add_key] : (($total == AN602_ACL_NEVER) ? $user->lang['TRACE_USER_NEVER_TOTAL_NEVER' . $add_key] : $user->lang['TRACE_USER_NEVER_TOTAL_NO' . $add_key]);
+				$total = AN602_ACL_NEVER;
 			break;
 		}
 
@@ -1123,19 +1123,19 @@ class acp_permissions
 			'WHO'			=> $userdata['username'],
 			'INFORMATION'	=> $information,
 
-			'S_SETTING_NO'		=> ($auth_setting == ACL_NO) ? true : false,
-			'S_SETTING_YES'		=> ($auth_setting == ACL_YES) ? true : false,
-			'S_SETTING_NEVER'	=> ($auth_setting == ACL_NEVER) ? true : false,
+			'S_SETTING_NO'		=> ($auth_setting == AN602_ACL_NO) ? true : false,
+			'S_SETTING_YES'		=> ($auth_setting == AN602_ACL_YES) ? true : false,
+			'S_SETTING_NEVER'	=> ($auth_setting == AN602_ACL_NEVER) ? true : false,
 			'S_TOTAL_NO'		=> false,
-			'S_TOTAL_YES'		=> ($total == ACL_YES) ? true : false,
-			'S_TOTAL_NEVER'		=> ($total == ACL_NEVER) ? true : false)
+			'S_TOTAL_YES'		=> ($total == AN602_ACL_YES) ? true : false,
+			'S_TOTAL_NEVER'		=> ($total == AN602_ACL_NEVER) ? true : false)
 		);
 
 		if ($forum_id != 0 && isset($auth->acl_options['global'][$permission]))
 		{
 			if ($user_id != $user->data['user_id'])
 			{
-				$auth2 = new \phpbb\auth\auth();
+				$auth2 = new \an602\auth\auth();
 				$auth2->acl($userdata);
 				$auth_setting = $auth2->acl_get($permission);
 			}
@@ -1146,8 +1146,8 @@ class acp_permissions
 
 			if ($auth_setting)
 			{
-				$information = ($total == ACL_YES) ? $user->lang['TRACE_USER_GLOBAL_YES_TOTAL_YES'] : $user->lang['TRACE_USER_GLOBAL_YES_TOTAL_NEVER'];
-				$total = ACL_YES;
+				$information = ($total == AN602_ACL_YES) ? $user->lang['TRACE_USER_GLOBAL_YES_TOTAL_YES'] : $user->lang['TRACE_USER_GLOBAL_YES_TOTAL_NEVER'];
+				$total = AN602_ACL_YES;
 			}
 			else
 			{
@@ -1165,8 +1165,8 @@ class acp_permissions
 					'S_SETTING_YES'		=> $auth_setting,
 					'S_SETTING_NEVER'	=> !$auth_setting,
 					'S_TOTAL_NO'		=> false,
-					'S_TOTAL_YES'		=> ($total == ACL_YES) ? true : false,
-					'S_TOTAL_NEVER'		=> ($total == ACL_NEVER) ? true : false)
+					'S_TOTAL_YES'		=> ($total == AN602_ACL_YES) ? true : false,
+					'S_TOTAL_NEVER'		=> ($total == AN602_ACL_NEVER) ? true : false)
 				);
 			}
 		}
@@ -1178,22 +1178,22 @@ class acp_permissions
 				'WHO'			=> $userdata['username'],
 				'INFORMATION'	=> $user->lang['TRACE_USER_FOUNDER'],
 
-				'S_SETTING_NO'		=> ($auth_setting == ACL_NO) ? true : false,
-				'S_SETTING_YES'		=> ($auth_setting == ACL_YES) ? true : false,
-				'S_SETTING_NEVER'	=> ($auth_setting == ACL_NEVER) ? true : false,
+				'S_SETTING_NO'		=> ($auth_setting == AN602_ACL_NO) ? true : false,
+				'S_SETTING_YES'		=> ($auth_setting == AN602_ACL_YES) ? true : false,
+				'S_SETTING_NEVER'	=> ($auth_setting == AN602_ACL_NEVER) ? true : false,
 				'S_TOTAL_NO'		=> false,
 				'S_TOTAL_YES'		=> true,
 				'S_TOTAL_NEVER'		=> false)
 			);
 
-			$total = ACL_YES;
+			$total = AN602_ACL_YES;
 		}
 
 		// Total value...
 		$template->assign_vars(array(
-			'S_RESULT_NO'		=> ($total == ACL_NO) ? true : false,
-			'S_RESULT_YES'		=> ($total == ACL_YES) ? true : false,
-			'S_RESULT_NEVER'	=> ($total == ACL_NEVER) ? true : false,
+			'S_RESULT_NO'		=> ($total == AN602_ACL_NO) ? true : false,
+			'S_RESULT_YES'		=> ($total == AN602_ACL_YES) ? true : false,
+			'S_RESULT_NEVER'	=> ($total == AN602_ACL_NEVER) ? true : false,
 		));
 	}
 
@@ -1217,10 +1217,10 @@ class acp_permissions
 			{
 				if (copy_forum_permissions($src, $dest))
 				{
-					phpbb_cache_moderators($db, $cache, $auth);
+					an602_cache_moderators($db, $cache, $auth);
 
 					$auth->acl_clear_prefetch();
-					$cache->destroy('sql', FORUMS_TABLE);
+					$cache->destroy('sql', AN602_FORUMS_TABLE);
 
 					trigger_error($user->lang['AUTH_UPDATED'] . adm_back_link($this->u_action));
 				}
@@ -1253,10 +1253,10 @@ class acp_permissions
 	*/
 	function retrieve_defined_user_groups($permission_scope, $forum_id, $permission_type)
 	{
-		global $db, $phpbb_container;
+		global $db, $an602_container;
 
-		/** @var \phpbb\group\helper $group_helper */
-		$group_helper = $phpbb_container->get('group_helper');
+		/** @var \an602\group\helper $group_helper */
+		$group_helper = $an602_container->get('group_helper');
 
 		$sql_forum_id = ($permission_scope == 'global') ? 'AND a.forum_id = 0' : ((count($forum_id)) ? 'AND ' . $db->sql_in_set('a.forum_id', $forum_id) : 'AND a.forum_id <> 0');
 
@@ -1264,7 +1264,7 @@ class acp_permissions
 		$option_ids = $role_ids = array();
 
 		$sql = 'SELECT auth_option_id
-			FROM ' . ACL_OPTIONS_TABLE . '
+			FROM ' . AN602_ACL_OPTIONS_TABLE . '
 			WHERE auth_option ' . $db->sql_like_expression($permission_type . $db->get_any_char());
 		$result = $db->sql_query($sql);
 
@@ -1277,7 +1277,7 @@ class acp_permissions
 		if (count($option_ids))
 		{
 			$sql = 'SELECT DISTINCT role_id
-				FROM ' . ACL_ROLES_DATA_TABLE . '
+				FROM ' . AN602_ACL_ROLES_DATA_TABLE . '
 				WHERE ' . $db->sql_in_set('auth_option_id', $option_ids);
 			$result = $db->sql_query($sql);
 
@@ -1303,7 +1303,7 @@ class acp_permissions
 
 		// Not ideal, due to the filesort, non-use of indexes, etc.
 		$sql = 'SELECT DISTINCT u.user_id, u.username, u.username_clean, u.user_regdate
-			FROM ' . USERS_TABLE . ' u, ' . ACL_USERS_TABLE . " a
+			FROM ' . AN602_USERS_TABLE . ' u, ' . AN602_ACL_AN602_USERS_TABLE . " a
 			WHERE u.user_id = a.user_id
 				$sql_forum_id
 				$sql_where
@@ -1320,7 +1320,7 @@ class acp_permissions
 		$db->sql_freeresult($result);
 
 		$sql = 'SELECT DISTINCT g.group_type, g.group_name, g.group_id
-			FROM ' . GROUPS_TABLE . ' g, ' . ACL_GROUPS_TABLE . " a
+			FROM ' . AN602_GROUPS_TABLE . ' g, ' . AN602_ACL_AN602_GROUPS_TABLE . " a
 			WHERE g.group_id = a.group_id
 				$sql_forum_id
 				$sql_where

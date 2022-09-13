@@ -1,34 +1,34 @@
 <?php
 /**
  *
- * VigLink extension for the phpBB Forum Software package.
+ * VigLink extension for the AN602 CMS Software package.
  *
- * @copyright (c) 2016 phpBB Limited <https://www.phpbb.com>
+ * @copyright (c) 2016 PHP-AN602 <https://groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
 
-namespace phpbb\viglink\cron;
+namespace an602\viglink\cron;
 
 /**
  * Viglink cron task.
  */
-class viglink extends \phpbb\cron\task\base
+class viglink extends \an602\cron\task\base
 {
-	/** @var \phpbb\config\config $config Config object */
+	/** @var \an602\config\config $config Config object */
 	protected $config;
 
-	/** @var \phpbb\viglink\acp\viglink_helper $helper Viglink helper object */
+	/** @var \an602\viglink\acp\viglink_helper $helper Viglink helper object */
 	protected $helper;
 
 	/**
 	 * Constructor
 	 *
-	 * @param \phpbb\config\config              $config         Config object
-	 * @param \phpbb\viglink\acp\viglink_helper $viglink_helper Viglink helper object
+	 * @param \an602\config\config              $config         Config object
+	 * @param \an602\viglink\acp\viglink_helper $viglink_helper Viglink helper object
 	 * @access public
 	 */
-	public function __construct(\phpbb\config\config $config, \phpbb\viglink\acp\viglink_helper $viglink_helper)
+	public function __construct(\an602\config\config $config, \an602\viglink\acp\viglink_helper $viglink_helper)
 	{
 		$this->config = $config;
 		$this->helper = $viglink_helper;

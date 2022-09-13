@@ -1,23 +1,23 @@
 <?php
 /**
  *
- * VigLink extension for the phpBB Forum Software package.
+ * VigLink extension for the AN602 CMS Software package.
  *
- * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
+ * @copyright (c) 2014 PHP-AN602 <https://groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
 
-namespace phpbb\viglink\migrations;
+namespace an602\viglink\migrations;
 
 /**
  * Migration to only ask admin once per day
  */
-class viglink_ask_admin_wait extends \phpbb\db\migration\migration
+class viglink_ask_admin_wait extends \an602\db\migration\migration
 {
 	public static function depends_on()
 	{
-		return array('\phpbb\viglink\migrations\viglink_ask_admin');
+		return array('\an602\viglink\migrations\viglink_ask_admin');
 	}
 
 	public function effectively_installed()

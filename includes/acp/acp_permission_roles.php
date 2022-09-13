@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -26,18 +26,18 @@ class acp_permission_roles
 
 	function main($id, $mode)
 	{
-		global $db, $user, $template, $phpbb_container;
-		global $phpbb_root_path, $phpEx;
-		global $request, $phpbb_log;
+		global $db, $user, $template, $an602_container;
+		global $an602_root_path, $phpEx;
+		global $request, $an602_log;
 
 		if (!function_exists('user_get_id_name'))
 		{
-			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		if (!class_exists('auth_admin'))
 		{
-			include($phpbb_root_path . 'includes/acp/auth.' . $phpEx);
+			include($an602_root_path . 'includes/acp/auth.' . $phpEx);
 		}
 
 		$this->auth_admin = new auth_admin();
@@ -100,7 +100,7 @@ class acp_permission_roles
 				case 'remove':
 
 					$sql = 'SELECT *
-						FROM ' . ACL_ROLES_TABLE . '
+						FROM ' . AN602_ACL_ROLES_TABLE . '
 						WHERE role_id = ' . $role_id;
 					$result = $db->sql_query($sql);
 					$role_row = $db->sql_fetchrow($result);
@@ -116,7 +116,7 @@ class acp_permission_roles
 						$this->remove_role($role_id, $permission_type);
 
 						$role_name = (!empty($user->lang[$role_row['role_name']])) ? $user->lang[$role_row['role_name']] : $role_row['role_name'];
-						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_' . strtoupper($permission_type) . 'ROLE_REMOVED', false, array($role_name));
+						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_' . strtoupper($permission_type) . 'ROLE_REMOVED', false, array($role_name));
 						trigger_error($user->lang['ROLE_DELETED'] . adm_back_link($this->u_action));
 					}
 					else
@@ -135,7 +135,7 @@ class acp_permission_roles
 
 					// Get role we edit
 					$sql = 'SELECT *
-						FROM ' . ACL_ROLES_TABLE . '
+						FROM ' . AN602_ACL_ROLES_TABLE . '
 						WHERE role_id = ' . $role_id;
 					$result = $db->sql_query($sql);
 					$role_row = $db->sql_fetchrow($result);
@@ -171,7 +171,7 @@ class acp_permission_roles
 
 					// if we add/edit a role we check the name to be unique among the settings...
 					$sql = 'SELECT role_id
-						FROM ' . ACL_ROLES_TABLE . "
+						FROM ' . AN602_ACL_ROLES_TABLE . "
 						WHERE role_type = '" . $db->sql_escape($permission_type) . "'
 							AND role_name = '" . $db->sql_escape($role_name) . "'";
 					$result = $db->sql_query($sql);
@@ -192,7 +192,7 @@ class acp_permission_roles
 
 					if ($action == 'edit')
 					{
-						$sql = 'UPDATE ' . ACL_ROLES_TABLE . '
+						$sql = 'UPDATE ' . AN602_ACL_ROLES_TABLE . '
 							SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 							WHERE role_id = ' . $role_id;
 						$db->sql_query($sql);
@@ -201,7 +201,7 @@ class acp_permission_roles
 					{
 						// Get maximum role order for inserting a new role...
 						$sql = 'SELECT MAX(role_order) as max_order
-							FROM ' . ACL_ROLES_TABLE . "
+							FROM ' . AN602_ACL_ROLES_TABLE . "
 							WHERE role_type = '" . $db->sql_escape($permission_type) . "'";
 						$result = $db->sql_query($sql);
 						$max_order = (int) $db->sql_fetchfield('max_order');
@@ -209,7 +209,7 @@ class acp_permission_roles
 
 						$sql_ary['role_order'] = $max_order + 1;
 
-						$sql = 'INSERT INTO ' . ACL_ROLES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+						$sql = 'INSERT INTO ' . AN602_ACL_ROLES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 						$db->sql_query($sql);
 
 						$role_id = $db->sql_nextid();
@@ -219,7 +219,7 @@ class acp_permission_roles
 					$this->auth_admin->acl_set_role($role_id, $auth_settings);
 
 					$role_name = (!empty($user->lang[$role_name])) ? $user->lang[$role_name] : $role_name;
-					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_' . strtoupper($permission_type) . 'ROLE_' . strtoupper($action), false, array($role_name));
+					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_' . strtoupper($permission_type) . 'ROLE_' . strtoupper($action), false, array($role_name));
 
 					trigger_error($user->lang['ROLE_' . strtoupper($action) . '_SUCCESS'] . adm_back_link($this->u_action));
 
@@ -243,7 +243,7 @@ class acp_permission_roles
 				if ($options_from)
 				{
 					$sql = 'SELECT p.auth_option_id, p.auth_setting, o.auth_option
-						FROM ' . ACL_ROLES_DATA_TABLE . ' p, ' . ACL_OPTIONS_TABLE . ' o
+						FROM ' . AN602_ACL_ROLES_DATA_TABLE . ' p, ' . AN602_ACL_OPTIONS_TABLE . ' o
 						WHERE o.auth_option_id = p.auth_option_id
 							AND p.role_id = ' . $options_from . '
 						ORDER BY p.auth_option_id';
@@ -259,7 +259,7 @@ class acp_permission_roles
 				else
 				{
 					$sql = 'SELECT auth_option_id, auth_option
-						FROM ' . ACL_OPTIONS_TABLE . "
+						FROM ' . AN602_ACL_OPTIONS_TABLE . "
 						WHERE auth_option " . $db->sql_like_expression($permission_type . $db->get_any_char()) . "
 							AND auth_option <> '{$permission_type}'
 						ORDER BY auth_option_id";
@@ -268,7 +268,7 @@ class acp_permission_roles
 					$auth_options = array();
 					while ($row = $db->sql_fetchrow($result))
 					{
-						$auth_options[$row['auth_option']] = ACL_NO;
+						$auth_options[$row['auth_option']] = AN602_ACL_NO;
 					}
 					$db->sql_freeresult($result);
 				}
@@ -280,14 +280,14 @@ class acp_permission_roles
 				if ($action == 'edit')
 				{
 					$sql = 'SELECT *
-						FROM ' . ACL_ROLES_TABLE . '
+						FROM ' . AN602_ACL_ROLES_TABLE . '
 						WHERE role_id = ' . $role_id;
 					$result = $db->sql_query($sql);
 					$role_row = $db->sql_fetchrow($result);
 					$db->sql_freeresult($result);
 
 					$sql = 'SELECT p.auth_option_id, p.auth_setting, o.auth_option
-						FROM ' . ACL_ROLES_DATA_TABLE . ' p, ' . ACL_OPTIONS_TABLE . ' o
+						FROM ' . AN602_ACL_ROLES_DATA_TABLE . ' p, ' . AN602_ACL_OPTIONS_TABLE . ' o
 						WHERE o.auth_option_id = p.auth_option_id
 							AND p.role_id = ' . $role_id . '
 						ORDER BY p.auth_option_id';
@@ -306,8 +306,8 @@ class acp_permission_roles
 					trigger_error($user->lang['NO_ROLE_SELECTED'] . adm_back_link($this->u_action), E_USER_WARNING);
 				}
 
-				/* @var $phpbb_permissions \phpbb\permissions */
-				$phpbb_permissions = $phpbb_container->get('acl.permissions');
+				/* @var $an602_permissions \an602\permissions */
+				$an602_permissions = $an602_container->get('acl.permissions');
 
 				$template->assign_vars(array(
 					'S_EDIT'			=> true,
@@ -317,12 +317,12 @@ class acp_permission_roles
 
 					'ROLE_NAME'			=> $role_row['role_name'],
 					'ROLE_DESCRIPTION'	=> $role_row['role_description'],
-					'L_ACL_TYPE'		=> $phpbb_permissions->get_type_lang($permission_type),
+					'L_AN602_ACL_TYPE'		=> $an602_permissions->get_type_lang($permission_type),
 				));
 
-				// We need to fill the auth options array with ACL_NO options ;)
+				// We need to fill the auth options array with AN602_ACL_NO options ;)
 				$sql = 'SELECT auth_option_id, auth_option
-					FROM ' . ACL_OPTIONS_TABLE . "
+					FROM ' . AN602_ACL_OPTIONS_TABLE . "
 					WHERE auth_option " . $db->sql_like_expression($permission_type . $db->get_any_char()) . "
 						AND auth_option <> '{$permission_type}'
 					ORDER BY auth_option_id";
@@ -332,7 +332,7 @@ class acp_permission_roles
 				{
 					if (!isset($auth_options[$row['auth_option']]))
 					{
-						$auth_options[$row['auth_option']] = ACL_NO;
+						$auth_options[$row['auth_option']] = AN602_ACL_NO;
 					}
 				}
 				$db->sql_freeresult($result);
@@ -373,7 +373,7 @@ class acp_permission_roles
 				}
 
 				$sql = 'SELECT role_order
-					FROM ' . ACL_ROLES_TABLE . "
+					FROM ' . AN602_ACL_ROLES_TABLE . "
 					WHERE role_id = $role_id";
 				$result = $db->sql_query($sql);
 				$order = $db->sql_fetchfield('role_order');
@@ -386,7 +386,7 @@ class acp_permission_roles
 				$order = (int) $order;
 				$order_total = $order * 2 + (($action == 'move_up') ? -1 : 1);
 
-				$sql = 'UPDATE ' . ACL_ROLES_TABLE . '
+				$sql = 'UPDATE ' . AN602_ACL_ROLES_TABLE . '
 					SET role_order = ' . $order_total . " - role_order
 					WHERE role_type = '" . $db->sql_escape($permission_type) . "'
 						AND role_order IN ($order, " . (($action == 'move_up') ? $order - 1 : $order + 1) . ')';
@@ -394,7 +394,7 @@ class acp_permission_roles
 
 				if ($request->is_ajax())
 				{
-					$json_response = new \phpbb\json_response;
+					$json_response = new \an602\json_response;
 					$json_response->send(array(
 						'success'	=> (bool) $db->sql_affectedrows(),
 					));
@@ -405,7 +405,7 @@ class acp_permission_roles
 
 		// By default, check that role_order is valid and fix it if necessary
 		$sql = 'SELECT role_id, role_order
-			FROM ' . ACL_ROLES_TABLE . "
+			FROM ' . AN602_ACL_ROLES_TABLE . "
 			WHERE role_type = '" . $db->sql_escape($permission_type) . "'
 			ORDER BY role_order ASC";
 		$result = $db->sql_query($sql);
@@ -418,7 +418,7 @@ class acp_permission_roles
 				$order++;
 				if ($row['role_order'] != $order)
 				{
-					$db->sql_query('UPDATE ' . ACL_ROLES_TABLE . " SET role_order = $order WHERE role_id = {$row['role_id']}");
+					$db->sql_query('UPDATE ' . AN602_ACL_ROLES_TABLE . " SET role_order = $order WHERE role_id = {$row['role_id']}");
 				}
 			}
 			while ($row = $db->sql_fetchrow($result));
@@ -430,7 +430,7 @@ class acp_permission_roles
 
 		// Select existing roles
 		$sql = 'SELECT *
-			FROM ' . ACL_ROLES_TABLE . "
+			FROM ' . AN602_ACL_ROLES_TABLE . "
 			WHERE role_type = '" . $db->sql_escape($permission_type) . "'
 			ORDER BY role_order ASC";
 		$result = $db->sql_query($sql);
@@ -482,10 +482,10 @@ class acp_permission_roles
 	*/
 	function display_auth_options($auth_options)
 	{
-		global $template, $phpbb_container;
+		global $template, $an602_container;
 
-		/* @var $phpbb_permissions \phpbb\permissions */
-		$phpbb_permissions = $phpbb_container->get('acl.permissions');
+		/* @var $an602_permissions \an602\permissions */
+		$an602_permissions = $an602_container->get('acl.permissions');
 
 		$content_array = $categories = array();
 		$key_sort_array = array(0);
@@ -502,7 +502,7 @@ class acp_permission_roles
 		foreach ($content_array as $cat => $cat_array)
 		{
 			$template->assign_block_vars('auth', array(
-				'CAT_NAME'	=> $phpbb_permissions->get_category_lang($cat),
+				'CAT_NAME'	=> $an602_permissions->get_category_lang($cat),
 
 				'S_YES'		=> ($cat_array['S_YES'] && !$cat_array['S_NEVER'] && !$cat_array['S_NO']) ? true : false,
 				'S_NEVER'	=> ($cat_array['S_NEVER'] && !$cat_array['S_YES'] && !$cat_array['S_NO']) ? true : false,
@@ -512,12 +512,12 @@ class acp_permission_roles
 			foreach ($cat_array['permissions'] as $permission => $allowed)
 			{
 				$template->assign_block_vars('auth.mask', array(
-					'S_YES'		=> ($allowed == ACL_YES) ? true : false,
-					'S_NEVER'	=> ($allowed == ACL_NEVER) ? true : false,
-					'S_NO'		=> ($allowed == ACL_NO) ? true : false,
+					'S_YES'		=> ($allowed == AN602_ACL_YES) ? true : false,
+					'S_NEVER'	=> ($allowed == AN602_ACL_NEVER) ? true : false,
+					'S_NO'		=> ($allowed == AN602_ACL_NO) ? true : false,
 
 					'FIELD_NAME'	=> $permission,
-					'PERMISSION'	=> $phpbb_permissions->get_permission_lang($permission),
+					'PERMISSION'	=> $an602_permissions->get_permission_lang($permission),
 				));
 			}
 		}
@@ -532,20 +532,20 @@ class acp_permission_roles
 
 		// Get complete auth array
 		$sql = 'SELECT auth_option, auth_option_id
-			FROM ' . ACL_OPTIONS_TABLE . "
+			FROM ' . AN602_ACL_OPTIONS_TABLE . "
 			WHERE auth_option " . $db->sql_like_expression($permission_type . $db->get_any_char());
 		$result = $db->sql_query($sql);
 
 		$auth_settings = array();
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$auth_settings[$row['auth_option']] = ACL_NO;
+			$auth_settings[$row['auth_option']] = AN602_ACL_NO;
 		}
 		$db->sql_freeresult($result);
 
 		// Get the role auth settings we need to re-set...
 		$sql = 'SELECT o.auth_option, r.auth_setting
-			FROM ' . ACL_ROLES_DATA_TABLE . ' r, ' . ACL_OPTIONS_TABLE . ' o
+			FROM ' . AN602_ACL_ROLES_DATA_TABLE . ' r, ' . AN602_ACL_OPTIONS_TABLE . ' o
 			WHERE o.auth_option_id = r.auth_option_id
 				AND r.role_id = ' . $role_id;
 		$result = $db->sql_query($sql);
@@ -574,20 +574,20 @@ class acp_permission_roles
 		}
 
 		// Remove role from users and groups just to be sure (happens through acl_set)
-		$sql = 'DELETE FROM ' . ACL_USERS_TABLE . '
+		$sql = 'DELETE FROM ' . AN602_ACL_AN602_USERS_TABLE . '
 			WHERE auth_role_id = ' . $role_id;
 		$db->sql_query($sql);
 
-		$sql = 'DELETE FROM ' . ACL_GROUPS_TABLE . '
+		$sql = 'DELETE FROM ' . AN602_ACL_AN602_GROUPS_TABLE . '
 			WHERE auth_role_id = ' . $role_id;
 		$db->sql_query($sql);
 
 		// Remove role data and role
-		$sql = 'DELETE FROM ' . ACL_ROLES_DATA_TABLE . '
+		$sql = 'DELETE FROM ' . AN602_ACL_ROLES_DATA_TABLE . '
 			WHERE role_id = ' . $role_id;
 		$db->sql_query($sql);
 
-		$sql = 'DELETE FROM ' . ACL_ROLES_TABLE . '
+		$sql = 'DELETE FROM ' . AN602_ACL_ROLES_TABLE . '
 			WHERE role_id = ' . $role_id;
 		$db->sql_query($sql);
 

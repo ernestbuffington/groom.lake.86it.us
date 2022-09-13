@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -34,12 +34,12 @@ class ucp_auth_link
 	*/
 	public function main($id, $mode)
 	{
-		global $request, $template, $phpbb_container, $user;
+		global $request, $template, $an602_container, $user;
 
 		$error = array();
 
-		/* @var $provider_collection \phpbb\auth\provider_collection */
-		$provider_collection = $phpbb_container->get('auth.provider_collection');
+		/* @var $provider_collection \an602\auth\provider_collection */
+		$provider_collection = $an602_container->get('auth.provider_collection');
 		$auth_provider = $provider_collection->get_provider();
 
 		// confirm that the auth provider supports this page
@@ -52,7 +52,7 @@ class ucp_auth_link
 		$s_hidden_fields = array();
 		add_form_key('ucp_auth_link');
 
-		$submit	= $request->variable('submit', false, false, \phpbb\request\request_interface::POST);
+		$submit	= $request->variable('submit', false, false, \an602\request\request_interface::POST);
 
 		// This path is only for primary actions
 		if (!count($error) && $submit)
@@ -65,7 +65,7 @@ class ucp_auth_link
 			if (!count($error))
 			{
 				// Any post data could be necessary for auth (un)linking
-				$link_data = $request->get_super_global(\phpbb\request\request_interface::POST);
+				$link_data = $request->get_super_global(\an602\request\request_interface::POST);
 
 				// The current user_id is also necessary
 				$link_data['user_id'] = $user->data['user_id'];
@@ -73,7 +73,7 @@ class ucp_auth_link
 				// Tell the provider that the method is auth_link not login_link
 				$link_data['link_method'] = 'auth_link';
 
-				if ($request->variable('link', 0, false, \phpbb\request\request_interface::POST))
+				if ($request->variable('link', 0, false, \an602\request\request_interface::POST))
 				{
 					$error[] = $auth_provider->link_account($link_data);
 				}

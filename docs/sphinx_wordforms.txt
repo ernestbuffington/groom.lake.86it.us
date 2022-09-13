@@ -1,4 +1,4 @@
-# Sample wordforms file for phpBB using Sphinx search engine
+# Sample wordforms file for AN602 using Sphinx search engine
 #
 # Wordform rules map different word forms to a single normal form. 
 # Wordforms are defined AFTER tokenisation and are therefore case insensitive and cannot contain ignored characters.

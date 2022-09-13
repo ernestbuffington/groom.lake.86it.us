@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -36,7 +36,7 @@ class mcp_logs
 	function main($id, $mode)
 	{
 		global $auth, $db, $user, $template, $request;
-		global $config, $phpbb_container, $phpbb_log;
+		global $config, $an602_container, $an602_log;
 
 		$user->add_lang('acp/common');
 		$this->p_master->add_mod_info('acp');
@@ -66,8 +66,8 @@ class mcp_logs
 		$this->tpl_name = 'mcp_logs';
 		$this->page_title = 'MCP_LOGS';
 
-		/* @var $pagination \phpbb\pagination */
-		$pagination = $phpbb_container->get('pagination');
+		/* @var $pagination \an602\pagination */
+		$pagination = $an602_container->get('pagination');
 
 		$forum_list = array_values(array_intersect(get_forum_list('f_read'), get_forum_list('m_')));
 		$forum_list[] = 0;
@@ -95,7 +95,7 @@ class mcp_logs
 				$topic_id = $request->variable('t', 0);
 
 				$sql = 'SELECT forum_id
-					FROM ' . TOPICS_TABLE . '
+					FROM ' . AN602_TOPICS_TABLE . '
 					WHERE topic_id = ' . $topic_id;
 				$result = $db->sql_query($sql);
 				$forum_id = (int) $db->sql_fetchfield('forum_id');
@@ -123,7 +123,7 @@ class mcp_logs
 						'log_id'	=> array('IN' => $marked),
 					);
 
-					$phpbb_log->delete('mod', $conditions);
+					$an602_log->delete('mod', $conditions);
 				}
 				else if ($deleteall)
 				{
@@ -144,7 +144,7 @@ class mcp_logs
 						$conditions['topic_id'] = $topic_id;
 					}
 
-					$phpbb_log->delete('mod', $conditions);
+					$an602_log->delete('mod', $conditions);
 				}
 			}
 			else

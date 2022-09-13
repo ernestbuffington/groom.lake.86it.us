@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -149,30 +149,30 @@ class bbcode
 	*/
 	function bbcode_cache_init()
 	{
-		global $user, $phpbb_dispatcher, $phpbb_extension_manager, $phpbb_container, $phpbb_filesystem;
+		global $user, $an602_dispatcher, $an602_extension_manager, $an602_container, $an602_filesystem;
 
 		if (empty($this->template_filename))
 		{
 			$this->template_bitfield = new bitfield($user->style['bbcode_bitfield']);
 
-			$template = new \phpbb\template\twig\twig(
-				$phpbb_container->get('path_helper'),
-				$phpbb_container->get('config'),
-				new \phpbb\template\context(),
-				new \phpbb\template\twig\environment(
-					$phpbb_container->get('config'),
-					$phpbb_container->get('filesystem'),
-					$phpbb_container->get('path_helper'),
-					$phpbb_container->getParameter('core.cache_dir'),
-					$phpbb_container->get('ext.manager'),
-					new \phpbb\template\twig\loader(
-						$phpbb_filesystem
+			$template = new \an602\template\twig\twig(
+				$an602_container->get('path_helper'),
+				$an602_container->get('config'),
+				new \an602\template\context(),
+				new \an602\template\twig\environment(
+					$an602_container->get('config'),
+					$an602_container->get('filesystem'),
+					$an602_container->get('path_helper'),
+					$an602_container->getParameter('core.cache_dir'),
+					$an602_container->get('ext.manager'),
+					new \an602\template\twig\loader(
+						$an602_filesystem
 					)
 				),
-				$phpbb_container->getParameter('core.cache_dir'),
-				$phpbb_container->get('user'),
-				$phpbb_container->get('template.twig.extensions.collection'),
-				$phpbb_extension_manager
+				$an602_container->getParameter('core.cache_dir'),
+				$an602_container->get('user'),
+				$an602_container->get('template.twig.extensions.collection'),
+				$an602_extension_manager
 			);
 
 			$template->set_style();
@@ -205,7 +205,7 @@ class bbcode
 			global $db;
 
 			$sql = 'SELECT *
-				FROM ' . BBCODES_TABLE . '
+				FROM ' . AN602_BBCODES_TABLE . '
 				WHERE ' . $db->sql_in_set('bbcode_id', $sql);
 			$result = $db->sql_query($sql, 3600);
 
@@ -455,7 +455,7 @@ class bbcode
 		* @since 3.1.3-RC1
 		*/
 		$vars = array('bbcode_cache', 'bbcode_bitfield', 'bbcode_uid');
-		extract($phpbb_dispatcher->trigger_event('core.bbcode_cache_init_end', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.bbcode_cache_init_end', compact($vars)));
 
 		$this->bbcode_cache = $bbcode_cache;
 		$this->bbcode_bitfield = $bbcode_bitfield;
@@ -509,7 +509,7 @@ class bbcode
 			$this->bbcode_template = array();
 
 			// Capture the BBCode template matches
-			// Allow phpBB template or the Twig syntax
+			// Allow AN602 template or the Twig syntax
 			$matches = (preg_match_all('#<!-- BEGIN (.*?) -->(.*?)<!-- END (?:.*?) -->#', $tpl, $match)) ?:
 							preg_match_all('#{% for (.*?) in .*? %}(.*?){% endfor %}#s', $tpl, $match);
 
@@ -684,7 +684,7 @@ class bbcode
 	*/
 	function bbcode_second_pass_by_extension()
 	{
-		global $phpbb_dispatcher;
+		global $an602_dispatcher;
 
 		$return = false;
 		$params_array = func_get_args();
@@ -700,7 +700,7 @@ class bbcode
 		* @since 3.1.5-RC1
 		*/
 		$vars = array('params_array', 'return');
-		extract($phpbb_dispatcher->trigger_event('core.bbcode_second_pass_by_extension', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.bbcode_second_pass_by_extension', compact($vars)));
 
 		return $return;
 	}

@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -50,8 +50,8 @@ class acp_search
 
 	function settings($id, $mode)
 	{
-		global $user, $template, $phpbb_log, $request;
-		global $config, $phpbb_admin_path, $phpEx;
+		global $user, $template, $an602_log, $request;
+		global $config, $an602_admin_path, $phpEx;
 
 		$submit = $request->is_set_post('submit');
 
@@ -149,7 +149,7 @@ class acp_search
 			$extra_message = '';
 			if ($updated)
 			{
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_CONFIG_SEARCH');
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_CONFIG_SEARCH');
 			}
 
 			if (isset($cfg_array['search_type']) && in_array($cfg_array['search_type'], $search_types, true) && ($cfg_array['search_type'] != $config['search_type']))
@@ -167,9 +167,9 @@ class acp_search
 
 							if (!$updated)
 							{
-								$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_CONFIG_SEARCH');
+								$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_CONFIG_SEARCH');
 							}
-							$extra_message = '<br />' . $user->lang['SWITCHED_SEARCH_BACKEND'] . '<br /><a href="' . append_sid("{$phpbb_admin_path}index.$phpEx", 'i=search&amp;mode=index') . '">&raquo; ' . $user->lang['GO_TO_SEARCH_INDEX'] . '</a>';
+							$extra_message = '<br />' . $user->lang['SWITCHED_SEARCH_BACKEND'] . '<br /><a href="' . append_sid("{$an602_admin_path}index.$phpEx", 'i=search&amp;mode=index') . '">&raquo; ' . $user->lang['GO_TO_SEARCH_INDEX'] . '</a>';
 						}
 						else
 						{
@@ -239,8 +239,8 @@ class acp_search
 
 	function index($id, $mode)
 	{
-		global $db, $user, $template, $phpbb_log, $request;
-		global $config, $phpbb_admin_path, $phpEx;
+		global $db, $user, $template, $an602_log, $request;
+		global $config, $an602_admin_path, $phpEx;
 
 		$action = $request->variable('action', '');
 		$this->state = explode(',', $config['search_indexing_state']);
@@ -307,7 +307,7 @@ class acp_search
 					if (method_exists($this->search, 'delete_index'))
 					{
 						// pass a reference to myself so the $search object can make use of save_state() and attributes
-						if ($error = $this->search->delete_index($this, append_sid("{$phpbb_admin_path}index.$phpEx", "i=$id&mode=$mode&action=delete&hash=" . generate_link_hash('acp_search'), false)))
+						if ($error = $this->search->delete_index($this, append_sid("{$an602_admin_path}index.$phpEx", "i=$id&mode=$mode&action=delete&hash=" . generate_link_hash('acp_search'), false)))
 						{
 							$this->state = array('');
 							$this->save_state();
@@ -321,7 +321,7 @@ class acp_search
 						while (still_on_time() && $post_counter <= $this->max_post_id)
 						{
 							$sql = 'SELECT post_id, poster_id, forum_id
-								FROM ' . POSTS_TABLE . '
+								FROM ' . AN602_POSTS_TABLE . '
 								WHERE post_id > ' . (int) $post_counter . '
 								ORDER BY post_id ASC';
 							$result = $db->sql_query_limit($sql, $this->batch_size);
@@ -359,7 +359,7 @@ class acp_search
 					$this->state = array('');
 					$this->save_state();
 
-					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_SEARCH_INDEX_REMOVED', false, array($name));
+					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_SEARCH_INDEX_REMOVED', false, array($name));
 					trigger_error($user->lang['SEARCH_INDEX_REMOVED'] . adm_back_link($this->u_action) . $this->close_popup_js());
 				break;
 
@@ -367,7 +367,7 @@ class acp_search
 					if (method_exists($this->search, 'create_index'))
 					{
 						// pass a reference to acp_search so the $search object can make use of save_state() and attributes
-						if ($error = $this->search->create_index($this, append_sid("{$phpbb_admin_path}index.$phpEx", "i=$id&mode=$mode&action=create", false)))
+						if ($error = $this->search->create_index($this, append_sid("{$an602_admin_path}index.$phpEx", "i=$id&mode=$mode&action=create", false)))
 						{
 							$this->state = array('');
 							$this->save_state();
@@ -377,7 +377,7 @@ class acp_search
 					else
 					{
 						$sql = 'SELECT forum_id, enable_indexing
-							FROM ' . FORUMS_TABLE;
+							FROM ' . AN602_FORUMS_TABLE;
 						$result = $db->sql_query($sql, 3600);
 
 						while ($row = $db->sql_fetchrow($result))
@@ -391,7 +391,7 @@ class acp_search
 						while (still_on_time() && $post_counter <= $this->max_post_id)
 						{
 							$sql = 'SELECT post_id, post_subject, post_text, poster_id, forum_id
-								FROM ' . POSTS_TABLE . '
+								FROM ' . AN602_POSTS_TABLE . '
 								WHERE post_id > ' . (int) $post_counter . '
 								ORDER BY post_id ASC';
 							$result = $db->sql_query_limit($sql, $this->batch_size);
@@ -446,7 +446,7 @@ class acp_search
 					$this->state = array('');
 					$this->save_state();
 
-					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_SEARCH_INDEX_CREATED', false, array($name));
+					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_SEARCH_INDEX_CREATED', false, array($name));
 					trigger_error($user->lang['SEARCH_INDEX_CREATED'] . adm_back_link($this->u_action) . $this->close_popup_js());
 				break;
 			}
@@ -516,8 +516,8 @@ class acp_search
 		$template->assign_vars(array(
 			'S_INDEX'				=> true,
 			'U_ACTION'				=> $this->u_action . '&amp;hash=' . generate_link_hash('acp_search'),
-			'U_PROGRESS_BAR'		=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=$id&amp;mode=$mode&amp;action=progress_bar"),
-			'UA_PROGRESS_BAR'		=> addslashes(append_sid("{$phpbb_admin_path}index.$phpEx", "i=$id&amp;mode=$mode&amp;action=progress_bar")),
+			'U_PROGRESS_BAR'		=> append_sid("{$an602_admin_path}index.$phpEx", "i=$id&amp;mode=$mode&amp;action=progress_bar"),
+			'UA_PROGRESS_BAR'		=> addslashes(append_sid("{$an602_admin_path}index.$phpEx", "i=$id&amp;mode=$mode&amp;action=progress_bar")),
 		));
 
 		if (isset($this->state[1]))
@@ -562,14 +562,14 @@ class acp_search
 
 	function get_search_types()
 	{
-		global $phpbb_extension_manager;
+		global $an602_extension_manager;
 
-		$finder = $phpbb_extension_manager->get_finder();
+		$finder = $an602_extension_manager->get_finder();
 
 		return $finder
 			->extension_suffix('_backend')
 			->extension_directory('/search')
-			->core_path('phpbb/search/')
+			->core_path('an602/search/')
 			->get_classes();
 	}
 
@@ -578,7 +578,7 @@ class acp_search
 		global $db;
 
 		$sql = 'SELECT MAX(post_id) as max_post_id
-			FROM '. POSTS_TABLE;
+			FROM '. AN602_POSTS_TABLE;
 		$result = $db->sql_query($sql);
 		$max_post_id = (int) $db->sql_fetchfield('max_post_id');
 		$db->sql_freeresult($result);
@@ -607,7 +607,7 @@ class acp_search
 	*/
 	function init_search($type, &$search, &$error)
 	{
-		global $phpbb_root_path, $phpEx, $user, $auth, $config, $db, $phpbb_dispatcher;
+		global $an602_root_path, $phpEx, $user, $auth, $config, $db, $an602_dispatcher;
 
 		if (!class_exists($type) || !method_exists($type, 'keyword_search'))
 		{
@@ -616,7 +616,7 @@ class acp_search
 		}
 
 		$error = false;
-		$search = new $type($error, $phpbb_root_path, $phpEx, $auth, $config, $db, $user, $phpbb_dispatcher);
+		$search = new $type($error, $an602_root_path, $phpEx, $auth, $config, $db, $user, $an602_dispatcher);
 
 		return $error;
 	}

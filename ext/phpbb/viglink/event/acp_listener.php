@@ -1,14 +1,14 @@
 <?php
 /**
  *
- * VigLink extension for the phpBB Forum Software package.
+ * VigLink extension for the AN602 CMS Software package.
  *
- * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
+ * @copyright (c) 2014 PHP-AN602 <https://groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
 
-namespace phpbb\viglink\event;
+namespace an602\viglink\event;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -17,26 +17,26 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class acp_listener implements EventSubscriberInterface
 {
-	/** @var \phpbb\config\config $config Config object */
+	/** @var \an602\config\config $config Config object */
 	protected $config;
 
-	/** @var \phpbb\request\request_interface $request Request interface */
+	/** @var \an602\request\request_interface $request Request interface */
 	protected $request;
 
-	/** @var \phpbb\template\template $template Template object */
+	/** @var \an602\template\template $template Template object */
 	protected $template;
 
-	/** @var \phpbb\language\language $language Language object */
+	/** @var \an602\language\language $language Language object */
 	protected $language;
 
-	/** @var \phpbb\user $user User object */
+	/** @var \an602\user $user User object */
 	protected $user;
 
-	/** @var \phpbb\viglink\acp\viglink_helper $helper VigLink helper object */
+	/** @var \an602\viglink\acp\viglink_helper $helper VigLink helper object */
 	protected $helper;
 
-	/** @var string $phpbb_root_path phpBB root path */
-	protected $phpbb_root_path;
+	/** @var string $an602_root_path AN602 root path */
+	protected $an602_root_path;
 
 	/** @var string $php_ext PHP file extension */
 	protected $php_ext;
@@ -44,18 +44,18 @@ class acp_listener implements EventSubscriberInterface
 	/**
 	 * Constructor
 	 *
-	 * @param \phpbb\config\config $config
-	 * @param \phpbb\language\language $language
-	 * @param \phpbb\request\request_interface $request phpBB request
-	 * @param \phpbb\template\template $template
-	 * @param \phpbb\user $user User object
-	 * @param \phpbb\viglink\acp\viglink_helper $viglink_helper Viglink helper object
-	 * @param string $phpbb_root_path phpBB root path
+	 * @param \an602\config\config $config
+	 * @param \an602\language\language $language
+	 * @param \an602\request\request_interface $request AN602 request
+	 * @param \an602\template\template $template
+	 * @param \an602\user $user User object
+	 * @param \an602\viglink\acp\viglink_helper $viglink_helper Viglink helper object
+	 * @param string $an602_root_path AN602 root path
 	 * @param string $php_ext PHP file extension
 	 */
-	public function __construct(\phpbb\config\config $config, \phpbb\language\language $language, \phpbb\request\request_interface $request,
-								\phpbb\template\template $template, \phpbb\user $user, \phpbb\viglink\acp\viglink_helper $viglink_helper,
-								$phpbb_root_path, $php_ext)
+	public function __construct(\an602\config\config $config, \an602\language\language $language, \an602\request\request_interface $request,
+								\an602\template\template $template, \an602\user $user, \an602\viglink\acp\viglink_helper $viglink_helper,
+								$an602_root_path, $php_ext)
 	{
 		$this->config = $config;
 		$this->language = $language;
@@ -63,7 +63,7 @@ class acp_listener implements EventSubscriberInterface
 		$this->template = $template;
 		$this->user = $user;
 		$this->helper = $viglink_helper;
-		$this->phpbb_root_path = $phpbb_root_path;
+		$this->an602_root_path = $an602_root_path;
 		$this->php_ext = $php_ext;
 	}
 
@@ -74,14 +74,14 @@ class acp_listener implements EventSubscriberInterface
 	{
 		return array(
 			'core.acp_main_notice'				=> 'set_viglink_services',
-			'core.acp_help_phpbb_submit_before'	=> 'update_viglink_settings',
+			'core.acp_help_an602_submit_before'	=> 'update_viglink_settings',
 		);
 	}
 
 	/**
-	 * Check if phpBB is allowing VigLink services to run.
+	 * Check if AN602 is allowing VigLink services to run.
 	 *
-	 * VigLink will be disabled if phpBB is disallowing it to run.
+	 * VigLink will be disabled if AN602 is disallowing it to run.
 	 *
 	 * @return void
 	 */
@@ -100,7 +100,7 @@ class acp_listener implements EventSubscriberInterface
 		if (empty($this->config['viglink_ask_admin']) && $this->user->data['user_type'] == USER_FOUNDER && (time() - intval($this->config['viglink_ask_admin_last']) > 86400))
 		{
 			$this->config->set('viglink_ask_admin_last', time());
-			redirect(append_sid($this->phpbb_root_path . 'adm/index.' . $this->php_ext, 'i=acp_help_phpbb&mode=help_phpbb'));
+			redirect(append_sid($this->an602_root_path . 'admin/adm/index.' . $this->php_ext, 'i=acp_help_an602&mode=help_an602'));
 		}
 	}
 
@@ -113,7 +113,7 @@ class acp_listener implements EventSubscriberInterface
 	 */
 	public function update_viglink_settings($event)
 	{
-		$this->language->add_lang('viglink_module_acp', 'phpbb/viglink');
+		$this->language->add_lang('viglink_module_acp', 'an602/viglink');
 
 		$viglink_setting = $this->request->variable('enable-viglink', false);
 
@@ -129,7 +129,7 @@ class acp_listener implements EventSubscriberInterface
 		$this->template->assign_vars(array(
 			'S_ENABLE_VIGLINK'				=> !empty($this->config['viglink_enabled']) || !$this->config['help_send_statistics_time'],
 			'S_VIGLINK_ASK_ADMIN'			=> empty($this->config['viglink_ask_admin']) && $this->user->data['user_type'] == USER_FOUNDER,
-			'ACP_VIGLINK_SETTINGS_CHANGE'	=> $this->language->lang('ACP_VIGLINK_SETTINGS_CHANGE', append_sid($this->phpbb_root_path . 'adm/index.' . $this->php_ext, 'i=-phpbb-viglink-acp-viglink_module&mode=settings')),
+			'ACP_VIGLINK_SETTINGS_CHANGE'	=> $this->language->lang('ACP_VIGLINK_SETTINGS_CHANGE', append_sid($this->an602_root_path . 'admin/adm/index.' . $this->php_ext, 'i=-an602-viglink-acp-viglink_module&mode=settings')),
 		));
 	}
 }

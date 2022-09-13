@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -40,13 +40,13 @@ class transfer
 	*/
 	function __construct()
 	{
-		global $phpbb_root_path;
+		global $an602_root_path;
 
 		$this->file_perms	= 0644;
 		$this->dir_perms	= 0777;
 
 		// We use the store directory as temporary path to circumvent open basedir restrictions
-		$this->tmp_path = $phpbb_root_path . 'store/';
+		$this->tmp_path = $an602_root_path . 'store/';
 	}
 
 	/**
@@ -54,14 +54,14 @@ class transfer
 	*/
 	function write_file($destination_file = '', $contents = '')
 	{
-		global $phpbb_root_path;
+		global $an602_root_path;
 
-		$destination_file = $this->root_path . str_replace($phpbb_root_path, '', $destination_file);
+		$destination_file = $this->root_path . str_replace($an602_root_path, '', $destination_file);
 
 		// need to create a temp file and then move that temp file.
 		// ftp functions can only move files around and can't create.
 		// This means that the users will need to have access to write
-		// temporary files or have write access on a folder within phpBB
+		// temporary files or have write access on a folder within AN602
 		// like the cache folder. If the user can't do either, then
 		// he/she needs to use the fsock ftp method
 		$temp_name = tempnam($this->tmp_path, 'transfer_');
@@ -106,9 +106,9 @@ class transfer
 	*/
 	function make_dir($dir)
 	{
-		global $phpbb_root_path;
+		global $an602_root_path;
 
-		$dir = str_replace($phpbb_root_path, '', $dir);
+		$dir = str_replace($an602_root_path, '', $dir);
 		$dir = explode('/', $dir);
 		$dirs = '';
 
@@ -122,7 +122,7 @@ class transfer
 			}
 			$cur_dir = $dir[$i] . '/';
 
-			if (!file_exists($phpbb_root_path . $dirs . $cur_dir))
+			if (!file_exists($an602_root_path . $dirs . $cur_dir))
 			{
 				// create the directory
 				$result = $this->_mkdir($dir[$i]);
@@ -146,10 +146,10 @@ class transfer
 	*/
 	function copy_file($from_loc, $to_loc)
 	{
-		global $phpbb_root_path;
+		global $an602_root_path;
 
-		$from_loc = ((strpos($from_loc, $phpbb_root_path) !== 0) ? $phpbb_root_path : '') . $from_loc;
-		$to_loc = $this->root_path . str_replace($phpbb_root_path, '', $to_loc);
+		$from_loc = ((strpos($from_loc, $an602_root_path) !== 0) ? $an602_root_path : '') . $from_loc;
+		$to_loc = $this->root_path . str_replace($an602_root_path, '', $to_loc);
 
 		if (!file_exists($from_loc))
 		{
@@ -166,9 +166,9 @@ class transfer
 	*/
 	function delete_file($file)
 	{
-		global $phpbb_root_path;
+		global $an602_root_path;
 
-		$file = $this->root_path . str_replace($phpbb_root_path, '', $file);
+		$file = $this->root_path . str_replace($an602_root_path, '', $file);
 
 		return $this->_delete($file);
 	}
@@ -179,9 +179,9 @@ class transfer
 	*/
 	function remove_dir($dir)
 	{
-		global $phpbb_root_path;
+		global $an602_root_path;
 
-		$dir = $this->root_path . str_replace($phpbb_root_path, '', $dir);
+		$dir = $this->root_path . str_replace($an602_root_path, '', $dir);
 
 		return $this->_rmdir($dir);
 	}
@@ -191,9 +191,9 @@ class transfer
 	*/
 	function rename($old_handle, $new_handle)
 	{
-		global $phpbb_root_path;
+		global $an602_root_path;
 
-		$old_handle = $this->root_path . str_replace($phpbb_root_path, '', $old_handle);
+		$old_handle = $this->root_path . str_replace($an602_root_path, '', $old_handle);
 
 		return $this->_rename($old_handle, $new_handle);
 	}
@@ -203,9 +203,9 @@ class transfer
 	*/
 	function file_exists($directory, $filename)
 	{
-		global $phpbb_root_path;
+		global $an602_root_path;
 
-		$directory = $this->root_path . str_replace($phpbb_root_path, '', $directory);
+		$directory = $this->root_path . str_replace($an602_root_path, '', $directory);
 
 		$this->_chdir($directory);
 		$result = $this->_ls();

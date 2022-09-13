@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -42,9 +42,9 @@ class p_master
 	*/
 	function __construct($include_path = false)
 	{
-		global $phpbb_root_path;
+		global $an602_root_path;
 
-		$this->include_path = ($include_path !== false) ? $include_path : $phpbb_root_path . 'includes/';
+		$this->include_path = ($include_path !== false) ? $include_path : $an602_root_path . 'includes/';
 
 		// Make sure the path ends with /
 		if (substr($this->include_path, -1) !== '/')
@@ -83,7 +83,7 @@ class p_master
 	function list_modules($p_class)
 	{
 		global $db, $user, $cache;
-		global $phpbb_dispatcher;
+		global $an602_dispatcher;
 
 		// Sanitise for future path use, it's escaped as appropriate for queries
 		$this->p_class = str_replace(array('.', '/', '\\'), '', basename($p_class));
@@ -93,7 +93,7 @@ class p_master
 		{
 			// Get modules
 			$sql = 'SELECT *
-				FROM ' . MODULES_TABLE . "
+				FROM ' . AN602_MODULES_TABLE . "
 				WHERE module_class = '" . $db->sql_escape($this->p_class) . "'
 				ORDER BY left_id ASC";
 			$result = $db->sql_query($sql);
@@ -250,21 +250,21 @@ class p_master
 			// Function for building 'url_extra'
 			$short_name = $this->get_short_name($row['module_basename']);
 
-			$url_func = 'phpbb_module_' . $short_name . '_url';
+			$url_func = 'an602_module_' . $short_name . '_url';
 			if (!function_exists($url_func))
 			{
 				$url_func = '_module_' . $short_name . '_url';
 			}
 
 			// Function for building the language name
-			$lang_func = 'phpbb_module_' . $short_name . '_lang';
+			$lang_func = 'an602_module_' . $short_name . '_lang';
 			if (!function_exists($lang_func))
 			{
 				$lang_func = '_module_' . $short_name . '_lang';
 			}
 
 			// Custom function for calling parameters on module init (for example assigning template variables)
-			$custom_func = 'phpbb_module_' . $short_name;
+			$custom_func = 'an602_module_' . $short_name;
 			if (!function_exists($custom_func))
 			{
 				$custom_func = '_module_' . $short_name;
@@ -311,7 +311,7 @@ class p_master
 			* @since 3.1.0-b3
 			*/
 			$vars = array('url_func', 'lang_func', 'custom_func', 'row', 'module_row');
-			extract($phpbb_dispatcher->trigger_event('core.modify_module_row', compact($vars)));
+			extract($an602_dispatcher->trigger_event('core.modify_module_row', compact($vars)));
 
 			$this->module_ary[] = $module_row;
 		}
@@ -388,7 +388,7 @@ class p_master
 	static function module_auth($module_auth, $forum_id)
 	{
 		global $auth, $config;
-		global $request, $phpbb_extension_manager, $phpbb_dispatcher;
+		global $request, $an602_extension_manager, $an602_dispatcher;
 
 		$module_auth = trim($module_auth);
 
@@ -412,7 +412,7 @@ class p_master
 			'aclf_([a-z0-9_]+)'				=> '(int) $auth->acl_getf_global(\'\\1\')',
 			'cfg_([a-z0-9_]+)'				=> '(int) $config[\'\\1\']',
 			'request_([a-zA-Z0-9_]+)'		=> '$request->variable(\'\\1\', false)',
-			'ext_([a-zA-Z0-9_/]+)'			=> 'array_key_exists(\'\\1\', $phpbb_extension_manager->all_enabled())',
+			'ext_([a-zA-Z0-9_/]+)'			=> 'array_key_exists(\'\\1\', $an602_extension_manager->all_enabled())',
 			'authmethod_([a-z0-9_\\\\]+)'		=> '($config[\'auth_method\'] === \'\\1\')',
 		);
 
@@ -428,7 +428,7 @@ class p_master
 		* @since 3.1.0-a3
 		*/
 		$vars = array('valid_tokens', 'module_auth', 'forum_id');
-		extract($phpbb_dispatcher->trigger_event('core.module_auth', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.module_auth', compact($vars)));
 
 		$tokens = $match[0];
 		for ($i = 0, $size = count($tokens); $i < $size; $i++)
@@ -555,7 +555,7 @@ class p_master
 	*/
 	function load_active($mode = false, $module_url = false, $execute_module = true)
 	{
-		global $phpbb_root_path, $phpbb_admin_path, $phpEx, $user, $template, $request;
+		global $an602_root_path, $an602_admin_path, $phpEx, $user, $template, $request;
 
 		$module_path = $this->include_path . $this->p_class;
 		$icat = $request->variable('icat', '');
@@ -604,16 +604,16 @@ class p_master
 			// 0 vendor, 1 extension name, ...
 			if (isset($module_dir[1]))
 			{
-				$module_style_dir = $phpbb_root_path . 'ext/' . $module_dir[0] . '/' . $module_dir[1] . '/adm/style';
+				$module_style_dir = $an602_root_path . 'ext/' . $module_dir[0] . '/' . $module_dir[1] . '/admin/adm/style';
 
 				if (is_dir($module_style_dir))
 				{
 					$template->set_custom_style(array(
 						array(
 							'name' 		=> 'adm',
-							'ext_path' 	=> 'adm/style/',
+							'ext_path' 	=> 'admin/adm/style/',
 						),
-					), array($module_style_dir, $phpbb_admin_path . 'style'));
+					), array($module_style_dir, $an602_admin_path . 'style'));
 				}
 			}
 
@@ -624,7 +624,7 @@ class p_master
 			}
 
 			// Not being able to overwrite ;)
-			$this->module->u_action = append_sid("{$phpbb_admin_path}index.$phpEx", 'i=' . $this->get_module_identifier($this->p_name)) . (($icat) ? '&amp;icat=' . $icat : '') . "&amp;mode={$this->p_mode}";
+			$this->module->u_action = append_sid("{$an602_admin_path}index.$phpEx", 'i=' . $this->get_module_identifier($this->p_name)) . (($icat) ? '&amp;icat=' . $icat : '') . "&amp;mode={$this->p_mode}";
 		}
 		else
 		{
@@ -640,7 +640,7 @@ class p_master
 			{
 				$module_style_dir = 'ext/' . $module_dir[0] . '/' . $module_dir[1] . '/styles';
 
-				if (is_dir($phpbb_root_path . $module_style_dir))
+				if (is_dir($an602_root_path . $module_style_dir))
 				{
 					$template->set_style(array($module_style_dir, 'styles'));
 				}
@@ -653,7 +653,7 @@ class p_master
 			}
 			else
 			{
-				$this->module->u_action = $phpbb_root_path . (($user->page['page_dir']) ? $user->page['page_dir'] . '/' : '') . $user->page['page_name'];
+				$this->module->u_action = $an602_root_path . (($user->page['page_dir']) ? $user->page['page_dir'] . '/' : '') . $user->page['page_name'];
 			}
 
 			$this->module->u_action = append_sid($this->module->u_action, 'i=' . $this->get_module_identifier($this->p_name)) . (($icat) ? '&amp;icat=' . $icat : '') . "&amp;mode={$this->p_mode}";
@@ -984,7 +984,7 @@ class p_master
 	*
 	* @param string $class module class (acp/mcp/ucp)
 	* @param string $name module name (class name of the module, or its basename
-	*                     phpbb_ext_foo_acp_bar_module, ucp_zebra or zebra)
+	*                     an602_ext_foo_acp_bar_module, ucp_zebra or zebra)
 	* @param string $mode mode, as passed through to the module
 	*
 	*/
@@ -1056,9 +1056,9 @@ class p_master
 	*/
 	function add_mod_info($module_class)
 	{
-		global $config, $user, $phpEx, $phpbb_extension_manager;
+		global $config, $user, $phpEx, $an602_extension_manager;
 
-		$finder = $phpbb_extension_manager->get_finder();
+		$finder = $an602_extension_manager->get_finder();
 
 		// We grab the language files from the default, English and user's language.
 		// So we can fall back to the other files like we do when using add_lang()
@@ -1105,12 +1105,12 @@ class p_master
 	* Retrieve shortened module basename for legacy basenames (with xcp_ prefix)
 	*
 	* @param string $basename A module basename
-	* @return string The basename if it starts with phpbb_ or the basename with
+	* @return string The basename if it starts with an602_ or the basename with
 	*                the current p_class (e.g. acp_) stripped.
 	*/
 	protected function get_short_name($basename)
 	{
-		if (substr($basename, 0, 6) === 'phpbb\\' || strpos($basename, '\\') !== false)
+		if (substr($basename, 0, 6) === 'an602\\' || strpos($basename, '\\') !== false)
 		{
 			return $basename;
 		}
@@ -1144,7 +1144,7 @@ class p_master
 	* Checks whether the given module basename is a correct class name
 	*
 	* @param string $basename A module basename
-	* @return bool True if the basename starts with phpbb_ or (x)cp_, false otherwise
+	* @return bool True if the basename starts with an602_ or (x)cp_, false otherwise
 	*/
 	protected function is_full_class($basename)
 	{

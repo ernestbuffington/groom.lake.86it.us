@@ -1,16 +1,16 @@
 <?php
 /**
  *
- * VigLink extension for the phpBB Forum Software package.
+ * VigLink extension for the AN602 CMS Software package.
  *
- * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
+ * @copyright (c) 2014 PHP-AN602 <https://groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
 
-namespace phpbb\viglink\acp;
+namespace an602\viglink\acp;
 
-use phpbb\request\type_cast_helper;
+use an602\request\type_cast_helper;
 
 /**
  * VigLink ACP module
@@ -28,21 +28,21 @@ class viglink_module
 
 	public function main($id, $mode)
 	{
-		global $phpbb_container;
+		global $an602_container;
 
-		/** @var \phpbb\config\config $config Config object */
-		$config = $phpbb_container->get('config');
+		/** @var \an602\config\config $config Config object */
+		$config = $an602_container->get('config');
 
-		/** @var \phpbb\language\language $language Language object */
-		$language = $phpbb_container->get('language');
+		/** @var \an602\language\language $language Language object */
+		$language = $an602_container->get('language');
 
-		/** @var \phpbb\request\request $request Request object */
-		$request  = $phpbb_container->get('request');
+		/** @var \an602\request\request $request Request object */
+		$request  = $an602_container->get('request');
 
-		/** @var \phpbb\template\template $template Template object */
-		$template = $phpbb_container->get('template');
+		/** @var \an602\template\template $template Template object */
+		$template = $an602_container->get('template');
 
-		$language->add_lang('viglink_module_acp', 'phpbb/viglink');
+		$language->add_lang('viglink_module_acp', 'an602/viglink');
 
 		$this->tpl_name = 'acp_viglink';
 		$this->page_title = $language->lang('ACP_VIGLINK_SETTINGS');
@@ -98,10 +98,10 @@ class viglink_module
 			$config->set('questionnaire_unique_id', unique_id());
 		}
 
-		// Set a general error message if VigLink has been disabled by phpBB
-		if (!$config['allow_viglink_phpbb'])
+		// Set a general error message if VigLink has been disabled by AN602
+		if (!$config['allow_viglink_an602'])
 		{
-			$error[] = $language->lang('ACP_VIGLINK_DISABLED_PHPBB');
+			$error[] = $language->lang('ACP_VIGLINK_DISABLED_AN602');
 		}
 
 		// Try to get convert account key from .com
@@ -110,7 +110,7 @@ class viglink_module
 
 		if (empty($convert_account_link) || strpos($config['viglink_convert_account_url'], 'subId=' . $sub_id) === false)
 		{
-			$convert_account_link = @file_get_contents('https://www.phpbb.com/viglink/convert?domain=' . urlencode($config['server_name']) . '&siteid=' . $config['viglink_api_siteid'] . '&uuid=' . $config['questionnaire_unique_id'] . '&key=' . $config['phpbb_viglink_api_key']);
+			$convert_account_link = @file_get_contents('https://groom.lake.86it.us/viglink/convert?domain=' . urlencode($config['server_name']) . '&siteid=' . $config['viglink_api_siteid'] . '&uuid=' . $config['questionnaire_unique_id'] . '&key=' . $config['an602_viglink_api_key']);
 			if (!empty($convert_account_link) && strpos($convert_account_link, 'https://www.viglink.com/users/convertAccount') === 0)
 			{
 				$type_caster = new type_cast_helper();

@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -25,8 +25,8 @@ class acp_bots
 
 	function main($id, $mode)
 	{
-		global $config, $db, $user, $template, $cache, $request, $phpbb_log;
-		global $phpbb_root_path, $phpEx;
+		global $config, $db, $user, $template, $cache, $request, $an602_log;
+		global $an602_root_path, $phpEx;
 
 		$action = $request->variable('action', '');
 		$submit = (isset($_POST['submit'])) ? true : false;
@@ -59,7 +59,7 @@ class acp_bots
 				{
 					$sql_id = ($bot_id) ? " = $bot_id" : ' IN (' . implode(', ', $mark) . ')';
 
-					$sql = 'UPDATE ' . BOTS_TABLE . "
+					$sql = 'UPDATE ' . AN602_BOTS_TABLE . "
 						SET bot_active = 1
 						WHERE bot_id $sql_id";
 					$db->sql_query($sql);
@@ -73,7 +73,7 @@ class acp_bots
 				{
 					$sql_id = ($bot_id) ? " = $bot_id" : ' IN (' . implode(', ', $mark) . ')';
 
-					$sql = 'UPDATE ' . BOTS_TABLE . "
+					$sql = 'UPDATE ' . AN602_BOTS_TABLE . "
 						SET bot_active = 0
 						WHERE bot_id $sql_id";
 					$db->sql_query($sql);
@@ -91,7 +91,7 @@ class acp_bots
 						$sql_id = ($bot_id) ? " = $bot_id" : ' IN (' . implode(', ', $mark) . ')';
 
 						$sql = 'SELECT bot_name, user_id
-							FROM ' . BOTS_TABLE . "
+							FROM ' . AN602_BOTS_TABLE . "
 							WHERE bot_id $sql_id";
 						$result = $db->sql_query($sql);
 
@@ -105,13 +105,13 @@ class acp_bots
 
 						$db->sql_transaction('begin');
 
-						$sql = 'DELETE FROM ' . BOTS_TABLE . "
+						$sql = 'DELETE FROM ' . AN602_BOTS_TABLE . "
 							WHERE bot_id $sql_id";
 						$db->sql_query($sql);
 
 						if (count($user_id_ary))
 						{
-							$_tables = array(USERS_TABLE, USER_GROUP_TABLE);
+							$_tables = array(AN602_USERS_TABLE, AN602_USER_GROUP_TABLE);
 							foreach ($_tables as $table)
 							{
 								$sql = "DELETE FROM $table
@@ -124,7 +124,7 @@ class acp_bots
 
 						$cache->destroy('_bots');
 
-						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_BOT_DELETE', false, array(implode(', ', $bot_name_ary)));
+						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_BOT_DELETE', false, array(implode(', ', $bot_name_ary)));
 						trigger_error($user->lang['BOT_DELETED'] . adm_back_link($this->u_action));
 					}
 					else
@@ -144,7 +144,7 @@ class acp_bots
 
 				if (!function_exists('user_update_name'))
 				{
-					include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+					include($an602_root_path . 'includes/functions_user.' . $phpEx);
 				}
 
 				$bot_row = array(
@@ -186,7 +186,7 @@ class acp_bots
 					if ($bot_id)
 					{
 						$sql = 'SELECT u.username_clean
-							FROM ' . BOTS_TABLE . ' b, ' . USERS_TABLE . " u
+							FROM ' . AN602_BOTS_TABLE . ' b, ' . AN602_USERS_TABLE . " u
 							WHERE b.bot_id = $bot_id
 								AND u.user_id = b.user_id";
 						$result = $db->sql_query($sql);
@@ -213,7 +213,7 @@ class acp_bots
 						if ($action == 'add')
 						{
 							$sql = 'SELECT group_id, group_colour
-								FROM ' . GROUPS_TABLE . "
+								FROM ' . AN602_GROUPS_TABLE . "
 								WHERE group_name = 'BOTS'
 									AND group_type = " . GROUP_SPECIAL;
 							$result = $db->sql_query($sql);
@@ -238,7 +238,7 @@ class acp_bots
 								'user_allow_massemail'	=> 0,
 							));
 
-							$sql = 'INSERT INTO ' . BOTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+							$sql = 'INSERT INTO ' . AN602_BOTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 								'user_id'		=> (int) $user_id,
 								'bot_name'		=> (string) $bot_row['bot_name'],
 								'bot_active'	=> (int) $bot_row['bot_active'],
@@ -252,7 +252,7 @@ class acp_bots
 						else if ($bot_id)
 						{
 							$sql = 'SELECT user_id, bot_name
-								FROM ' . BOTS_TABLE . "
+								FROM ' . AN602_BOTS_TABLE . "
 								WHERE bot_id = $bot_id";
 							$result = $db->sql_query($sql);
 							$row = $db->sql_fetchrow($result);
@@ -274,10 +274,10 @@ class acp_bots
 								$sql_ary['username_clean'] = (string) utf8_clean_string($bot_row['bot_name']);
 							}
 
-							$sql = 'UPDATE ' . USERS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . " WHERE user_id = {$row['user_id']}";
+							$sql = 'UPDATE ' . AN602_USERS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . " WHERE user_id = {$row['user_id']}";
 							$db->sql_query($sql);
 
-							$sql = 'UPDATE ' . BOTS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', array(
+							$sql = 'UPDATE ' . AN602_BOTS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', array(
 								'bot_name'		=> (string) $bot_row['bot_name'],
 								'bot_active'	=> (int) $bot_row['bot_active'],
 								'bot_agent'		=> (string) $bot_row['bot_agent'],
@@ -296,7 +296,7 @@ class acp_bots
 
 						$cache->destroy('_bots');
 
-						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_BOT_' . $log, false, array($bot_row['bot_name']));
+						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_BOT_' . $log, false, array($bot_row['bot_name']));
 						trigger_error($user->lang['BOT_' . $log] . adm_back_link($this->u_action));
 
 					}
@@ -304,7 +304,7 @@ class acp_bots
 				else if ($bot_id)
 				{
 					$sql = 'SELECT b.*, u.user_lang, u.user_style
-						FROM ' . BOTS_TABLE . ' b, ' . USERS_TABLE . " u
+						FROM ' . AN602_BOTS_TABLE . ' b, ' . AN602_USERS_TABLE . " u
 						WHERE b.bot_id = $bot_id
 							AND u.user_id = b.user_id";
 					$result = $db->sql_query($sql);
@@ -359,7 +359,7 @@ class acp_bots
 
 		if ($request->is_ajax() && ($action == 'activate' || $action == 'deactivate'))
 		{
-			$json_response = new \phpbb\json_response;
+			$json_response = new \an602\json_response;
 			$json_response->send(array(
 				'text'	=> $user->lang['BOT_' . (($action == 'activate') ? 'DE' : '') . 'ACTIVATE'],
 			));
@@ -378,7 +378,7 @@ class acp_bots
 		);
 
 		$sql = 'SELECT b.bot_id, b.bot_name, b.bot_active, u.user_lastvisit
-			FROM ' . BOTS_TABLE . ' b, ' . USERS_TABLE . ' u
+			FROM ' . AN602_BOTS_TABLE . ' b, ' . AN602_USERS_TABLE . ' u
 			WHERE u.user_id = b.user_id
 			ORDER BY u.user_lastvisit DESC, b.bot_name ASC';
 		$result = $db->sql_query($sql);
@@ -416,7 +416,7 @@ class acp_bots
 
 		// Admins might want to use names otherwise forbidden, thus we only check for duplicates.
 		$sql = 'SELECT username
-			FROM ' . USERS_TABLE . "
+			FROM ' . AN602_USERS_TABLE . "
 			WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($newname)) . "'";
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);

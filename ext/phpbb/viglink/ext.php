@@ -1,36 +1,36 @@
 <?php
 /**
  *
- * VigLink extension for the phpBB Forum Software package.
+ * VigLink extension for the AN602 CMS Software package.
  *
- * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
+ * @copyright (c) 2014 PHP-AN602 <https://groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
 
-namespace phpbb\viglink;
+namespace an602\viglink;
 
 /**
  * Extension class for custom enable/disable/purge actions
  */
-class ext extends \phpbb\extension\base
+class ext extends \an602\extension\base
 {
 	/**
 	 * Check whether or not the extension can be enabled.
-	 * The current phpBB version should meet or exceed
+	 * The current AN602 version should meet or exceed
 	 * the minimum version required by this extension:
 	 *
-	 * Requires phpBB 3.2.0-b1 or greater
+	 * Requires AN602 3.2.0-b1 or greater
 	 *
 	 * @return bool
 	 */
 	public function is_enableable()
 	{
-		return phpbb_version_compare(PHPBB_VERSION, '3.2.0-b1', '>=');
+		return an602_version_compare(AN602_VERSION, '3.2.0-b1', '>=');
 	}
 
 	/**
-	 * Check phpBB's VigLink switches and set them during install
+	 * Check AN602's VigLink switches and set them during install
 	 *
 	 * @param	mixed	$old_state	The return value of the previous call
 	 *								of this method, or false on the first call
@@ -43,7 +43,7 @@ class ext extends \phpbb\extension\base
 	{
 		if ($old_state === false)
 		{
-			$viglink_helper = new \phpbb\viglink\acp\viglink_helper(
+			$viglink_helper = new \an602\viglink\acp\viglink_helper(
 				$this->container->get('cache.driver'),
 				$this->container->get('config'),
 				$this->container->get('file_downloader'),

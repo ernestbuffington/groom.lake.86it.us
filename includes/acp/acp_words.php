@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -28,7 +28,7 @@ class acp_words
 
 	function main($id, $mode)
 	{
-		global $db, $user, $template, $cache, $phpbb_log, $request, $phpbb_container;
+		global $db, $user, $template, $cache, $an602_log, $request, $an602_container;
 
 		$user->add_lang('acp/posting');
 
@@ -57,7 +57,7 @@ class acp_words
 				}
 
 				$sql = 'SELECT *
-					FROM ' . WORDS_TABLE . "
+					FROM ' . AN602_WORDS_TABLE . "
 					WHERE word_id = $word_id";
 				$result = $db->sql_query($sql);
 				$word_info = $db->sql_fetchrow($result);
@@ -106,19 +106,19 @@ class acp_words
 
 				if ($word_id)
 				{
-					$db->sql_query('UPDATE ' . WORDS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . ' WHERE word_id = ' . $word_id);
+					$db->sql_query('UPDATE ' . AN602_WORDS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . ' WHERE word_id = ' . $word_id);
 				}
 				else
 				{
-					$db->sql_query('INSERT INTO ' . WORDS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
+					$db->sql_query('INSERT INTO ' . AN602_WORDS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
 				}
 
 				$cache->destroy('_word_censors');
-				$phpbb_container->get('text_formatter.cache')->invalidate();
+				$an602_container->get('text_formatter.cache')->invalidate();
 
 				$log_action = ($word_id) ? 'LOG_WORD_EDIT' : 'LOG_WORD_ADD';
 
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, $log_action, false, array($word));
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, $log_action, false, array($word));
 
 				$message = ($word_id) ? $user->lang['WORD_UPDATED'] : $user->lang['WORD_ADDED'];
 				trigger_error($message . adm_back_link($this->u_action));
@@ -137,20 +137,20 @@ class acp_words
 				if (confirm_box(true))
 				{
 					$sql = 'SELECT word
-						FROM ' . WORDS_TABLE . "
+						FROM ' . AN602_WORDS_TABLE . "
 						WHERE word_id = $word_id";
 					$result = $db->sql_query($sql);
 					$deleted_word = $db->sql_fetchfield('word');
 					$db->sql_freeresult($result);
 
-					$sql = 'DELETE FROM ' . WORDS_TABLE . "
+					$sql = 'DELETE FROM ' . AN602_WORDS_TABLE . "
 						WHERE word_id = $word_id";
 					$db->sql_query($sql);
 
 					$cache->destroy('_word_censors');
-					$phpbb_container->get('text_formatter.cache')->invalidate();
+					$an602_container->get('text_formatter.cache')->invalidate();
 
-					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_WORD_DELETE', false, array($deleted_word));
+					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_WORD_DELETE', false, array($deleted_word));
 
 					trigger_error($user->lang['WORD_REMOVED'] . adm_back_link($this->u_action));
 				}
@@ -173,7 +173,7 @@ class acp_words
 		);
 
 		$sql = 'SELECT *
-			FROM ' . WORDS_TABLE . '
+			FROM ' . AN602_WORDS_TABLE . '
 			ORDER BY word';
 		$result = $db->sql_query($sql);
 

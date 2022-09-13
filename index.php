@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -17,11 +17,11 @@
 /**
 * @ignore
 */
-define('IN_PHPBB', true);
-$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
+define('IN_AN602', true);
+$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+include($an602_root_path . 'common.' . $phpEx);
+include($an602_root_path . 'includes/functions_display.' . $phpEx);
 
 // Start session management
 $user->session_begin();
@@ -42,10 +42,10 @@ if (($mark_notification = $request->variable('mark_notification', 0)))
 
 	if (check_link_hash($request->variable('hash', ''), 'mark_notification_read'))
 	{
-		/* @var $phpbb_notifications \phpbb\notification\manager */
-		$phpbb_notifications = $phpbb_container->get('notification_manager');
+		/* @var $an602_notifications \an602\notification\manager */
+		$an602_notifications = $an602_container->get('notification_manager');
 
-		$notification = $phpbb_notifications->load_notifications('notification.method.board', array(
+		$notification = $an602_notifications->load_notifications('notification.method.board', array(
 			'notification_id'	=> $mark_notification,
 		));
 
@@ -60,15 +60,15 @@ if (($mark_notification = $request->variable('mark_notification', 0)))
 			*
 			* @event core.index_mark_notification_after
 			* @var	int										mark_notification	Notification ID
-			* @var	\phpbb\notification\type\type_interface	notification		Notification instance
+			* @var	\an602\notification\type\type_interface	notification		Notification instance
 			* @since 3.2.6-RC1
 			*/
 			$vars = array('mark_notification', 'notification');
-			extract($phpbb_dispatcher->trigger_event('core.index_mark_notification_after', compact($vars)));
+			extract($an602_dispatcher->trigger_event('core.index_mark_notification_after', compact($vars)));
 
 			if ($request->is_ajax())
 			{
-				$json_response = new \phpbb\json_response();
+				$json_response = new \an602\json_response();
 				$json_response->send(array(
 					'success'	=> true,
 				));
@@ -76,7 +76,7 @@ if (($mark_notification = $request->variable('mark_notification', 0)))
 
 			if (($redirect = $request->variable('redirect', '')))
 			{
-				redirect(append_sid($phpbb_root_path . $redirect));
+				redirect(append_sid($an602_root_path . $redirect));
 			}
 
 			redirect($notification->get_redirect_url());
@@ -91,15 +91,15 @@ $order_legend = ($config['legend_sort_groupname']) ? 'group_name' : 'group_legen
 if ($auth->acl_gets('a_group', 'a_groupadd', 'a_groupdel'))
 {
 	$sql = 'SELECT group_id, group_name, group_colour, group_type, group_legend
-		FROM ' . GROUPS_TABLE . '
+		FROM ' . AN602_GROUPS_TABLE . '
 		WHERE group_legend > 0
 		ORDER BY ' . $order_legend . ' ASC';
 }
 else
 {
 	$sql = 'SELECT g.group_id, g.group_name, g.group_colour, g.group_type, g.group_legend
-		FROM ' . GROUPS_TABLE . ' g
-		LEFT JOIN ' . USER_GROUP_TABLE . ' ug
+		FROM ' . AN602_GROUPS_TABLE . ' g
+		LEFT JOIN ' . AN602_USER_GROUP_TABLE . ' ug
 			ON (
 				g.group_id = ug.group_id
 				AND ug.user_id = ' . $user->data['user_id'] . '
@@ -111,8 +111,8 @@ else
 }
 $result = $db->sql_query($sql);
 
-/** @var \phpbb\group\helper $group_helper */
-$group_helper = $phpbb_container->get('group_helper');
+/** @var \an602\group\helper $group_helper */
+$group_helper = $an602_container->get('group_helper');
 
 $legend = array();
 while ($row = $db->sql_fetchrow($result))
@@ -126,7 +126,7 @@ while ($row = $db->sql_fetchrow($result))
 	}
 	else
 	{
-		$legend[] = '<a' . $colour_text . ' href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $row['group_id']) . '">' . $group_name . '</a>';
+		$legend[] = '<a' . $colour_text . ' href="' . append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $row['group_id']) . '">' . $group_name . '</a>';
 	}
 }
 $db->sql_freeresult($result);
@@ -140,7 +140,7 @@ $birthdays = $birthday_list = array();
 if ($show_birthdays)
 {
 	$time = $user->create_datetime();
-	$now = phpbb_gmgetdate($time->getTimestamp() + $time->getOffset());
+	$now = an602_gmgetdate($time->getTimestamp() + $time->getOffset());
 
 	// Display birthdays of 29th february on 28th february in non-leap-years
 	$leap_year_birthdays = '';
@@ -152,11 +152,11 @@ if ($show_birthdays)
 	$sql_ary = array(
 		'SELECT' => 'u.user_id, u.username, u.user_colour, u.user_birthday',
 		'FROM' => array(
-			USERS_TABLE => 'u',
+			AN602_USERS_TABLE => 'u',
 		),
 		'LEFT_JOIN' => array(
 			array(
-				'FROM' => array(BANLIST_TABLE => 'b'),
+				'FROM' => array(AN602_BANLIST_TABLE => 'b'),
 				'ON' => 'u.user_id = b.ban_userid',
 			),
 		),
@@ -175,7 +175,7 @@ if ($show_birthdays)
 	* @since 3.1.7-RC1
 	*/
 	$vars = array('now', 'sql_ary', 'time');
-	extract($phpbb_dispatcher->trigger_event('core.index_modify_birthdays_sql', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.index_modify_birthdays_sql', compact($vars)));
 
 	$sql = $db->sql_build_query('SELECT', $sql_ary);
 	$result = $db->sql_query($sql);
@@ -206,12 +206,12 @@ if ($show_birthdays)
 	* @since 3.1.7-RC1
 	*/
 	$vars = array('birthdays', 'rows');
-	extract($phpbb_dispatcher->trigger_event('core.index_modify_birthdays_list', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.index_modify_birthdays_list', compact($vars)));
 
 	$template->assign_block_vars_array('birthdays', $birthdays);
 }
 
-$controller_helper = $phpbb_container->get('controller.helper');
+$controller_helper = $an602_container->get('controller.helper');
 // Assign index specific vars
 $template->assign_vars(array(
 	'TOTAL_POSTS'	=> $user->lang('TOTAL_POSTS_COUNT', (int) $config['num_posts']),
@@ -222,13 +222,13 @@ $template->assign_vars(array(
 	'LEGEND'		=> $legend,
 	'BIRTHDAY_LIST'	=> (empty($birthday_list)) ? '' : implode($user->lang['COMMA_SEPARATOR'], $birthday_list),
 
-	'S_LOGIN_ACTION'			=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=login'),
-	'U_SEND_PASSWORD'           => ($config['email_enable'] && $config['allow_password_reset']) ? $controller_helper->route('phpbb_ucp_forgot_password_controller') : '',
+	'S_LOGIN_ACTION'			=> append_sid("{$an602_root_path}ucp.$phpEx", 'mode=login'),
+	'U_SEND_PASSWORD'           => ($config['email_enable'] && $config['allow_password_reset']) ? $controller_helper->route('an602_ucp_forgot_password_controller') : '',
 	'S_DISPLAY_BIRTHDAY_LIST'	=> $show_birthdays,
 	'S_INDEX'					=> true,
 
-	'U_MARK_FORUMS'		=> ($user->data['is_registered'] || $config['load_anon_lastread']) ? append_sid("{$phpbb_root_path}index.$phpEx", 'hash=' . generate_link_hash('global') . '&amp;mark=forums&amp;mark_time=' . time()) : '',
-	'U_MCP'				=> ($auth->acl_get('m_') || $auth->acl_getf_global('m_')) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=main&amp;mode=front', true, $user->session_id) : '')
+	'U_MARK_FORUMS'		=> ($user->data['is_registered'] || $config['load_anon_lastread']) ? append_sid("{$an602_root_path}index.$phpEx", 'hash=' . generate_link_hash('global') . '&amp;mark=forums&amp;mark_time=' . time()) : '',
+	'U_MCP'				=> ($auth->acl_get('m_') || $auth->acl_getf_global('m_')) ? append_sid("{$an602_root_path}mcp.$phpEx", 'i=main&amp;mode=front', true, $user->session_id) : '')
 );
 
 $page_title = ($config['board_index_text'] !== '') ? $config['board_index_text'] : $user->lang['INDEX'];
@@ -241,7 +241,7 @@ $page_title = ($config['board_index_text'] !== '') ? $config['board_index_text']
 * @since 3.1.0-a1
 */
 $vars = array('page_title');
-extract($phpbb_dispatcher->trigger_event('core.index_modify_page_title', compact($vars)));
+extract($an602_dispatcher->trigger_event('core.index_modify_page_title', compact($vars)));
 
 // Output page
 page_header($page_title, true);

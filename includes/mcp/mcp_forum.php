@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -25,12 +25,12 @@ if (!defined('IN_PHPBB'))
 function mcp_forum_view($id, $mode, $action, $forum_info)
 {
 	global $template, $db, $user, $auth, $cache, $module;
-	global $phpEx, $phpbb_root_path, $config;
-	global $request, $phpbb_dispatcher, $phpbb_container;
+	global $phpEx, $an602_root_path, $config;
+	global $request, $an602_dispatcher, $an602_container;
 
 	$user->add_lang(array('viewtopic', 'viewforum'));
 
-	include_once($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+	include_once($an602_root_path . 'includes/functions_display.' . $phpEx);
 
 	// merge_topic is the quickmod action, merge_topics is the mcp_forum action, and merge_select is the mcp_topic action
 	$merge_select = ($action == 'merge_select' || $action == 'merge_topic' || $action == 'merge_topics') ? true : false;
@@ -48,7 +48,7 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 	$url_extra .= ($GLOBALS['post_id']) ? '&amp;p=' . $GLOBALS['post_id'] : '';
 	$url_extra .= ($GLOBALS['user_id']) ? '&amp;u=' . $GLOBALS['user_id'] : '';
 
-	$url = append_sid("{$phpbb_root_path}mcp.$phpEx?$url_extra");
+	$url = append_sid("{$an602_root_path}mcp.$phpEx?$url_extra");
 
 	// Resync Topics
 	switch ($action)
@@ -90,10 +90,10 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 		'source_topic_ids',
 		'to_topic_id',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.mcp_forum_view_before', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.mcp_forum_view_before', compact($vars)));
 
-	/* @var $pagination \phpbb\pagination */
-	$pagination = $phpbb_container->get('pagination');
+	/* @var $pagination \an602\pagination */
+	$pagination = $an602_container->get('pagination');
 
 	$selected_ids = '';
 	if (count($post_id_list) && $action != 'merge_topics')
@@ -118,7 +118,7 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 	$sort_days = $total = 0;
 	$sort_key = $sort_dir = '';
 	$sort_by_sql = $sort_order_sql = array();
-	phpbb_mcp_sorting('viewforum', $sort_days, $sort_key, $sort_dir, $sort_by_sql, $sort_order_sql, $total, $forum_id);
+	an602_mcp_sorting('viewforum', $sort_days, $sort_key, $sort_dir, $sort_by_sql, $sort_order_sql, $total, $forum_id);
 
 	$forum_topics = ($total == -1) ? $forum_info['forum_topics_approved'] : $total;
 	$limit_time_sql = ($sort_days) ? 'AND t.topic_last_post_time >= ' . (time() - ($sort_days * 86400)) : '';
@@ -151,8 +151,8 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 		'S_CAN_MAKE_ANNOUNCE'	=> $auth->acl_get('f_announce', $forum_id),
 		'S_CAN_MAKE_ANNOUNCE_GLOBAL'	=> $auth->acl_get('f_announce_global', $forum_id),
 
-		'U_VIEW_FORUM'			=> append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $forum_id),
-		'U_VIEW_FORUM_LOGS'		=> ($auth->acl_gets('a_', 'm_', $forum_id) && $module->loaded('logs')) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=logs&amp;mode=forum_logs&amp;f=' . $forum_id) : '',
+		'U_VIEW_FORUM'			=> append_sid("{$an602_root_path}viewforum.$phpEx", 'f=' . $forum_id),
+		'U_VIEW_FORUM_LOGS'		=> ($auth->acl_gets('a_', 'm_', $forum_id) && $module->loaded('logs')) ? append_sid("{$an602_root_path}mcp.$phpEx", 'i=logs&amp;mode=forum_logs&amp;f=' . $forum_id) : '',
 
 		'S_MCP_ACTION'			=> $url . "&amp;i=$id&amp;forum_action=$action&amp;mode=$mode&amp;start=$start" . (($merge_select) ? $selected_ids : ''),
 
@@ -166,7 +166,7 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 
 	if ($config['load_db_lastread'])
 	{
-		$sql_read_tracking['LEFT_JOIN'][] = ['FROM' => [TOPICS_TRACK_TABLE => 'tt'], 'ON' => 'tt.topic_id = t.topic_id AND tt.user_id = ' . $user->data['user_id']];
+		$sql_read_tracking['LEFT_JOIN'][] = ['FROM' => [AN602_TOPICS_TRACK_TABLE => 'tt'], 'ON' => 'tt.topic_id = t.topic_id AND tt.user_id = ' . $user->data['user_id']];
 		$sql_read_tracking['SELECT'] = ', tt.mark_time';
 	}
 	else
@@ -175,13 +175,13 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 		$sql_read_tracking['SELECT'] = '';
 	}
 
-	/* @var $phpbb_content_visibility \phpbb\content_visibility */
-	$phpbb_content_visibility = $phpbb_container->get('content.visibility');
+	/* @var $an602_content_visibility \an602\content_visibility */
+	$an602_content_visibility = $an602_container->get('content.visibility');
 
 	$sql = 'SELECT t.topic_id
-		FROM ' . TOPICS_TABLE . ' t
+		FROM ' . AN602_TOPICS_TABLE . ' t
 		WHERE t.forum_id = ' . $forum_id . '
-			AND ' . $phpbb_content_visibility->get_visibility_sql('topic', $forum_id, 't.') . "
+			AND ' . $an602_content_visibility->get_visibility_sql('topic', $forum_id, 't.') . "
 			$limit_time_sql
 		ORDER BY t.topic_type DESC, $sort_order_sql";
 
@@ -198,7 +198,7 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 	* @since 3.1.2-RC1
 	*/
 	$vars = array('sql', 'forum_id', 'limit_time_sql', 'sort_order_sql', 'topics_per_page', 'start');
-	extract($phpbb_dispatcher->trigger_event('core.mcp_view_forum_modify_sql', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.mcp_view_forum_modify_sql', compact($vars)));
 
 	$result = $db->sql_query_limit($sql, $topics_per_page, $start);
 
@@ -212,7 +212,7 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 
 	$sql_ary = [
 		'SELECT'	=> 't.*' . $sql_read_tracking['SELECT'],
-		'FROM'		=> [TOPICS_TABLE => 't'],
+		'FROM'		=> [AN602_TOPICS_TABLE => 't'],
 		'LEFT_JOIN'	=> $sql_read_tracking['LEFT_JOIN'],
 		'WHERE'		=> $db->sql_in_set('t.topic_id', $topic_list, false, true),
 	];
@@ -232,7 +232,7 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 		'forum_id',
 		'topic_list',
 	];
-	extract($phpbb_dispatcher->trigger_event('core.mcp_forum_topic_data_modify_sql', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.mcp_forum_topic_data_modify_sql', compact($vars)));
 
 	$sql = $db->sql_build_query('SELECT', $sql_ary);
 	$result = $db->sql_query($sql);
@@ -265,7 +265,7 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 	{
 		$row_ary = &$topic_rows[$topic_id];
 
-		$replies = $phpbb_content_visibility->get_count('topic_posts', $row_ary, $forum_id) - 1;
+		$replies = $an602_content_visibility->get_count('topic_posts', $row_ary, $forum_id) - 1;
 
 		if ($row_ary['topic_status'] == ITEM_MOVED)
 		{
@@ -310,7 +310,7 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 
 			'TOPIC_TYPE'		=> $topic_type,
 			'TOPIC_TITLE'		=> $topic_title,
-			'REPLIES'			=> $phpbb_content_visibility->get_count('topic_posts', $row_ary, $row_ary['forum_id']) - 1,
+			'REPLIES'			=> $an602_content_visibility->get_count('topic_posts', $row_ary, $row_ary['forum_id']) - 1,
 			'LAST_POST_TIME'	=> $user->format_date($row_ary['topic_last_post_time']),
 			'FIRST_POST_TIME'	=> $user->format_date($row_ary['topic_time']),
 			'LAST_POST_SUBJECT'	=> $row_ary['topic_last_post_subject'],
@@ -326,8 +326,8 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 		if ($row_ary['topic_status'] == ITEM_MOVED)
 		{
 			$topic_row = array_merge($topic_row, array(
-				'U_VIEW_TOPIC'		=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "t={$row_ary['topic_moved_id']}"),
-				'U_DELETE_TOPIC'	=> ($auth->acl_get('m_delete', $forum_id)) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=$id&amp;f=$forum_id&amp;topic_id_list[]={$row_ary['topic_id']}&amp;mode=forum_view&amp;action=delete_topic") : '',
+				'U_VIEW_TOPIC'		=> append_sid("{$an602_root_path}viewtopic.$phpEx", "t={$row_ary['topic_moved_id']}"),
+				'U_DELETE_TOPIC'	=> ($auth->acl_get('m_delete', $forum_id)) ? append_sid("{$an602_root_path}mcp.$phpEx", "i=$id&amp;f=$forum_id&amp;topic_id_list[]={$row_ary['topic_id']}&amp;mode=forum_view&amp;action=delete_topic") : '',
 				'S_MOVED_TOPIC'		=> true,
 				'TOPIC_ID'			=> $row_ary['topic_moved_id'],
 			));
@@ -343,12 +343,12 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 				$u_select_topic = $url . "&amp;i=$id&amp;mode=topic_view&amp;action=merge&amp;to_topic_id=" . $row_ary['topic_id'] . $selected_ids;
 			}
 			$topic_row = array_merge($topic_row, array(
-				'U_VIEW_TOPIC'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", "i=$id&amp;f=$forum_id&amp;t={$row_ary['topic_id']}&amp;mode=topic_view"),
+				'U_VIEW_TOPIC'		=> append_sid("{$an602_root_path}mcp.$phpEx", "i=$id&amp;f=$forum_id&amp;t={$row_ary['topic_id']}&amp;mode=topic_view"),
 
 				'S_SELECT_TOPIC'	=> ($merge_select && !in_array($row_ary['topic_id'], $source_topic_ids)) ? true : false,
 				'U_SELECT_TOPIC'	=> $u_select_topic,
 				'U_MCP_QUEUE'		=> $u_mcp_queue,
-				'U_MCP_REPORT'		=> ($auth->acl_get('m_report', $forum_id)) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=main&amp;mode=topic_view&amp;t=' . $row_ary['topic_id'] . '&amp;action=reports') : '',
+				'U_MCP_REPORT'		=> ($auth->acl_get('m_report', $forum_id)) ? append_sid("{$an602_root_path}mcp.$phpEx", 'i=main&amp;mode=topic_view&amp;t=' . $row_ary['topic_id'] . '&amp;action=reports') : '',
 				'TOPIC_ID'			=> $row_ary['topic_id'],
 				'S_TOPIC_CHECKED'	=> ($topic_id_list && in_array($row_ary['topic_id'], $topic_id_list)) ? true : false,
 			));
@@ -364,7 +364,7 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 		* @since 3.1.0-a1
 		*/
 		$vars = array('row', 'topic_row');
-		extract($phpbb_dispatcher->trigger_event('core.mcp_view_forum_modify_topicrow', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.mcp_view_forum_modify_topicrow', compact($vars)));
 		$row_ary = $row;
 		unset($row);
 
@@ -378,14 +378,14 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 */
 function mcp_resync_topics($topic_ids)
 {
-	global $db, $user, $phpbb_log, $request;
+	global $db, $user, $an602_log, $request;
 
 	if (!count($topic_ids))
 	{
 		trigger_error('NO_TOPIC_SELECTED');
 	}
 
-	if (!phpbb_check_ids($topic_ids, TOPICS_TABLE, 'topic_id', array('m_')))
+	if (!an602_check_ids($topic_ids, AN602_TOPICS_TABLE, 'topic_id', array('m_')))
 	{
 		return;
 	}
@@ -396,14 +396,14 @@ function mcp_resync_topics($topic_ids)
 	sync('topic', 'topic_id', $topic_ids, true, false);
 
 	$sql = 'SELECT topic_id, forum_id, topic_title
-		FROM ' . TOPICS_TABLE . '
+		FROM ' . AN602_TOPICS_TABLE . '
 		WHERE ' . $db->sql_in_set('topic_id', $topic_ids);
 	$result = $db->sql_query($sql);
 
 	// Log this action
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$phpbb_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_TOPIC_RESYNC', false, array(
+		$an602_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_TOPIC_RESYNC', false, array(
 			'forum_id' => $row['forum_id'],
 			'topic_id' => $row['topic_id'],
 			$row['topic_title']
@@ -426,7 +426,7 @@ function mcp_resync_topics($topic_ids)
 */
 function merge_topics($forum_id, $topic_ids, $to_topic_id)
 {
-	global $db, $template, $user, $phpEx, $phpbb_root_path, $phpbb_log, $request, $phpbb_dispatcher;
+	global $db, $template, $user, $phpEx, $an602_root_path, $an602_log, $request, $an602_dispatcher;
 
 	if (!count($topic_ids))
 	{
@@ -441,7 +441,7 @@ function merge_topics($forum_id, $topic_ids, $to_topic_id)
 
 	$sync_topics = array_merge($topic_ids, array($to_topic_id));
 
-	$all_topic_data = phpbb_get_topic_data($sync_topics, 'm_merge');
+	$all_topic_data = an602_get_topic_data($sync_topics, 'm_merge');
 
 	if (!count($all_topic_data) || empty($all_topic_data[$to_topic_id]))
 	{
@@ -465,7 +465,7 @@ function merge_topics($forum_id, $topic_ids, $to_topic_id)
 	if (!count($post_id_list) && count($topic_ids))
 	{
 		$sql = 'SELECT post_id
-			FROM ' . POSTS_TABLE . '
+			FROM ' . AN602_POSTS_TABLE . '
 			WHERE ' . $db->sql_in_set('topic_id', $topic_ids);
 		$result = $db->sql_query($sql);
 
@@ -483,12 +483,12 @@ function merge_topics($forum_id, $topic_ids, $to_topic_id)
 		return;
 	}
 
-	if (!phpbb_check_ids($post_id_list, POSTS_TABLE, 'post_id', array('m_merge')))
+	if (!an602_check_ids($post_id_list, AN602_POSTS_TABLE, 'post_id', array('m_merge')))
 	{
 		return;
 	}
 
-	$redirect = $request->variable('redirect', "{$phpbb_root_path}mcp.$phpEx?f=$forum_id&amp;i=main&amp;mode=forum_view");
+	$redirect = $request->variable('redirect', "{$an602_root_path}mcp.$phpEx?f=$forum_id&amp;i=main&amp;mode=forum_view");
 
 	$s_hidden_fields = build_hidden_fields(array(
 		'i'				=> 'main',
@@ -509,14 +509,14 @@ function merge_topics($forum_id, $topic_ids, $to_topic_id)
 
 		move_posts($post_id_list, $to_topic_id, false);
 
-		$phpbb_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_MERGE', false, array(
+		$an602_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_MERGE', false, array(
 			'forum_id' => $to_forum_id,
 			'topic_id' => $to_topic_id,
 			$to_topic_data['topic_title']
 		));
 
 		// Update topic views count
-		$sql = 'UPDATE ' . TOPICS_TABLE . '
+		$sql = 'UPDATE ' . AN602_TOPICS_TABLE . '
 				SET topic_views = ' . $topic_views . '
 				WHERE topic_id = ' . $to_topic_id;
 		$db->sql_query($sql);
@@ -524,16 +524,16 @@ function merge_topics($forum_id, $topic_ids, $to_topic_id)
 		// Message and return links
 		$success_msg = 'POSTS_MERGED_SUCCESS';
 
-		if (!function_exists('phpbb_update_rows_avoiding_duplicates_notify_status'))
+		if (!function_exists('an602_update_rows_avoiding_duplicates_notify_status'))
 		{
-			include($phpbb_root_path . 'includes/functions_database_helper.' . $phpEx);
+			include($an602_root_path . 'includes/functions_database_helper.' . $phpEx);
 		}
 
 		// Update the topic watch table.
-		phpbb_update_rows_avoiding_duplicates_notify_status($db, TOPICS_WATCH_TABLE, 'topic_id', $topic_ids, $to_topic_id);
+		an602_update_rows_avoiding_duplicates_notify_status($db, AN602_TOPICS_WATCH_TABLE, 'topic_id', $topic_ids, $to_topic_id);
 
 		// Update the bookmarks table.
-		phpbb_update_rows_avoiding_duplicates($db, BOOKMARKS_TABLE, 'topic_id', $topic_ids, $to_topic_id);
+		an602_update_rows_avoiding_duplicates($db, AN602_BOOKMARKS_TABLE, 'topic_id', $topic_ids, $to_topic_id);
 
 		// Re-sync the topics and forums because the auto-sync was deactivated in the call of  move_posts()
 		sync('topic_reported', 'topic_id', $sync_topics);
@@ -542,8 +542,8 @@ function merge_topics($forum_id, $topic_ids, $to_topic_id)
 		sync('forum', 'forum_id', $sync_forums, true, true);
 
 		// Link to the new topic
-		$return_link .= (($return_link) ? '<br /><br />' : '') . sprintf($user->lang['RETURN_NEW_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $to_topic_id) . '">', '</a>');
-		$redirect = $request->variable('redirect', "{$phpbb_root_path}viewtopic.$phpEx?t=$to_topic_id");
+		$return_link .= (($return_link) ? '<br /><br />' : '') . sprintf($user->lang['RETURN_NEW_TOPIC'], '<a href="' . append_sid("{$an602_root_path}viewtopic.$phpEx", 't=' . $to_topic_id) . '">', '</a>');
+		$redirect = $request->variable('redirect', "{$an602_root_path}viewtopic.$phpEx?t=$to_topic_id");
 		$redirect = reapply_sid($redirect);
 
 		/**
@@ -558,7 +558,7 @@ function merge_topics($forum_id, $topic_ids, $to_topic_id)
 			'all_topic_data',
 			'to_topic_id',
 		);
-		extract($phpbb_dispatcher->trigger_event('core.mcp_forum_merge_topics_after', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.mcp_forum_merge_topics_after', compact($vars)));
 
 		meta_refresh(3, $redirect);
 		trigger_error($user->lang[$success_msg] . '<br /><br />' . $return_link);

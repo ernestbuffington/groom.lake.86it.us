@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -36,7 +36,7 @@ class compress
 	*/
 	function add_file($src, $src_rm_prefix = '', $src_add_prefix = '', $skip_files = '')
 	{
-		global $phpbb_root_path;
+		global $an602_root_path;
 
 		$skip_files = explode(',', $skip_files);
 
@@ -47,23 +47,23 @@ class compress
 		// Remove initial "/" if present
 		$src_path = (substr($src_path, 0, 1) == '/') ? substr($src_path, 1) : $src_path;
 
-		if (is_file($phpbb_root_path . $src))
+		if (is_file($an602_root_path . $src))
 		{
-			$this->data($src_path, file_get_contents("$phpbb_root_path$src"), stat("$phpbb_root_path$src"), false);
+			$this->data($src_path, file_get_contents("$an602_root_path$src"), stat("$an602_root_path$src"), false);
 		}
-		else if (is_dir($phpbb_root_path . $src))
+		else if (is_dir($an602_root_path . $src))
 		{
 			// Clean up path, add closing / if not present
 			$src_path = ($src_path && substr($src_path, -1) != '/') ? $src_path . '/' : $src_path;
 
-			$filelist = filelist("$phpbb_root_path$src", '', '*');
+			$filelist = filelist("$an602_root_path$src", '', '*');
 			krsort($filelist);
 
 			/**
 			* Commented out, as adding the folders produces corrupted archives
 			if ($src_path)
 			{
-				$this->data($src_path, '', true, stat("$phpbb_root_path$src"));
+				$this->data($src_path, '', true, stat("$an602_root_path$src"));
 			}
 			*/
 
@@ -77,7 +77,7 @@ class compress
 					$path = (substr($path, 0, 1) == '/') ? substr($path, 1) : $path;
 					$path = ($path && substr($path, -1) != '/') ? $path . '/' : $path;
 
-					$this->data("$src_path$path", '', true, stat("$phpbb_root_path$src$path"));
+					$this->data("$src_path$path", '', true, stat("$an602_root_path$src$path"));
 				}
 				*/
 
@@ -88,7 +88,7 @@ class compress
 						continue;
 					}
 
-					$this->data("$src_path$path$file", file_get_contents("$phpbb_root_path$src$path$file"), stat("$phpbb_root_path$src$path$file"), false);
+					$this->data("$src_path$path$file", file_get_contents("$an602_root_path$src$path$file"), stat("$an602_root_path$src$path$file"), false);
 				}
 			}
 		}
@@ -188,7 +188,7 @@ class compress
 *
 * Zip extraction function by Alexandre Tedeschi, alexandrebr at gmail dot com
 *
-* Modified extensively by psoTFX and DavidMJ, (c) phpBB Limited, 2003
+* Modified extensively by psoTFX and DavidMJ, (c) PHP-AN602, 2003
 *
 * Based on work by Eric Mueller and Denis125
 * Official ZIP file format: http://www.pkware.com/appnote.txt
@@ -203,7 +203,7 @@ class compress_zip extends compress
 	var $datasec_len = 0;
 
 	/**
-	 * @var \phpbb\filesystem\filesystem_interface
+	 * @var \an602\filesystem\filesystem_interface
 	 */
 	protected $filesystem;
 
@@ -212,10 +212,10 @@ class compress_zip extends compress
 	*/
 	function __construct($mode, $file)
 	{
-		global $phpbb_filesystem;
+		global $an602_filesystem;
 
 		$this->fp = @fopen($file, $mode . 'b');
-		$this->filesystem = ($phpbb_filesystem instanceof \phpbb\filesystem\filesystem_interface) ? $phpbb_filesystem : new \phpbb\filesystem\filesystem();
+		$this->filesystem = ($an602_filesystem instanceof \an602\filesystem\filesystem_interface) ? $an602_filesystem : new \an602\filesystem\filesystem();
 
 		if (!$this->fp)
 		{
@@ -296,9 +296,9 @@ class compress_zip extends compress
 
 									try
 									{
-										$this->filesystem->phpbb_chmod($str, \phpbb\filesystem\filesystem_interface::CHMOD_READ | \phpbb\filesystem\filesystem_interface::CHMOD_WRITE);
+										$this->filesystem->an602_chmod($str, \an602\filesystem\filesystem_interface::CHMOD_READ | \an602\filesystem\filesystem_interface::CHMOD_WRITE);
 									}
-									catch (\phpbb\filesystem\exception\filesystem_exception $e)
+									catch (\an602\filesystem\exception\filesystem_exception $e)
 									{
 										// Do nothing
 									}
@@ -333,9 +333,9 @@ class compress_zip extends compress
 
 								try
 								{
-									$this->filesystem->phpbb_chmod($str, \phpbb\filesystem\filesystem_interface::CHMOD_READ | \phpbb\filesystem\filesystem_interface::CHMOD_WRITE);
+									$this->filesystem->an602_chmod($str, \an602\filesystem\filesystem_interface::CHMOD_READ | \an602\filesystem\filesystem_interface::CHMOD_WRITE);
 								}
-								catch (\phpbb\filesystem\exception\filesystem_exception $e)
+								catch (\an602\filesystem\exception\filesystem_exception $e)
 								{
 									// Do nothing
 								}
@@ -523,7 +523,7 @@ class compress_zip extends compress
 	*/
 	function download($filename, $download_name = false)
 	{
-		global $phpbb_root_path;
+		global $an602_root_path;
 
 		if ($download_name === false)
 		{
@@ -536,7 +536,7 @@ class compress_zip extends compress
 		header("Content-Type: $mimetype; name=\"$download_name.zip\"");
 		header("Content-disposition: attachment; filename=$download_name.zip");
 
-		$fp = @fopen("{$phpbb_root_path}store/$filename.zip", 'rb');
+		$fp = @fopen("{$an602_root_path}store/$filename.zip", 'rb');
 		if ($fp)
 		{
 			while ($buffer = fread($fp, 1024))
@@ -562,7 +562,7 @@ class compress_tar extends compress
 	var $wrote = false;
 
 	/**
-	 * @var \phpbb\filesystem\filesystem_interface
+	 * @var \an602\filesystem\filesystem_interface
 	 */
 	protected $filesystem;
 
@@ -571,7 +571,7 @@ class compress_tar extends compress
 	*/
 	function __construct($mode, $file, $type = '')
 	{
-		global $phpbb_filesystem;
+		global $an602_filesystem;
 
 		$type = (!$type) ? $file : $type;
 		$this->isgz = preg_match('#(\.tar\.gz|\.tgz)$#', $type);
@@ -582,7 +582,7 @@ class compress_tar extends compress
 		$this->type = &$type;
 		$this->open();
 
-		$this->filesystem = ($phpbb_filesystem instanceof \phpbb\filesystem\filesystem_interface) ? $phpbb_filesystem : new \phpbb\filesystem\filesystem();
+		$this->filesystem = ($an602_filesystem instanceof \an602\filesystem\filesystem_interface) ? $an602_filesystem : new \an602\filesystem\filesystem();
 	}
 
 	/**
@@ -636,9 +636,9 @@ class compress_tar extends compress
 
 								try
 								{
-									$this->filesystem->phpbb_chmod($str, \phpbb\filesystem\filesystem_interface::CHMOD_READ | \phpbb\filesystem\filesystem_interface::CHMOD_WRITE);
+									$this->filesystem->an602_chmod($str, \an602\filesystem\filesystem_interface::CHMOD_READ | \an602\filesystem\filesystem_interface::CHMOD_WRITE);
 								}
-								catch (\phpbb\filesystem\exception\filesystem_exception $e)
+								catch (\an602\filesystem\exception\filesystem_exception $e)
 								{
 									// Do nothing
 								}
@@ -671,9 +671,9 @@ class compress_tar extends compress
 
 							try
 							{
-								$this->filesystem->phpbb_chmod($str, \phpbb\filesystem\filesystem_interface::CHMOD_READ | \phpbb\filesystem\filesystem_interface::CHMOD_WRITE);
+								$this->filesystem->an602_chmod($str, \an602\filesystem\filesystem_interface::CHMOD_READ | \an602\filesystem\filesystem_interface::CHMOD_WRITE);
 							}
-							catch (\phpbb\filesystem\exception\filesystem_exception $e)
+							catch (\an602\filesystem\exception\filesystem_exception $e)
 							{
 								// Do nothing
 							}
@@ -688,9 +688,9 @@ class compress_tar extends compress
 
 					try
 					{
-						$this->filesystem->phpbb_chmod($target_filename, \phpbb\filesystem\filesystem_interface::CHMOD_READ);
+						$this->filesystem->an602_chmod($target_filename, \an602\filesystem\filesystem_interface::CHMOD_READ);
 					}
-					catch (\phpbb\filesystem\exception\filesystem_exception $e)
+					catch (\an602\filesystem\exception\filesystem_exception $e)
 					{
 						// Do nothing
 					}
@@ -787,7 +787,7 @@ class compress_tar extends compress
 	*/
 	function download($filename, $download_name = false)
 	{
-		global $phpbb_root_path;
+		global $an602_root_path;
 
 		if ($download_name === false)
 		{
@@ -817,7 +817,7 @@ class compress_tar extends compress
 		header("Content-Type: $mimetype; name=\"$download_name$this->type\"");
 		header("Content-disposition: attachment; filename=$download_name$this->type");
 
-		$fp = @fopen("{$phpbb_root_path}store/$filename$this->type", 'rb');
+		$fp = @fopen("{$an602_root_path}store/$filename$this->type", 'rb');
 		if ($fp)
 		{
 			while ($buffer = fread($fp, 1024))

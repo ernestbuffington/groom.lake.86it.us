@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -29,7 +29,7 @@ class ucp_prefs
 
 	function main($id, $mode)
 	{
-		global $config, $db, $user, $auth, $template, $phpbb_dispatcher, $request;
+		global $config, $db, $user, $auth, $template, $an602_dispatcher, $request;
 
 		$submit = (isset($_POST['submit'])) ? true : false;
 		$error = $data = array();
@@ -72,7 +72,7 @@ class ucp_prefs
 				* @changed 3.1.4-RC1 Added error variable to the event
 				*/
 				$vars = array('submit', 'data', 'error');
-				extract($phpbb_dispatcher->trigger_event('core.ucp_prefs_personal_data', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.ucp_prefs_personal_data', compact($vars)));
 
 				if ($submit)
 				{
@@ -80,7 +80,7 @@ class ucp_prefs
 					{
 						$data['user_style'] = (int) $config['default_style'];
 					}
-					else if (!phpbb_style_is_active($data['user_style']))
+					else if (!an602_style_is_active($data['user_style']))
 					{
 						$data['user_style'] = (int) $user->data['user_style'];
 					}
@@ -121,9 +121,9 @@ class ucp_prefs
 						* @since 3.1.0-a1
 						*/
 						$vars = array('data', 'sql_ary');
-						extract($phpbb_dispatcher->trigger_event('core.ucp_prefs_personal_update_data', compact($vars)));
+						extract($an602_dispatcher->trigger_event('core.ucp_prefs_personal_update_data', compact($vars)));
 
-						$sql = 'UPDATE ' . USERS_TABLE . '
+						$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 							SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 							WHERE user_id = ' . $user->data['user_id'];
 						$db->sql_query($sql);
@@ -156,11 +156,11 @@ class ucp_prefs
 				}
 				$dateformat_options .= '>' . $user->lang['CUSTOM_DATEFORMAT'] . '</option>';
 
-				phpbb_timezone_select($template, $user, $data['tz'], true);
+				an602_timezone_select($template, $user, $data['tz'], true);
 
 				// check if there are any user-selectable languages
 				$sql = 'SELECT lang_iso, lang_local_name
-					FROM ' . LANG_TABLE . '
+					FROM ' . AN602_LANG_TABLE . '
 					ORDER BY lang_english_name';
 				$result = $db->sql_query($sql);
 				$lang_row = (array) $db->sql_fetchrowset($result);
@@ -169,7 +169,7 @@ class ucp_prefs
 
 				// check if there are any user-selectable styles
 				$sql = 'SELECT style_id, style_name
-					FROM ' . STYLES_TABLE . '
+					FROM ' . AN602_STYLES_TABLE . '
 					WHERE style_active = 1
 					ORDER BY style_name';
 				$result = $db->sql_query($sql);
@@ -239,7 +239,7 @@ class ucp_prefs
 				* @since 3.1.0-a1
 				*/
 				$vars = array('submit', 'data');
-				extract($phpbb_dispatcher->trigger_event('core.ucp_prefs_view_data', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.ucp_prefs_view_data', compact($vars)));
 
 				if ($submit)
 				{
@@ -300,9 +300,9 @@ class ucp_prefs
 						* @since 3.1.0-a1
 						*/
 						$vars = array('data', 'sql_ary');
-						extract($phpbb_dispatcher->trigger_event('core.ucp_prefs_view_update_data', compact($vars)));
+						extract($an602_dispatcher->trigger_event('core.ucp_prefs_view_update_data', compact($vars)));
 
-						$sql = 'UPDATE ' . USERS_TABLE . '
+						$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 							SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 							WHERE user_id = ' . $user->data['user_id'];
 						$db->sql_query($sql);
@@ -399,7 +399,7 @@ class ucp_prefs
 					's_sort_post_key',
 					's_sort_post_dir',
 				);
-				extract($phpbb_dispatcher->trigger_event('core.ucp_prefs_view_after', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.ucp_prefs_view_after', compact($vars)));
 
 				$template->assign_vars(array(
 					'ERROR'				=> (count($error)) ? implode('<br />', $error) : '',
@@ -445,7 +445,7 @@ class ucp_prefs
 				* @since 3.1.0-a1
 				*/
 				$vars = array('submit', 'data');
-				extract($phpbb_dispatcher->trigger_event('core.ucp_prefs_post_data', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.ucp_prefs_post_data', compact($vars)));
 
 				if ($submit)
 				{
@@ -469,9 +469,9 @@ class ucp_prefs
 						* @since 3.1.0-a1
 						*/
 						$vars = array('data', 'sql_ary');
-						extract($phpbb_dispatcher->trigger_event('core.ucp_prefs_post_update_data', compact($vars)));
+						extract($an602_dispatcher->trigger_event('core.ucp_prefs_post_update_data', compact($vars)));
 
-						$sql = 'UPDATE ' . USERS_TABLE . '
+						$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 							SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 							WHERE user_id = ' . $user->data['user_id'];
 						$db->sql_query($sql);
@@ -512,7 +512,7 @@ class ucp_prefs
 			'mode',
 			's_hidden_fields',
 		);
-		extract($phpbb_dispatcher->trigger_event('core.ucp_prefs_modify_common', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.ucp_prefs_modify_common', compact($vars)));
 
 		$template->assign_vars(array(
 			'L_TITLE'			=> $user->lang['UCP_PREFS_' . strtoupper($mode)],

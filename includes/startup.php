@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -13,7 +13,7 @@
 
 /**
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -27,7 +27,7 @@ error_reporting($level);
 */
 if (version_compare(PHP_VERSION, '7.1.3', '<'))
 {
-	die('You are running an unsupported PHP version. Please upgrade to PHP 7.1.3 or higher before trying to install or update to phpBB 3.3');
+	die('You are running an unsupported PHP version. Please upgrade to PHP 7.1.3 or higher before trying to install or update to AN602 3.3');
 }
 // Register globals and magic quotes have been dropped in PHP 5.4 so no need for extra checks
 
@@ -52,35 +52,35 @@ date_default_timezone_set(@date_default_timezone_get());
 // Three options are supported:
 // 1. If dependencies are installed with Composer, Composer will create a
 //    vendor/autoload.php. If this file exists it will be
-//    automatically used by phpBB. This is the default mode that phpBB
+//    automatically used by AN602. This is the default mode that AN602
 //    will use when shipped.
-// 2. To disable composer autoloading, PHPBB_NO_COMPOSER_AUTOLOAD can be specified.
-// 	  Additionally specify PHPBB_AUTOLOAD=/path/to/autoload.php in the
+// 2. To disable composer autoloading, AN602_NO_COMPOSER_AUTOLOAD can be specified.
+// 	  Additionally specify AN602_AUTOLOAD=/path/to/autoload.php in the
 //    environment. This is useful for running CLI scripts and tests.
 //    /path/to/autoload.php should define and register class loaders
-//    for all of phpBB's dependencies.
-// 3. You can also set PHPBB_NO_COMPOSER_AUTOLOAD without setting PHPBB_AUTOLOAD.
-//    In this case autoloading needs to be defined before running any phpBB
-//    script. This might be useful in cases when phpBB is integrated into a
+//    for all of AN602's dependencies.
+// 3. You can also set AN602_NO_COMPOSER_AUTOLOAD without setting AN602_AUTOLOAD.
+//    In this case autoloading needs to be defined before running any AN602
+//    script. This might be useful in cases when AN602 is integrated into a
 //    larger program.
-if (getenv('PHPBB_NO_COMPOSER_AUTOLOAD'))
+if (getenv('AN602_NO_COMPOSER_AUTOLOAD'))
 {
-	if (getenv('PHPBB_AUTOLOAD'))
+	if (getenv('AN602_AUTOLOAD'))
 	{
-		require(getenv('PHPBB_AUTOLOAD'));
+		require(getenv('AN602_AUTOLOAD'));
 	}
 }
 else
 {
-	if (!file_exists($phpbb_root_path . 'vendor/autoload.php'))
+	if (!file_exists($an602_root_path . 'vendor/autoload.php'))
 	{
 		trigger_error(
 			'Composer dependencies have not been set up yet, run ' .
-			"'php ../composer.phar install' from the phpBB directory to do so.",
+			"'php ../composer.phar install' from the AN602 directory to do so.",
 			E_USER_ERROR
 		);
 	}
-	require($phpbb_root_path . 'vendor/autoload.php');
+	require($an602_root_path . 'vendor/autoload.php');
 }
 
 $starttime = microtime(true);

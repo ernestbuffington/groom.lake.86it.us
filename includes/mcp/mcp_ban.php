@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -25,18 +25,18 @@ class mcp_ban
 
 	function main($id, $mode)
 	{
-		global $db, $user, $auth, $template, $request, $phpbb_dispatcher;
-		global $phpbb_root_path, $phpEx;
+		global $db, $user, $auth, $template, $request, $an602_dispatcher;
+		global $an602_root_path, $phpEx;
 
 		if (!function_exists('user_ban'))
 		{
-			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		// Include the admin banning interface...
 		if (!class_exists('acp_ban'))
 		{
-			include($phpbb_root_path . 'includes/acp/acp_ban.' . $phpEx);
+			include($an602_root_path . 'includes/acp/acp_ban.' . $phpEx);
 		}
 
 		$bansubmit		= $request->is_set_post('bansubmit');
@@ -59,7 +59,7 @@ class mcp_ban
 			'unbansubmit',
 			'mode',
 		);
-		extract($phpbb_dispatcher->trigger_event('core.mcp_ban_main', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.mcp_ban_main', compact($vars)));
 
 		// Ban submitted?
 		if ($bansubmit)
@@ -102,7 +102,7 @@ class mcp_ban
 						'ban_give_reason',
 						'abort_ban',
 					);
-					extract($phpbb_dispatcher->trigger_event('core.mcp_ban_before', compact($vars)));
+					extract($an602_dispatcher->trigger_event('core.mcp_ban_before', compact($vars)));
 
 					if ($abort_ban)
 					{
@@ -132,7 +132,7 @@ class mcp_ban
 						'ban_reason',
 						'ban_give_reason',
 					);
-					extract($phpbb_dispatcher->trigger_event('core.mcp_ban_after', compact($vars)));
+					extract($an602_dispatcher->trigger_event('core.mcp_ban_after', compact($vars)));
 
 					trigger_error($user->lang['BAN_UPDATE_SUCCESSFUL'] . '<br /><br /><a href="' . $this->u_action . '">&laquo; ' . $user->lang['BACK_TO_PREV'] . '</a>');
 				}
@@ -157,7 +157,7 @@ class mcp_ban
 					* @since 3.1.0-RC5
 					*/
 					$vars = array('hidden_fields');
-					extract($phpbb_dispatcher->trigger_event('core.mcp_ban_confirm', compact($vars)));
+					extract($an602_dispatcher->trigger_event('core.mcp_ban_confirm', compact($vars)));
 
 					confirm_box(false, $user->lang['CONFIRM_OPERATION'], build_hidden_fields($hidden_fields));
 				}
@@ -224,7 +224,7 @@ class mcp_ban
 			'S_USERNAME_BAN'	=> ($mode == 'user') ? true : false,
 
 			'U_ACTION'			=> $this->u_action,
-			'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=mcp_ban&amp;field=ban'),
+			'U_FIND_USERNAME'	=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=mcp_ban&amp;field=ban'),
 		));
 
 		if ($mode === 'email' && !$auth->acl_get('a_user'))
@@ -240,7 +240,7 @@ class mcp_ban
 		if ($user_id && $user_id <> ANONYMOUS)
 		{
 			$sql = 'SELECT username, user_email, user_ip
-				FROM ' . USERS_TABLE . '
+				FROM ' . AN602_USERS_TABLE . '
 				WHERE user_id = ' . $user_id;
 			$result = $db->sql_query($sql);
 			switch ($mode)
@@ -261,7 +261,7 @@ class mcp_ban
 		}
 		else if ($post_id)
 		{
-			$post_info = phpbb_get_post_data(array($post_id), 'm_ban');
+			$post_info = an602_get_post_data(array($post_id), 'm_ban');
 
 			if (count($post_info) && !empty($post_info[$post_id]))
 			{

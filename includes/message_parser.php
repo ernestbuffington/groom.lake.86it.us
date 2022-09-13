@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -22,11 +22,11 @@ if (!defined('IN_PHPBB'))
 if (!class_exists('bbcode'))
 {
 	// The following lines are for extensions which include message_parser.php
-	// while $phpbb_root_path and $phpEx are out of the script scope
+	// while $an602_root_path and $phpEx are out of the script scope
 	// which may lead to the 'Undefined variable' and 'failed to open stream' errors
-	if (!isset($phpbb_root_path))
+	if (!isset($an602_root_path))
 	{
-		global $phpbb_root_path;
+		global $an602_root_path;
 	}
 
 	if (!isset($phpEx))
@@ -34,7 +34,7 @@ if (!class_exists('bbcode'))
 		global $phpEx;
 	}
 
-	include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+	include($an602_root_path . 'includes/bbcode.' . $phpEx);
 }
 
 /**
@@ -127,7 +127,7 @@ class bbcode_firstpass extends bbcode
 	*/
 	function bbcode_init($allow_custom_bbcode = true)
 	{
-		global $phpbb_dispatcher;
+		global $an602_dispatcher;
 
 		static $rowset;
 
@@ -228,7 +228,7 @@ class bbcode_firstpass extends bbcode
 			$rowset = array();
 
 			$sql = 'SELECT *
-				FROM ' . BBCODES_TABLE;
+				FROM ' . AN602_BBCODES_TABLE;
 			$result = $db->sql_query($sql);
 
 			while ($row = $db->sql_fetchrow($result))
@@ -257,7 +257,7 @@ class bbcode_firstpass extends bbcode
 		* @since 3.1.0-a3
 		*/
 		$vars = array('bbcodes', 'rowset');
-		extract($phpbb_dispatcher->trigger_event('core.modify_bbcode_init', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.modify_bbcode_init', compact($vars)));
 
 		$this->bbcodes = $bbcodes;
 	}
@@ -1105,7 +1105,7 @@ class parse_message extends bbcode_firstpass
 
 	/**
 	* The plupload object used for dealing with attachments
-	* @var \phpbb\plupload\plupload
+	* @var \an602\plupload\plupload
 	*/
 	protected $plupload;
 
@@ -1124,7 +1124,7 @@ class parse_message extends bbcode_firstpass
 	*/
 	function parse($allow_bbcode, $allow_magic_url, $allow_smilies, $allow_img_bbcode = true, $allow_flash_bbcode = true, $allow_quote_bbcode = true, $allow_url_bbcode = true, $update_this_message = true, $mode = 'post')
 	{
-		global $config, $user, $phpbb_dispatcher, $phpbb_container;
+		global $config, $user, $an602_dispatcher, $an602_container;
 
 		$this->mode = $mode;
 
@@ -1215,7 +1215,7 @@ class parse_message extends bbcode_firstpass
 			'return',
 			'warn_msg',
 		);
-		extract($phpbb_dispatcher->trigger_event('core.message_parser_check_message', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.message_parser_check_message', compact($vars)));
 		$this->message = $message;
 		$this->warn_msg = $warn_msg;
 		$this->bbcode_bitfield = $bbcode_bitfield;
@@ -1226,7 +1226,7 @@ class parse_message extends bbcode_firstpass
 		}
 
 		// Get the parser
-		$parser = $phpbb_container->get('text_formatter.parser');
+		$parser = $an602_container->get('text_formatter.parser');
 
 		// Set the parser's options
 		($allow_bbcode)       ? $parser->enable_bbcodes()       : $parser->disable_bbcodes();
@@ -1266,7 +1266,7 @@ class parse_message extends bbcode_firstpass
 		// Remove quotes that are nested too deep
 		if ($config['max_quote_depth'] > 0)
 		{
-			$this->message = $phpbb_container->get('text_formatter.utils')->remove_bbcode(
+			$this->message = $an602_container->get('text_formatter.utils')->remove_bbcode(
 				$this->message,
 				'quote',
 				$config['max_quote_depth']
@@ -1303,7 +1303,7 @@ class parse_message extends bbcode_firstpass
 	*/
 	function format_display($allow_bbcode, $allow_magic_url, $allow_smilies, $update_this_message = true)
 	{
-		global $phpbb_container, $phpbb_dispatcher;
+		global $an602_container, $an602_dispatcher;
 
 		// If false, then the parsed message get returned but internal message not processed.
 		if (!$update_this_message)
@@ -1329,7 +1329,7 @@ class parse_message extends bbcode_firstpass
 		* @since 3.1.6-RC1
 		*/
 		$vars = array('text', 'uid', 'allow_bbcode', 'allow_magic_url', 'allow_smilies', 'update_this_message');
-		extract($phpbb_dispatcher->trigger_event('core.modify_format_display_text_before', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.modify_format_display_text_before', compact($vars)));
 
 		$this->message = $text;
 		$this->bbcode_uid = $uid;
@@ -1350,10 +1350,10 @@ class parse_message extends bbcode_firstpass
 		// devised
 		if ($this->message === '')
 		{
-			$this->message = $phpbb_container->get('text_formatter.parser')->parse($this->message);
+			$this->message = $an602_container->get('text_formatter.parser')->parse($this->message);
 		}
 
-		$this->message = $phpbb_container->get('text_formatter.renderer')->render($this->message);
+		$this->message = $an602_container->get('text_formatter.renderer')->render($this->message);
 
 		$text = $this->message;
 		$uid = $this->bbcode_uid;
@@ -1372,7 +1372,7 @@ class parse_message extends bbcode_firstpass
 		* @since 3.1.0-a3
 		*/
 		$vars = array('text', 'uid', 'allow_bbcode', 'allow_magic_url', 'allow_smilies', 'update_this_message');
-		extract($phpbb_dispatcher->trigger_event('core.modify_format_display_text_after', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.modify_format_display_text_after', compact($vars)));
 
 		$this->message = $text;
 		$this->bbcode_uid = $uid;
@@ -1446,14 +1446,14 @@ class parse_message extends bbcode_firstpass
 				case 'mssql_odbc':
 				case 'mssqlnative':
 					$sql = 'SELECT *
-						FROM ' . SMILIES_TABLE . '
+						FROM ' . AN602_SMILIES_TABLE . '
 						ORDER BY LEN(code) DESC';
 				break;
 
 				// LENGTH supported by MySQL, IBM DB2, Oracle and Access for sure...
 				default:
 					$sql = 'SELECT *
-						FROM ' . SMILIES_TABLE . '
+						FROM ' . AN602_SMILIES_TABLE . '
 						ORDER BY LENGTH(code) DESC';
 				break;
 			}
@@ -1478,7 +1478,7 @@ class parse_message extends bbcode_firstpass
 			if ($max_smilies)
 			{
 				// 'u' modifier has been added to correctly parse smilies within unicode strings
-				// For details: http://tracker.phpbb.com/browse/PHPBB3-10117
+				// For details: http://tracker.groom.lake.86it.us/browse/AN602-10117
 				$num_matches = preg_match_all('#(?<=^|[\n .])(?:' . implode('|', $match) . ')(?![^<>]*>)#u', $this->message, $matches);
 				unset($matches);
 
@@ -1491,7 +1491,7 @@ class parse_message extends bbcode_firstpass
 
 			// Make sure the delimiter # is added in front and at the end of every element within $match
 			// 'u' modifier has been added to correctly parse smilies within unicode strings
-			// For details: http://tracker.phpbb.com/browse/PHPBB3-10117
+			// For details: http://tracker.groom.lake.86it.us/browse/AN602-10117
 
 			$this->message = trim(preg_replace(explode(chr(0), '#(?<=^|[\n .])' . implode('(?![^<>]*>)#u' . chr(0) . '#(?<=^|[\n .])', $match) . '(?![^<>]*>)#u'), $replace, $this->message));
 		}
@@ -1500,13 +1500,13 @@ class parse_message extends bbcode_firstpass
 	/**
 	 * Check attachment form token depending on submit type
 	 *
-	 * @param \phpbb\language\language $language Language
-	 * @param \phpbb\request\request_interface $request Request
+	 * @param \an602\language\language $language Language
+	 * @param \an602\request\request_interface $request Request
 	 * @param string $form_name Form name for checking form key
 	 *
 	 * @return bool True if form token is not needed or valid, false if needed and invalid
 	 */
-	function check_attachment_form_token(\phpbb\language\language $language, \phpbb\request\request_interface $request, $form_name)
+	function check_attachment_form_token(\an602\language\language $language, \an602\request\request_interface $request, $form_name)
 	{
 		$add_file = $request->is_set_post('add_file');
 		$delete_file = $request->is_set_post('delete_file');
@@ -1531,8 +1531,8 @@ class parse_message extends bbcode_firstpass
 	*/
 	function parse_attachments($form_name, $mode, $forum_id, $submit, $preview, $refresh, $is_message = false)
 	{
-		global $config, $auth, $user, $phpbb_root_path, $phpEx, $db, $request;
-		global $phpbb_container, $phpbb_dispatcher;
+		global $config, $auth, $user, $an602_root_path, $phpEx, $db, $request;
+		global $an602_container, $an602_dispatcher;
 
 		$error = array();
 
@@ -1568,8 +1568,8 @@ class parse_message extends bbcode_firstpass
 		{
 			if ($num_attachments < $cfg['max_attachments'] || $auth->acl_get('a_') || $auth->acl_get('m_', $forum_id))
 			{
-				/** @var \phpbb\attachment\manager $attachment_manager */
-				$attachment_manager = $phpbb_container->get('attachment.manager');
+				/** @var \an602\attachment\manager $attachment_manager */
+				$attachment_manager = $an602_container->get('attachment.manager');
 				$filedata = $attachment_manager->upload($form_name, $forum_id, false, '', $is_message);
 				$error = $filedata['error'];
 
@@ -1597,9 +1597,9 @@ class parse_message extends bbcode_firstpass
 					* @since 3.2.6-RC1
 					*/
 					$vars = array('sql_ary');
-					extract($phpbb_dispatcher->trigger_event('core.modify_attachment_sql_ary_on_submit', compact($vars)));
+					extract($an602_dispatcher->trigger_event('core.modify_attachment_sql_ary_on_submit', compact($vars)));
 
-					$db->sql_query('INSERT INTO ' . ATTACHMENTS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
+					$db->sql_query('INSERT INTO ' . AN602_ATTACHMENTS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
 
 					$new_entry = array(
 						'attach_id'		=> $db->sql_nextid(),
@@ -1620,7 +1620,7 @@ class parse_message extends bbcode_firstpass
 					*/
 					$attachment_data = $this->attachment_data;
 					$vars = array('attachment_data');
-					extract($phpbb_dispatcher->trigger_event('core.modify_attachment_data_on_submit', compact($vars)));
+					extract($an602_dispatcher->trigger_event('core.modify_attachment_data_on_submit', compact($vars)));
 					$this->attachment_data = $attachment_data;
 					unset($attachment_data);
 
@@ -1651,27 +1651,27 @@ class parse_message extends bbcode_firstpass
 		{
 			if (isset($this->plupload) && $this->plupload->is_active())
 			{
-				$json_response = new \phpbb\json_response();
+				$json_response = new \an602\json_response();
 			}
 
 			// Perform actions on temporary attachments
 			if ($delete_file)
 			{
-				include_once($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+				include_once($an602_root_path . 'includes/functions_admin.' . $phpEx);
 
 				$index = array_keys($request->variable('delete_file', array(0 => 0)));
 				$index = (!empty($index)) ? $index[0] : false;
 
 				if ($index !== false && !empty($this->attachment_data[$index]))
 				{
-					/** @var \phpbb\attachment\manager $attachment_manager */
-					$attachment_manager = $phpbb_container->get('attachment.manager');
+					/** @var \an602\attachment\manager $attachment_manager */
+					$attachment_manager = $an602_container->get('attachment.manager');
 
 					// delete selected attachment
 					if ($this->attachment_data[$index]['is_orphan'])
 					{
 						$sql = 'SELECT attach_id, physical_filename, thumbnail
-							FROM ' . ATTACHMENTS_TABLE . '
+							FROM ' . AN602_ATTACHMENTS_TABLE . '
 							WHERE attach_id = ' . (int) $this->attachment_data[$index]['attach_id'] . '
 								AND is_orphan = 1
 								AND poster_id = ' . $user->data['user_id'];
@@ -1688,7 +1688,7 @@ class parse_message extends bbcode_firstpass
 								$attachment_manager->unlink($row['physical_filename'], 'thumbnail');
 							}
 
-							$db->sql_query('DELETE FROM ' . ATTACHMENTS_TABLE . ' WHERE attach_id = ' . (int) $this->attachment_data[$index]['attach_id']);
+							$db->sql_query('DELETE FROM ' . AN602_ATTACHMENTS_TABLE . ' WHERE attach_id = ' . (int) $this->attachment_data[$index]['attach_id']);
 						}
 					}
 					else
@@ -1713,8 +1713,8 @@ class parse_message extends bbcode_firstpass
 			{
 				if ($num_attachments < $cfg['max_attachments'] || $auth->acl_gets('m_', 'a_', $forum_id))
 				{
-					/** @var \phpbb\attachment\manager $attachment_manager */
-					$attachment_manager = $phpbb_container->get('attachment.manager');
+					/** @var \an602\attachment\manager $attachment_manager */
+					$attachment_manager = $an602_container->get('attachment.manager');
 					$filedata = $attachment_manager->upload($form_name, $forum_id, false, '', $is_message);
 					$error = array_merge($error, $filedata['error']);
 
@@ -1742,9 +1742,9 @@ class parse_message extends bbcode_firstpass
 						* @since 3.2.6-RC1
 						*/
 						$vars = array('sql_ary');
-						extract($phpbb_dispatcher->trigger_event('core.modify_attachment_sql_ary_on_upload', compact($vars)));
+						extract($an602_dispatcher->trigger_event('core.modify_attachment_sql_ary_on_upload', compact($vars)));
 
-						$db->sql_query('INSERT INTO ' . ATTACHMENTS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
+						$db->sql_query('INSERT INTO ' . AN602_ATTACHMENTS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
 
 						$new_entry = array(
 							'attach_id'		=> $db->sql_nextid(),
@@ -1765,7 +1765,7 @@ class parse_message extends bbcode_firstpass
 						*/
 						$attachment_data = $this->attachment_data;
 						$vars = array('attachment_data');
-						extract($phpbb_dispatcher->trigger_event('core.modify_attachment_data_on_upload', compact($vars)));
+						extract($an602_dispatcher->trigger_event('core.modify_attachment_data_on_upload', compact($vars)));
 						$this->attachment_data = $attachment_data;
 						unset($attachment_data);
 
@@ -1776,7 +1776,7 @@ class parse_message extends bbcode_firstpass
 
 						if (isset($this->plupload) && $this->plupload->is_active())
 						{
-							$download_url = append_sid("{$phpbb_root_path}download/file.{$phpEx}", 'mode=view&amp;id=' . $new_entry['attach_id']);
+							$download_url = append_sid("{$an602_root_path}download/file.{$phpEx}", 'mode=view&amp;id=' . $new_entry['attach_id']);
 
 							// Send the client the attachment data to maintain state
 							$json_response->send(array('data' => $this->attachment_data, 'download_url' => $download_url));
@@ -1819,7 +1819,7 @@ class parse_message extends bbcode_firstpass
 		global $request;
 
 		$this->filename_data['filecomment'] = $request->variable('filecomment', '', true);
-		$attachment_data = $request->variable('attachment_data', array(0 => array('' => '')), true, \phpbb\request\request_interface::POST);
+		$attachment_data = $request->variable('attachment_data', array(0 => array('' => '')), true, \an602\request\request_interface::POST);
 		$this->attachment_data = array();
 
 		$check_user_id = ($check_user_id === false) ? $user->data['user_id'] : $check_user_id;
@@ -1848,7 +1848,7 @@ class parse_message extends bbcode_firstpass
 		{
 			// Get the attachment data, based on the poster id...
 			$sql = 'SELECT attach_id, is_orphan, real_filename, attach_comment, filesize
-				FROM ' . ATTACHMENTS_TABLE . '
+				FROM ' . AN602_ATTACHMENTS_TABLE . '
 				WHERE ' . $db->sql_in_set('attach_id', array_keys($not_orphan)) . '
 					AND poster_id = ' . $check_user_id;
 			$result = $db->sql_query($sql);
@@ -1873,7 +1873,7 @@ class parse_message extends bbcode_firstpass
 		if (count($orphan))
 		{
 			$sql = 'SELECT attach_id, is_orphan, real_filename, attach_comment, filesize
-				FROM ' . ATTACHMENTS_TABLE . '
+				FROM ' . AN602_ATTACHMENTS_TABLE . '
 				WHERE ' . $db->sql_in_set('attach_id', array_keys($orphan)) . '
 					AND poster_id = ' . $user->data['user_id'] . '
 					AND is_orphan = 1';
@@ -1966,11 +1966,11 @@ class parse_message extends bbcode_firstpass
 	*/
 	public function remove_nested_quotes($max_depth)
 	{
-		global $phpbb_container;
+		global $an602_container;
 
 		if (preg_match('#^<[rt][ >]#', $this->message))
 		{
-			$this->message = $phpbb_container->get('text_formatter.utils')->remove_bbcode(
+			$this->message = $an602_container->get('text_formatter.utils')->remove_bbcode(
 				$this->message,
 				'quote',
 				$max_depth
@@ -2018,11 +2018,11 @@ class parse_message extends bbcode_firstpass
 	/**
 	* Setter function for passing the plupload object
 	*
-	* @param \phpbb\plupload\plupload $plupload The plupload object
+	* @param \an602\plupload\plupload $plupload The plupload object
 	*
 	* @return null
 	*/
-	public function set_plupload(\phpbb\plupload\plupload $plupload)
+	public function set_plupload(\an602\plupload\plupload $plupload)
 	{
 		$this->plupload = $plupload;
 	}
@@ -2038,7 +2038,7 @@ class parse_message extends bbcode_firstpass
 	*/
 	public function validate_bbcode_by_extension()
 	{
-		global $phpbb_dispatcher;
+		global $an602_dispatcher;
 
 		$return = false;
 		$params_array = func_get_args();
@@ -2054,7 +2054,7 @@ class parse_message extends bbcode_firstpass
 		* @since 3.1.5-RC1
 		*/
 		$vars = array('params_array', 'return');
-		extract($phpbb_dispatcher->trigger_event('core.validate_bbcode_by_extension', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.validate_bbcode_by_extension', compact($vars)));
 
 		return $return;
 	}

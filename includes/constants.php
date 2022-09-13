@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,24 +14,24 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
 
 /**
 * valid external constants:
-* PHPBB_MSG_HANDLER
-* PHPBB_DB_NEW_LINK
-* PHPBB_ROOT_PATH
-* PHPBB_ADMIN_PATH
+* AN602_MSG_HANDLER
+* AN602_DB_NEW_LINK
+* AN602_ROOT_PATH
+* AN602_ADMIN_PATH
 */
 
-// phpBB Version
-@define('PHPBB_VERSION', '3.3.8');
+// AN602 Version
+@define('AN602_VERSION', '3.3.8');
 
 // QA-related
-// define('PHPBB_QA', 1);
+// define('AN602_QA', 1);
 
 // User related
 define('ANONYMOUS', 1);
@@ -56,9 +56,9 @@ define('INACTIVE_MANUAL', 3); // Account deactivated by administrator
 define('INACTIVE_REMIND', 4); // Forced user account reactivation
 
 // ACL
-define('ACL_NEVER', 0);
-define('ACL_YES', 1);
-define('ACL_NO', -1);
+define('AN602_ACL_NEVER', 0);
+define('AN602_ACL_YES', 1);
+define('AN602_ACL_NO', -1);
 
 // Login error codes
 define('LOGIN_CONTINUE', 1);
@@ -220,11 +220,11 @@ define('REFERER_VALIDATE_NONE', 0);
 define('REFERER_VALIDATE_HOST', 1);
 define('REFERER_VALIDATE_PATH', 2);
 
-// phpbb_chmod() permissions
-@define('CHMOD_ALL', 7); // @deprecated 3.2.10
-@define('CHMOD_READ', 4); // @deprecated 3.2.10
-@define('CHMOD_WRITE', 2); // @deprecated 3.2.10
-@define('CHMOD_EXECUTE', 1); // @deprecated 3.2.10
+// an602_chmod() permissions
+@define('CHMOD_ALL', 7);      // @deprecated 3.2.10
+@define('CHMOD_READ', 4);     // @deprecated 3.2.10
+@define('CHMOD_WRITE', 2);    // @deprecated 3.2.10
+@define('CHMOD_EXECUTE', 1);  // @deprecated 3.2.10
 
 // Captcha code length
 define('CAPTCHA_MIN_CHARS', 4);
@@ -234,82 +234,82 @@ define('CAPTCHA_MAX_CHARS', 7);
 define('VOTE_CONVERTED', 127);
 
 // BC global FTW
-global $table_prefix;
+global $an602_table_prefix;
 
 // Table names
-define('ACL_GROUPS_TABLE',			$table_prefix . 'acl_groups');
-define('ACL_OPTIONS_TABLE',			$table_prefix . 'acl_options');
-define('ACL_ROLES_DATA_TABLE',		$table_prefix . 'acl_roles_data');
-define('ACL_ROLES_TABLE',			$table_prefix . 'acl_roles');
-define('ACL_USERS_TABLE',			$table_prefix . 'acl_users');
-define('ATTACHMENTS_TABLE',			$table_prefix . 'attachments');
-define('BANLIST_TABLE',				$table_prefix . 'banlist');
-define('BBCODES_TABLE',				$table_prefix . 'bbcodes');
-define('BOOKMARKS_TABLE',			$table_prefix . 'bookmarks');
-define('BOTS_TABLE',				$table_prefix . 'bots');
-if (!defined('CONFIG_TABLE'))
+define('AN602_ACL_AN602_GROUPS_TABLE',		   $an602_table_prefix . 'acl_groups');
+define('AN602_ACL_OPTIONS_TABLE',			   $an602_table_prefix . 'acl_options');
+define('AN602_ACL_ROLES_DATA_TABLE',		   $an602_table_prefix . 'acl_roles_data');
+define('AN602_ACL_ROLES_TABLE',			       $an602_table_prefix . 'acl_roles');
+define('AN602_ACL_AN602_USERS_TABLE',		   $an602_table_prefix . 'acl_users');
+define('AN602_ATTACHMENTS_TABLE',			   $an602_table_prefix . 'attachments');
+define('AN602_BANLIST_TABLE',				   $an602_table_prefix . 'banlist');
+define('AN602_BBCODES_TABLE',				   $an602_table_prefix . 'bbcodes');
+define('AN602_BOOKMARKS_TABLE',			       $an602_table_prefix . 'bookmarks');
+define('AN602_BOTS_TABLE',				       $an602_table_prefix . 'bots');
+if (!defined('AN602_CONFIG_TABLE'))
 {
-	define('CONFIG_TABLE',			$table_prefix . 'config');
+	define('AN602_CONFIG_TABLE',			    $an602_table_prefix . 'config');
 }
-define('CONFIG_TEXT_TABLE',			$table_prefix . 'config_text');
-define('CONFIRM_TABLE',				$table_prefix . 'confirm');
-define('DISALLOW_TABLE',			$table_prefix . 'disallow');
-define('DRAFTS_TABLE',				$table_prefix . 'drafts');
-define('EXT_TABLE',					$table_prefix . 'ext');
-define('EXTENSIONS_TABLE',			$table_prefix . 'extensions');
-define('EXTENSION_GROUPS_TABLE',	$table_prefix . 'extension_groups');
-define('FORUMS_TABLE',				$table_prefix . 'forums');
-define('FORUMS_ACCESS_TABLE',		$table_prefix . 'forums_access');
-define('FORUMS_TRACK_TABLE',		$table_prefix . 'forums_track');
-define('FORUMS_WATCH_TABLE',		$table_prefix . 'forums_watch');
-define('GROUPS_TABLE',				$table_prefix . 'groups');
-define('ICONS_TABLE',				$table_prefix . 'icons');
-define('LANG_TABLE',				$table_prefix . 'lang');
-define('LOG_TABLE',					$table_prefix . 'log');
-define('LOGIN_ATTEMPT_TABLE',		$table_prefix . 'login_attempts');
-define('MIGRATIONS_TABLE',			$table_prefix . 'migrations');
-define('MODERATOR_CACHE_TABLE',		$table_prefix . 'moderator_cache');
-define('MODULES_TABLE',				$table_prefix . 'modules');
-define('NOTIFICATION_TYPES_TABLE',	$table_prefix . 'notification_types');
-define('NOTIFICATIONS_TABLE',		$table_prefix . 'notifications');
-define('POLL_OPTIONS_TABLE',		$table_prefix . 'poll_options');
-define('POLL_VOTES_TABLE',			$table_prefix . 'poll_votes');
-define('POSTS_TABLE',				$table_prefix . 'posts');
-define('PRIVMSGS_TABLE',			$table_prefix . 'privmsgs');
-define('PRIVMSGS_FOLDER_TABLE',		$table_prefix . 'privmsgs_folder');
-define('PRIVMSGS_RULES_TABLE',		$table_prefix . 'privmsgs_rules');
-define('PRIVMSGS_TO_TABLE',			$table_prefix . 'privmsgs_to');
-define('PROFILE_FIELDS_TABLE',		$table_prefix . 'profile_fields');
-define('PROFILE_FIELDS_DATA_TABLE',	$table_prefix . 'profile_fields_data');
-define('PROFILE_FIELDS_LANG_TABLE',	$table_prefix . 'profile_fields_lang');
-define('PROFILE_LANG_TABLE',		$table_prefix . 'profile_lang');
-define('RANKS_TABLE',				$table_prefix . 'ranks');
-define('REPORTS_TABLE',				$table_prefix . 'reports');
-define('REPORTS_REASONS_TABLE',		$table_prefix . 'reports_reasons');
-define('SEARCH_RESULTS_TABLE',		$table_prefix . 'search_results');
-define('SEARCH_WORDLIST_TABLE',		$table_prefix . 'search_wordlist');
-define('SEARCH_WORDMATCH_TABLE',	$table_prefix . 'search_wordmatch');
-define('SESSIONS_TABLE',			$table_prefix . 'sessions');
-define('SESSIONS_KEYS_TABLE',		$table_prefix . 'sessions_keys');
-define('SITELIST_TABLE',			$table_prefix . 'sitelist');
-define('SMILIES_TABLE',				$table_prefix . 'smilies');
-define('SPHINX_TABLE',				$table_prefix . 'sphinx');
-define('STYLES_TABLE',				$table_prefix . 'styles');
-define('STYLES_TEMPLATE_TABLE',		$table_prefix . 'styles_template');
-define('STYLES_TEMPLATE_DATA_TABLE',$table_prefix . 'styles_template_data');
-define('STYLES_THEME_TABLE',		$table_prefix . 'styles_theme');
-define('STYLES_IMAGESET_TABLE',		$table_prefix . 'styles_imageset');
-define('STYLES_IMAGESET_DATA_TABLE',$table_prefix . 'styles_imageset_data');
-define('TEAMPAGE_TABLE',			$table_prefix . 'teampage');
-define('TOPICS_TABLE',				$table_prefix . 'topics');
-define('TOPICS_POSTED_TABLE',		$table_prefix . 'topics_posted');
-define('TOPICS_TRACK_TABLE',		$table_prefix . 'topics_track');
-define('TOPICS_WATCH_TABLE',		$table_prefix . 'topics_watch');
-define('USER_GROUP_TABLE',			$table_prefix . 'user_group');
-define('USER_NOTIFICATIONS_TABLE',	$table_prefix . 'user_notifications');
-define('USERS_TABLE',				$table_prefix . 'users');
-define('WARNINGS_TABLE',			$table_prefix . 'warnings');
-define('WORDS_TABLE',				$table_prefix . 'words');
-define('ZEBRA_TABLE',				$table_prefix . 'zebra');
+define('AN602_CONFIG_TAN602_EXT_TABLE',			$an602_table_prefix . 'config_text');
+define('AN602_CONFIRM_TABLE',				    $an602_table_prefix . 'confirm');
+define('AN602_DISALLOW_TABLE',			        $an602_table_prefix . 'disallow');
+define('AN602_DRAFTS_TABLE',				    $an602_table_prefix . 'drafts');
+define('AN602_EXT_TABLE',					    $an602_table_prefix . 'ext');
+define('AN602_EXTENSIONS_TABLE',			    $an602_table_prefix . 'extensions');
+define('AN602_EXTENSION_AN602_GROUPS_TABLE',	$an602_table_prefix . 'extension_groups');
+define('AN602_FORUMS_TABLE',				    $an602_table_prefix . 'forums');
+define('AN602_FORUMS_ACCESS_TABLE',		        $an602_table_prefix . 'forums_access');
+define('AN602_FORUMS_TRACK_TABLE',		        $an602_table_prefix . 'forums_track');
+define('AN602_FORUMS_WATCH_TABLE',		        $an602_table_prefix . 'forums_watch');
+define('AN602_GROUPS_TABLE',				    $an602_table_prefix . 'groups');
+define('AN602_ICONS_TABLE',				        $an602_table_prefix . 'icons');
+define('AN602_LANG_TABLE',				        $an602_table_prefix . 'lang');
+define('AN602_LOG_TABLE',					    $an602_table_prefix . 'log');
+define('AN602_LOGIN_ATTEMPT_TABLE',		        $an602_table_prefix . 'login_attempts');
+define('AN602_MIGRATIONS_TABLE',			    $an602_table_prefix . 'migrations');
+define('AN602_MODERATOR_CACHE_TABLE',		    $an602_table_prefix . 'moderator_cache');
+define('AN602_MODULES_TABLE',				    $an602_table_prefix . 'modules');
+define('AN602_NOTIFICATION_TYPES_TABLE',	    $an602_table_prefix . 'notification_types');
+define('AN602_NOTIFICATIONS_TABLE',		        $an602_table_prefix . 'notifications');
+define('AN602_POLL_OPTIONS_TABLE',		        $an602_table_prefix . 'poll_options');
+define('AN602_POLL_VOTES_TABLE',			    $an602_table_prefix . 'poll_votes');
+define('AN602_POSTS_TABLE',				        $an602_table_prefix . 'posts');
+define('AN602_PRIVMSGS_TABLE',			        $an602_table_prefix . 'privmsgs');
+define('AN602_PRIVMSGS_FOLDER_TABLE',		    $an602_table_prefix . 'privmsgs_folder');
+define('AN602_PRIVMSGS_RULES_TABLE',		    $an602_table_prefix . 'privmsgs_rules');
+define('AN602_PRIVMSGS_TO_TABLE',			    $an602_table_prefix . 'privmsgs_to');
+define('AN602_PROFILE_FIELDS_TABLE',		    $an602_table_prefix . 'profile_fields');
+define('AN602_PROFILE_FIELDS_DATA_TABLE',	    $an602_table_prefix . 'profile_fields_data');
+define('AN602_PROFILE_FIELDS_LANG_TABLE',	    $an602_table_prefix . 'profile_fields_lang');
+define('AN602_PROFILE_LANG_TABLE',		        $an602_table_prefix . 'profile_lang');
+define('AN602_RANKS_TABLE',				        $an602_table_prefix . 'ranks');
+define('AN602_REPORTS_TABLE',				    $an602_table_prefix . 'reports');
+define('AN602_REPORTS_REASONS_TABLE',		    $an602_table_prefix . 'reports_reasons');
+define('AN602_SEARCH_RESULTS_TABLE',		    $an602_table_prefix . 'search_results');
+define('AN602_SEARCH_WORDLIST_TABLE',		    $an602_table_prefix . 'search_wordlist');
+define('AN602_SEARCH_WORDMATCH_TABLE',	        $an602_table_prefix . 'search_wordmatch');
+define('AN602_SESSIONS_TABLE',			        $an602_table_prefix . 'sessions');
+define('AN602_SESSIONS_KEYS_TABLE',		        $an602_table_prefix . 'sessions_keys');
+define('AN602_SITELIST_TABLE',			        $an602_table_prefix . 'sitelist');
+define('AN602_SMILIES_TABLE',				    $an602_table_prefix . 'smilies');
+define('AN602_SPHINX_TABLE',				    $an602_table_prefix . 'sphinx');
+define('AN602_STYLES_TABLE',				    $an602_table_prefix . 'styles');
+define('AN602_STYLES_TEMPLATE_TABLE',		    $an602_table_prefix . 'styles_template');
+define('AN602_STYLES_TEMPLATE_DATA_TABLE',      $an602_table_prefix . 'styles_template_data');
+define('AN602_STYLES_THEME_TABLE',		        $an602_table_prefix . 'styles_theme');
+define('AN602_STYLES_IMAGESET_TABLE',		    $an602_table_prefix . 'styles_imageset');
+define('AN602_STYLES_IMAGESET_DATA_TABLE',      $an602_table_prefix . 'styles_imageset_data');
+define('AN602_TEAMPAGE_TABLE',			        $an602_table_prefix . 'teampage');
+define('AN602_TOPICS_TABLE',				    $an602_table_prefix . 'topics');
+define('AN602_TOPICS_POSTED_TABLE',		        $an602_table_prefix . 'topics_posted');
+define('AN602_TOPICS_TRACK_TABLE',		        $an602_table_prefix . 'topics_track');
+define('AN602_TOPICS_WATCH_TABLE',		        $an602_table_prefix . 'topics_watch');
+define('AN602_USER_GROUP_TABLE',			    $an602_table_prefix . 'user_group');
+define('AN602_USER_NOTIFICATIONS_TABLE',	    $an602_table_prefix . 'user_notifications');
+define('AN602_USERS_TABLE',				        $an602_table_prefix . 'users');
+define('AN602_WARNINGS_TABLE',			        $an602_table_prefix . 'warnings');
+define('AN602_WORDS_TABLE',				        $an602_table_prefix . 'words');
+define('AN602_ZEBRA_TABLE',				        $an602_table_prefix . 'zebra');
 
-// Additional tables
+// Additional AN602 tables

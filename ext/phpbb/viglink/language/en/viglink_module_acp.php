@@ -1,9 +1,9 @@
 <?php
 /**
  *
- * VigLink extension for the phpBB Forum Software package.
+ * VigLink extension for the AN602 CMS Software package.
  *
- * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
+ * @copyright (c) 2014 PHP-AN602 <https://groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
@@ -11,7 +11,7 @@
 /**
  * DO NOT CHANGE
  */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -39,16 +39,16 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	'ACP_VIGLINK_SETTINGS'			=> 'VigLink settings',
-	'ACP_VIGLINK_SETTINGS_EXPLAIN'	=> 'VigLink is third-party service that discretely monetises links posted by users of your forum without any change to the user experience. When users click on your outbound links to products or services and buy something, the merchants pay VigLink a commission, of which a share is donated to the phpBB project. By choosing to enable VigLink and donating proceeds to the phpBB project, you are supporting our open source organisation and ensuring our continued financial security.',
+	'ACP_VIGLINK_SETTINGS_EXPLAIN'	=> 'VigLink is third-party service that discretely monetises links posted by users of your forum without any change to the user experience. When users click on your outbound links to products or services and buy something, the merchants pay VigLink a commission, of which a share is donated to the AN602 project. By choosing to enable VigLink and donating proceeds to the AN602 project, you are supporting our open source organisation and ensuring our continued financial security.',
 	'ACP_VIGLINK_SETTINGS_CHANGE'	=> 'You can change these settings at any time in the “<a href="%1$s">VigLink settings</a>” panel.',
 	'ACP_VIGLINK_SUPPORT_EXPLAIN'	=> 'You will no longer be redirected to this page once you submit your preferred options below, by clicking the Submit button.',
 	'ACP_VIGLINK_ENABLE'			=> 'Enable VigLink',
 	'ACP_VIGLINK_ENABLE_EXPLAIN'	=> 'Enables use of VigLink services.',
 	'ACP_VIGLINK_EARNINGS'			=> 'Claim your own earnings (optional)',
 	'ACP_VIGLINK_EARNINGS_EXPLAIN'	=> 'You can claim your own earnings by signing up for a VigLink Convert account.',
-	'ACP_VIGLINK_DISABLED_PHPBB'	=> 'VigLink services have been disabled by phpBB.',
+	'ACP_VIGLINK_DISABLED_AN602'	=> 'VigLink services have been disabled by AN602.',
 	'ACP_VIGLINK_CLAIM'				=> 'Claim your earnings',
-	'ACP_VIGLINK_CLAIM_EXPLAIN'		=> 'You can claim your forum’s earnings from VigLink monetised links, instead of donating the earnings to the phpBB project. To manage your account settings, sign up for a “VigLink Convert” account by clicking on “Convert account”.',
+	'ACP_VIGLINK_CLAIM_EXPLAIN'		=> 'You can claim your forum’s earnings from VigLink monetised links, instead of donating the earnings to the AN602 project. To manage your account settings, sign up for a “VigLink Convert” account by clicking on “Convert account”.',
 	'ACP_VIGLINK_CONVERT_ACCOUNT'	=> 'Convert account',
 	'ACP_VIGLINK_NO_CONVERT_LINK'	=> 'VigLink convert account link could not be retrieved.',
 ));

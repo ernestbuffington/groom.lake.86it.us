@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -31,7 +31,7 @@ class messenger
 	var $mail_priority = MAIL_NORMAL_PRIORITY;
 	var $use_queue = true;
 
-	/** @var \phpbb\template\template */
+	/** @var \an602\template\template */
 	protected $template;
 
 	/**
@@ -181,8 +181,8 @@ class messenger
 	/**
 	* Adds X-AntiAbuse headers
 	*
-	* @param \phpbb\config\config	$config		Config object
-	* @param \phpbb\user			$user		User object
+	* @param \an602\config\config	$config		Config object
+	* @param \an602\user			$user		User object
 	* @return void
 	*/
 	function anti_abuse_headers($config, $user)
@@ -206,7 +206,7 @@ class messenger
 	*/
 	function template($template_file, $template_lang = '', $template_path = '', $template_dir_prefix = '')
 	{
-		global $config, $phpbb_root_path, $user;
+		global $config, $an602_root_path, $user;
 
 		$template_dir_prefix = (!$template_dir_prefix || $template_dir_prefix[0] === '/') ? $template_dir_prefix : '/' . $template_dir_prefix;
 
@@ -240,7 +240,7 @@ class messenger
 		}
 		else
 		{
-			$template_path = (!empty($user->lang_path)) ? $user->lang_path : $phpbb_root_path . 'language/';
+			$template_path = (!empty($user->lang_path)) ? $user->lang_path : $an602_root_path . 'language/';
 			$template_path .= $template_lang . '/email';
 
 			$template_paths = array(
@@ -253,7 +253,7 @@ class messenger
 			// do not know the default language alternative
 			if ($template_lang !== $board_language)
 			{
-				$fallback_template_path = (!empty($user->lang_path)) ? $user->lang_path : $phpbb_root_path . 'language/';
+				$fallback_template_path = (!empty($user->lang_path)) ? $user->lang_path : $an602_root_path . 'language/';
 				$fallback_template_path .= $board_language . '/email';
 
 				$template_paths[] = $fallback_template_path . $template_dir_prefix;
@@ -266,7 +266,7 @@ class messenger
 			// If everything fails just fall back to en template
 			if ($template_lang !== 'en' && $board_language !== 'en')
 			{
-				$fallback_template_path = (!empty($user->lang_path)) ? $user->lang_path : $phpbb_root_path . 'language/';
+				$fallback_template_path = (!empty($user->lang_path)) ? $user->lang_path : $an602_root_path . 'language/';
 				$fallback_template_path .= 'en/email';
 
 				$template_paths[] = $fallback_template_path . $template_dir_prefix;
@@ -315,7 +315,7 @@ class messenger
 	*/
 	function send($method = NOTIFY_EMAIL, $break = false)
 	{
-		global $config, $user, $phpbb_dispatcher;
+		global $config, $user, $an602_dispatcher;
 
 		// We add some standard variables we always use, no need to specify them always
 		$this->assign_vars(array(
@@ -334,11 +334,11 @@ class messenger
 		* @var	bool					break		Flag indicating if the function only formats the subject
 		*											and the message without sending it
 		* @var	string					subject		The message subject
-		* @var \phpbb\template\template template	The (readonly) template object
+		* @var \an602\template\template template	The (readonly) template object
 		* @since 3.2.4-RC1
 		*/
 		$vars = array('method', 'break', 'subject', 'template');
-		extract($phpbb_dispatcher->trigger_event('core.modify_notification_template', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.modify_notification_template', compact($vars)));
 
 		// Parse message through template
 		$message = trim($this->template->assign_display('body'));
@@ -355,7 +355,7 @@ class messenger
 		* @since 3.1.11-RC1
 		*/
 		$vars = array('method', 'break', 'subject', 'message');
-		extract($phpbb_dispatcher->trigger_event('core.modify_notification_message', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.modify_notification_message', compact($vars)));
 
 		$this->subject = $subject;
 		$this->msg = $message;
@@ -419,7 +419,7 @@ class messenger
 	*/
 	function error($type, $msg)
 	{
-		global $user, $config, $request, $phpbb_log;
+		global $user, $config, $request, $an602_log;
 
 		// Session doesn't exist, create it
 		if (!isset($user->session_id) || $user->session_id === '')
@@ -441,7 +441,7 @@ class messenger
 		}
 
 		$message .= '<br /><em>' . htmlspecialchars($calling_page, ENT_COMPAT) . '</em><br /><br />' . $msg . '<br />';
-		$phpbb_log->add('critical', $user->data['user_id'], $user->ip, 'LOG_ERROR_' . $type, false, array($message));
+		$an602_log->add('critical', $user->data['user_id'], $user->ip, 'LOG_ERROR_' . $type, false, array($message));
 	}
 
 	/**
@@ -467,7 +467,7 @@ class messenger
 	{
 		global $config, $request;
 
-		$domain = ($config['server_name']) ?: $request->server('SERVER_NAME', 'phpbb.generated');
+		$domain = ($config['server_name']) ?: $request->server('SERVER_NAME', 'an602.generated');
 
 		return md5(unique_id(time())) . '@' . $domain;
 	}
@@ -477,7 +477,7 @@ class messenger
 	*/
 	function build_header($to, $cc, $bcc)
 	{
-		global $config, $phpbb_dispatcher;
+		global $config, $an602_dispatcher;
 
 		// We could use keys here, but we won't do this for 3.0.x to retain backwards compatibility
 		$headers = array();
@@ -505,9 +505,9 @@ class messenger
 
 		$headers[] = 'X-Priority: ' . $this->mail_priority;
 		$headers[] = 'X-MSMail-Priority: ' . (($this->mail_priority == MAIL_LOW_PRIORITY) ? 'Low' : (($this->mail_priority == MAIL_NORMAL_PRIORITY) ? 'Normal' : 'High'));
-		$headers[] = 'X-Mailer: phpBB3';
-		$headers[] = 'X-MimeOLE: phpBB3';
-		$headers[] = 'X-phpBB-Origin: phpbb://' . str_replace(array('http://', 'https://'), array('', ''), generate_board_url());
+		$headers[] = 'X-Mailer: AN6023';
+		$headers[] = 'X-MimeOLE: AN6023';
+		$headers[] = 'X-AN602-Origin: an602://' . str_replace(array('http://', 'https://'), array('', ''), generate_board_url());
 
 		/**
 		* Event to modify email header entries
@@ -517,7 +517,7 @@ class messenger
 		* @since 3.1.11-RC1
 		*/
 		$vars = array('headers');
-		extract($phpbb_dispatcher->trigger_event('core.modify_email_headers', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.modify_email_headers', compact($vars)));
 
 		if (count($this->extra_headers))
 		{
@@ -532,7 +532,7 @@ class messenger
 	*/
 	function msg_email()
 	{
-		global $config, $phpbb_dispatcher;
+		global $config, $an602_dispatcher;
 
 		if (empty($config['email_enable']))
 		{
@@ -580,7 +580,7 @@ class messenger
 			'subject',
 			'msg',
 		);
-		extract($phpbb_dispatcher->trigger_event('core.notification_message_email', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.notification_message_email', compact($vars)));
 
 		if ($break)
 		{
@@ -629,7 +629,7 @@ class messenger
 			}
 			else
 			{
-				$result = phpbb_mail($mail_to, $this->subject, $this->msg, $headers, PHP_EOL, $err_msg);
+				$result = an602_mail($mail_to, $this->subject, $this->msg, $headers, PHP_EOL, $err_msg);
 			}
 
 			if (!$result)
@@ -657,7 +657,7 @@ class messenger
 	*/
 	function msg_jabber()
 	{
-		global $config, $user, $phpbb_root_path, $phpEx;
+		global $config, $user, $an602_root_path, $phpEx;
 
 		if (empty($config['jab_enable']) || empty($config['jab_host']) || empty($config['jab_username']) || empty($config['jab_password']))
 		{
@@ -690,7 +690,7 @@ class messenger
 
 		if (!$use_queue)
 		{
-			include_once($phpbb_root_path . 'includes/functions_jabber.' . $phpEx);
+			include_once($an602_root_path . 'includes/functions_jabber.' . $phpEx);
 			$this->jabber = new jabber($config['jab_host'], $config['jab_port'], $config['jab_username'], html_entity_decode($config['jab_password'], ENT_COMPAT), $config['jab_use_ssl'], $config['jab_verify_peer'], $config['jab_verify_peer_name'], $config['jab_allow_self_signed']);
 
 			if (!$this->jabber->connect())
@@ -729,36 +729,36 @@ class messenger
 	*/
 	protected function setup_template()
 	{
-		global $phpbb_container, $phpbb_dispatcher;
+		global $an602_container, $an602_dispatcher;
 
-		if ($this->template instanceof \phpbb\template\template)
+		if ($this->template instanceof \an602\template\template)
 		{
 			return;
 		}
 
-		$template_environment = new \phpbb\template\twig\environment(
-			$phpbb_container->get('config'),
-			$phpbb_container->get('filesystem'),
-			$phpbb_container->get('path_helper'),
-			$phpbb_container->getParameter('core.template.cache_path'),
-			$phpbb_container->get('ext.manager'),
-			new \phpbb\template\twig\loader(
-				$phpbb_container->get('filesystem')
+		$template_environment = new \an602\template\twig\environment(
+			$an602_container->get('config'),
+			$an602_container->get('filesystem'),
+			$an602_container->get('path_helper'),
+			$an602_container->getParameter('core.template.cache_path'),
+			$an602_container->get('ext.manager'),
+			new \an602\template\twig\loader(
+				$an602_container->get('filesystem')
 			),
-			$phpbb_dispatcher,
+			$an602_dispatcher,
 			array()
 		);
-		$template_environment->setLexer($phpbb_container->get('template.twig.lexer'));
+		$template_environment->setLexer($an602_container->get('template.twig.lexer'));
 
-		$this->template = new \phpbb\template\twig\twig(
-			$phpbb_container->get('path_helper'),
-			$phpbb_container->get('config'),
-			new \phpbb\template\context(),
+		$this->template = new \an602\template\twig\twig(
+			$an602_container->get('path_helper'),
+			$an602_container->get('config'),
+			new \an602\template\context(),
 			$template_environment,
-			$phpbb_container->getParameter('core.template.cache_path'),
-			$phpbb_container->get('user'),
-			$phpbb_container->get('template.twig.extensions.collection'),
-			$phpbb_container->get('ext.manager')
+			$an602_container->getParameter('core.template.cache_path'),
+			$an602_container->get('user'),
+			$an602_container->get('template.twig.extensions.collection'),
+			$an602_container->get('ext.manager')
 		);
 	}
 
@@ -785,7 +785,7 @@ class queue
 	var $eol = "\n";
 
 	/**
-	 * @var \phpbb\filesystem\filesystem_interface
+	 * @var \an602\filesystem\filesystem_interface
 	 */
 	protected $filesystem;
 
@@ -794,11 +794,11 @@ class queue
 	*/
 	function __construct()
 	{
-		global $phpEx, $phpbb_root_path, $phpbb_filesystem, $phpbb_container;
+		global $phpEx, $an602_root_path, $an602_filesystem, $an602_container;
 
 		$this->data = array();
-		$this->cache_file = $phpbb_container->getParameter('core.cache_dir') . "queue.$phpEx";
-		$this->filesystem = $phpbb_filesystem;
+		$this->cache_file = $an602_container->getParameter('core.cache_dir') . "queue.$phpEx";
+		$this->filesystem = $an602_filesystem;
 	}
 
 	/**
@@ -825,9 +825,9 @@ class queue
 	*/
 	function process()
 	{
-		global $config, $phpEx, $phpbb_root_path, $user, $phpbb_dispatcher;
+		global $config, $phpEx, $an602_root_path, $user, $an602_dispatcher;
 
-		$lock = new \phpbb\lock\flock($this->cache_file);
+		$lock = new \an602\lock\flock($this->cache_file);
 		$lock->acquire();
 
 		// avoid races, check file existence once
@@ -890,7 +890,7 @@ class queue
 						continue 2;
 					}
 
-					include_once($phpbb_root_path . 'includes/functions_jabber.' . $phpEx);
+					include_once($an602_root_path . 'includes/functions_jabber.' . $phpEx);
 					$this->jabber = new jabber($config['jab_host'], $config['jab_port'], $config['jab_username'], html_entity_decode($config['jab_password'], ENT_COMPAT), $config['jab_use_ssl'], $config['jab_verify_peer'], $config['jab_verify_peer_name'], $config['jab_allow_self_signed']);
 
 					if (!$this->jabber->connect())
@@ -939,7 +939,7 @@ class queue
 							'subject',
 							'msg',
 						);
-						extract($phpbb_dispatcher->trigger_event('core.notification_message_process', compact($vars)));
+						extract($an602_dispatcher->trigger_event('core.notification_message_process', compact($vars)));
 
 						if (!$break)
 						{
@@ -952,7 +952,7 @@ class queue
 							}
 							else
 							{
-								$result = phpbb_mail($to, $subject, $msg, $headers, PHP_EOL, $err_msg);
+								$result = an602_mail($to, $subject, $msg, $headers, PHP_EOL, $err_msg);
 							}
 
 							if (!$result)
@@ -1003,7 +1003,7 @@ class queue
 		{
 			if ($fp = @fopen($this->cache_file, 'wb'))
 			{
-				fwrite($fp, "<?php\nif (!defined('IN_PHPBB')) exit;\n\$this->queue_data = unserialize(" . var_export(serialize($this->queue_data), true) . ");\n\n?>");
+				fwrite($fp, "<?php\nif (!defined('IN_AN602')) exit;\n\$this->queue_data = unserialize(" . var_export(serialize($this->queue_data), true) . ");\n\n?>");
 				fclose($fp);
 
 				if (function_exists('opcache_invalidate'))
@@ -1013,9 +1013,9 @@ class queue
 
 				try
 				{
-					$this->filesystem->phpbb_chmod($this->cache_file, \phpbb\filesystem\filesystem_interface::CHMOD_READ | \phpbb\filesystem\filesystem_interface::CHMOD_WRITE);
+					$this->filesystem->an602_chmod($this->cache_file, \an602\filesystem\filesystem_interface::CHMOD_READ | \an602\filesystem\filesystem_interface::CHMOD_WRITE);
 				}
-				catch (\phpbb\filesystem\exception\filesystem_exception $e)
+				catch (\an602\filesystem\exception\filesystem_exception $e)
 				{
 					// Do nothing
 				}
@@ -1035,7 +1035,7 @@ class queue
 			return;
 		}
 
-		$lock = new \phpbb\lock\flock($this->cache_file);
+		$lock = new \an602\lock\flock($this->cache_file);
 		$lock->acquire();
 
 		if (file_exists($this->cache_file))
@@ -1057,7 +1057,7 @@ class queue
 
 		if ($fp = @fopen($this->cache_file, 'w'))
 		{
-			fwrite($fp, "<?php\nif (!defined('IN_PHPBB')) exit;\n\$this->queue_data = unserialize(" . var_export(serialize($this->data), true) . ");\n\n?>");
+			fwrite($fp, "<?php\nif (!defined('IN_AN602')) exit;\n\$this->queue_data = unserialize(" . var_export(serialize($this->data), true) . ");\n\n?>");
 			fclose($fp);
 
 			if (function_exists('opcache_invalidate'))
@@ -1067,9 +1067,9 @@ class queue
 
 			try
 			{
-				$this->filesystem->phpbb_chmod($this->cache_file, \phpbb\filesystem\filesystem_interface::CHMOD_READ | \phpbb\filesystem\filesystem_interface::CHMOD_WRITE);
+				$this->filesystem->an602_chmod($this->cache_file, \an602\filesystem\filesystem_interface::CHMOD_READ | \an602\filesystem\filesystem_interface::CHMOD_WRITE);
 			}
-			catch (\phpbb\filesystem\exception\filesystem_exception $e)
+			catch (\an602\filesystem\exception\filesystem_exception $e)
 			{
 				// Do nothing
 			}
@@ -1166,12 +1166,12 @@ function smtpmail($addresses, $subject, $message, &$err_msg, $headers = false)
 	$smtp->add_backtrace('Connecting to ' . $config['smtp_host'] . ':' . $config['smtp_port']);
 
 	// Ok we have error checked as much as we can to this point let's get on it already.
-	if (!class_exists('\phpbb\error_collector'))
+	if (!class_exists('\an602\error_collector'))
 	{
-		global $phpbb_root_path, $phpEx;
-		include($phpbb_root_path . 'includes/error_collector.' . $phpEx);
+		global $an602_root_path, $phpEx;
+		include($an602_root_path . 'includes/error_collector.' . $phpEx);
 	}
-	$collector = new \phpbb\error_collector;
+	$collector = new \an602\error_collector;
 	$collector->install();
 
 	$options = array();
@@ -1583,7 +1583,7 @@ class smtp_class
 	{
 		global $config;
 
-		// allow SMTPS (what was used by phpBB 3.0) if hostname is prefixed with tls:// or ssl://
+		// allow SMTPS (what was used by AN602 3.0) if hostname is prefixed with tls:// or ssl://
 		if (strpos($config['smtp_host'], 'tls://') === 0 || strpos($config['smtp_host'], 'ssl://') === 0)
 		{
 			return true;
@@ -1612,7 +1612,7 @@ class smtp_class
 		if (socket_set_blocking($this->socket, 1))
 		{
 			// https://secure.php.net/manual/en/function.stream-socket-enable-crypto.php#119122
-			$crypto = (phpbb_version_compare(PHP_VERSION, '5.6.7', '<')) ? STREAM_CRYPTO_METHOD_TLS_CLIENT : STREAM_CRYPTO_METHOD_SSLv23_CLIENT;
+			$crypto = (an602_version_compare(PHP_VERSION, '5.6.7', '<')) ? STREAM_CRYPTO_METHOD_TLS_CLIENT : STREAM_CRYPTO_METHOD_SSLv23_CLIENT;
 			$result = stream_socket_enable_crypto($this->socket, true, $crypto);
 			socket_set_blocking($this->socket, (int) $stream_meta['blocked']);
 		}
@@ -1923,9 +1923,9 @@ function mail_encode($str, $eol = "\r\n")
 /**
  * Wrapper for sending out emails with the PHP's mail function
  */
-function phpbb_mail($to, $subject, $msg, $headers, $eol, &$err_msg)
+function an602_mail($to, $subject, $msg, $headers, $eol, &$err_msg)
 {
-	global $config, $phpbb_root_path, $phpEx, $phpbb_dispatcher;
+	global $config, $an602_root_path, $phpEx, $an602_dispatcher;
 
 	// Convert Numeric Character References to UTF-8 chars (ie. Emojis)
 	$subject = utf8_decode_ncr($subject);
@@ -1938,12 +1938,12 @@ function phpbb_mail($to, $subject, $msg, $headers, $eol, &$err_msg)
 	 */
 	$headers = implode($eol, $headers);
 
-	if (!class_exists('\phpbb\error_collector'))
+	if (!class_exists('\an602\error_collector'))
 	{
-		include($phpbb_root_path . 'includes/error_collector.' . $phpEx);
+		include($an602_root_path . 'includes/error_collector.' . $phpEx);
 	}
 
-	$collector = new \phpbb\error_collector;
+	$collector = new \an602\error_collector;
 	$collector->install();
 
 	/**
@@ -1957,7 +1957,7 @@ function phpbb_mail($to, $subject, $msg, $headers, $eol, &$err_msg)
 	/**
 	 * Modify data before sending out emails with PHP's mail function
 	 *
-	 * @event core.phpbb_mail_before
+	 * @event core.an602_mail_before
 	 * @var	string	to						The message recipient
 	 * @var	string	subject					The message subject
 	 * @var	string	msg						The message text
@@ -1974,14 +1974,14 @@ function phpbb_mail($to, $subject, $msg, $headers, $eol, &$err_msg)
 		'eol',
 		'additional_parameters',
 	];
-	extract($phpbb_dispatcher->trigger_event('core.phpbb_mail_before', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.an602_mail_before', compact($vars)));
 
 	$result = mail($to, mail_encode($subject, ''), wordwrap(utf8_wordwrap($msg), 997, "\n", true), $headers, $additional_parameters);
 
 	/**
 	 * Execute code after sending out emails with PHP's mail function
 	 *
-	 * @event core.phpbb_mail_after
+	 * @event core.an602_mail_after
 	 * @var	string	to						The message recipient
 	 * @var	string	subject					The message subject
 	 * @var	string	msg						The message text
@@ -2000,7 +2000,7 @@ function phpbb_mail($to, $subject, $msg, $headers, $eol, &$err_msg)
 		'additional_parameters',
 		'result',
 	];
-	extract($phpbb_dispatcher->trigger_event('core.phpbb_mail_after', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.an602_mail_after', compact($vars)));
 
 	$collector->uninstall();
 	$err_msg = $collector->format_errors();

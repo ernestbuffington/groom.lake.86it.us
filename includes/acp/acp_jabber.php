@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -18,7 +18,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -29,14 +29,14 @@ class acp_jabber
 
 	function main($id, $mode)
 	{
-		global $db, $user, $template, $phpbb_log, $request;
-		global $config, $phpbb_root_path, $phpEx;
+		global $db, $user, $template, $an602_log, $request;
+		global $config, $an602_root_path, $phpEx;
 
 		$user->add_lang('acp/board');
 
 		if (!class_exists('jabber'))
 		{
-			include($phpbb_root_path . 'includes/functions_jabber.' . $phpEx);
+			include($an602_root_path . 'includes/functions_jabber.' . $phpEx);
 		}
 
 		$submit = (isset($_POST['submit'])) ? true : false;
@@ -100,7 +100,7 @@ class acp_jabber
 					'user_notify_type'		=> NOTIFY_BOTH,
 				);
 
-				$sql = 'UPDATE ' . USERS_TABLE . '
+				$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 					SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 					WHERE user_notify_type = ' . NOTIFY_IM;
 				$db->sql_query($sql);
@@ -120,7 +120,7 @@ class acp_jabber
 			$config->set('jab_verify_peer_name', $jab_verify_peer_name);
 			$config->set('jab_allow_self_signed', $jab_allow_self_signed);
 
-			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_' . $log);
+			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_' . $log);
 			trigger_error($message . adm_back_link($this->u_action));
 		}
 

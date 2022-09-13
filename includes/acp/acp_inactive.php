@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -31,12 +31,12 @@ class acp_inactive
 
 	function main($id, $mode)
 	{
-		global $config, $db, $user, $auth, $template, $phpbb_container, $phpbb_log, $request;
-		global $phpbb_root_path, $phpbb_admin_path, $phpEx;
+		global $config, $db, $user, $auth, $template, $an602_container, $an602_log, $request;
+		global $an602_root_path, $an602_admin_path, $phpEx;
 
 		if (!function_exists('user_active_flip'))
 		{
-			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		$user->add_lang('memberlist');
@@ -54,8 +54,8 @@ class acp_inactive
 		$form_key = 'acp_inactive';
 		add_form_key($form_key);
 
-		/* @var $pagination \phpbb\pagination */
-		$pagination = $phpbb_container->get('pagination');
+		/* @var $pagination \an602\pagination */
+		$pagination = $an602_container->get('pagination');
 
 		// We build the sort key and per page settings here, because they may be needed later
 
@@ -83,7 +83,7 @@ class acp_inactive
 				case 'delete':
 
 					$sql = 'SELECT user_id, username
-						FROM ' . USERS_TABLE . '
+						FROM ' . AN602_USERS_TABLE . '
 						WHERE ' . $db->sql_in_set('user_id', $mark);
 					$result = $db->sql_query($sql);
 
@@ -98,7 +98,7 @@ class acp_inactive
 					{
 						// Get those 'being activated'...
 						$sql = 'SELECT user_id, username' . (($config['require_activation'] == USER_ACTIVATION_ADMIN) ? ', user_email, user_lang' : '') . '
-							FROM ' . USERS_TABLE . '
+							FROM ' . AN602_USERS_TABLE . '
 							WHERE ' . $db->sql_in_set('user_id', $mark) . '
 								AND user_type = ' . USER_INACTIVE;
 						$result = $db->sql_query($sql);
@@ -116,7 +116,7 @@ class acp_inactive
 						{
 							if (!class_exists('messenger'))
 							{
-								include($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+								include($an602_root_path . 'includes/functions_messenger.' . $phpEx);
 							}
 
 							$messenger = new messenger(false);
@@ -143,8 +143,8 @@ class acp_inactive
 						{
 							foreach ($inactive_users as $row)
 							{
-								$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_ACTIVE', false, array($row['username']));
-								$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_ACTIVE_USER', false, array(
+								$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_ACTIVE', false, array($row['username']));
+								$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_ACTIVE_USER', false, array(
 									'reportee_id' => $row['user_id']
 								));
 							}
@@ -170,7 +170,7 @@ class acp_inactive
 
 							user_delete('retain', $mark, true);
 
-							$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_INACTIVE_' . strtoupper($action), false, array(implode(', ', $user_affected)));
+							$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_INACTIVE_' . strtoupper($action), false, array(implode(', ', $user_affected)));
 
 							trigger_error(sprintf($user->lang['LOG_INACTIVE_DELETE'], implode($user->lang['COMMA_SEPARATOR'], $user_affected) . ' ' . adm_back_link($this->u_action)));
 						}
@@ -196,7 +196,7 @@ class acp_inactive
 					}
 
 					$sql = 'SELECT user_id, username, user_email, user_lang, user_jabber, user_notify_type, user_regdate, user_actkey
-						FROM ' . USERS_TABLE . '
+						FROM ' . AN602_USERS_TABLE . '
 						WHERE ' . $db->sql_in_set('user_id', $mark) . '
 							AND user_inactive_reason';
 
@@ -209,7 +209,7 @@ class acp_inactive
 						// Send the messages
 						if (!class_exists('messenger'))
 						{
-							include($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+							include($an602_root_path . 'includes/functions_messenger.' . $phpEx);
 						}
 
 						$messenger = new messenger();
@@ -239,13 +239,13 @@ class acp_inactive
 						$messenger->save_queue();
 
 						// Add the remind state to the database
-						$sql = 'UPDATE ' . USERS_TABLE . '
+						$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 							SET user_reminded = user_reminded + 1,
 								user_reminded_time = ' . time() . '
 							WHERE ' . $db->sql_in_set('user_id', $user_ids);
 						$db->sql_query($sql);
 
-						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_INACTIVE_REMIND', false, array(implode(', ', $usernames)));
+						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_INACTIVE_REMIND', false, array(implode(', ', $usernames)));
 
 						trigger_error(sprintf($user->lang['LOG_INACTIVE_REMIND'], implode($user->lang['COMMA_SEPARATOR'], $usernames) . ' ' . adm_back_link($this->u_action)));
 					}
@@ -285,13 +285,13 @@ class acp_inactive
 
 				'REMINDED_EXPLAIN'	=> $user->lang('USER_LAST_REMINDED', (int) $row['user_reminded'], $user->format_date($row['user_reminded_time'])),
 
-				'USERNAME_FULL'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour'], false, append_sid("{$phpbb_admin_path}index.$phpEx", 'i=users&amp;mode=overview&amp;redirect=acp_inactive')),
+				'USERNAME_FULL'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour'], false, append_sid("{$an602_admin_path}index.$phpEx", 'i=users&amp;mode=overview&amp;redirect=acp_inactive')),
 				'USERNAME'			=> get_username_string('username', $row['user_id'], $row['username'], $row['user_colour']),
 				'USER_COLOR'		=> get_username_string('colour', $row['user_id'], $row['username'], $row['user_colour']),
 				'USER_EMAIL'		=> $row['user_email'],
 
-				'U_USER_ADMIN'	=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=users&amp;mode=overview&amp;u={$row['user_id']}"),
-				'U_SEARCH_USER'	=> ($auth->acl_get('u_search')) ? append_sid("{$phpbb_root_path}search.$phpEx", "author_id={$row['user_id']}&amp;sr=posts") : '',
+				'U_USER_ADMIN'	=> append_sid("{$an602_admin_path}index.$phpEx", "i=users&amp;mode=overview&amp;u={$row['user_id']}"),
+				'U_SEARCH_USER'	=> ($auth->acl_get('u_search')) ? append_sid("{$an602_root_path}search.$phpEx", "author_id={$row['user_id']}&amp;sr=posts") : '',
 			));
 		}
 

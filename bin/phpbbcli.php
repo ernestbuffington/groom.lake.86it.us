@@ -2,9 +2,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -20,71 +20,71 @@ if (php_sapi_name() != 'cli')
 	exit(1);
 }
 
-define('IN_PHPBB', true);
+define('IN_AN602', true);
 
-$phpbb_root_path = __DIR__ . '/../';
+$an602_root_path = __DIR__ . '/../';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-require($phpbb_root_path . 'includes/startup.' . $phpEx);
-require($phpbb_root_path . 'phpbb/class_loader.' . $phpEx);
+require($an602_root_path . 'includes/startup.' . $phpEx);
+require($an602_root_path . 'an602/class_loader.' . $phpEx);
 
-$phpbb_class_loader = new \phpbb\class_loader('phpbb\\', "{$phpbb_root_path}phpbb/", $phpEx);
-$phpbb_class_loader->register();
+$an602_class_loader = new \an602\class_loader('an602\\', "{$an602_root_path}an602/", $phpEx);
+$an602_class_loader->register();
 
-$phpbb_config_php_file = new \phpbb\config_php_file($phpbb_root_path, $phpEx);
-extract($phpbb_config_php_file->get_all());
+$an602_config_php_file = new \an602\config_php_file($an602_root_path, $phpEx);
+extract($an602_config_php_file->get_all());
 
-if (!defined('PHPBB_ENVIRONMENT'))
+if (!defined('AN602_ENVIRONMENT'))
 {
-	@define('PHPBB_ENVIRONMENT', 'production');
+	@define('AN602_ENVIRONMENT', 'production');
 }
 
-require($phpbb_root_path . 'includes/constants.' . $phpEx);
-require($phpbb_root_path . 'includes/functions.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
-require($phpbb_root_path . 'includes/utf/utf_tools.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_compatibility.' . $phpEx);
+require($an602_root_path . 'includes/constants.' . $phpEx);
+require($an602_root_path . 'includes/functions.' . $phpEx);
+require($an602_root_path . 'includes/functions_admin.' . $phpEx);
+require($an602_root_path . 'includes/utf/utf_tools.' . $phpEx);
+require($an602_root_path . 'includes/functions_compatibility.' . $phpEx);
 
-$phpbb_container_builder = new \phpbb\di\container_builder($phpbb_root_path, $phpEx);
-$phpbb_container = $phpbb_container_builder->with_config($phpbb_config_php_file);
+$an602_container_builder = new \an602\di\container_builder($an602_root_path, $phpEx);
+$an602_container = $an602_container_builder->with_config($an602_config_php_file);
 
 $input = new ArgvInput();
 
 if ($input->hasParameterOption(array('--env')))
 {
-	$phpbb_container_builder->with_environment($input->getParameterOption('--env'));
+	$an602_container_builder->with_environment($input->getParameterOption('--env'));
 }
 
 if ($input->hasParameterOption(array('--safe-mode')))
 {
-	$phpbb_container_builder->without_extensions();
-	$phpbb_container_builder->without_cache();
+	$an602_container_builder->without_extensions();
+	$an602_container_builder->without_cache();
 }
 else
 {
-	$phpbb_class_loader_ext = new \phpbb\class_loader('\\', "{$phpbb_root_path}ext/", $phpEx);
-	$phpbb_class_loader_ext->register();
+	$an602_class_loader_ext = new \an602\class_loader('\\', "{$an602_root_path}ext/", $phpEx);
+	$an602_class_loader_ext->register();
 }
 
-$phpbb_container = $phpbb_container_builder->get_container();
-$phpbb_container->get('request')->enable_super_globals();
-require($phpbb_root_path . 'includes/compatibility_globals.' . $phpEx);
+$an602_container = $an602_container_builder->get_container();
+$an602_container->get('request')->enable_super_globals();
+require($an602_root_path . 'includes/compatibility_globals.' . $phpEx);
 
 register_compatibility_globals();
 
-/** @var \phpbb\config\config $config */
-$config = $phpbb_container->get('config');
+/** @var \an602\config\config $config */
+$config = $an602_container->get('config');
 
-/** @var \phpbb\language\language $language */
-$language = $phpbb_container->get('language');
+/** @var \an602\language\language $language */
+$language = $an602_container->get('language');
 $language->set_default_language($config['default_lang']);
 $language->add_lang(array('common', 'acp/common', 'cli'));
 
-/* @var $user \phpbb\user */
-$user = $phpbb_container->get('user');
+/* @var $user \an602\user */
+$user = $an602_container->get('user');
 $user->data['user_id'] = ANONYMOUS;
 $user->ip = '127.0.0.1';
 
-$application = new \phpbb\console\application('phpBB Console', PHPBB_VERSION, $language, $config);
-$application->setDispatcher($phpbb_container->get('dispatcher'));
-$application->register_container_commands($phpbb_container->get('console.command_collection'));
+$application = new \an602\console\application('AN602 Console', AN602_VERSION, $language, $config);
+$application->setDispatcher($an602_container->get('dispatcher'));
+$application->register_container_commands($an602_container->get('console.command_collection'));
 $application->run($input);

@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -26,11 +26,11 @@ class acp_groups
 	function main($id, $mode)
 	{
 		global $config, $db, $user, $auth, $template, $cache;
-		global $phpbb_root_path, $phpbb_admin_path, $phpEx;
-		global $request, $phpbb_container, $phpbb_dispatcher;
+		global $an602_root_path, $an602_admin_path, $phpEx;
+		global $request, $an602_container, $an602_dispatcher;
 
-		/** @var \phpbb\language\language $language Language object */
-		$language = $phpbb_container->get('language');
+		/** @var \an602\language\language $language Language object */
+		$language = $an602_container->get('language');
 
 		$user->add_lang('acp/groups');
 		$this->tpl_name = 'acp_groups';
@@ -47,7 +47,7 @@ class acp_groups
 
 		if (!function_exists('group_user_attributes'))
 		{
-			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		// Check and set some common vars
@@ -60,8 +60,8 @@ class acp_groups
 		$start		= $request->variable('start', 0);
 		$update		= (isset($_POST['update'])) ? true : false;
 
-		/** @var \phpbb\group\helper $group_helper */
-		$group_helper = $phpbb_container->get('group_helper');
+		/** @var \an602\group\helper $group_helper */
+		$group_helper = $an602_container->get('group_helper');
 
 		// Clear some vars
 		$group_row = array();
@@ -70,8 +70,8 @@ class acp_groups
 		if ($group_id)
 		{
 			$sql = 'SELECT g.*, t.teampage_position AS group_teampage
-				FROM ' . GROUPS_TABLE . ' g
-				LEFT JOIN ' . TEAMPAGE_TABLE . ' t
+				FROM ' . AN602_GROUPS_TABLE . ' g
+				LEFT JOIN ' . AN602_TEAMPAGE_TABLE . ' t
 					ON (t.group_id = g.group_id)
 				WHERE g.group_id = ' . $group_id;
 			$result = $db->sql_query($sql);
@@ -174,7 +174,7 @@ class acp_groups
 					do
 					{
 						$sql = 'SELECT user_id
-							FROM ' . USER_GROUP_TABLE . "
+							FROM ' . AN602_USER_GROUP_TABLE . "
 							WHERE group_id = $group_id
 							ORDER BY user_id";
 						$result = $db->sql_query_limit($sql, 200, $start);
@@ -320,7 +320,7 @@ class acp_groups
 
 				if (!function_exists('display_forums'))
 				{
-					include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+					include($an602_root_path . 'includes/functions_display.' . $phpEx);
 				}
 
 				if ($action == 'edit' && !$group_id)
@@ -343,15 +343,15 @@ class acp_groups
 				$avatar_data = null;
 				$avatar_error = array();
 
-				/** @var \phpbb\avatar\manager $phpbb_avatar_manager */
-				$phpbb_avatar_manager = $phpbb_container->get('avatar.manager');
+				/** @var \an602\avatar\manager $an602_avatar_manager */
+				$an602_avatar_manager = $an602_container->get('avatar.manager');
 
 				if ($config['allow_avatar'])
 				{
-					$avatar_drivers = $phpbb_avatar_manager->get_enabled_drivers();
+					$avatar_drivers = $an602_avatar_manager->get_enabled_drivers();
 
 					// This is normalised data, without the group_ prefix
-					$avatar_data = \phpbb\avatar\manager::clean_row($group_row, 'group');
+					$avatar_data = \an602\avatar\manager::clean_row($group_row, 'group');
 					if (!isset($avatar_data['id']))
 					{
 						$avatar_data['id'] = 'g' . $group_id;
@@ -363,7 +363,7 @@ class acp_groups
 					if (confirm_box(true))
 					{
 						$avatar_data['id'] = substr($avatar_data['id'], 1);
-						$phpbb_avatar_manager->handle_avatar_delete($db, $user, $avatar_data, GROUPS_TABLE, 'group_');
+						$an602_avatar_manager->handle_avatar_delete($db, $user, $avatar_data, AN602_GROUPS_TABLE, 'group_');
 
 						$message = ($action == 'edit') ? 'GROUP_UPDATED' : 'GROUP_CREATED';
 						trigger_error($user->lang[$message] . adm_back_link($this->u_action));
@@ -416,11 +416,11 @@ class acp_groups
 					if ($config['allow_avatar'])
 					{
 						// Handle avatar
-						$driver_name = $phpbb_avatar_manager->clean_driver_name($request->variable('avatar_driver', ''));
+						$driver_name = $an602_avatar_manager->clean_driver_name($request->variable('avatar_driver', ''));
 
 						if (in_array($driver_name, $avatar_drivers) && !$request->is_set_post('avatar_delete'))
 						{
-							$driver = $phpbb_avatar_manager->get_driver($driver_name);
+							$driver = $an602_avatar_manager->get_driver($driver_name);
 							$result = $driver->process_form($request, $template, $user, $avatar_data, $avatar_error);
 
 							if ($result && empty($avatar_error))
@@ -431,7 +431,7 @@ class acp_groups
 						}
 						else
 						{
-							$driver = $phpbb_avatar_manager->get_driver($avatar_data['avatar_type']);
+							$driver = $an602_avatar_manager->get_driver($avatar_data['avatar_type']);
 							if ($driver)
 							{
 								$driver->delete($avatar_data);
@@ -445,14 +445,14 @@ class acp_groups
 						}
 
 						// Merge any avatar errors into the primary error array
-						$error = array_merge($error, $phpbb_avatar_manager->localize_errors($user, $avatar_error));
+						$error = array_merge($error, $an602_avatar_manager->localize_errors($user, $avatar_error));
 					}
 
 					/*
 					* Validate the length of "Maximum number of allowed recipients per
 					* private message" setting. We use 16777215 as a maximum because it matches
 					* MySQL unsigned mediumint maximum value which is the lowest amongst DBMSes
-					* supported by phpBB3. Also validate the submitted colour value.
+					* supported by AN6023. Also validate the submitted colour value.
 					*/
 					$validation_checks = array(
 						'max_recipients' => array('num', false, 0, 16777215),
@@ -493,7 +493,7 @@ class acp_groups
 						'submit_ary',
 						'validation_checks',
 					);
-					extract($phpbb_dispatcher->trigger_event('core.acp_manage_group_request_data', compact($vars)));
+					extract($an602_dispatcher->trigger_event('core.acp_manage_group_request_data', compact($vars)));
 
 					if ($validation_error = validate_data($submit_ary, $validation_checks))
 					{
@@ -561,7 +561,7 @@ class acp_groups
 							'submit_ary',
 							'test_variables',
 						);
-						extract($phpbb_dispatcher->trigger_event('core.acp_manage_group_initialise_data', compact($vars)));
+						extract($an602_dispatcher->trigger_event('core.acp_manage_group_initialise_data', compact($vars)));
 
 						foreach ($test_variables as $test => $type)
 						{
@@ -583,7 +583,7 @@ class acp_groups
 							if ($group_perm_from && $action == 'add' && $auth->acl_get('a_authgroups') && $auth->acl_gets('a_aauth', 'a_fauth', 'a_mauth', 'a_uauth'))
 							{
 								$sql = 'SELECT group_founder_manage
-									FROM ' . GROUPS_TABLE . '
+									FROM ' . AN602_GROUPS_TABLE . '
 									WHERE group_id = ' . $group_perm_from;
 								$result = $db->sql_query($sql);
 								$check_row = $db->sql_fetchrow($result);
@@ -598,7 +598,7 @@ class acp_groups
 
 									// Copy permisisons from/to the acl groups table (only group_id gets changed)
 									$sql = 'SELECT forum_id, auth_option_id, auth_role_id, auth_setting
-										FROM ' . ACL_GROUPS_TABLE . '
+										FROM ' . AN602_ACL_AN602_GROUPS_TABLE . '
 										WHERE group_id = ' . $group_perm_from;
 									$result = $db->sql_query($sql);
 
@@ -616,13 +616,13 @@ class acp_groups
 									$db->sql_freeresult($result);
 
 									// Now insert the data
-									$db->sql_multi_insert(ACL_GROUPS_TABLE, $groups_sql_ary);
+									$db->sql_multi_insert(AN602_ACL_AN602_GROUPS_TABLE, $groups_sql_ary);
 
 									$auth->acl_clear_prefetch();
 								}
 							}
 
-							$cache->destroy('sql', array(GROUPS_TABLE, TEAMPAGE_TABLE));
+							$cache->destroy('sql', array(AN602_GROUPS_TABLE, AN602_TEAMPAGE_TABLE));
 
 							$message = ($action == 'edit') ? 'GROUP_UPDATED' : 'GROUP_CREATED';
 							trigger_error($user->lang[$message] . adm_back_link($this->u_action));
@@ -663,7 +663,7 @@ class acp_groups
 				}
 
 				$sql = 'SELECT *
-					FROM ' . RANKS_TABLE . '
+					FROM ' . AN602_RANKS_TABLE . '
 					WHERE rank_special = 1
 					ORDER BY rank_title';
 				$result = $db->sql_query($sql);
@@ -686,7 +686,7 @@ class acp_groups
 				if ($config['allow_avatar'])
 				{
 					$avatars_enabled = false;
-					$selected_driver = $phpbb_avatar_manager->clean_driver_name($request->variable('avatar_driver', $avatar_data['avatar_type']));
+					$selected_driver = $an602_avatar_manager->clean_driver_name($request->variable('avatar_driver', $avatar_data['avatar_type']));
 
 					// Assign min and max values before generating avatar driver html
 					$template->assign_vars(array(
@@ -698,7 +698,7 @@ class acp_groups
 
 					foreach ($avatar_drivers as $current_driver)
 					{
-						$driver = $phpbb_avatar_manager->get_driver($current_driver);
+						$driver = $an602_avatar_manager->get_driver($current_driver);
 
 						$avatars_enabled = true;
 						$template->set_filenames(array(
@@ -707,7 +707,7 @@ class acp_groups
 
 						if ($driver->prepare_form($request, $template, $user, $avatar_data, $avatar_error))
 						{
-							$driver_name = $phpbb_avatar_manager->prepare_driver_name($current_driver);
+							$driver_name = $an602_avatar_manager->prepare_driver_name($current_driver);
 							$driver_upper = strtoupper($driver_name);
 							$template->assign_block_vars('avatar_drivers', array(
 								'L_TITLE' => $user->lang($driver_upper . '_TITLE'),
@@ -721,12 +721,12 @@ class acp_groups
 					}
 				}
 
-				$avatar = phpbb_get_group_avatar($group_row, 'GROUP_AVATAR', true);
+				$avatar = an602_get_group_avatar($group_row, 'GROUP_AVATAR', true);
 
-				if (isset($phpbb_avatar_manager) && !$update)
+				if (isset($an602_avatar_manager) && !$update)
 				{
 					// Merge any avatar errors into the primary error array
-					$error = array_merge($error, $phpbb_avatar_manager->localize_errors($user, $avatar_error));
+					$error = array_merge($error, $an602_avatar_manager->localize_errors($user, $avatar_error));
 				}
 
 				$back_link = $request->variable('back_link', '');
@@ -734,7 +734,7 @@ class acp_groups
 				switch ($back_link)
 				{
 					case 'acp_users_groups':
-						$u_back = append_sid("{$phpbb_admin_path}index.$phpEx", 'i=users&amp;mode=groups&amp;u=' . $request->variable('u', 0));
+						$u_back = append_sid("{$an602_admin_path}index.$phpEx", 'i=users&amp;mode=groups&amp;u=' . $request->variable('u', 0));
 					break;
 
 					default:
@@ -771,7 +771,7 @@ class acp_groups
 
 					'S_RANK_OPTIONS'		=> $rank_options,
 					'S_GROUP_OPTIONS'		=> group_select_options(false, false, (($user->data['user_type'] == USER_FOUNDER) ? false : 0)),
-					'AVATAR'				=> empty($avatar) ? '<img src="' . $phpbb_admin_path . 'images/no_avatar.gif" alt="" />' : $avatar,
+					'AVATAR'				=> empty($avatar) ? '<img src="' . $an602_admin_path . 'images/no_avatar.gif" alt="" />' : $avatar,
 					'AVATAR_MAX_FILESIZE'	=> $config['avatar_filesize'],
 					'AVATAR_WIDTH'			=> (isset($group_row['group_avatar_width'])) ? $group_row['group_avatar_width'] : '',
 					'AVATAR_HEIGHT'			=> (isset($group_row['group_avatar_height'])) ? $group_row['group_avatar_height'] : '',
@@ -789,7 +789,7 @@ class acp_groups
 
 					'U_BACK'			=> $u_back,
 					'U_ACTION'			=> "{$this->u_action}&amp;action=$action&amp;g=$group_id",
-					'L_AVATAR_EXPLAIN'	=> phpbb_avatar_explanation_string(),
+					'L_AVATAR_EXPLAIN'	=> an602_avatar_explanation_string(),
 				));
 
 				/**
@@ -823,7 +823,7 @@ class acp_groups
 					'rank_options',
 					'error',
 				);
-				extract($phpbb_dispatcher->trigger_event('core.acp_manage_group_display_form', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_manage_group_display_form', compact($vars)));
 
 				return;
 			break;
@@ -835,13 +835,13 @@ class acp_groups
 					trigger_error($user->lang['NO_GROUP'] . adm_back_link($this->u_action), E_USER_WARNING);
 				}
 
-				/* @var $pagination \phpbb\pagination */
-				$pagination = $phpbb_container->get('pagination');
+				/* @var $pagination \an602\pagination */
+				$pagination = $an602_container->get('pagination');
 				$this->page_title = 'GROUP_MEMBERS';
 
 				// Grab the leaders - always, on every page...
 				$sql = 'SELECT u.user_id, u.username, u.username_clean, u.user_regdate, u.user_colour, u.user_posts, u.group_id, ug.group_leader, ug.user_pending
-					FROM ' . USERS_TABLE . ' u, ' . USER_GROUP_TABLE . " ug
+					FROM ' . AN602_USERS_TABLE . ' u, ' . AN602_USER_GROUP_TABLE . " ug
 					WHERE ug.group_id = $group_id
 						AND u.user_id = ug.user_id
 						AND ug.group_leader = 1
@@ -851,7 +851,7 @@ class acp_groups
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$template->assign_block_vars('leader', array(
-						'U_USER_EDIT'		=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=users&amp;action=edit&amp;u={$row['user_id']}"),
+						'U_USER_EDIT'		=> append_sid("{$an602_admin_path}index.$phpEx", "i=users&amp;action=edit&amp;u={$row['user_id']}"),
 
 						'USERNAME'			=> $row['username'],
 						'USERNAME_COLOUR'	=> $row['user_colour'],
@@ -865,7 +865,7 @@ class acp_groups
 
 				// Total number of group members (non-leaders)
 				$sql = 'SELECT COUNT(user_id) AS total_members
-					FROM ' . USER_GROUP_TABLE . "
+					FROM ' . AN602_USER_GROUP_TABLE . "
 					WHERE group_id = $group_id
 						AND group_leader = 0";
 				$result = $db->sql_query($sql);
@@ -892,13 +892,13 @@ class acp_groups
 
 					'U_ACTION'			=> $this->u_action . "&amp;g=$group_id",
 					'U_BACK'			=> $this->u_action,
-					'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=list&amp;field=usernames'),
+					'U_FIND_USERNAME'	=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=list&amp;field=usernames'),
 					'U_DEFAULT_ALL'		=> "{$this->u_action}&amp;action=set_default_on_all&amp;g=$group_id",
 				));
 
 				// Grab the members
 				$sql = 'SELECT u.user_id, u.username, u.username_clean, u.user_colour, u.user_regdate, u.user_posts, u.group_id, ug.group_leader, ug.user_pending
-					FROM ' . USERS_TABLE . ' u, ' . USER_GROUP_TABLE . " ug
+					FROM ' . AN602_USERS_TABLE . ' u, ' . AN602_USER_GROUP_TABLE . " ug
 					WHERE ug.group_id = $group_id
 						AND u.user_id = ug.user_id
 						AND ug.group_leader = 0
@@ -919,7 +919,7 @@ class acp_groups
 					}
 
 					$template->assign_block_vars('member', array(
-						'U_USER_EDIT'		=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=users&amp;action=edit&amp;u={$row['user_id']}"),
+						'U_USER_EDIT'		=> append_sid("{$an602_admin_path}index.$phpEx", "i=users&amp;action=edit&amp;u={$row['user_id']}"),
 
 						'USERNAME'			=> $row['username'],
 						'USERNAME_COLOUR'	=> $row['user_colour'],
@@ -942,7 +942,7 @@ class acp_groups
 
 		// Get us all the groups
 		$sql = 'SELECT g.group_id, g.group_name, g.group_type, g.group_colour
-			FROM ' . GROUPS_TABLE . ' g
+			FROM ' . AN602_GROUPS_TABLE . ' g
 			ORDER BY g.group_type ASC, g.group_name';
 		$result = $db->sql_query($sql);
 
@@ -963,7 +963,7 @@ class acp_groups
 
 		// How many people are in which group?
 		$sql = 'SELECT COUNT(ug.user_id) AS total_members, SUM(ug.user_pending) AS pending_members, ug.group_id
-			FROM ' . USER_GROUP_TABLE . ' ug
+			FROM ' . AN602_USER_GROUP_TABLE . ' ug
 			WHERE ' . $db->sql_in_set('ug.group_id', array_keys($lookup)) . '
 			GROUP BY ug.group_id';
 		$result = $db->sql_query($sql);
@@ -1010,7 +1010,7 @@ class acp_groups
 
 	public function manage_position()
 	{
-		global $config, $db, $template, $user, $request, $phpbb_container;
+		global $config, $db, $template, $user, $request, $an602_container;
 
 		$this->tpl_name = 'acp_groups_position';
 		$this->page_title = 'ACP_GROUPS_POSITION';
@@ -1021,8 +1021,8 @@ class acp_groups
 		$teampage_id = $request->variable('t', 0);
 		$category_id = $request->variable('c', 0);
 
-		/** @var \phpbb\group\helper $group_helper */
-		$group_helper = $phpbb_container->get('group_helper');
+		/** @var \an602\group\helper $group_helper */
+		$group_helper = $an602_container->get('group_helper');
 
 		if ($field && !in_array($field, array('legend', 'teampage')))
 		{
@@ -1031,8 +1031,8 @@ class acp_groups
 		}
 		else if ($field && in_array($field, array('legend', 'teampage')))
 		{
-			/* @var $group_position \phpbb\groupposition\groupposition_interface */
-			$group_position = $phpbb_container->get('groupposition.' . $field);
+			/* @var $group_position \an602\groupposition\groupposition_interface */
+			$group_position = $an602_container->get('groupposition.' . $field);
 		}
 
 		if ($field == 'teampage')
@@ -1062,7 +1062,7 @@ class acp_groups
 					break;
 				}
 			}
-			catch (\phpbb\groupposition\exception $exception)
+			catch (\an602\groupposition\exception $exception)
 			{
 				trigger_error($user->lang($exception->getMessage()) . adm_back_link($this->u_action), E_USER_WARNING);
 			}
@@ -1090,7 +1090,7 @@ class acp_groups
 					break;
 				}
 			}
-			catch (\phpbb\groupposition\exception $exception)
+			catch (\an602\groupposition\exception $exception)
 			{
 				trigger_error($user->lang($exception->getMessage()) . adm_back_link($this->u_action), E_USER_WARNING);
 			}
@@ -1114,12 +1114,12 @@ class acp_groups
 
 		if (($action == 'move_up' || $action == 'move_down') && $request->is_ajax())
 		{
-			$json_response = new \phpbb\json_response;
+			$json_response = new \an602\json_response;
 			$json_response->send(array('success' => true));
 		}
 
 		$sql = 'SELECT group_id, group_name, group_colour, group_type, group_legend
-			FROM ' . GROUPS_TABLE . '
+			FROM ' . AN602_GROUPS_TABLE . '
 			ORDER BY group_legend ASC, group_type DESC, group_name ASC';
 		$result = $db->sql_query($sql);
 
@@ -1131,7 +1131,7 @@ class acp_groups
 				$template->assign_block_vars('legend', array(
 					'GROUP_NAME'	=> $group_name,
 					'GROUP_COLOUR'	=> ($row['group_colour']) ? '#' . $row['group_colour'] : '',
-					'GROUP_TYPE'	=> $user->lang[\phpbb\groupposition\legend::group_type_language($row['group_type'])],
+					'GROUP_TYPE'	=> $user->lang[\an602\groupposition\legend::group_type_language($row['group_type'])],
 
 					'U_MOVE_DOWN'	=> "{$this->u_action}&amp;field=legend&amp;action=move_down&amp;g=" . $row['group_id'],
 					'U_MOVE_UP'		=> "{$this->u_action}&amp;field=legend&amp;action=move_up&amp;g=" . $row['group_id'],
@@ -1152,8 +1152,8 @@ class acp_groups
 		$category_url_param = (($category_id) ? '&amp;c=' . $category_id : '');
 
 		$sql = 'SELECT t.*, g.group_name, g.group_colour, g.group_type
-			FROM ' . TEAMPAGE_TABLE . ' t
-			LEFT JOIN ' . GROUPS_TABLE . ' g
+			FROM ' . AN602_TEAMPAGE_TABLE . ' t
+			LEFT JOIN ' . AN602_GROUPS_TABLE . ' g
 				ON (t.group_id = g.group_id)
 			WHERE t.teampage_parent = ' . $category_id . '
 				OR t.teampage_id = ' . $category_id . '
@@ -1173,7 +1173,7 @@ class acp_groups
 			if ($row['group_id'])
 			{
 				$group_name = $group_helper->get_name($row['group_name']);
-				$group_type = $user->lang[\phpbb\groupposition\teampage::group_type_language($row['group_type'])];
+				$group_type = $user->lang[\an602\groupposition\teampage::group_type_language($row['group_type'])];
 			}
 			else
 			{
@@ -1195,8 +1195,8 @@ class acp_groups
 		$db->sql_freeresult($result);
 
 		$sql = 'SELECT g.group_id, g.group_name, g.group_colour, g.group_type
-			FROM ' . GROUPS_TABLE . ' g
-			LEFT JOIN ' . TEAMPAGE_TABLE . ' t
+			FROM ' . AN602_GROUPS_TABLE . ' g
+			LEFT JOIN ' . AN602_TEAMPAGE_TABLE . ' t
 				ON (t.group_id = g.group_id)
 			WHERE t.teampage_id IS NULL
 			ORDER BY g.group_type DESC, g.group_name ASC';

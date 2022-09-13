@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -22,12 +22,12 @@ if (!defined('IN_PHPBB'))
 /**
 * Functions used to generate additional URL paramters
 */
-function phpbb_module__url($mode, $module_row)
+function an602_module__url($mode, $module_row)
 {
-	return phpbb_extra_url();
+	return an602_extra_url();
 }
 
-function phpbb_module_notes_url($mode, $module_row)
+function an602_module_notes_url($mode, $module_row)
 {
 	if ($mode == 'front')
 	{
@@ -35,52 +35,52 @@ function phpbb_module_notes_url($mode, $module_row)
 	}
 
 	global $user_id;
-	return phpbb_extra_url();
+	return an602_extra_url();
 }
 
-function phpbb_module_warn_url($mode, $module_row)
+function an602_module_warn_url($mode, $module_row)
 {
 	if ($mode == 'front' || $mode == 'list')
 	{
 		global $forum_id;
-		return phpbb_extra_url();
+		return an602_extra_url();
 	}
 
 	if ($mode == 'warn_post')
 	{
 		global $forum_id, $post_id;
-		return phpbb_extra_url();
+		return an602_extra_url();
 	}
 	else
 	{
 		global $user_id;
-		return phpbb_extra_url();
+		return an602_extra_url();
 	}
 }
 
-function phpbb_module_main_url($mode, $module_row)
+function an602_module_main_url($mode, $module_row)
 {
-	return phpbb_extra_url();
+	return an602_extra_url();
 }
 
-function phpbb_module_logs_url($mode, $module_row)
+function an602_module_logs_url($mode, $module_row)
 {
-	return phpbb_extra_url();
+	return an602_extra_url();
 }
 
-function phpbb_module_ban_url($mode, $module_row)
+function an602_module_ban_url($mode, $module_row)
 {
-	return phpbb_extra_url();
+	return an602_extra_url();
 }
 
-function phpbb_module_queue_url($mode, $module_row)
+function an602_module_queue_url($mode, $module_row)
 {
-	return phpbb_extra_url();
+	return an602_extra_url();
 }
 
-function phpbb_module_reports_url($mode, $module_row)
+function an602_module_reports_url($mode, $module_row)
 {
-	return phpbb_extra_url();
+	return an602_extra_url();
 }
 
 /**
@@ -90,7 +90,7 @@ function phpbb_module_reports_url($mode, $module_row)
  *
  * @return string						String with URL parameters (empty string if not any)
  */
-function phpbb_extra_url($additional_parameters = [])
+function an602_extra_url($additional_parameters = [])
 {
 	$url_extra = [];
 	$url_parameters = array_merge([
@@ -116,7 +116,7 @@ function phpbb_extra_url($additional_parameters = [])
 /**
 * Get simple topic data
 */
-function phpbb_get_topic_data($topic_ids, $acl_list = false, $read_tracking = false)
+function an602_get_topic_data($topic_ids, $acl_list = false, $read_tracking = false)
 {
 	global $auth, $db, $config, $user;
 	static $rowset = array();
@@ -146,12 +146,12 @@ function phpbb_get_topic_data($topic_ids, $acl_list = false, $read_tracking = fa
 			'SELECT'	=> 't.*, f.*',
 
 			'FROM'		=> array(
-				TOPICS_TABLE	=> 't',
+				AN602_TOPICS_TABLE	=> 't',
 			),
 
 			'LEFT_JOIN'	=> array(
 				array(
-					'FROM'	=> array(FORUMS_TABLE => 'f'),
+					'FROM'	=> array(AN602_FORUMS_TABLE => 'f'),
 					'ON'	=> 'f.forum_id = t.forum_id'
 				)
 			),
@@ -164,12 +164,12 @@ function phpbb_get_topic_data($topic_ids, $acl_list = false, $read_tracking = fa
 			$sql_array['SELECT'] .= ', tt.mark_time, ft.mark_time as forum_mark_time';
 
 			$sql_array['LEFT_JOIN'][] = array(
-				'FROM'	=> array(TOPICS_TRACK_TABLE => 'tt'),
+				'FROM'	=> array(AN602_TOPICS_TRACK_TABLE => 'tt'),
 				'ON'	=> 'tt.user_id = ' . $user->data['user_id'] . ' AND t.topic_id = tt.topic_id'
 			);
 
 			$sql_array['LEFT_JOIN'][] = array(
-				'FROM'	=> array(FORUMS_TRACK_TABLE => 'ft'),
+				'FROM'	=> array(AN602_FORUMS_TRACK_TABLE => 'ft'),
 				'ON'	=> 'ft.user_id = ' . $user->data['user_id'] . ' AND t.forum_id = ft.forum_id'
 			);
 		}
@@ -205,9 +205,9 @@ function phpbb_get_topic_data($topic_ids, $acl_list = false, $read_tracking = fa
 /**
 * Get simple post data
 */
-function phpbb_get_post_data($post_ids, $acl_list = false, $read_tracking = false)
+function an602_get_post_data($post_ids, $acl_list = false, $read_tracking = false)
 {
-	global $db, $auth, $config, $user, $phpbb_dispatcher, $phpbb_container;
+	global $db, $auth, $config, $user, $an602_dispatcher, $an602_container;
 
 	$rowset = array();
 
@@ -220,14 +220,14 @@ function phpbb_get_post_data($post_ids, $acl_list = false, $read_tracking = fals
 		'SELECT'	=> 'p.*, u.*, t.*, f.*',
 
 		'FROM'		=> array(
-			USERS_TABLE		=> 'u',
-			POSTS_TABLE		=> 'p',
-			TOPICS_TABLE	=> 't',
+			AN602_USERS_TABLE		=> 'u',
+			AN602_POSTS_TABLE		=> 'p',
+			AN602_TOPICS_TABLE	=> 't',
 		),
 
 		'LEFT_JOIN'	=> array(
 			array(
-				'FROM'	=> array(FORUMS_TABLE => 'f'),
+				'FROM'	=> array(AN602_FORUMS_TABLE => 'f'),
 				'ON'	=> 'f.forum_id = t.forum_id'
 			)
 		),
@@ -242,12 +242,12 @@ function phpbb_get_post_data($post_ids, $acl_list = false, $read_tracking = fals
 		$sql_array['SELECT'] .= ', tt.mark_time, ft.mark_time as forum_mark_time';
 
 		$sql_array['LEFT_JOIN'][] = array(
-			'FROM'	=> array(TOPICS_TRACK_TABLE => 'tt'),
+			'FROM'	=> array(AN602_TOPICS_TRACK_TABLE => 'tt'),
 			'ON'	=> 'tt.user_id = ' . $user->data['user_id'] . ' AND t.topic_id = tt.topic_id'
 		);
 
 		$sql_array['LEFT_JOIN'][] = array(
-			'FROM'	=> array(FORUMS_TRACK_TABLE => 'ft'),
+			'FROM'	=> array(AN602_FORUMS_TRACK_TABLE => 'ft'),
 			'ON'	=> 'ft.user_id = ' . $user->data['user_id'] . ' AND t.forum_id = ft.forum_id'
 		);
 	}
@@ -256,7 +256,7 @@ function phpbb_get_post_data($post_ids, $acl_list = false, $read_tracking = fals
 	$result = $db->sql_query($sql);
 	unset($sql_array);
 
-	$phpbb_content_visibility = $phpbb_container->get('content.visibility');
+	$an602_content_visibility = $an602_container->get('content.visibility');
 
 	while ($row = $db->sql_fetchrow($result))
 	{
@@ -265,7 +265,7 @@ function phpbb_get_post_data($post_ids, $acl_list = false, $read_tracking = fals
 			continue;
 		}
 
-		if (!$phpbb_content_visibility->is_visible('post', $row['forum_id'], $row))
+		if (!$an602_content_visibility->is_visible('post', $row['forum_id'], $row))
 		{
 			// Moderators without the permission to approve post should at least not see them. ;)
 			continue;
@@ -292,7 +292,7 @@ function phpbb_get_post_data($post_ids, $acl_list = false, $read_tracking = fals
 		'read_tracking',
 		'rowset',
 	];
-	extract($phpbb_dispatcher->trigger_event('core.mcp_get_post_data_after', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.mcp_get_post_data_after', compact($vars)));
 
 	return $rowset;
 }
@@ -300,9 +300,9 @@ function phpbb_get_post_data($post_ids, $acl_list = false, $read_tracking = fals
 /**
 * Get simple forum data
 */
-function phpbb_get_forum_data($forum_id, $acl_list = 'f_list', $read_tracking = false)
+function an602_get_forum_data($forum_id, $acl_list = 'f_list', $read_tracking = false)
 {
-	global $auth, $db, $user, $config, $phpbb_container;
+	global $auth, $db, $user, $config, $an602_container;
 
 	$rowset = array();
 
@@ -318,7 +318,7 @@ function phpbb_get_forum_data($forum_id, $acl_list = 'f_list', $read_tracking = 
 
 	if ($read_tracking && $config['load_db_lastread'])
 	{
-		$read_tracking_join = ' LEFT JOIN ' . FORUMS_TRACK_TABLE . ' ft ON (ft.user_id = ' . $user->data['user_id'] . '
+		$read_tracking_join = ' LEFT JOIN ' . AN602_FORUMS_TRACK_TABLE . ' ft ON (ft.user_id = ' . $user->data['user_id'] . '
 			AND ft.forum_id = f.forum_id)';
 		$read_tracking_select = ', ft.mark_time';
 	}
@@ -328,12 +328,12 @@ function phpbb_get_forum_data($forum_id, $acl_list = 'f_list', $read_tracking = 
 	}
 
 	$sql = "SELECT f.* $read_tracking_select
-		FROM " . FORUMS_TABLE . " f$read_tracking_join
+		FROM " . AN602_FORUMS_TABLE . " f$read_tracking_join
 		WHERE " . $db->sql_in_set('f.forum_id', $forum_id);
 	$result = $db->sql_query($sql);
 
-	/* @var $phpbb_content_visibility \phpbb\content_visibility */
-	$phpbb_content_visibility = $phpbb_container->get('content.visibility');
+	/* @var $an602_content_visibility \an602\content_visibility */
+	$an602_content_visibility = $an602_container->get('content.visibility');
 
 	while ($row = $db->sql_fetchrow($result))
 	{
@@ -342,7 +342,7 @@ function phpbb_get_forum_data($forum_id, $acl_list = 'f_list', $read_tracking = 
 			continue;
 		}
 
-		$row['forum_topics_approved'] = $phpbb_content_visibility->get_count('forum_topics', $row, $row['forum_id']);
+		$row['forum_topics_approved'] = $an602_content_visibility->get_count('forum_topics', $row, $row['forum_id']);
 
 		$rowset[$row['forum_id']] = $row;
 	}
@@ -354,7 +354,7 @@ function phpbb_get_forum_data($forum_id, $acl_list = 'f_list', $read_tracking = 
 /**
 * Get simple pm data
 */
-function phpbb_get_pm_data($pm_ids)
+function an602_get_pm_data($pm_ids)
 {
 	global $db;
 
@@ -369,8 +369,8 @@ function phpbb_get_pm_data($pm_ids)
 		'SELECT'	=> 'p.*, u.*',
 
 		'FROM'		=> array(
-			USERS_TABLE			=> 'u',
-			PRIVMSGS_TABLE		=> 'p',
+			AN602_USERS_TABLE			=> 'u',
+			AN602_PRIVMSGS_TABLE		=> 'p',
 		),
 
 		'WHERE'		=> $db->sql_in_set('p.msg_id', $pm_ids) . '
@@ -398,9 +398,9 @@ function phpbb_get_pm_data($pm_ids)
 * $mode reports and reports_closed: the $where parameters uses aliases p for posts table and r for report table
 * $mode unapproved_posts: the $where parameters uses aliases p for posts table and t for topic table
 */
-function phpbb_mcp_sorting($mode, &$sort_days_val, &$sort_key_val, &$sort_dir_val, &$sort_by_sql_ary, &$sort_order_sql, &$total_val, $forum_id = 0, $topic_id = 0, $where_sql = 'WHERE')
+function an602_mcp_sorting($mode, &$sort_days_val, &$sort_key_val, &$sort_dir_val, &$sort_by_sql_ary, &$sort_order_sql, &$total_val, $forum_id = 0, $topic_id = 0, $where_sql = 'WHERE')
 {
-	global $db, $user, $auth, $template, $request, $phpbb_dispatcher;
+	global $db, $user, $auth, $template, $request, $an602_dispatcher;
 
 	$sort_days_val = $request->variable('st', 0);
 	$min_time = ($sort_days_val) ? time() - ($sort_days_val * 86400) : 0;
@@ -413,7 +413,7 @@ function phpbb_mcp_sorting($mode, &$sort_days_val, &$sort_key_val, &$sort_dir_va
 			$default_dir = 'd';
 
 			$sql = 'SELECT COUNT(topic_id) AS total
-				FROM ' . TOPICS_TABLE . "
+				FROM ' . AN602_TOPICS_TABLE . "
 				$where_sql forum_id = $forum_id
 					AND topic_type NOT IN (" . POST_ANNOUNCE . ', ' . POST_GLOBAL . ")
 					AND topic_last_post_time >= $min_time";
@@ -430,7 +430,7 @@ function phpbb_mcp_sorting($mode, &$sort_days_val, &$sort_key_val, &$sort_dir_va
 			$default_dir = 'a';
 
 			$sql = 'SELECT COUNT(post_id) AS total
-				FROM ' . POSTS_TABLE . "
+				FROM ' . AN602_POSTS_TABLE . "
 				$where_sql topic_id = $topic_id
 					AND post_time >= $min_time";
 
@@ -449,7 +449,7 @@ function phpbb_mcp_sorting($mode, &$sort_days_val, &$sort_key_val, &$sort_dir_va
 			$where_sql .= ($topic_id) ? ' p.topic_id = ' . $topic_id . ' AND' : '';
 
 			$sql = 'SELECT COUNT(p.post_id) AS total
-				FROM ' . POSTS_TABLE . ' p, ' . TOPICS_TABLE . " t
+				FROM ' . AN602_POSTS_TABLE . ' p, ' . AN602_TOPICS_TABLE . " t
 				$where_sql " . $db->sql_in_set('p.forum_id', ($forum_id) ? array($forum_id) : array_intersect(get_forum_list('f_read'), get_forum_list('m_approve'))) . '
 					AND ' . $db->sql_in_set('p.post_visibility', $visibility_const) .'
 					AND t.topic_id = p.topic_id
@@ -469,7 +469,7 @@ function phpbb_mcp_sorting($mode, &$sort_days_val, &$sort_key_val, &$sort_dir_va
 			$default_dir = 'd';
 
 			$sql = 'SELECT COUNT(topic_id) AS total
-				FROM ' . TOPICS_TABLE . "
+				FROM ' . AN602_TOPICS_TABLE . "
 				$where_sql " . $db->sql_in_set('forum_id', ($forum_id) ? array($forum_id) : array_intersect(get_forum_list('f_read'), get_forum_list('m_approve'))) . '
 					AND ' . $db->sql_in_set('topic_visibility', $visibility_const);
 
@@ -515,7 +515,7 @@ function phpbb_mcp_sorting($mode, &$sort_days_val, &$sort_key_val, &$sort_dir_va
 			if ($pm)
 			{
 				$sql = 'SELECT COUNT(r.report_id) AS total
-					FROM ' . REPORTS_TABLE . ' r, ' . PRIVMSGS_TABLE . " p
+					FROM ' . AN602_REPORTS_TABLE . ' r, ' . AN602_PRIVMSGS_TABLE . " p
 					$where_sql r.post_id = 0
 						AND p.msg_id = r.pm_id
 						$limit_time_sql";
@@ -523,7 +523,7 @@ function phpbb_mcp_sorting($mode, &$sort_days_val, &$sort_key_val, &$sort_dir_va
 			else
 			{
 				$sql = 'SELECT COUNT(r.report_id) AS total
-					FROM ' . REPORTS_TABLE . ' r, ' . POSTS_TABLE . " p
+					FROM ' . AN602_REPORTS_TABLE . ' r, ' . AN602_POSTS_TABLE . " p
 					$where_sql r.pm_id = 0
 						AND p.post_id = r.post_id
 						$limit_time_sql";
@@ -536,7 +536,7 @@ function phpbb_mcp_sorting($mode, &$sort_days_val, &$sort_key_val, &$sort_dir_va
 			$default_dir = 'd';
 
 			$sql = 'SELECT COUNT(log_id) AS total
-				FROM ' . LOG_TABLE . "
+				FROM ' . AN602_LOG_TABLE . "
 				$where_sql " . $db->sql_in_set('forum_id', ($forum_id) ? array($forum_id) : array_intersect(get_forum_list('f_read'), get_forum_list('m_'))) . '
 					AND log_time >= ' . $min_time . '
 					AND log_type = ' . LOG_MOD;
@@ -638,7 +638,7 @@ function phpbb_mcp_sorting($mode, &$sort_days_val, &$sort_key_val, &$sort_dir_va
 		'total',
 		'where_sql',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.mcp_sorting_query_before', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.mcp_sorting_query_before', compact($vars)));
 	$sort_by_sql_ary = $sort_by_sql;
 	$sort_days_val = $sort_days;
 	$sort_key_val = $sort_key;
@@ -700,7 +700,7 @@ function phpbb_mcp_sorting($mode, &$sort_days_val, &$sort_key_val, &$sort_dir_va
 *					Additionally, this value can be the forum_id assigned if $single_forum was set.
 *					Therefore checking the result for with !== false is the best method.
 */
-function phpbb_check_ids(&$ids, $table, $sql_id, $acl_list = false, $single_forum = false)
+function an602_check_ids(&$ids, $table, $sql_id, $acl_list = false, $single_forum = false)
 {
 	global $db, $auth;
 

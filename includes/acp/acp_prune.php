@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -25,13 +25,13 @@ class acp_prune
 
 	function main($id, $mode)
 	{
-		global $user, $phpEx, $phpbb_root_path;
+		global $user, $phpEx, $an602_root_path;
 
 		$user->add_lang('acp/prune');
 
 		if (!function_exists('user_active_flip'))
 		{
-			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		switch ($mode)
@@ -55,7 +55,7 @@ class acp_prune
 	*/
 	function prune_forums($id, $mode)
 	{
-		global $db, $user, $auth, $template, $phpbb_log, $request, $phpbb_dispatcher;
+		global $db, $user, $auth, $template, $an602_log, $request, $an602_dispatcher;
 
 		$all_forums = $request->variable('all_forums', 0);
 		$forum_id = $request->variable('f', array(0));
@@ -64,7 +64,7 @@ class acp_prune
 		if ($all_forums)
 		{
 			$sql = 'SELECT forum_id
-				FROM ' . FORUMS_TABLE . '
+				FROM ' . AN602_FORUMS_TABLE . '
 				ORDER BY left_id';
 			$result = $db->sql_query($sql);
 
@@ -101,7 +101,7 @@ class acp_prune
 
 				// Get a list of forum's or the data for the forum that we are pruning.
 				$sql = 'SELECT forum_id, forum_name
-					FROM ' . FORUMS_TABLE . '
+					FROM ' . AN602_FORUMS_TABLE . '
 					WHERE forum_type = ' . FORUM_POST . "
 						$sql_forum
 					ORDER BY left_id ASC";
@@ -157,7 +157,7 @@ class acp_prune
 					// Sync all pruned forums at once
 					sync('forum', 'forum_id', $prune_ids, true, true);
 
-					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PRUNE', false, array($log_data));
+					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PRUNE', false, array($log_data));
 				}
 				$db->sql_freeresult($result);
 
@@ -187,7 +187,7 @@ class acp_prune
 				 * @since 3.2.2-RC1
 				 */
 				$vars = array('hidden_fields');
-				extract($phpbb_dispatcher->trigger_event('core.prune_forums_settings_confirm', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.prune_forums_settings_confirm', compact($vars)));
 
 				confirm_box(false, $user->lang['PRUNE_FORUM_CONFIRM'], build_hidden_fields($hidden_fields));
 			}
@@ -206,7 +206,7 @@ class acp_prune
 		else
 		{
 			$sql = 'SELECT forum_id, forum_name
-				FROM ' . FORUMS_TABLE . '
+				FROM ' . AN602_FORUMS_TABLE . '
 				WHERE ' . $db->sql_in_set('forum_id', $forum_id);
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
@@ -245,7 +245,7 @@ class acp_prune
 			 * @since 3.2.2-RC1
 			 */
 			$vars = array('template_data');
-			extract($phpbb_dispatcher->trigger_event('core.prune_forums_settings_template_data', compact($vars)));
+			extract($an602_dispatcher->trigger_event('core.prune_forums_settings_template_data', compact($vars)));
 
 			$template->assign_vars($template_data);
 		}
@@ -256,11 +256,11 @@ class acp_prune
 	*/
 	function prune_users($id, $mode)
 	{
-		global $db, $user, $auth, $template, $phpbb_log, $request;
-		global $phpbb_root_path, $phpbb_admin_path, $phpEx, $phpbb_container;
+		global $db, $user, $auth, $template, $an602_log, $request;
+		global $an602_root_path, $an602_admin_path, $phpEx, $an602_container;
 
-		/** @var \phpbb\group\helper $group_helper */
-		$group_helper = $phpbb_container->get('group_helper');
+		/** @var \an602\group\helper $group_helper */
+		$group_helper = $an602_container->get('group_helper');
 
 		$user->add_lang('memberlist');
 
@@ -299,7 +299,7 @@ class acp_prune
 						}
 					}
 
-					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, $l_log, false, array(implode(', ', $usernames)));
+					$an602_log->add('admin', $user->data['user_id'], $user->ip, $l_log, false, array(implode(', ', $usernames)));
 					$msg = $user->lang['USER_' . strtoupper($action) . '_SUCCESS'];
 				}
 				else
@@ -327,7 +327,7 @@ class acp_prune
 						'USERNAME'			=> $usernames[$user_id],
 						'USER_ID'           => $user_id,
 						'U_PROFILE'			=> get_username_string('profile', $user_id, $usernames[$user_id]),
-						'U_USER_ADMIN'		=> ($auth->acl_get('a_user')) ? append_sid("{$phpbb_admin_path}index.$phpEx", 'i=users&amp;mode=overview&amp;u=' . $user_id, true, $user->session_id) : '',
+						'U_USER_ADMIN'		=> ($auth->acl_get('a_user')) ? append_sid("{$an602_admin_path}index.$phpEx", 'i=users&amp;mode=overview&amp;u=' . $user_id, true, $user->session_id) : '',
 					));
 				}
 
@@ -364,7 +364,7 @@ class acp_prune
 		}
 
 		$sql = 'SELECT group_id, group_name
-			FROM ' . GROUPS_TABLE . '
+			FROM ' . AN602_GROUPS_TABLE . '
 			WHERE group_type <> ' . GROUP_SPECIAL . '
 			ORDER BY group_name ASC';
 		$result = $db->sql_query($sql);
@@ -388,7 +388,7 @@ class acp_prune
 			'S_ACTIVE_OPTIONS'	=> $s_find_active_time,
 			'S_GROUP_LIST'		=> $s_group_list,
 			'S_COUNT_OPTIONS'	=> $s_find_count,
-			'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=acp_prune&amp;field=users'),
+			'U_FIND_USERNAME'	=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=acp_prune&amp;field=users'),
 		));
 	}
 
@@ -494,7 +494,7 @@ class acp_prune
 
 		// Get bot ids
 		$sql = 'SELECT user_id
-			FROM ' . BOTS_TABLE;
+			FROM ' . AN602_BOTS_TABLE;
 		$result = $db->sql_query($sql);
 
 		$bot_ids = array();
@@ -509,7 +509,7 @@ class acp_prune
 		{
 			// Do not prune founder members
 			$sql = 'SELECT user_id, username
-				FROM ' . USERS_TABLE . '
+				FROM ' . AN602_USERS_TABLE . '
 				WHERE user_id <> ' . ANONYMOUS . '
 					AND user_type <> ' . USER_FOUNDER . "
 				$where_sql";
@@ -532,7 +532,7 @@ class acp_prune
 		if ($group_id)
 		{
 			$sql = 'SELECT u.user_id, u.username
-				FROM ' . USER_GROUP_TABLE . ' ug, ' . USERS_TABLE . ' u
+				FROM ' . AN602_USER_GROUP_TABLE . ' ug, ' . AN602_USERS_TABLE . ' u
 				WHERE ug.group_id = ' . (int) $group_id . '
 					AND ug.user_id <> ' . ANONYMOUS . '
 					AND u.user_type <> ' . USER_FOUNDER . '
@@ -561,7 +561,7 @@ class acp_prune
 		if ($posts_on_queue !== false)
 		{
 			$sql = 'SELECT u.user_id, u.username, COUNT(p.post_id) AS queue_posts
-				FROM ' . POSTS_TABLE . ' p, ' . USERS_TABLE . ' u
+				FROM ' . AN602_POSTS_TABLE . ' p, ' . AN602_USERS_TABLE . ' u
 				WHERE u.user_id <> ' . ANONYMOUS . '
 					AND u.user_type <> ' . USER_FOUNDER . '
 					AND ' . $db->sql_in_set('p.post_visibility', array(ITEM_UNAPPROVED, ITEM_REAPPROVE)) . '

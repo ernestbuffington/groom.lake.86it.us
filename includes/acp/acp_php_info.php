@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -42,7 +42,7 @@ class acp_php_info
 		$phpinfo = trim($phpinfo);
 
 		// Here we play around a little with the PHP Info HTML to try and stylise
-		// it along phpBB's lines ... hopefully without breaking anything. The idea
+		// it along AN602's lines ... hopefully without breaking anything. The idea
 		// for this was nabbed from the PHP annotated manual
 		preg_match_all('#<body[^>]*>(.*)</body>#si', $phpinfo, $output);
 

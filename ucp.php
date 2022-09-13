@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,12 +14,12 @@
 /**
 * @ignore
 */
-define('IN_PHPBB', true);
-$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
+define('IN_AN602', true);
+$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-require($phpbb_root_path . 'common.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_user.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_module.' . $phpEx);
+require($an602_root_path . 'common.' . $phpEx);
+require($an602_root_path . 'includes/functions_user.' . $phpEx);
+require($an602_root_path . 'includes/functions_module.' . $phpEx);
 
 // Basic parameter data
 $id 	= $request->variable('i', '');
@@ -54,7 +54,7 @@ switch ($mode)
 		$module->load('ucp', 'activate');
 		$module->display($user->lang['UCP_ACTIVATE']);
 
-		redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+		redirect(append_sid("{$an602_root_path}index.$phpEx"));
 	break;
 
 	case 'resend_act':
@@ -63,16 +63,16 @@ switch ($mode)
 	break;
 
 	case 'sendpassword':
-		/** @var \phpbb\controller\helper $controller_helper */
-		$controller_helper = $phpbb_container->get('controller.helper');
+		/** @var \an602\controller\helper $controller_helper */
+		$controller_helper = $an602_container->get('controller.helper');
 
-		redirect($controller_helper->route('phpbb_ucp_forgot_password_controller'));
+		redirect($controller_helper->route('an602_ucp_forgot_password_controller'));
 	break;
 
 	case 'register':
 		if ($user->data['is_registered'] || isset($_REQUEST['not_agreed']))
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("{$an602_root_path}index.$phpEx"));
 		}
 
 		$module->load('ucp', 'register');
@@ -86,7 +86,7 @@ switch ($mode)
 	case 'login':
 		if ($user->data['is_registered'])
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("{$an602_root_path}index.$phpEx"));
 		}
 
 		login_box($request->variable('redirect', "index.$phpEx"));
@@ -95,7 +95,7 @@ switch ($mode)
 	case 'login_link':
 		if ($user->data['is_registered'])
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("{$an602_root_path}index.$phpEx"));
 		}
 
 		$module->load('ucp', 'login_link');
@@ -109,13 +109,13 @@ switch ($mode)
 		}
 		else if ($user->data['user_id'] != ANONYMOUS)
 		{
-			meta_refresh(3, append_sid("{$phpbb_root_path}index.$phpEx"));
+			meta_refresh(3, append_sid("{$an602_root_path}index.$phpEx"));
 
-			$message = $user->lang['LOGOUT_FAILED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a> ');
+			$message = $user->lang['LOGOUT_FAILED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$an602_root_path}index.$phpEx") . '">', '</a> ');
 			trigger_error($message);
 		}
 
-		redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+		redirect(append_sid("{$an602_root_path}index.$phpEx"));
 	break;
 
 	case 'terms':
@@ -128,7 +128,7 @@ switch ($mode)
 		{
 			if ($user->data['is_registered'])
 			{
-				redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+				redirect(append_sid("{$an602_root_path}index.$phpEx"));
 			}
 
 			login_box();
@@ -145,7 +145,7 @@ switch ($mode)
 			'S_AGREEMENT'			=> true,
 			'AGREEMENT_TITLE'		=> $user->lang[$title],
 			'AGREEMENT_TEXT'		=> sprintf($user->lang[$message], $config['sitename'], generate_board_url()),
-			'U_BACK'				=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=login'),
+			'U_BACK'				=> append_sid("{$an602_root_path}ucp.$phpEx", 'mode=login'),
 			'L_BACK'				=> $user->lang['BACK_TO_PREV'],
 		));
 
@@ -160,9 +160,9 @@ switch ($mode)
 		{
 			$set_time = time() - 31536000;
 
-			foreach ($request->variable_names(\phpbb\request\request_interface::COOKIE) as $cookie_name)
+			foreach ($request->variable_names(\an602\request\request_interface::COOKIE) as $cookie_name)
 			{
-				$cookie_data = $request->variable($cookie_name, '', true, \phpbb\request\request_interface::COOKIE);
+				$cookie_data = $request->variable($cookie_name, '', true, \an602\request\request_interface::COOKIE);
 
 				// Only delete board cookies, no other ones...
 				if (strpos($cookie_name, $config['cookie_name'] . '_') !== 0)
@@ -182,7 +182,7 @@ switch ($mode)
 				*/
 				$retain_cookie = false;
 				$vars = array('cookie_name', 'retain_cookie');
-				extract($phpbb_dispatcher->trigger_event('core.ucp_delete_cookies', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.ucp_delete_cookies', compact($vars)));
 				if ($retain_cookie)
 				{
 					continue;
@@ -204,9 +204,9 @@ switch ($mode)
 			$user->session_kill();
 			$user->session_begin();
 
-			meta_refresh(3, append_sid("{$phpbb_root_path}index.$phpEx"));
+			meta_refresh(3, append_sid("{$an602_root_path}index.$phpEx"));
 
-			$message = $user->lang['COOKIES_DELETED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a>');
+			$message = $user->lang['COOKIES_DELETED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$an602_root_path}index.$phpEx") . '">', '</a>');
 			trigger_error($message);
 		}
 		else
@@ -214,7 +214,7 @@ switch ($mode)
 			confirm_box(false, 'DELETE_COOKIES', '');
 		}
 
-		redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+		redirect(append_sid("{$an602_root_path}index.$phpEx"));
 
 	break;
 
@@ -223,7 +223,7 @@ switch ($mode)
 		$user_id = $request->variable('u', 0);
 
 		$sql = 'SELECT *
-			FROM ' . USERS_TABLE . '
+			FROM ' . AN602_USERS_TABLE . '
 			WHERE user_id = ' . (int) $user_id;
 		$result = $db->sql_query($sql);
 		$user_row = $db->sql_fetchrow($result);
@@ -231,20 +231,20 @@ switch ($mode)
 
 		if (!$auth->acl_get('a_switchperm') || !$user_row || $user_id == $user->data['user_id'] || !check_link_hash($request->variable('hash', ''), 'switchperm'))
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("{$an602_root_path}index.$phpEx"));
 		}
 
-		include($phpbb_root_path . 'includes/acp/auth.' . $phpEx);
+		include($an602_root_path . 'includes/acp/auth.' . $phpEx);
 
 		$auth_admin = new auth_admin();
 		if (!$auth_admin->ghost_permissions($user_id, $user->data['user_id']))
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("{$an602_root_path}index.$phpEx"));
 		}
 
-		$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ACL_TRANSFER_PERMISSIONS', false, array($user_row['username']));
+		$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_AN602_ACL_TRANSFER_PERMISSIONS', false, array($user_row['username']));
 
-		$message = sprintf($user->lang['PERMISSIONS_TRANSFERRED'], $user_row['username']) . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a>');
+		$message = sprintf($user->lang['PERMISSIONS_TRANSFERRED'], $user_row['username']) . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$an602_root_path}index.$phpEx") . '">', '</a>');
 
 		/**
 		* Event to run code after permissions are switched
@@ -256,7 +256,7 @@ switch ($mode)
 		* @since 3.1.11-RC1
 		*/
 		$vars = array('user_id', 'user_row', 'message');
-		extract($phpbb_dispatcher->trigger_event('core.ucp_switch_permissions', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.ucp_switch_permissions', compact($vars)));
 
 		trigger_error($message);
 
@@ -266,21 +266,21 @@ switch ($mode)
 
 		if (!$user->data['user_perm_from'] || !$auth->acl_get('a_switchperm'))
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("{$an602_root_path}index.$phpEx"));
 		}
 
 		$auth->acl_cache($user->data);
 
 		$sql = 'SELECT username
-			FROM ' . USERS_TABLE . '
+			FROM ' . AN602_USERS_TABLE . '
 			WHERE user_id = ' . $user->data['user_perm_from'];
 		$result = $db->sql_query($sql);
 		$username = $db->sql_fetchfield('username');
 		$db->sql_freeresult($result);
 
-		$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ACL_RESTORE_PERMISSIONS', false, array($username));
+		$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_AN602_ACL_RESTORE_PERMISSIONS', false, array($username));
 
-		$message = $user->lang['PERMISSIONS_RESTORED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a>');
+		$message = $user->lang['PERMISSIONS_RESTORED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$an602_root_path}index.$phpEx") . '">', '</a>');
 
 		/**
 		* Event to run code after permissions are restored
@@ -291,7 +291,7 @@ switch ($mode)
 		* @since 3.1.11-RC1
 		*/
 		$vars = array('username', 'message');
-		extract($phpbb_dispatcher->trigger_event('core.ucp_restore_permissions', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.ucp_restore_permissions', compact($vars)));
 
 		trigger_error($message);
 
@@ -313,12 +313,12 @@ if (!$user->data['is_registered'])
 {
 	if ($user->data['is_bot'])
 	{
-		redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+		redirect(append_sid("{$an602_root_path}index.$phpEx"));
 	}
 
 	if ($id == 'pm' && $mode == 'view' && isset($_GET['p']))
 	{
-		$redirect_url = append_sid("{$phpbb_root_path}ucp.$phpEx?i=pm&p=" . $request->variable('p', 0));
+		$redirect_url = append_sid("{$an602_root_path}ucp.$phpEx?i=pm&p=" . $request->variable('p', 0));
 		login_box($redirect_url, $user->lang['LOGIN_EXPLAIN_UCP']);
 	}
 
@@ -338,13 +338,13 @@ if ($module->is_active('zebra', 'friends'))
 		'SELECT'	=> 'u.user_id, u.username, u.username_clean, u.user_colour, MAX(s.session_time) as online_time, MIN(s.session_viewonline) AS viewonline',
 
 		'FROM'		=> array(
-			USERS_TABLE		=> 'u',
-			ZEBRA_TABLE		=> 'z',
+			AN602_USERS_TABLE		=> 'u',
+			AN602_ZEBRA_TABLE		=> 'z',
 		),
 
 		'LEFT_JOIN'	=> array(
 			array(
-				'FROM'	=> array(SESSIONS_TABLE => 's'),
+				'FROM'	=> array(AN602_SESSIONS_TABLE => 's'),
 				'ON'	=> 's.session_user_id = z.zebra_id',
 			),
 		),
@@ -370,7 +370,7 @@ if ($module->is_active('zebra', 'friends'))
 	$vars = [
 		'sql_ary',
 	];
-	extract($phpbb_dispatcher->trigger_event('core.ucp_modify_friends_sql', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.ucp_modify_friends_sql', compact($vars)));
 
 	$sql = $db->sql_build_query('SELECT_DISTINCT', $sql_ary);
 	$result = $db->sql_query($sql);
@@ -403,7 +403,7 @@ if ($module->is_active('zebra', 'friends'))
 			'tpl_ary',
 			'which',
 		];
-		extract($phpbb_dispatcher->trigger_event('core.ucp_modify_friends_template_vars', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.ucp_modify_friends_template_vars', compact($vars)));
 
 		$template->assign_block_vars("friends_{$which}", $tpl_ary);
 	}
@@ -426,11 +426,11 @@ if (!$config['allow_topic_notify'] && !$config['allow_forum_notify'])
 * @since 3.1.0-a1
 */
 $vars = array('module', 'id', 'mode');
-extract($phpbb_dispatcher->trigger_event('core.ucp_display_module_before', compact($vars)));
+extract($an602_dispatcher->trigger_event('core.ucp_display_module_before', compact($vars)));
 
 $template->assign_block_vars('navlinks', array(
 	'BREADCRUMB_NAME'	=> $user->lang('UCP'),
-	'U_BREADCRUMB'		=> append_sid("{$phpbb_root_path}ucp.$phpEx"),
+	'U_BREADCRUMB'		=> append_sid("{$an602_root_path}ucp.$phpEx"),
 ));
 
 // Select the active module
@@ -440,7 +440,7 @@ $module->set_active($id, $mode);
 $module->load_active();
 
 // Assign data to the template engine for the list of modules
-$module->assign_tpl_vars(append_sid("{$phpbb_root_path}ucp.$phpEx"));
+$module->assign_tpl_vars(append_sid("{$an602_root_path}ucp.$phpEx"));
 
 // Generate the page, do not display/query online list
 $module->display($module->get_page_title());

@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -29,8 +29,8 @@ class acp_icons
 	function main($id, $mode)
 	{
 		global $db, $user, $template, $cache;
-		global $config, $phpbb_root_path;
-		global $request, $phpbb_container;
+		global $config, $an602_root_path;
+		global $request, $an602_container;
 
 		$user->add_lang('acp/posting');
 
@@ -53,14 +53,14 @@ class acp_icons
 		switch ($mode)
 		{
 			case 'smilies':
-				$table = SMILIES_TABLE;
+				$table = AN602_SMILIES_TABLE;
 				$lang = 'SMILIES';
 				$fields = 'smiley';
 				$img_path = $config['smilies_path'];
 			break;
 
 			case 'icons':
-				$table = ICONS_TABLE;
+				$table = AN602_ICONS_TABLE;
 				$lang = 'ICONS';
 				$fields = 'icons';
 				$img_path = $config['icons_path'];
@@ -76,7 +76,7 @@ class acp_icons
 		// Grab file list of paks and images
 		if ($action == 'edit' || $action == 'add' || $action == 'import')
 		{
-			$imglist = filelist($phpbb_root_path . $img_path, '');
+			$imglist = filelist($an602_root_path . $img_path, '');
 
 			foreach ($imglist as $path => $img_ary)
 			{
@@ -89,7 +89,7 @@ class acp_icons
 
 				foreach ($img_ary as $img)
 				{
-					$img_size = getimagesize($phpbb_root_path . $img_path . '/' . $path . $img);
+					$img_size = getimagesize($an602_root_path . $img_path . '/' . $path . $img);
 
 					if ($img_size)
 					{
@@ -117,7 +117,7 @@ class acp_icons
 					{
 						// getimagesize can't read the dimensions of the SVG files
 						// https://bugs.php.net/bug.php?id=71517
-						$xml_get = simplexml_load_file($phpbb_root_path . $img_path . '/' . $path . $img);
+						$xml_get = simplexml_load_file($an602_root_path . $img_path . '/' . $path . $img);
 
 						$svg_width = intval($xml_get['width']);
 						$svg_height = intval($xml_get['height']);
@@ -132,11 +132,11 @@ class acp_icons
 			}
 			unset($imglist);
 
-			if ($dir = @opendir($phpbb_root_path . $img_path))
+			if ($dir = @opendir($an602_root_path . $img_path))
 			{
 				while (($file = readdir($dir)) !== false)
 				{
-					if (is_file($phpbb_root_path . $img_path . '/' . $file) && preg_match('#\.pak$#i', $file))
+					if (is_file($an602_root_path . $img_path . '/' . $file) && preg_match('#\.pak$#i', $file))
 					{
 						$_paks[] = $file;
 					}
@@ -167,7 +167,7 @@ class acp_icons
 				if ($action == 'add' && $mode == 'smilies')
 				{
 					$sql = 'SELECT *
-						FROM ' . SMILIES_TABLE . '
+						FROM ' . AN602_SMILIES_TABLE . '
 						ORDER BY smiley_order';
 					$result = $db->sql_query($sql);
 
@@ -299,7 +299,7 @@ class acp_icons
 					$template->assign_block_vars('items', array(
 						'IMG'		=> $img,
 						'A_IMG'		=> addslashes($img),
-						'IMG_SRC'	=> $phpbb_root_path . $img_path . '/' . $img,
+						'IMG_SRC'	=> $an602_root_path . $img_path . '/' . $img,
 
 						'CODE'		=> ($mode == 'smilies' && isset($img_row['code'])) ? $img_row['code'] : '',
 						'EMOTION'	=> ($mode == 'smilies' && isset($img_row['emotion'])) ? $img_row['emotion'] : '',
@@ -325,7 +325,7 @@ class acp_icons
 						'S_ADD_ORDER_LIST_DISPLAY'		=> $add_order_list . $add_order_lists[1],
 						'S_ADD_ORDER_LIST_UNDISPLAY'	=> $add_order_list . $add_order_lists[0],
 
-						'IMG_SRC'			=> $phpbb_root_path . $img_path . '/' . $default_row['smiley_url'],
+						'IMG_SRC'			=> $an602_root_path . $img_path . '/' . $default_row['smiley_url'],
 						'IMG_PATH'			=> $img_path,
 
 						'CODE'				=> $default_row['code'],
@@ -363,7 +363,7 @@ class acp_icons
 				$image_display_on_posting = (isset($_POST['display_on_posting'])) ? $request->variable('display_on_posting', array('' => 0)) : array();
 
 				// Ok, add the relevant bits if we are adding new codes to existing emoticons...
-				if ($request->variable('add_additional_code', false, false, \phpbb\request\request_interface::POST))
+				if ($request->variable('add_additional_code', false, false, \an602\request\request_interface::POST))
 				{
 					$add_image			= $request->variable('add_image', '');
 					$add_code			= $request->variable('add_code', '', true);
@@ -379,7 +379,7 @@ class acp_icons
 						$image_width[$add_image] = $request->variable('add_width', 0);
 						$image_height[$add_image] = $request->variable('add_height', 0);
 
-						if ($request->variable('add_display_on_posting', false, false, \phpbb\request\request_interface::POST))
+						if ($request->variable('add_display_on_posting', false, false, \an602\request\request_interface::POST))
 						{
 							$image_display_on_posting[$add_image] = 1;
 						}
@@ -419,7 +419,7 @@ class acp_icons
 					{
 						// skip images where add wasn't checked
 					}
-					else if (!file_exists($phpbb_root_path . $img_path . '/' . $image))
+					else if (!file_exists($an602_root_path . $img_path . '/' . $image))
 					{
 						$errors[$image] = 'SMILIE_NO_FILE';
 					}
@@ -427,7 +427,7 @@ class acp_icons
 					{
 						if ($image_width[$image] == 0 || $image_height[$image] == 0)
 						{
-							$img_size = getimagesize($phpbb_root_path . $img_path . '/' . $image);
+							$img_size = getimagesize($an602_root_path . $img_path . '/' . $image);
 							$image_width[$image] = $img_size[0];
 							$image_height[$image] = $img_size[1];
 						}
@@ -517,7 +517,7 @@ class acp_icons
 
 				$cache->destroy('_icons');
 				$cache->destroy('sql', $table);
-				$phpbb_container->get('text_formatter.cache')->invalidate();
+				$an602_container->get('text_formatter.cache')->invalidate();
 
 				$level = ($icons_updated) ? E_USER_NOTICE : E_USER_WARNING;
 				$errormsgs = '';
@@ -550,7 +550,7 @@ class acp_icons
 						trigger_error($user->lang['FORM_INVALID'] . adm_back_link($this->u_action), E_USER_WARNING);
 					}
 
-					if (!($pak_ary = @file($phpbb_root_path . $img_path . '/' . $pak)))
+					if (!($pak_ary = @file($an602_root_path . $img_path . '/' . $pak)))
 					{
 						trigger_error($user->lang['PAK_FILE_NOT_READABLE'] . adm_back_link($this->u_action), E_USER_WARNING);
 					}
@@ -593,8 +593,8 @@ class acp_icons
 
 							case 'icons':
 								// Reset all icon_ids
-								$db->sql_query('UPDATE ' . TOPICS_TABLE . ' SET icon_id = 0');
-								$db->sql_query('UPDATE ' . POSTS_TABLE . ' SET icon_id = 0');
+								$db->sql_query('UPDATE ' . AN602_TOPICS_TABLE . ' SET icon_id = 0');
+								$db->sql_query('UPDATE ' . AN602_POSTS_TABLE . ' SET icon_id = 0');
 							break;
 						}
 					}
@@ -697,7 +697,7 @@ class acp_icons
 
 					$cache->destroy('_icons');
 					$cache->destroy('sql', $table);
-					$phpbb_container->get('text_formatter.cache')->invalidate();
+					$an602_container->get('text_formatter.cache')->invalidate();
 
 					trigger_error($user->lang[$lang . '_IMPORT_SUCCESS'] . adm_back_link($this->u_action));
 				}
@@ -811,11 +811,11 @@ class acp_icons
 
 						case 'icons':
 							// Reset appropriate icon_ids
-							$db->sql_query('UPDATE ' . TOPICS_TABLE . "
+							$db->sql_query('UPDATE ' . AN602_TOPICS_TABLE . "
 								SET icon_id = 0
 								WHERE icon_id = $icon_id");
 
-							$db->sql_query('UPDATE ' . POSTS_TABLE . "
+							$db->sql_query('UPDATE ' . AN602_POSTS_TABLE . "
 								SET icon_id = 0
 								WHERE icon_id = $icon_id");
 						break;
@@ -825,11 +825,11 @@ class acp_icons
 
 					$cache->destroy('_icons');
 					$cache->destroy('sql', $table);
-					$phpbb_container->get('text_formatter.cache')->invalidate();
+					$an602_container->get('text_formatter.cache')->invalidate();
 
 					if ($request->is_ajax())
 					{
-						$json_response = new \phpbb\json_response;
+						$json_response = new \an602\json_response;
 						$json_response->send(array(
 							'MESSAGE_TITLE'	=> $user->lang['INFORMATION'],
 							'MESSAGE_TEXT'	=> $notice,
@@ -896,11 +896,11 @@ class acp_icons
 
 				$cache->destroy('_icons');
 				$cache->destroy('sql', $table);
-				$phpbb_container->get('text_formatter.cache')->invalidate();
+				$an602_container->get('text_formatter.cache')->invalidate();
 
 				if ($request->is_ajax())
 				{
-					$json_response = new \phpbb\json_response;
+					$json_response = new \an602\json_response;
 					$json_response->send(array(
 						'success'	=> $move_executed,
 					));
@@ -952,8 +952,8 @@ class acp_icons
 			)
 		);
 
-		/* @var $pagination \phpbb\pagination */
-		$pagination = $phpbb_container->get('pagination');
+		/* @var $pagination \an602\pagination */
+		$pagination = $an602_container->get('pagination');
 		$pagination_start = $request->variable('start', 0);
 		$spacer = false;
 
@@ -971,7 +971,7 @@ class acp_icons
 			$template->assign_block_vars('items', array(
 				'S_SPACER'		=> (!$spacer && !$row['display_on_posting']) ? true : false,
 				'ALT_TEXT'		=> $alt_text,
-				'IMG_SRC'		=> $phpbb_root_path . $img_path . '/' . $row[$fields . '_url'],
+				'IMG_SRC'		=> $an602_root_path . $img_path . '/' . $row[$fields . '_url'],
 				'WIDTH'			=> $row[$fields . '_width'],
 				'HEIGHT'		=> $row[$fields . '_height'],
 				'CODE'			=> (isset($row['code'])) ? $row['code'] : '',

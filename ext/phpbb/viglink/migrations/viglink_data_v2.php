@@ -1,23 +1,23 @@
 <?php
 /**
  *
- * VigLink extension for the phpBB Forum Software package.
+ * VigLink extension for the AN602 CMS Software package.
  *
- * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
+ * @copyright (c) 2014 PHP-AN602 <https://groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
 
-namespace phpbb\viglink\migrations;
+namespace an602\viglink\migrations;
 
 /**
  * Migration to remove VigLink data
  */
-class viglink_data_v2 extends \phpbb\db\migration\migration
+class viglink_data_v2 extends \an602\db\migration\migration
 {
 	public static function depends_on()
 	{
-		return array('\phpbb\viglink\migrations\viglink_data');
+		return array('\an602\viglink\migrations\viglink_data');
 	}
 
 	public function effectively_installed()

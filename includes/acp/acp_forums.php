@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -26,8 +26,8 @@ class acp_forums
 
 	function main($id, $mode)
 	{
-		global $db, $user, $auth, $template, $cache, $request, $phpbb_dispatcher;
-		global $phpbb_admin_path, $phpbb_root_path, $phpEx, $phpbb_log;
+		global $db, $user, $auth, $template, $cache, $request, $an602_dispatcher;
+		global $an602_admin_path, $an602_root_path, $phpEx, $an602_log;
 
 		$user->add_lang('acp/forums');
 		$this->tpl_name = 'acp_forums';
@@ -96,7 +96,7 @@ class acp_forums
 					}
 
 					$auth->acl_clear_prefetch();
-					$cache->destroy('sql', FORUMS_TABLE);
+					$cache->destroy('sql', AN602_FORUMS_TABLE);
 
 					trigger_error($user->lang['FORUM_DELETED'] . adm_back_link($this->u_action . '&amp;parent_id=' . $this->parent_id));
 
@@ -163,7 +163,7 @@ class acp_forums
 					* @since 3.1.0-a1
 					*/
 					$vars = array('action', 'forum_data');
-					extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_request_data', compact($vars)));
+					extract($an602_dispatcher->trigger_event('core.acp_manage_forums_request_data', compact($vars)));
 
 					// On add, add empty forum_options... else do not consider it (not updating it)
 					if ($action == 'add')
@@ -202,7 +202,7 @@ class acp_forums
 					if (!count($errors))
 					{
 						$forum_perm_from = $request->variable('forum_perm_from', 0);
-						$cache->destroy('sql', FORUMS_TABLE);
+						$cache->destroy('sql', AN602_FORUMS_TABLE);
 
 						$copied_permissions = false;
 						// Copy permissions?
@@ -210,7 +210,7 @@ class acp_forums
 							($action != 'edit' || empty($forum_id) || ($auth->acl_get('a_fauth') && $auth->acl_get('a_authusers') && $auth->acl_get('a_authgroups') && $auth->acl_get('a_mauth'))))
 						{
 							copy_forum_permissions($forum_perm_from, $forum_data['forum_id'], ($action == 'edit') ? true : false);
-							phpbb_cache_moderators($db, $cache, $auth);
+							an602_cache_moderators($db, $cache, $auth);
 							$copied_permissions = true;
 						}
 /* Commented out because of questionable UI workflow - re-visit for 3.0.7
@@ -229,9 +229,9 @@ class acp_forums
 						// redirect directly to permission settings screen if authed
 						if ($action == 'add' && !$copied_permissions && $auth->acl_get('a_fauth'))
 						{
-							$message .= '<br /><br />' . sprintf($user->lang['REDIRECT_ACL'], '<a href="' . append_sid("{$phpbb_admin_path}index.$phpEx", 'i=permissions' . $acl_url) . '">', '</a>');
+							$message .= '<br /><br />' . sprintf($user->lang['REDIRECT_ACL'], '<a href="' . append_sid("{$an602_admin_path}index.$phpEx", 'i=permissions' . $acl_url) . '">', '</a>');
 
-							meta_refresh(4, append_sid("{$phpbb_admin_path}index.$phpEx", 'i=permissions' . $acl_url));
+							meta_refresh(4, append_sid("{$an602_admin_path}index.$phpEx", 'i=permissions' . $acl_url));
 						}
 
 						trigger_error($message . adm_back_link($this->u_action . '&amp;parent_id=' . $this->parent_id));
@@ -252,7 +252,7 @@ class acp_forums
 				}
 
 				$sql = 'SELECT *
-					FROM ' . FORUMS_TABLE . "
+					FROM ' . AN602_FORUMS_TABLE . "
 					WHERE forum_id = $forum_id";
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
@@ -267,13 +267,13 @@ class acp_forums
 
 				if ($move_forum_name !== false)
 				{
-					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_' . strtoupper($action), false, array($row['forum_name'], $move_forum_name));
-					$cache->destroy('sql', FORUMS_TABLE);
+					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_' . strtoupper($action), false, array($row['forum_name'], $move_forum_name));
+					$cache->destroy('sql', AN602_FORUMS_TABLE);
 				}
 
 				if ($request->is_ajax())
 				{
-					$json_response = new \phpbb\json_response;
+					$json_response = new \an602\json_response;
 					$json_response->send(array('success' => ($move_forum_name !== false)));
 				}
 
@@ -288,7 +288,7 @@ class acp_forums
 				@set_time_limit(0);
 
 				$sql = 'SELECT forum_name, (forum_topics_approved + forum_topics_unapproved + forum_topics_softdeleted) AS total_topics
-					FROM ' . FORUMS_TABLE . "
+					FROM ' . AN602_FORUMS_TABLE . "
 					WHERE forum_id = $forum_id";
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
@@ -302,7 +302,7 @@ class acp_forums
 				if ($row['total_topics'])
 				{
 					$sql = 'SELECT MIN(topic_id) as min_topic_id, MAX(topic_id) as max_topic_id
-						FROM ' . TOPICS_TABLE . '
+						FROM ' . AN602_TOPICS_TABLE . '
 						WHERE forum_id = ' . $forum_id;
 					$result = $db->sql_query($sql);
 					$row2 = $db->sql_fetchrow($result);
@@ -324,7 +324,7 @@ class acp_forums
 					{
 						// We really need to find a way of showing statistics... no progress here
 						$sql = 'SELECT COUNT(topic_id) as num_topics
-							FROM ' . TOPICS_TABLE . '
+							FROM ' . AN602_TOPICS_TABLE . '
 							WHERE forum_id = ' . $forum_id . '
 								AND topic_id BETWEEN ' . $start . ' AND ' . $end;
 						$result = $db->sql_query($sql);
@@ -365,7 +365,7 @@ class acp_forums
 			case 'sync_forum':
 
 				$sql = 'SELECT forum_name, forum_type
-					FROM ' . FORUMS_TABLE . "
+					FROM ' . AN602_FORUMS_TABLE . "
 					WHERE forum_id = $forum_id";
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
@@ -378,9 +378,9 @@ class acp_forums
 
 				sync('forum', 'forum_id', $forum_id, false, true);
 
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_SYNC', false, array($row['forum_name']));
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_SYNC', false, array($row['forum_name']));
 
-				$cache->destroy('sql', FORUMS_TABLE);
+				$cache->destroy('sql', AN602_FORUMS_TABLE);
 
 				$template->assign_var('L_FORUM_RESYNCED', sprintf($user->lang['FORUM_RESYNCED'], $row['forum_name']));
 
@@ -491,7 +491,7 @@ class acp_forums
 				* @since 3.1.0-a1
 				*/
 				$vars = array('action', 'update', 'forum_id', 'row', 'forum_data', 'parents_list');
-				extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_initialise_data', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_manage_forums_initialise_data', compact($vars)));
 
 				$forum_rules_data = array(
 					'text'			=> $forum_data['forum_rules'],
@@ -559,7 +559,7 @@ class acp_forums
 				$statuslist = '<option value="' . ITEM_UNLOCKED . '"' . (($forum_data['forum_status'] == ITEM_UNLOCKED) ? ' selected="selected"' : '') . '>' . $user->lang['UNLOCKED'] . '</option><option value="' . ITEM_LOCKED . '"' . (($forum_data['forum_status'] == ITEM_LOCKED) ? ' selected="selected"' : '') . '>' . $user->lang['LOCKED'] . '</option>';
 
 				$sql = 'SELECT forum_id
-					FROM ' . FORUMS_TABLE . '
+					FROM ' . AN602_FORUMS_TABLE . '
 					WHERE forum_type = ' . FORUM_POST . "
 						AND forum_id <> $forum_id";
 				$result = $db->sql_query_limit($sql, 1);
@@ -639,7 +639,7 @@ class acp_forums
 					'FORUM_NAME'				=> $forum_data['forum_name'],
 					'FORUM_DATA_LINK'			=> $forum_data['forum_link'],
 					'FORUM_IMAGE'				=> $forum_data['forum_image'],
-					'FORUM_IMAGE_SRC'			=> ($forum_data['forum_image']) ? $phpbb_root_path . $forum_data['forum_image'] : '',
+					'FORUM_IMAGE_SRC'			=> ($forum_data['forum_image']) ? $an602_root_path . $forum_data['forum_image'] : '',
 					'FORUM_POST'				=> FORUM_POST,
 					'FORUM_LINK'				=> FORUM_LINK,
 					'FORUM_CAT'					=> FORUM_CAT,
@@ -722,7 +722,7 @@ class acp_forums
 					'errors',
 					'template_data',
 				);
-				extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_display_form', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_manage_forums_display_form', compact($vars)));
 
 				$template->assign_vars($template_data);
 
@@ -750,7 +750,7 @@ class acp_forums
 				$forums_list = make_forum_select($forum_data['parent_id'], $subforums_id);
 
 				$sql = 'SELECT forum_id
-					FROM ' . FORUMS_TABLE . '
+					FROM ' . AN602_FORUMS_TABLE . '
 					WHERE forum_type = ' . FORUM_POST . "
 						AND forum_id <> $forum_id";
 				$result = $db->sql_query_limit($sql, 1);
@@ -789,9 +789,9 @@ class acp_forums
 				if (!empty($forum_perm_from) && $forum_perm_from != $forum_id)
 				{
 					copy_forum_permissions($forum_perm_from, $forum_id, true);
-					phpbb_cache_moderators($db, $cache, $auth);
+					an602_cache_moderators($db, $cache, $auth);
 					$auth->acl_clear_prefetch();
-					$cache->destroy('sql', FORUMS_TABLE);
+					$cache->destroy('sql', AN602_FORUMS_TABLE);
 
 					$acl_url = '&amp;mode=setting_forum_local&amp;forum_id[]=' . $forum_id;
 
@@ -800,7 +800,7 @@ class acp_forums
 					// Redirect to permissions
 					if ($auth->acl_get('a_fauth'))
 					{
-						$message .= '<br /><br />' . sprintf($user->lang['REDIRECT_ACL'], '<a href="' . append_sid("{$phpbb_admin_path}index.$phpEx", 'i=permissions' . $acl_url) . '">', '</a>');
+						$message .= '<br /><br />' . sprintf($user->lang['REDIRECT_ACL'], '<a href="' . append_sid("{$an602_admin_path}index.$phpEx", 'i=permissions' . $acl_url) . '">', '</a>');
 					}
 
 					trigger_error($message . adm_back_link($this->u_action . '&amp;parent_id=' . $this->parent_id));
@@ -841,7 +841,7 @@ class acp_forums
 		}
 
 		$sql = 'SELECT *
-			FROM ' . FORUMS_TABLE . "
+			FROM ' . AN602_FORUMS_TABLE . "
 			WHERE parent_id = $this->parent_id
 			ORDER BY left_id";
 		$result = $db->sql_query($sql);
@@ -861,7 +861,7 @@ class acp_forums
 		* @since 3.1.10-RC1
 		*/
 		$vars = array('rowset');
-		extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_modify_forum_list', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.acp_manage_forums_modify_forum_list', compact($vars)));
 
 		if (!empty($rowset))
 		{
@@ -891,8 +891,8 @@ class acp_forums
 
 				$template->assign_block_vars('forums', array(
 					'FOLDER_IMAGE'		=> $folder_image,
-					'FORUM_IMAGE'		=> ($row['forum_image']) ? '<img src="' . $phpbb_root_path . $row['forum_image'] . '" alt="" />' : '',
-					'FORUM_IMAGE_SRC'	=> ($row['forum_image']) ? $phpbb_root_path . $row['forum_image'] : '',
+					'FORUM_IMAGE'		=> ($row['forum_image']) ? '<img src="' . $an602_root_path . $row['forum_image'] . '" alt="" />' : '',
+					'FORUM_IMAGE_SRC'	=> ($row['forum_image']) ? $an602_root_path . $row['forum_image'] : '',
 					'FORUM_NAME'		=> $row['forum_name'],
 					'FORUM_DESCRIPTION'	=> generate_text_for_display($row['forum_desc'], $row['forum_desc_uid'], $row['forum_desc_bitfield'], $row['forum_desc_options']),
 					'FORUM_TOPICS'		=> $row['forum_topics_approved'],
@@ -946,7 +946,7 @@ class acp_forums
 		global $db;
 
 		$sql = 'SELECT *
-			FROM ' . FORUMS_TABLE . "
+			FROM ' . AN602_FORUMS_TABLE . "
 			WHERE forum_id = $forum_id";
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
@@ -965,7 +965,7 @@ class acp_forums
 	*/
 	function update_forum_data(&$forum_data_ary)
 	{
-		global $db, $user, $cache, $phpbb_root_path, $phpbb_container, $phpbb_dispatcher, $phpbb_log, $request;
+		global $db, $user, $cache, $an602_root_path, $an602_container, $an602_dispatcher, $an602_log, $request;
 
 		$errors = array();
 
@@ -980,7 +980,7 @@ class acp_forums
 		* @since 3.1.0-a1
 		*/
 		$vars = array('forum_data', 'errors');
-		extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_validate_data', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.acp_manage_forums_validate_data', compact($vars)));
 		$forum_data_ary = $forum_data;
 		unset($forum_data);
 
@@ -1035,7 +1035,7 @@ class acp_forums
 			array('lang' => 'FORUM_TOPICS_PAGE', 'value' => $forum_data_ary['forum_topics_per_page'], 'column_type' => 'USINT:0'),
 		);
 
-		if (!empty($forum_data_ary['forum_image']) && !file_exists($phpbb_root_path . $forum_data_ary['forum_image']))
+		if (!empty($forum_data_ary['forum_image']) && !file_exists($an602_root_path . $forum_data_ary['forum_image']))
 		{
 			$errors[] = $user->lang['FORUM_IMAGE_NO_EXIST'];
 		}
@@ -1090,8 +1090,8 @@ class acp_forums
 		else
 		{
 			// Instantiate passwords manager
-			/* @var $passwords_manager \phpbb\passwords\manager */
-			$passwords_manager = $phpbb_container->get('passwords.manager');
+			/* @var $passwords_manager \an602\passwords\manager */
+			$passwords_manager = $an602_container->get('passwords.manager');
 
 			$forum_data_sql['forum_password'] = $passwords_manager->hash($forum_data_sql['forum_password']);
 		}
@@ -1109,7 +1109,7 @@ class acp_forums
 		* @since 3.1.0-a1
 		*/
 		$vars = array('forum_data', 'forum_data_sql');
-		extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_update_data_before', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.acp_manage_forums_update_data_before', compact($vars)));
 		$forum_data_ary = $forum_data;
 		unset($forum_data);
 
@@ -1123,7 +1123,7 @@ class acp_forums
 			if ($forum_data_sql['parent_id'])
 			{
 				$sql = 'SELECT left_id, right_id, forum_type
-					FROM ' . FORUMS_TABLE . '
+					FROM ' . AN602_FORUMS_TABLE . '
 					WHERE forum_id = ' . $forum_data_sql['parent_id'];
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
@@ -1140,12 +1140,12 @@ class acp_forums
 					return $errors;
 				}
 
-				$sql = 'UPDATE ' . FORUMS_TABLE . '
+				$sql = 'UPDATE ' . AN602_FORUMS_TABLE . '
 					SET left_id = left_id + 2, right_id = right_id + 2
 					WHERE left_id > ' . $row['right_id'];
 				$db->sql_query($sql);
 
-				$sql = 'UPDATE ' . FORUMS_TABLE . '
+				$sql = 'UPDATE ' . AN602_FORUMS_TABLE . '
 					SET right_id = right_id + 2
 					WHERE ' . $row['left_id'] . ' BETWEEN left_id AND right_id';
 				$db->sql_query($sql);
@@ -1156,7 +1156,7 @@ class acp_forums
 			else
 			{
 				$sql = 'SELECT MAX(right_id) AS right_id
-					FROM ' . FORUMS_TABLE;
+					FROM ' . AN602_FORUMS_TABLE;
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 				$db->sql_freeresult($result);
@@ -1165,12 +1165,12 @@ class acp_forums
 				$forum_data_sql['right_id'] = $row['right_id'] + 2;
 			}
 
-			$sql = 'INSERT INTO ' . FORUMS_TABLE . ' ' . $db->sql_build_array('INSERT', $forum_data_sql);
+			$sql = 'INSERT INTO ' . AN602_FORUMS_TABLE . ' ' . $db->sql_build_array('INSERT', $forum_data_sql);
 			$db->sql_query($sql);
 
 			$forum_data_ary['forum_id'] = $db->sql_nextid();
 
-			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_ADD', false, array($forum_data_ary['forum_name']));
+			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_ADD', false, array($forum_data_ary['forum_name']));
 		}
 		else
 		{
@@ -1244,21 +1244,21 @@ class acp_forums
 
 						if (count($forum_ids))
 						{
-							$sql = 'DELETE FROM ' . FORUMS_TABLE . '
+							$sql = 'DELETE FROM ' . AN602_FORUMS_TABLE . '
 								WHERE ' . $db->sql_in_set('forum_id', $forum_ids);
 							$db->sql_query($sql);
 
-							$sql = 'DELETE FROM ' . ACL_GROUPS_TABLE . '
+							$sql = 'DELETE FROM ' . AN602_ACL_AN602_GROUPS_TABLE . '
 								WHERE ' . $db->sql_in_set('forum_id', $forum_ids);
 							$db->sql_query($sql);
 
-							$sql = 'DELETE FROM ' . ACL_USERS_TABLE . '
+							$sql = 'DELETE FROM ' . AN602_ACL_AN602_USERS_TABLE . '
 								WHERE ' . $db->sql_in_set('forum_id', $forum_ids);
 							$db->sql_query($sql);
 
 							// Delete forum ids from extension groups table
 							$sql = 'SELECT group_id, allowed_forums
-								FROM ' . EXTENSION_GROUPS_TABLE;
+								FROM ' . AN602_EXTENSION_AN602_GROUPS_TABLE;
 							$result = $db->sql_query($sql);
 
 							while ($_row = $db->sql_fetchrow($result))
@@ -1271,7 +1271,7 @@ class acp_forums
 								$allowed_forums = unserialize(trim($_row['allowed_forums']));
 								$allowed_forums = array_diff($allowed_forums, $forum_ids);
 
-								$sql = 'UPDATE ' . EXTENSION_GROUPS_TABLE . "
+								$sql = 'UPDATE ' . AN602_EXTENSION_AN602_GROUPS_TABLE . "
 									SET allowed_forums = '" . ((count($allowed_forums)) ? serialize($allowed_forums) : '') . "'
 									WHERE group_id = {$_row['group_id']}";
 								$db->sql_query($sql);
@@ -1289,7 +1289,7 @@ class acp_forums
 						}
 
 						$sql = 'SELECT forum_name
-							FROM ' . FORUMS_TABLE . '
+							FROM ' . AN602_FORUMS_TABLE . '
 							WHERE forum_id = ' . $subforums_to_id;
 						$result = $db->sql_query($sql);
 						$_row = $db->sql_fetchrow($result);
@@ -1301,7 +1301,7 @@ class acp_forums
 						}
 
 						$sql = 'SELECT forum_id
-							FROM ' . FORUMS_TABLE . "
+							FROM ' . AN602_FORUMS_TABLE . "
 							WHERE parent_id = {$row['forum_id']}";
 						$result = $db->sql_query($sql);
 
@@ -1311,14 +1311,14 @@ class acp_forums
 						}
 						$db->sql_freeresult($result);
 
-						$sql = 'UPDATE ' . FORUMS_TABLE . "
+						$sql = 'UPDATE ' . AN602_FORUMS_TABLE . "
 							SET parent_id = $subforums_to_id
 							WHERE parent_id = {$row['forum_id']}";
 						$db->sql_query($sql);
 					}
 
 					// Adjust the left/right id
-					$sql = 'UPDATE ' . FORUMS_TABLE . '
+					$sql = 'UPDATE ' . AN602_FORUMS_TABLE . '
 						SET right_id = left_id + 1
 						WHERE forum_id = ' . $row['forum_id'];
 					$db->sql_query($sql);
@@ -1368,7 +1368,7 @@ class acp_forums
 			if ($row['forum_name'] != $forum_data_sql['forum_name'])
 			{
 				// the forum name has changed, clear the parents list of all forums (for safety)
-				$sql = 'UPDATE ' . FORUMS_TABLE . "
+				$sql = 'UPDATE ' . AN602_FORUMS_TABLE . "
 					SET forum_parents = ''";
 				$db->sql_query($sql);
 			}
@@ -1377,7 +1377,7 @@ class acp_forums
 			$forum_id = $forum_data_sql['forum_id'];
 			unset($forum_data_sql['forum_id']);
 
-			$sql = 'UPDATE ' . FORUMS_TABLE . '
+			$sql = 'UPDATE ' . AN602_FORUMS_TABLE . '
 				SET ' . $db->sql_build_array('UPDATE', $forum_data_sql) . '
 				WHERE forum_id = ' . $forum_id;
 			$db->sql_query($sql);
@@ -1385,7 +1385,7 @@ class acp_forums
 			// Add it back
 			$forum_data_ary['forum_id'] = $forum_id;
 
-			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_EDIT', false, array($forum_data_ary['forum_name']));
+			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_EDIT', false, array($forum_data_ary['forum_name']));
 		}
 
 		$forum_data = $forum_data_ary;
@@ -1403,7 +1403,7 @@ class acp_forums
 		* @since 3.1.0-a1
 		*/
 		$vars = array('forum_data', 'forum_data_sql', 'is_new_forum', 'errors');
-		extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_update_data_after', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.acp_manage_forums_update_data_after', compact($vars)));
 		$forum_data_ary = $forum_data;
 		unset($forum_data);
 
@@ -1415,7 +1415,7 @@ class acp_forums
 	*/
 	function move_forum($from_id, $to_id)
 	{
-		global $db, $user, $phpbb_dispatcher;
+		global $db, $user, $an602_dispatcher;
 
 		$errors = array();
 
@@ -1443,7 +1443,7 @@ class acp_forums
 		* @since 3.1.0-a1
 		*/
 		$vars = array('from_id', 'to_id', 'errors');
-		extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_move_children', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.acp_manage_forums_move_children', compact($vars)));
 
 		// Return if there were errors
 		if (!empty($errors))
@@ -1464,14 +1464,14 @@ class acp_forums
 		}
 
 		// Resync parents
-		$sql = 'UPDATE ' . FORUMS_TABLE . "
+		$sql = 'UPDATE ' . AN602_FORUMS_TABLE . "
 			SET right_id = right_id - $diff, forum_parents = ''
 			WHERE left_id < " . $from_data['right_id'] . "
 				AND right_id > " . $from_data['right_id'];
 		$db->sql_query($sql);
 
 		// Resync righthand side of tree
-		$sql = 'UPDATE ' . FORUMS_TABLE . "
+		$sql = 'UPDATE ' . AN602_FORUMS_TABLE . "
 			SET left_id = left_id - $diff, right_id = right_id - $diff, forum_parents = ''
 			WHERE left_id > " . $from_data['right_id'];
 		$db->sql_query($sql);
@@ -1482,14 +1482,14 @@ class acp_forums
 			$to_data = $this->get_forum_info($to_id);
 
 			// Resync new parents
-			$sql = 'UPDATE ' . FORUMS_TABLE . "
+			$sql = 'UPDATE ' . AN602_FORUMS_TABLE . "
 				SET right_id = right_id + $diff, forum_parents = ''
 				WHERE " . $to_data['right_id'] . ' BETWEEN left_id AND right_id
 					AND ' . $db->sql_in_set('forum_id', $moved_ids, true);
 			$db->sql_query($sql);
 
 			// Resync the righthand side of the tree
-			$sql = 'UPDATE ' . FORUMS_TABLE . "
+			$sql = 'UPDATE ' . AN602_FORUMS_TABLE . "
 				SET left_id = left_id + $diff, right_id = right_id + $diff, forum_parents = ''
 				WHERE left_id > " . $to_data['right_id'] . '
 					AND ' . $db->sql_in_set('forum_id', $moved_ids, true);
@@ -1510,7 +1510,7 @@ class acp_forums
 		else
 		{
 			$sql = 'SELECT MAX(right_id) AS right_id
-				FROM ' . FORUMS_TABLE . '
+				FROM ' . AN602_FORUMS_TABLE . '
 				WHERE ' . $db->sql_in_set('forum_id', $moved_ids, true);
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
@@ -1519,7 +1519,7 @@ class acp_forums
 			$diff = '+ ' . ($row['right_id'] - $from_data['left_id'] + 1);
 		}
 
-		$sql = 'UPDATE ' . FORUMS_TABLE . "
+		$sql = 'UPDATE ' . AN602_FORUMS_TABLE . "
 			SET left_id = left_id $diff, right_id = right_id $diff, forum_parents = ''
 			WHERE " . $db->sql_in_set('forum_id', $moved_ids);
 		$db->sql_query($sql);
@@ -1534,7 +1534,7 @@ class acp_forums
 	*/
 	function move_forum_content($from_id, $to_id, $sync = true)
 	{
-		global $db, $phpbb_dispatcher;
+		global $db, $an602_dispatcher;
 
 		$errors = array();
 
@@ -1551,7 +1551,7 @@ class acp_forums
 		* @since 3.1.0-a1
 		*/
 		$vars = array('from_id', 'to_id', 'sync', 'errors');
-		extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_move_content', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.acp_manage_forums_move_content', compact($vars)));
 
 		// Return if there were errors
 		if (!empty($errors))
@@ -1559,7 +1559,7 @@ class acp_forums
 			return $errors;
 		}
 
-		$table_ary = array(LOG_TABLE, POSTS_TABLE, TOPICS_TABLE, DRAFTS_TABLE, TOPICS_TRACK_TABLE);
+		$table_ary = array(AN602_LOG_TABLE, AN602_POSTS_TABLE, AN602_TOPICS_TABLE, AN602_DRAFTS_TABLE, AN602_TOPICS_TRACK_TABLE);
 
 		/**
 		 * Perform additional actions before move forum content
@@ -1569,7 +1569,7 @@ class acp_forums
 		 * @since 3.2.4-RC1
 		 */
 		$vars = array('table_ary');
-		extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_move_content_sql_before', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.acp_manage_forums_move_content_sql_before', compact($vars)));
 
 		foreach ($table_ary as $table)
 		{
@@ -1580,7 +1580,7 @@ class acp_forums
 		}
 		unset($table_ary);
 
-		$table_ary = array(FORUMS_ACCESS_TABLE, FORUMS_TRACK_TABLE, FORUMS_WATCH_TABLE, MODERATOR_CACHE_TABLE);
+		$table_ary = array(AN602_FORUMS_ACCESS_TABLE, AN602_FORUMS_TRACK_TABLE, AN602_FORUMS_WATCH_TABLE, AN602_MODERATOR_CACHE_TABLE);
 
 		foreach ($table_ary as $table)
 		{
@@ -1600,7 +1600,7 @@ class acp_forums
 		 * @since 3.2.9-RC1
 		 */
 		$vars = array('from_id', 'to_id', 'sync');
-		extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_move_content_after', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.acp_manage_forums_move_content_after', compact($vars)));
 
 		if ($sync)
 		{
@@ -1617,7 +1617,7 @@ class acp_forums
 	*/
 	function delete_forum($forum_id, $action_posts = 'delete', $action_subforums = 'delete', $posts_to_id = 0, $subforums_to_id = 0)
 	{
-		global $db, $user, $cache, $phpbb_log;
+		global $db, $user, $cache, $an602_log;
 
 		$forum_data = $this->get_forum_info($forum_id);
 
@@ -1641,7 +1641,7 @@ class acp_forums
 				$log_action_posts = 'MOVE_POSTS';
 
 				$sql = 'SELECT forum_name
-					FROM ' . FORUMS_TABLE . '
+					FROM ' . AN602_FORUMS_TABLE . '
 					WHERE forum_id = ' . $posts_to_id;
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
@@ -1682,15 +1682,15 @@ class acp_forums
 
 			$diff = count($forum_ids) * 2;
 
-			$sql = 'DELETE FROM ' . FORUMS_TABLE . '
+			$sql = 'DELETE FROM ' . AN602_FORUMS_TABLE . '
 				WHERE ' . $db->sql_in_set('forum_id', $forum_ids);
 			$db->sql_query($sql);
 
-			$sql = 'DELETE FROM ' . ACL_GROUPS_TABLE . '
+			$sql = 'DELETE FROM ' . AN602_ACL_AN602_GROUPS_TABLE . '
 				WHERE ' . $db->sql_in_set('forum_id', $forum_ids);
 			$db->sql_query($sql);
 
-			$sql = 'DELETE FROM ' . ACL_USERS_TABLE . '
+			$sql = 'DELETE FROM ' . AN602_ACL_AN602_USERS_TABLE . '
 				WHERE ' . $db->sql_in_set('forum_id', $forum_ids);
 			$db->sql_query($sql);
 		}
@@ -1705,7 +1705,7 @@ class acp_forums
 				$log_action_forums = 'MOVE_FORUMS';
 
 				$sql = 'SELECT forum_name
-					FROM ' . FORUMS_TABLE . '
+					FROM ' . AN602_FORUMS_TABLE . '
 					WHERE forum_id = ' . $subforums_to_id;
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
@@ -1720,7 +1720,7 @@ class acp_forums
 					$subforums_to_name = $row['forum_name'];
 
 					$sql = 'SELECT forum_id
-						FROM ' . FORUMS_TABLE . "
+						FROM ' . AN602_FORUMS_TABLE . "
 						WHERE parent_id = $forum_id";
 					$result = $db->sql_query($sql);
 
@@ -1733,21 +1733,21 @@ class acp_forums
 					// Grab new forum data for correct tree updating later
 					$forum_data = $this->get_forum_info($forum_id);
 
-					$sql = 'UPDATE ' . FORUMS_TABLE . "
+					$sql = 'UPDATE ' . AN602_FORUMS_TABLE . "
 						SET parent_id = $subforums_to_id
 						WHERE parent_id = $forum_id";
 					$db->sql_query($sql);
 
 					$diff = 2;
-					$sql = 'DELETE FROM ' . FORUMS_TABLE . "
+					$sql = 'DELETE FROM ' . AN602_FORUMS_TABLE . "
 						WHERE forum_id = $forum_id";
 					$db->sql_query($sql);
 
-					$sql = 'DELETE FROM ' . ACL_GROUPS_TABLE . "
+					$sql = 'DELETE FROM ' . AN602_ACL_AN602_GROUPS_TABLE . "
 						WHERE forum_id = $forum_id";
 					$db->sql_query($sql);
 
-					$sql = 'DELETE FROM ' . ACL_USERS_TABLE . "
+					$sql = 'DELETE FROM ' . AN602_ACL_AN602_USERS_TABLE . "
 						WHERE forum_id = $forum_id";
 					$db->sql_query($sql);
 				}
@@ -1761,33 +1761,33 @@ class acp_forums
 		else
 		{
 			$diff = 2;
-			$sql = 'DELETE FROM ' . FORUMS_TABLE . "
+			$sql = 'DELETE FROM ' . AN602_FORUMS_TABLE . "
 				WHERE forum_id = $forum_id";
 			$db->sql_query($sql);
 
-			$sql = 'DELETE FROM ' . ACL_GROUPS_TABLE . "
+			$sql = 'DELETE FROM ' . AN602_ACL_AN602_GROUPS_TABLE . "
 				WHERE forum_id = $forum_id";
 			$db->sql_query($sql);
 
-			$sql = 'DELETE FROM ' . ACL_USERS_TABLE . "
+			$sql = 'DELETE FROM ' . AN602_ACL_AN602_USERS_TABLE . "
 				WHERE forum_id = $forum_id";
 			$db->sql_query($sql);
 		}
 
 		// Resync tree
-		$sql = 'UPDATE ' . FORUMS_TABLE . "
+		$sql = 'UPDATE ' . AN602_FORUMS_TABLE . "
 			SET right_id = right_id - $diff
 			WHERE left_id < {$forum_data['right_id']} AND right_id > {$forum_data['right_id']}";
 		$db->sql_query($sql);
 
-		$sql = 'UPDATE ' . FORUMS_TABLE . "
+		$sql = 'UPDATE ' . AN602_FORUMS_TABLE . "
 			SET left_id = left_id - $diff, right_id = right_id - $diff
 			WHERE left_id > {$forum_data['right_id']}";
 		$db->sql_query($sql);
 
 		// Delete forum ids from extension groups table
 		$sql = 'SELECT group_id, allowed_forums
-			FROM ' . EXTENSION_GROUPS_TABLE;
+			FROM ' . AN602_EXTENSION_AN602_GROUPS_TABLE;
 		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
@@ -1800,7 +1800,7 @@ class acp_forums
 			$allowed_forums = unserialize(trim($row['allowed_forums']));
 			$allowed_forums = array_diff($allowed_forums, $forum_ids);
 
-			$sql = 'UPDATE ' . EXTENSION_GROUPS_TABLE . "
+			$sql = 'UPDATE ' . AN602_EXTENSION_AN602_GROUPS_TABLE . "
 				SET allowed_forums = '" . ((count($allowed_forums)) ? serialize($allowed_forums) : '') . "'
 				WHERE group_id = {$row['group_id']}";
 			$db->sql_query($sql);
@@ -1814,39 +1814,39 @@ class acp_forums
 		switch ($log_action)
 		{
 			case 'MOVE_POSTS_MOVE_FORUMS':
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_MOVE_POSTS_MOVE_FORUMS', false, array($posts_to_name, $subforums_to_name, $forum_data['forum_name']));
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_MOVE_POSTS_MOVE_FORUMS', false, array($posts_to_name, $subforums_to_name, $forum_data['forum_name']));
 			break;
 
 			case 'MOVE_POSTS_FORUMS':
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_MOVE_POSTS_FORUMS', false, array($posts_to_name, $forum_data['forum_name']));
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_MOVE_POSTS_FORUMS', false, array($posts_to_name, $forum_data['forum_name']));
 			break;
 
 			case 'POSTS_MOVE_FORUMS':
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_POSTS_MOVE_FORUMS', false, array($subforums_to_name, $forum_data['forum_name']));
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_POSTS_MOVE_FORUMS', false, array($subforums_to_name, $forum_data['forum_name']));
 			break;
 
 			case '_MOVE_FORUMS':
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_MOVE_FORUMS', false, array($subforums_to_name, $forum_data['forum_name']));
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_MOVE_FORUMS', false, array($subforums_to_name, $forum_data['forum_name']));
 			break;
 
 			case 'MOVE_POSTS_':
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_MOVE_POSTS', false, array($posts_to_name, $forum_data['forum_name']));
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_MOVE_POSTS', false, array($posts_to_name, $forum_data['forum_name']));
 			break;
 
 			case 'POSTS_FORUMS':
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_POSTS_FORUMS', false, array($forum_data['forum_name']));
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_POSTS_FORUMS', false, array($forum_data['forum_name']));
 			break;
 
 			case '_FORUMS':
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_FORUMS', false, array($forum_data['forum_name']));
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_FORUMS', false, array($forum_data['forum_name']));
 			break;
 
 			case 'POSTS_':
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_POSTS', false, array($forum_data['forum_name']));
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_POSTS', false, array($forum_data['forum_name']));
 			break;
 
 			default:
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_FORUM', false, array($forum_data['forum_name']));
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_FORUM', false, array($forum_data['forum_name']));
 			break;
 		}
 
@@ -1858,15 +1858,15 @@ class acp_forums
 	*/
 	function delete_forum_content($forum_id)
 	{
-		global $db, $config, $phpbb_root_path, $phpEx, $phpbb_container, $phpbb_dispatcher;
+		global $db, $config, $an602_root_path, $phpEx, $an602_container, $an602_dispatcher;
 
-		include_once($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+		include_once($an602_root_path . 'includes/functions_posting.' . $phpEx);
 
 		$db->sql_transaction('begin');
 
 		// Select then delete all attachments
 		$sql = 'SELECT a.topic_id
-			FROM ' . POSTS_TABLE . ' p, ' . ATTACHMENTS_TABLE . " a
+			FROM ' . AN602_POSTS_TABLE . ' p, ' . AN602_ATTACHMENTS_TABLE . " a
 			WHERE p.forum_id = $forum_id
 				AND a.in_message = 0
 				AND a.topic_id = p.topic_id";
@@ -1879,8 +1879,8 @@ class acp_forums
 		}
 		$db->sql_freeresult($result);
 
-		/** @var \phpbb\attachment\manager $attachment_manager */
-		$attachment_manager = $phpbb_container->get('attachment.manager');
+		/** @var \an602\attachment\manager $attachment_manager */
+		$attachment_manager = $an602_container->get('attachment.manager');
 		$attachment_manager->delete('topic', $topic_ids, false);
 		unset($attachment_manager);
 
@@ -1889,7 +1889,7 @@ class acp_forums
 
 		// Before we remove anything we make sure we are able to adjust the post counts later. ;)
 		$sql = 'SELECT poster_id
-			FROM ' . POSTS_TABLE . '
+			FROM ' . AN602_POSTS_TABLE . '
 			WHERE forum_id = ' . $forum_id . '
 				AND post_postcount = 1
 				AND post_visibility = ' . ITEM_APPROVED;
@@ -1908,25 +1908,25 @@ class acp_forums
 
 				// Delete everything else and thank MySQL for offering multi-table deletion
 				$tables_ary = array(
-					SEARCH_WORDMATCH_TABLE	=> 'post_id',
-					REPORTS_TABLE			=> 'post_id',
-					WARNINGS_TABLE			=> 'post_id',
-					BOOKMARKS_TABLE			=> 'topic_id',
-					TOPICS_WATCH_TABLE		=> 'topic_id',
-					TOPICS_POSTED_TABLE		=> 'topic_id',
-					POLL_OPTIONS_TABLE		=> 'topic_id',
-					POLL_VOTES_TABLE		=> 'topic_id',
+					AN602_SEARCH_WORDMATCH_TABLE	=> 'post_id',
+					AN602_REPORTS_TABLE			=> 'post_id',
+					AN602_WARNINGS_TABLE			=> 'post_id',
+					AN602_BOOKMARKS_TABLE			=> 'topic_id',
+					AN602_TOPICS_WATCH_TABLE		=> 'topic_id',
+					AN602_TOPICS_POSTED_TABLE		=> 'topic_id',
+					AN602_POLL_OPTIONS_TABLE		=> 'topic_id',
+					AN602_POLL_VOTES_TABLE		=> 'topic_id',
 				);
 
-				$sql = 'DELETE ' . POSTS_TABLE;
-				$sql_using = "\nFROM " . POSTS_TABLE;
-				$sql_where = "\nWHERE " . POSTS_TABLE . ".forum_id = $forum_id\n";
+				$sql = 'DELETE ' . AN602_POSTS_TABLE;
+				$sql_using = "\nFROM " . AN602_POSTS_TABLE;
+				$sql_where = "\nWHERE " . AN602_POSTS_TABLE . ".forum_id = $forum_id\n";
 
 				foreach ($tables_ary as $table => $field)
 				{
 					$sql .= ", $table ";
 					$sql_using .= ", $table ";
-					$sql_where .= "\nAND $table.$field = " . POSTS_TABLE . ".$field";
+					$sql_where .= "\nAND $table.$field = " . AN602_POSTS_TABLE . ".$field";
 				}
 
 				$db->sql_query($sql . $sql_using . $sql_where);
@@ -1938,17 +1938,17 @@ class acp_forums
 				// Delete everything else and curse your DB for not offering multi-table deletion
 				$tables_ary = array(
 					'post_id'	=>	array(
-						SEARCH_WORDMATCH_TABLE,
-						REPORTS_TABLE,
-						WARNINGS_TABLE,
+						AN602_SEARCH_WORDMATCH_TABLE,
+						AN602_REPORTS_TABLE,
+						AN602_WARNINGS_TABLE,
 					),
 
 					'topic_id'	=>	array(
-						BOOKMARKS_TABLE,
-						TOPICS_WATCH_TABLE,
-						TOPICS_POSTED_TABLE,
-						POLL_OPTIONS_TABLE,
-						POLL_VOTES_TABLE,
+						AN602_BOOKMARKS_TABLE,
+						AN602_TOPICS_WATCH_TABLE,
+						AN602_TOPICS_POSTED_TABLE,
+						AN602_POLL_OPTIONS_TABLE,
+						AN602_POLL_VOTES_TABLE,
 					)
 				);
 
@@ -1962,7 +1962,7 @@ class acp_forums
 					do
 					{
 						$sql = "SELECT $field
-							FROM " . POSTS_TABLE . '
+							FROM " . AN602_POSTS_TABLE . '
 							WHERE forum_id = ' . $forum_id;
 						$result = $db->sql_query_limit($sql, $batch_size, $start);
 
@@ -1990,7 +1990,7 @@ class acp_forums
 			break;
 		}
 
-		$table_ary = array(FORUMS_ACCESS_TABLE, FORUMS_TRACK_TABLE, FORUMS_WATCH_TABLE, LOG_TABLE, MODERATOR_CACHE_TABLE, POSTS_TABLE, TOPICS_TABLE, TOPICS_TRACK_TABLE);
+		$table_ary = array(AN602_FORUMS_ACCESS_TABLE, AN602_FORUMS_TRACK_TABLE, AN602_FORUMS_WATCH_TABLE, AN602_LOG_TABLE, AN602_MODERATOR_CACHE_TABLE, AN602_POSTS_TABLE, AN602_TOPICS_TABLE, AN602_TOPICS_TRACK_TABLE);
 
 		/**
 		 * Perform additional actions before forum content deletion
@@ -2008,7 +2008,7 @@ class acp_forums
 				'topic_ids',
 				'post_counts',
 		);
-		extract($phpbb_dispatcher->trigger_event('core.delete_forum_content_before_query', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.delete_forum_content_before_query', compact($vars)));
 
 		foreach ($table_ary as $table)
 		{
@@ -2016,7 +2016,7 @@ class acp_forums
 		}
 
 		// Set forum ids to 0
-		$table_ary = array(DRAFTS_TABLE);
+		$table_ary = array(AN602_DRAFTS_TABLE);
 
 		foreach ($table_ary as $table)
 		{
@@ -2028,13 +2028,13 @@ class acp_forums
 		{
 			foreach ($post_counts as $poster_id => $substract)
 			{
-				$sql = 'UPDATE ' . USERS_TABLE . '
+				$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 					SET user_posts = 0
 					WHERE user_id = ' . $poster_id . '
 					AND user_posts < ' . $substract;
 				$db->sql_query($sql);
 
-				$sql = 'UPDATE ' . USERS_TABLE . '
+				$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 					SET user_posts = user_posts - ' . $substract . '
 					WHERE user_id = ' . $poster_id . '
 					AND user_posts >= ' . $substract;
@@ -2046,7 +2046,7 @@ class acp_forums
 
 		// Make sure the overall post/topic count is correct...
 		$sql = 'SELECT COUNT(post_id) AS stat
-			FROM ' . POSTS_TABLE . '
+			FROM ' . AN602_POSTS_TABLE . '
 			WHERE post_visibility = ' . ITEM_APPROVED;
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
@@ -2055,7 +2055,7 @@ class acp_forums
 		$config->set('num_posts', (int) $row['stat'], false);
 
 		$sql = 'SELECT COUNT(topic_id) AS stat
-			FROM ' . TOPICS_TABLE . '
+			FROM ' . AN602_TOPICS_TABLE . '
 			WHERE topic_visibility = ' . ITEM_APPROVED;
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
@@ -2064,7 +2064,7 @@ class acp_forums
 		$config->set('num_topics', (int) $row['stat'], false);
 
 		$sql = 'SELECT COUNT(attach_id) as stat
-			FROM ' . ATTACHMENTS_TABLE;
+			FROM ' . AN602_ATTACHMENTS_TABLE;
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
@@ -2072,7 +2072,7 @@ class acp_forums
 		$config->set('num_files', (int) $row['stat'], false);
 
 		$sql = 'SELECT SUM(filesize) as stat
-			FROM ' . ATTACHMENTS_TABLE;
+			FROM ' . AN602_ATTACHMENTS_TABLE;
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
@@ -2096,7 +2096,7 @@ class acp_forums
 		* module will move as far as possible
 		*/
 		$sql = 'SELECT forum_id, forum_name, left_id, right_id
-			FROM ' . FORUMS_TABLE . "
+			FROM ' . AN602_FORUMS_TABLE . "
 			WHERE parent_id = {$forum_row['parent_id']}
 				AND " . (($action == 'move_up') ? "right_id < {$forum_row['right_id']} ORDER BY right_id DESC" : "left_id > {$forum_row['left_id']} ORDER BY left_id ASC");
 		$result = $db->sql_query_limit($sql, $steps);
@@ -2145,7 +2145,7 @@ class acp_forums
 		}
 
 		// Now do the dirty job
-		$sql = 'UPDATE ' . FORUMS_TABLE . "
+		$sql = 'UPDATE ' . AN602_FORUMS_TABLE . "
 			SET left_id = left_id + CASE
 				WHEN left_id BETWEEN {$move_up_left} AND {$move_up_right} THEN -{$diff_up}
 				ELSE {$diff_down}
@@ -2190,18 +2190,18 @@ class acp_forums
 	*/
 	function copy_permission_page($forum_data)
 	{
-		global $phpEx, $phpbb_admin_path, $template, $user;
+		global $phpEx, $an602_admin_path, $template, $user;
 
 		$acl_url = '&amp;mode=setting_forum_local&amp;forum_id[]=' . $forum_data['forum_id'];
 		$action = append_sid($this->u_action . "&amp;parent_id={$this->parent_id}&amp;f={$forum_data['forum_id']}&amp;action=copy_perm");
 
-		$l_acl = sprintf($user->lang['COPY_TO_ACL'], '<a href="' . append_sid("{$phpbb_admin_path}index.$phpEx", 'i=permissions' . $acl_url) . '">', '</a>');
+		$l_acl = sprintf($user->lang['COPY_TO_ACL'], '<a href="' . append_sid("{$an602_admin_path}index.$phpEx", 'i=permissions' . $acl_url) . '">', '</a>');
 
 		$this->tpl_name = 'acp_forums_copy_perm';
 
 		$template->assign_vars(array(
-			'U_ACL'				=> append_sid("{$phpbb_admin_path}index.$phpEx", 'i=permissions' . $acl_url),
-			'L_ACL_LINK'		=> $l_acl,
+			'U_ACL'				=> append_sid("{$an602_admin_path}index.$phpEx", 'i=permissions' . $acl_url),
+			'L_AN602_ACL_LINK'		=> $l_acl,
 			'L_BACK_LINK'		=> adm_back_link($this->u_action . '&amp;parent_id=' . $this->parent_id),
 			'S_COPY_ACTION'		=> $action,
 			'S_FORUM_OPTIONS'	=> make_forum_select($forum_data['parent_id'], $forum_data['forum_id'], false, false, false),

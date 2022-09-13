@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -27,24 +27,24 @@ class acp_profile
 	var $lang_defs;
 
 	/**
-	 * @var \phpbb\di\service_collection
+	 * @var \an602\di\service_collection
 	 */
 	protected $type_collection;
 
 	function main($id, $mode)
 	{
 		global $config, $db, $user, $template;
-		global $phpbb_root_path, $phpEx;
-		global $request, $phpbb_container, $phpbb_log, $phpbb_dispatcher;
+		global $an602_root_path, $phpEx;
+		global $request, $an602_container, $an602_log, $an602_dispatcher;
 
 		if (!function_exists('generate_smilies'))
 		{
-			include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+			include($an602_root_path . 'includes/functions_posting.' . $phpEx);
 		}
 
 		if (!function_exists('user_get_id_name'))
 		{
-			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		$user->add_lang(array('ucp', 'acp/profile'));
@@ -64,16 +64,16 @@ class acp_profile
 			trigger_error($user->lang['NO_FIELD_ID'] . adm_back_link($this->u_action), E_USER_WARNING);
 		}
 
-		/* @var $cp \phpbb\profilefields\manager */
-		$cp = $phpbb_container->get('profilefields.manager');
-		$this->type_collection = $phpbb_container->get('profilefields.type_collection');
+		/* @var $cp \an602\profilefields\manager */
+		$cp = $an602_container->get('profilefields.manager');
+		$this->type_collection = $an602_container->get('profilefields.type_collection');
 
 		// Build Language array
 		// Based on this, we decide which elements need to be edited later and which language items are missing
 		$this->lang_defs = array();
 
 		$sql = 'SELECT lang_id, lang_iso
-			FROM ' . LANG_TABLE . '
+			FROM ' . AN602_LANG_TABLE . '
 			ORDER BY lang_english_name';
 		$result = $db->sql_query($sql);
 
@@ -86,7 +86,7 @@ class acp_profile
 		$db->sql_freeresult($result);
 
 		$sql = 'SELECT field_id, lang_id
-			FROM ' . PROFILE_LANG_TABLE . '
+			FROM ' . AN602_PROFILE_LANG_TABLE . '
 			ORDER BY lang_id';
 		$result = $db->sql_query($sql);
 
@@ -114,7 +114,7 @@ class acp_profile
 				if (confirm_box(true))
 				{
 					$sql = 'SELECT field_ident
-						FROM ' . PROFILE_FIELDS_TABLE . "
+						FROM ' . AN602_PROFILE_FIELDS_TABLE . "
 						WHERE field_id = $field_id";
 					$result = $db->sql_query($sql);
 					$field_ident = (string) $db->sql_fetchfield('field_ident');
@@ -122,18 +122,18 @@ class acp_profile
 
 					$db->sql_transaction('begin');
 
-					$db->sql_query('DELETE FROM ' . PROFILE_FIELDS_TABLE . " WHERE field_id = $field_id");
-					$db->sql_query('DELETE FROM ' . PROFILE_FIELDS_LANG_TABLE . " WHERE field_id = $field_id");
-					$db->sql_query('DELETE FROM ' . PROFILE_LANG_TABLE . " WHERE field_id = $field_id");
+					$db->sql_query('DELETE FROM ' . AN602_PROFILE_FIELDS_TABLE . " WHERE field_id = $field_id");
+					$db->sql_query('DELETE FROM ' . AN602_PROFILE_FIELDS_LANG_TABLE . " WHERE field_id = $field_id");
+					$db->sql_query('DELETE FROM ' . AN602_PROFILE_LANG_TABLE . " WHERE field_id = $field_id");
 
-					/* @var $db_tools \phpbb\db\tools\tools_interface */
-					$db_tools = $phpbb_container->get('dbal.tools');
-					$db_tools->sql_column_remove(PROFILE_FIELDS_DATA_TABLE, 'pf_' . $field_ident);
+					/* @var $db_tools \an602\db\tools\tools_interface */
+					$db_tools = $an602_container->get('dbal.tools');
+					$db_tools->sql_column_remove(AN602_PROFILE_FIELDS_DATA_TABLE, 'pf_' . $field_ident);
 
 					$order = 0;
 
 					$sql = 'SELECT *
-						FROM ' . PROFILE_FIELDS_TABLE . '
+						FROM ' . AN602_PROFILE_FIELDS_TABLE . '
 						ORDER BY field_order';
 					$result = $db->sql_query($sql);
 
@@ -142,7 +142,7 @@ class acp_profile
 						$order++;
 						if ($row['field_order'] != $order)
 						{
-							$sql = 'UPDATE ' . PROFILE_FIELDS_TABLE . "
+							$sql = 'UPDATE ' . AN602_PROFILE_FIELDS_TABLE . "
 								SET field_order = $order
 								WHERE field_id = {$row['field_id']}";
 							$db->sql_query($sql);
@@ -152,7 +152,7 @@ class acp_profile
 
 					$db->sql_transaction('commit');
 
-					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_REMOVED', false, array($field_ident));
+					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_REMOVED', false, array($field_ident));
 					trigger_error($user->lang['REMOVED_PROFILE_FIELD'] . adm_back_link($this->u_action));
 				}
 				else
@@ -175,7 +175,7 @@ class acp_profile
 				}
 
 				$sql = 'SELECT lang_id
-					FROM ' . LANG_TABLE . "
+					FROM ' . AN602_LANG_TABLE . "
 					WHERE lang_iso = '" . $db->sql_escape($config['default_lang']) . "'";
 				$result = $db->sql_query($sql);
 				$default_lang_id = (int) $db->sql_fetchfield('lang_id');
@@ -186,23 +186,23 @@ class acp_profile
 					trigger_error($user->lang['DEFAULT_LANGUAGE_NOT_FILLED'] . adm_back_link($this->u_action), E_USER_WARNING);
 				}
 
-				$sql = 'UPDATE ' . PROFILE_FIELDS_TABLE . "
+				$sql = 'UPDATE ' . AN602_PROFILE_FIELDS_TABLE . "
 					SET field_active = 1
 					WHERE field_id = $field_id";
 				$db->sql_query($sql);
 
 				$sql = 'SELECT field_ident
-					FROM ' . PROFILE_FIELDS_TABLE . "
+					FROM ' . AN602_PROFILE_FIELDS_TABLE . "
 					WHERE field_id = $field_id";
 				$result = $db->sql_query($sql);
 				$field_ident = (string) $db->sql_fetchfield('field_ident');
 				$db->sql_freeresult($result);
 
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_ACTIVATE', false, array($field_ident));
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_ACTIVATE', false, array($field_ident));
 
 				if ($request->is_ajax())
 				{
-					$json_response = new \phpbb\json_response();
+					$json_response = new \an602\json_response();
 					$json_response->send(array(
 						'text'	=> $user->lang('DEACTIVATE'),
 					));
@@ -219,13 +219,13 @@ class acp_profile
 					trigger_error($user->lang['FORM_INVALID'] . adm_back_link($this->u_action), E_USER_WARNING);
 				}
 
-				$sql = 'UPDATE ' . PROFILE_FIELDS_TABLE . "
+				$sql = 'UPDATE ' . AN602_PROFILE_FIELDS_TABLE . "
 					SET field_active = 0
 					WHERE field_id = $field_id";
 				$db->sql_query($sql);
 
 				$sql = 'SELECT field_ident
-					FROM ' . PROFILE_FIELDS_TABLE . "
+					FROM ' . AN602_PROFILE_FIELDS_TABLE . "
 					WHERE field_id = $field_id";
 				$result = $db->sql_query($sql);
 				$field_ident = (string) $db->sql_fetchfield('field_ident');
@@ -233,13 +233,13 @@ class acp_profile
 
 				if ($request->is_ajax())
 				{
-					$json_response = new \phpbb\json_response();
+					$json_response = new \an602\json_response();
 					$json_response->send(array(
 						'text'	=> $user->lang('ACTIVATE'),
 					));
 				}
 
-				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_DEACTIVATE', false, array($field_ident));
+				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_DEACTIVATE', false, array($field_ident));
 
 				trigger_error($user->lang['PROFILE_FIELD_DEACTIVATED'] . adm_back_link($this->u_action));
 
@@ -254,7 +254,7 @@ class acp_profile
 				}
 
 				$sql = 'SELECT field_order
-					FROM ' . PROFILE_FIELDS_TABLE . "
+					FROM ' . AN602_PROFILE_FIELDS_TABLE . "
 					WHERE field_id = $field_id";
 				$result = $db->sql_query($sql);
 				$field_order = $db->sql_fetchfield('field_order');
@@ -267,14 +267,14 @@ class acp_profile
 				$field_order = (int) $field_order;
 				$order_total = $field_order * 2 + (($action == 'move_up') ? -1 : 1);
 
-				$sql = 'UPDATE ' . PROFILE_FIELDS_TABLE . "
+				$sql = 'UPDATE ' . AN602_PROFILE_FIELDS_TABLE . "
 					SET field_order = $order_total - field_order
 					WHERE field_order IN ($field_order, " . (($action == 'move_up') ? $field_order - 1 : $field_order + 1) . ')';
 				$db->sql_query($sql);
 
 				if ($request->is_ajax())
 				{
-					$json_response = new \phpbb\json_response;
+					$json_response = new \an602\json_response;
 					$json_response->send(array(
 						'success'	=> (bool) $db->sql_affectedrows(),
 					));
@@ -297,7 +297,7 @@ class acp_profile
 				if ($action == 'edit')
 				{
 					$sql = 'SELECT l.*, f.*
-						FROM ' . PROFILE_LANG_TABLE . ' l, ' . PROFILE_FIELDS_TABLE . ' f
+						FROM ' . AN602_PROFILE_LANG_TABLE . ' l, ' . AN602_PROFILE_FIELDS_TABLE . ' f
 						WHERE l.lang_id = ' . $this->edit_lang_id . "
 							AND f.field_id = $field_id
 							AND l.field_id = f.field_id";
@@ -309,7 +309,7 @@ class acp_profile
 					{
 						// Some admin changed the default language?
 						$sql = 'SELECT l.*, f.*
-							FROM ' . PROFILE_LANG_TABLE . ' l, ' . PROFILE_FIELDS_TABLE . ' f
+							FROM ' . AN602_PROFILE_LANG_TABLE . ' l, ' . AN602_PROFILE_FIELDS_TABLE . ' f
 							WHERE l.lang_id <> ' . $this->edit_lang_id . "
 							AND f.field_id = $field_id
 							AND l.field_id = f.field_id";
@@ -329,7 +329,7 @@ class acp_profile
 
 					// Get language entries
 					$sql = 'SELECT *
-						FROM ' . PROFILE_FIELDS_LANG_TABLE . '
+						FROM ' . AN602_PROFILE_FIELDS_LANG_TABLE . '
 						WHERE lang_id = ' . $this->edit_lang_id . "
 							AND field_id = $field_id
 						ORDER BY option_id ASC";
@@ -423,7 +423,7 @@ class acp_profile
 					'exclude',
 					'visibility_ary',
 				);
-				extract($phpbb_dispatcher->trigger_event('core.acp_profile_create_edit_init', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_profile_create_edit_init', compact($vars)));
 
 				$options = $profile_field->prepare_options_form($exclude, $visibility_ary);
 
@@ -480,7 +480,7 @@ class acp_profile
 				{
 					// Get language entries
 					$sql = 'SELECT *
-						FROM ' . PROFILE_FIELDS_LANG_TABLE . '
+						FROM ' . AN602_PROFILE_FIELDS_LANG_TABLE . '
 						WHERE lang_id <> ' . $this->edit_lang_id . "
 							AND field_id = $field_id
 						ORDER BY option_id ASC";
@@ -494,7 +494,7 @@ class acp_profile
 					$db->sql_freeresult($result);
 
 					$sql = 'SELECT lang_id, lang_name, lang_explain, lang_default_value
-						FROM ' . PROFILE_LANG_TABLE . '
+						FROM ' . AN602_PROFILE_LANG_TABLE . '
 						WHERE lang_id <> ' . $this->edit_lang_id . "
 							AND field_id = $field_id
 						ORDER BY lang_id ASC";
@@ -554,7 +554,7 @@ class acp_profile
 					if ($action != 'edit')
 					{
 						$sql = 'SELECT field_ident
-							FROM ' . PROFILE_FIELDS_TABLE . "
+							FROM ' . AN602_PROFILE_FIELDS_TABLE . "
 							WHERE field_ident = '" . $db->sql_escape($cp->vars['field_ident']) . "'";
 						$result = $db->sql_query($sql);
 						$row = $db->sql_fetchrow($result);
@@ -727,7 +727,7 @@ class acp_profile
 					's_hidden_fields',
 					'options',
 				);
-				extract($phpbb_dispatcher->trigger_event('core.acp_profile_create_edit_after', compact($vars)));
+				extract($an602_dispatcher->trigger_event('core.acp_profile_create_edit_after', compact($vars)));
 
 				$template->assign_vars(array(
 					'S_HIDDEN_FIELDS'	=> $s_hidden_fields)
@@ -758,14 +758,14 @@ class acp_profile
 			'page_title',
 			'u_action',
 		);
-		extract($phpbb_dispatcher->trigger_event('core.acp_profile_action', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.acp_profile_action', compact($vars)));
 
 		$this->tpl_name = $tpl_name;
 		$this->page_title = $page_title;
 		unset($u_action);
 
 		$sql = 'SELECT *
-			FROM ' . PROFILE_FIELDS_TABLE . '
+			FROM ' . AN602_PROFILE_FIELDS_TABLE . '
 			ORDER BY field_order';
 		$result = $db->sql_query($sql);
 
@@ -810,7 +810,7 @@ class acp_profile
 			* @event core.acp_profile_modify_profile_row
 			* @var	array	row				Array with data for the current profile field
 			* @var	array	field_block		Template data that is being assigned to the 'fields' block
-			* @var	object	profile_field	A profile field instance, implements \phpbb\profilefields\type\type_base
+			* @var	object	profile_field	A profile field instance, implements \an602\profilefields\type\type_base
 			* @since 3.2.2-RC1
 			*/
 			$vars = array(
@@ -818,7 +818,7 @@ class acp_profile
 				'field_block',
 				'profile_field',
 			);
-			extract($phpbb_dispatcher->trigger_event('core.acp_profile_modify_profile_row', compact($vars)));
+			extract($an602_dispatcher->trigger_event('core.acp_profile_modify_profile_row', compact($vars)));
 
 			$template->assign_block_vars('fields', $field_block);
 		}
@@ -852,7 +852,7 @@ class acp_profile
 		$default_lang_id = (!empty($this->edit_lang_id)) ? $this->edit_lang_id : $this->lang_defs['iso'][$config['default_lang']];
 
 		$sql = 'SELECT lang_id, lang_iso
-			FROM ' . LANG_TABLE . '
+			FROM ' . AN602_LANG_TABLE . '
 			WHERE lang_id <> ' . (int) $default_lang_id . '
 			ORDER BY lang_english_name';
 		$result = $db->sql_query($sql);
@@ -944,7 +944,7 @@ class acp_profile
 	*/
 	function save_profile_field($cp, $field_type, $action = 'create')
 	{
-		global $db, $config, $user, $phpbb_container, $phpbb_log, $request, $phpbb_dispatcher;
+		global $db, $config, $user, $an602_container, $an602_log, $request, $an602_dispatcher;
 
 		$field_id = $request->variable('field_id', 0);
 
@@ -956,7 +956,7 @@ class acp_profile
 		if ($action == 'create')
 		{
 			$sql = 'SELECT MAX(field_order) as max_field_order
-				FROM ' . PROFILE_FIELDS_TABLE;
+				FROM ' . AN602_PROFILE_FIELDS_TABLE;
 			$result = $db->sql_query($sql);
 			$new_field_order = (int) $db->sql_fetchfield('max_field_order');
 			$db->sql_freeresult($result);
@@ -1003,7 +1003,7 @@ class acp_profile
 			'field_data',
 			'profile_fields',
 		);
-		extract($phpbb_dispatcher->trigger_event('core.acp_profile_create_edit_save_before', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.acp_profile_create_edit_save_before', compact($vars)));
 
 		if ($action == 'create')
 		{
@@ -1015,14 +1015,14 @@ class acp_profile
 				'field_active'		=> 1
 			);
 
-			$sql = 'INSERT INTO ' . PROFILE_FIELDS_TABLE . ' ' . $db->sql_build_array('INSERT', $profile_fields);
+			$sql = 'INSERT INTO ' . AN602_PROFILE_FIELDS_TABLE . ' ' . $db->sql_build_array('INSERT', $profile_fields);
 			$db->sql_query($sql);
 
 			$field_id = $db->sql_nextid();
 		}
 		else
 		{
-			$sql = 'UPDATE ' . PROFILE_FIELDS_TABLE . '
+			$sql = 'UPDATE ' . AN602_PROFILE_FIELDS_TABLE . '
 				SET ' . $db->sql_build_array('UPDATE', $profile_fields) . "
 				WHERE field_id = $field_id";
 			$db->sql_query($sql);
@@ -1033,9 +1033,9 @@ class acp_profile
 		if ($action == 'create')
 		{
 			$field_ident = 'pf_' . $field_ident;
-			/* @var $db_tools \phpbb\db\tools\tools_interface */
-			$db_tools = $phpbb_container->get('dbal.tools');
-			$db_tools->sql_column_add(PROFILE_FIELDS_DATA_TABLE, $field_ident, array($profile_field->get_database_column_type(), null));
+			/* @var $db_tools \an602\db\tools\tools_interface */
+			$db_tools = $an602_container->get('dbal.tools');
+			$db_tools->sql_column_add(AN602_PROFILE_FIELDS_DATA_TABLE, $field_ident, array($profile_field->get_database_column_type(), null));
 		}
 
 		$sql_ary = array(
@@ -1049,11 +1049,11 @@ class acp_profile
 			$sql_ary['field_id'] = $field_id;
 			$sql_ary['lang_id'] = $default_lang_id;
 
-			$profile_sql[] = 'INSERT INTO ' . PROFILE_LANG_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+			$profile_sql[] = 'INSERT INTO ' . AN602_PROFILE_LANG_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 		}
 		else
 		{
-			$this->update_insert(PROFILE_LANG_TABLE, $sql_ary, array('field_id' => $field_id, 'lang_id' => $default_lang_id));
+			$this->update_insert(AN602_PROFILE_LANG_TABLE, $sql_ary, array('field_id' => $field_id, 'lang_id' => $default_lang_id));
 		}
 
 		if (is_array($cp->vars['l_lang_name']) && count($cp->vars['l_lang_name']))
@@ -1082,7 +1082,7 @@ class acp_profile
 
 			foreach ($empty_lang as $lang_id => $NULL)
 			{
-				$sql = 'DELETE FROM ' . PROFILE_LANG_TABLE . "
+				$sql = 'DELETE FROM ' . AN602_PROFILE_LANG_TABLE . "
 					WHERE field_id = $field_id
 					AND lang_id = " . (int) $lang_id;
 				$db->sql_query($sql);
@@ -1100,7 +1100,7 @@ class acp_profile
 
 			if ($action != 'create')
 			{
-				$sql = 'DELETE FROM ' . PROFILE_FIELDS_LANG_TABLE . "
+				$sql = 'DELETE FROM ' . AN602_PROFILE_FIELDS_LANG_TABLE . "
 					WHERE field_id = $field_id
 						AND lang_id = " . (int) $default_lang_id;
 				$db->sql_query($sql);
@@ -1119,11 +1119,11 @@ class acp_profile
 					$sql_ary['lang_id'] = $default_lang_id;
 					$sql_ary['option_id'] = (int) $option_id;
 
-					$profile_sql[] = 'INSERT INTO ' . PROFILE_FIELDS_LANG_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+					$profile_sql[] = 'INSERT INTO ' . AN602_PROFILE_FIELDS_LANG_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 				}
 				else
 				{
-					$this->update_insert(PROFILE_FIELDS_LANG_TABLE, $sql_ary, array(
+					$this->update_insert(AN602_PROFILE_FIELDS_LANG_TABLE, $sql_ary, array(
 						'field_id'	=> $field_id,
 						'lang_id'	=> (int) $default_lang_id,
 						'option_id'	=> (int) $option_id)
@@ -1152,7 +1152,7 @@ class acp_profile
 				{
 					if ($action != 'create')
 					{
-						$sql = 'DELETE FROM ' . PROFILE_FIELDS_LANG_TABLE . "
+						$sql = 'DELETE FROM ' . AN602_PROFILE_FIELDS_LANG_TABLE . "
 							WHERE field_id = $field_id
 							AND lang_id = " . (int) $lang_id;
 						$db->sql_query($sql);
@@ -1173,7 +1173,7 @@ class acp_profile
 
 			foreach ($empty_lang as $lang_id => $NULL)
 			{
-				$sql = 'DELETE FROM ' . PROFILE_FIELDS_LANG_TABLE . "
+				$sql = 'DELETE FROM ' . AN602_PROFILE_FIELDS_LANG_TABLE . "
 					WHERE field_id = $field_id
 					AND lang_id = " . (int) $lang_id;
 				$db->sql_query($sql);
@@ -1184,14 +1184,14 @@ class acp_profile
 		{
 			if ($action == 'create')
 			{
-				$profile_sql[] = 'INSERT INTO ' . PROFILE_LANG_TABLE . ' ' . $db->sql_build_array('INSERT', $sql);
+				$profile_sql[] = 'INSERT INTO ' . AN602_PROFILE_LANG_TABLE . ' ' . $db->sql_build_array('INSERT', $sql);
 			}
 			else
 			{
 				$lang_id = $sql['lang_id'];
 				unset($sql['lang_id'], $sql['field_id']);
 
-				$this->update_insert(PROFILE_LANG_TABLE, $sql, array('lang_id' => (int) $lang_id, 'field_id' => $field_id));
+				$this->update_insert(AN602_PROFILE_LANG_TABLE, $sql, array('lang_id' => (int) $lang_id, 'field_id' => $field_id));
 			}
 		}
 
@@ -1201,7 +1201,7 @@ class acp_profile
 			{
 				if ($action == 'create')
 				{
-					$profile_sql[] = 'INSERT INTO ' . PROFILE_FIELDS_LANG_TABLE . ' ' . $db->sql_build_array('INSERT', $sql);
+					$profile_sql[] = 'INSERT INTO ' . AN602_PROFILE_FIELDS_LANG_TABLE . ' ' . $db->sql_build_array('INSERT', $sql);
 				}
 				else
 				{
@@ -1209,7 +1209,7 @@ class acp_profile
 					$option_id = $sql['option_id'];
 					unset($sql['lang_id'], $sql['field_id'], $sql['option_id']);
 
-					$this->update_insert(PROFILE_FIELDS_LANG_TABLE, $sql, array(
+					$this->update_insert(AN602_PROFILE_FIELDS_LANG_TABLE, $sql, array(
 						'lang_id'	=> $lang_id,
 						'field_id'	=> $field_id,
 						'option_id'	=> $option_id)
@@ -1232,12 +1232,12 @@ class acp_profile
 
 		if ($action == 'edit')
 		{
-			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_EDIT', false, array($cp->vars['field_ident'] . ':' . $cp->vars['lang_name']));
+			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_EDIT', false, array($cp->vars['field_ident'] . ':' . $cp->vars['lang_name']));
 			trigger_error($user->lang['CHANGED_PROFILE_FIELD'] . adm_back_link($this->u_action));
 		}
 		else
 		{
-			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_CREATE', false, array(substr($field_ident, 3) . ':' . $cp->vars['lang_name']));
+			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_CREATE', false, array(substr($field_ident, 3) . ':' . $cp->vars['lang_name']));
 			trigger_error($user->lang['ADDED_PROFILE_FIELD'] . adm_back_link($this->u_action));
 		}
 	}

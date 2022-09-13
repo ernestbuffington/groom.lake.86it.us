@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -28,22 +28,22 @@ class ucp_groups
 
 	function main($id, $mode)
 	{
-		global $config, $phpbb_root_path, $phpEx, $phpbb_admin_path;
+		global $config, $an602_root_path, $phpEx, $an602_admin_path;
 		global $db, $user, $auth, $cache, $template;
-		global $request, $phpbb_container, $phpbb_log;
+		global $request, $an602_container, $an602_log;
 
-		/** @var \phpbb\language\language $language Language object */
-		$language = $phpbb_container->get('language');
+		/** @var \an602\language\language $language Language object */
+		$language = $an602_container->get('language');
 
 		$user->add_lang('groups');
 
 		$return_page = '<br /><br />' . sprintf($user->lang['RETURN_PAGE'], '<a href="' . $this->u_action . '">', '</a>');
 
 		$mark_ary	= $request->variable('mark', array(0));
-		$submit		= $request->variable('submit', false, false, \phpbb\request\request_interface::POST);
+		$submit		= $request->variable('submit', false, false, \an602\request\request_interface::POST);
 
-		/** @var \phpbb\group\helper $group_helper */
-		$group_helper = $phpbb_container->get('group_helper');
+		/** @var \an602\group\helper $group_helper */
+		$group_helper = $an602_container->get('group_helper');
 
 		switch ($mode)
 		{
@@ -62,7 +62,7 @@ class ucp_groups
 					}
 
 					$sql = 'SELECT group_id, group_name, group_type
-						FROM ' . GROUPS_TABLE . "
+						FROM ' . AN602_GROUPS_TABLE . "
 						WHERE group_id IN ($group_id, {$user->data['group_id']})";
 					$result = $db->sql_query($sql);
 
@@ -104,7 +104,7 @@ class ucp_groups
 							{
 								group_user_attributes('default', $group_id, $user->data['user_id']);
 
-								$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_GROUP_CHANGE', false, array(
+								$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_GROUP_CHANGE', false, array(
 									'reportee_id' => $user->data['user_id'],
 									sprintf($user->lang['USER_GROUP_CHANGE'], $group_row[$user->data['group_id']]['group_name'], $group_row[$group_id]['group_name'])
 								));
@@ -139,7 +139,7 @@ class ucp_groups
 							$row = current($row);
 
 							$sql = 'SELECT group_type
-								FROM ' . GROUPS_TABLE . '
+								FROM ' . AN602_GROUPS_TABLE . '
 								WHERE group_id = ' . $group_id;
 							$result = $db->sql_query($sql);
 							$group_type = (int) $db->sql_fetchfield('group_type');
@@ -154,7 +154,7 @@ class ucp_groups
 							{
 								group_user_del($group_id, $user->data['user_id']);
 
-								$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_GROUP_RESIGN', false, array(
+								$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_GROUP_RESIGN', false, array(
 									'reportee_id' => $user->data['user_id'],
 									$group_row[$group_id]['group_name']
 								));
@@ -178,7 +178,7 @@ class ucp_groups
 						case 'join':
 
 							$sql = 'SELECT ug.*, u.username, u.username_clean, u.user_email
-								FROM ' . USER_GROUP_TABLE . ' ug, ' . USERS_TABLE . ' u
+								FROM ' . AN602_USER_GROUP_TABLE . ' ug, ' . AN602_USERS_TABLE . ' u
 								WHERE ug.user_id = u.user_id
 									AND ug.group_id = ' . $group_id . '
 									AND ug.user_id = ' . $user->data['user_id'];
@@ -213,7 +213,7 @@ class ucp_groups
 									group_user_add($group_id, $user->data['user_id'], false, false, false, 0, 1);
 								}
 
-								$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_GROUP_JOIN' . (($group_row[$group_id]['group_type'] == GROUP_FREE) ? '' : '_PENDING'), false, array(
+								$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_GROUP_JOIN' . (($group_row[$group_id]['group_type'] == GROUP_FREE) ? '' : '_PENDING'), false, array(
 									'reportee_id' => $user->data['user_id'],
 									$group_row[$group_id]['group_name']
 								));
@@ -251,7 +251,7 @@ class ucp_groups
 							{
 								group_user_attributes('demote', $group_id, $user->data['user_id']);
 
-								$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_GROUP_DEMOTE', false, array(
+								$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_GROUP_DEMOTE', false, array(
 									'reportee_id' => $user->data['user_id'],
 									$group_row[$group_id]['group_name']
 								));
@@ -275,7 +275,7 @@ class ucp_groups
 				}
 
 				$sql = 'SELECT g.*, ug.group_leader, ug.user_pending
-					FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
+					FROM ' . AN602_GROUPS_TABLE . ' g, ' . AN602_USER_GROUP_TABLE . ' ug
 					WHERE ug.user_id = ' . $user->data['user_id'] . '
 						AND g.group_id = ug.group_id
 					ORDER BY g.group_type DESC, g.group_name';
@@ -318,7 +318,7 @@ class ucp_groups
 						'GROUP_STATUS'	=> $user->lang['GROUP_IS_' . $group_status],
 						'GROUP_COLOUR'	=> $row['group_colour'],
 
-						'U_VIEW_GROUP'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $row['group_id']),
+						'U_VIEW_GROUP'	=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $row['group_id']),
 
 						'S_GROUP_DEFAULT'	=> ($row['group_id'] == $user->data['group_id']) ? true : false,
 						'S_ROW_COUNT'		=> ${$block . '_count'}++)
@@ -332,7 +332,7 @@ class ucp_groups
 				$sql_and = ($auth->acl_gets('a_group', 'a_groupadd', 'a_groupdel')) ? '<> ' . GROUP_SPECIAL : 'NOT IN (' . GROUP_SPECIAL . ', ' . GROUP_HIDDEN . ')';
 
 				$sql = 'SELECT group_id, group_name, group_colour, group_desc, group_desc_uid, group_desc_bitfield, group_desc_options, group_type, group_founder_manage
-					FROM ' . GROUPS_TABLE . '
+					FROM ' . AN602_GROUPS_TABLE . '
 					WHERE ' . ((count($group_id_ary)) ? $db->sql_in_set('group_id', $group_id_ary, true) . ' AND ' : '') . "
 						group_type $sql_and
 					ORDER BY group_type DESC, group_name";
@@ -374,7 +374,7 @@ class ucp_groups
 						'S_CAN_JOIN'	=> ($row['group_type'] == GROUP_OPEN || $row['group_type'] == GROUP_FREE) ? true : false,
 						'GROUP_COLOUR'	=> $row['group_colour'],
 
-						'U_VIEW_GROUP'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $row['group_id']),
+						'U_VIEW_GROUP'	=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $row['group_id']),
 
 						'S_ROW_COUNT'	=> $nonmember_count++)
 					);
@@ -399,9 +399,9 @@ class ucp_groups
 				$action		= (isset($_POST['addusers'])) ? 'addusers' : $request->variable('action', '');
 				$group_id	= $request->variable('g', 0);
 
-				if (!function_exists('phpbb_get_user_rank'))
+				if (!function_exists('an602_get_user_rank'))
 				{
-					include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+					include($an602_root_path . 'includes/functions_display.' . $phpEx);
 				}
 
 				add_form_key('ucp_groups');
@@ -409,8 +409,8 @@ class ucp_groups
 				if ($group_id)
 				{
 					$sql = 'SELECT g.*, t.teampage_position AS group_teampage
-						FROM ' . GROUPS_TABLE . ' g
-						LEFT JOIN ' . TEAMPAGE_TABLE . ' t
+						FROM ' . AN602_GROUPS_TABLE . ' g
+						LEFT JOIN ' . AN602_TEAMPAGE_TABLE . ' t
 							ON (t.group_id = g.group_id)
 						WHERE g.group_id = ' . $group_id;
 					$result = $db->sql_query($sql);
@@ -431,7 +431,7 @@ class ucp_groups
 					$group_name = $group_row['group_name'];
 					$group_type = $group_row['group_type'];
 
-					$avatar = phpbb_get_group_avatar($group_row, 'GROUP_AVATAR', true);
+					$avatar = an602_get_group_avatar($group_row, 'GROUP_AVATAR', true);
 
 					$template->assign_vars(array(
 						'GROUP_NAME'			=> $group_helper->get_name($group_name),
@@ -479,15 +479,15 @@ class ucp_groups
 						$avatar_data = null;
 						$avatar_error = array();
 
-						/** @var \phpbb\avatar\manager $phpbb_avatar_manager */
-						$phpbb_avatar_manager = $phpbb_container->get('avatar.manager');
+						/** @var \an602\avatar\manager $an602_avatar_manager */
+						$an602_avatar_manager = $an602_container->get('avatar.manager');
 
 						if ($config['allow_avatar'])
 						{
-							$avatar_drivers = $phpbb_avatar_manager->get_enabled_drivers();
+							$avatar_drivers = $an602_avatar_manager->get_enabled_drivers();
 
 							// This is normalised data, without the group_ prefix
-							$avatar_data = \phpbb\avatar\manager::clean_row($group_row, 'group');
+							$avatar_data = \an602\avatar\manager::clean_row($group_row, 'group');
 						}
 
 						// Handle deletion of avatars
@@ -496,8 +496,8 @@ class ucp_groups
 							if (confirm_box(true))
 							{
 								$avatar_data['id'] = substr($avatar_data['id'], 1);
-								$phpbb_avatar_manager->handle_avatar_delete($db, $user, $avatar_data, GROUPS_TABLE, 'group_');
-								$cache->destroy('sql', GROUPS_TABLE);
+								$an602_avatar_manager->handle_avatar_delete($db, $user, $avatar_data, AN602_GROUPS_TABLE, 'group_');
+								$cache->destroy('sql', AN602_GROUPS_TABLE);
 
 								$message = $action === 'edit' ? 'GROUP_UPDATED' : 'GROUP_CREATED';
 								trigger_error($user->lang[$message] . $return_page);
@@ -543,11 +543,11 @@ class ucp_groups
 							if (!count($error) && $config['allow_avatar'])
 							{
 								// Handle avatar
-								$driver_name = $phpbb_avatar_manager->clean_driver_name($request->variable('avatar_driver', ''));
+								$driver_name = $an602_avatar_manager->clean_driver_name($request->variable('avatar_driver', ''));
 
 								if (in_array($driver_name, $avatar_drivers) && !$request->is_set_post('avatar_delete'))
 								{
-									$driver = $phpbb_avatar_manager->get_driver($driver_name);
+									$driver = $an602_avatar_manager->get_driver($driver_name);
 									$result = $driver->process_form($request, $template, $user, $avatar_data, $avatar_error);
 
 									if ($result && empty($avatar_error))
@@ -559,7 +559,7 @@ class ucp_groups
 								}
 
 								// Merge any avatars errors into the primary error array
-								$error = array_merge($error, $phpbb_avatar_manager->localize_errors($user, $avatar_error));
+								$error = array_merge($error, $an602_avatar_manager->localize_errors($user, $avatar_error));
 							}
 
 							// Validate submitted colour value
@@ -604,8 +604,8 @@ class ucp_groups
 
 								if (!($error = group_create($group_id, $group_type, $group_name, $group_desc, $group_attributes, $allow_desc_bbcode, $allow_desc_urls, $allow_desc_smilies)))
 								{
-									$cache->destroy('sql', GROUPS_TABLE);
-									$cache->destroy('sql', TEAMPAGE_TABLE);
+									$cache->destroy('sql', AN602_GROUPS_TABLE);
+									$cache->destroy('sql', AN602_TEAMPAGE_TABLE);
 
 									$message = ($action == 'edit') ? 'GROUP_UPDATED' : 'GROUP_CREATED';
 									trigger_error($user->lang[$message] . $return_page);
@@ -643,7 +643,7 @@ class ucp_groups
 						}
 
 						$sql = 'SELECT *
-							FROM ' . RANKS_TABLE . '
+							FROM ' . AN602_RANKS_TABLE . '
 							WHERE rank_special = 1
 							ORDER BY rank_title';
 						$result = $db->sql_query($sql);
@@ -665,7 +665,7 @@ class ucp_groups
 						if ($config['allow_avatar'])
 						{
 							$avatars_enabled = false;
-							$selected_driver = $phpbb_avatar_manager->clean_driver_name($request->variable('avatar_driver', $avatar_data['avatar_type']));
+							$selected_driver = $an602_avatar_manager->clean_driver_name($request->variable('avatar_driver', $avatar_data['avatar_type']));
 
 							// Assign min and max values before generating avatar driver html
 							$template->assign_vars(array(
@@ -677,7 +677,7 @@ class ucp_groups
 
 							foreach ($avatar_drivers as $current_driver)
 							{
-								$driver = $phpbb_avatar_manager->get_driver($current_driver);
+								$driver = $an602_avatar_manager->get_driver($current_driver);
 
 								$avatars_enabled = true;
 								$template->set_filenames(array(
@@ -686,7 +686,7 @@ class ucp_groups
 
 								if ($driver->prepare_form($request, $template, $user, $avatar_data, $avatar_error))
 								{
-									$driver_name = $phpbb_avatar_manager->prepare_driver_name($current_driver);
+									$driver_name = $an602_avatar_manager->prepare_driver_name($current_driver);
 									$driver_upper = strtoupper($driver_name);
 									$template->assign_block_vars('avatar_drivers', array(
 										'L_TITLE' => $user->lang($driver_upper . '_TITLE'),
@@ -700,10 +700,10 @@ class ucp_groups
 							}
 						}
 
-						if (isset($phpbb_avatar_manager) && !$update)
+						if (isset($an602_avatar_manager) && !$update)
 						{
 							// Merge any avatars errors into the primary error array
-							$error = array_merge($error, $phpbb_avatar_manager->localize_errors($user, $avatar_error));
+							$error = array_merge($error, $an602_avatar_manager->localize_errors($user, $avatar_error));
 						}
 
 						$template->assign_vars(array(
@@ -739,7 +739,7 @@ class ucp_groups
 							'GROUP_HIDDEN'		=> $type_hidden,
 
 							'S_UCP_ACTION'		=> $this->u_action . "&amp;action=$action&amp;g=$group_id",
-							'L_AVATAR_EXPLAIN'	=> phpbb_avatar_explanation_string(),
+							'L_AVATAR_EXPLAIN'	=> an602_avatar_explanation_string(),
 						));
 
 					break;
@@ -767,7 +767,7 @@ class ucp_groups
 
 						// Grab the leaders - always, on every page...
 						$sql = 'SELECT u.user_id, u.username, u.username_clean, u.user_colour, u.user_regdate, u.user_posts, u.group_id, ug.group_leader, ug.user_pending
-							FROM ' . USERS_TABLE . ' u, ' . USER_GROUP_TABLE . " ug
+							FROM ' . AN602_USERS_TABLE . ' u, ' . AN602_USER_GROUP_TABLE . " ug
 							WHERE ug.group_id = $group_id
 								AND u.user_id = ug.user_id
 								AND ug.group_leader = 1
@@ -791,7 +791,7 @@ class ucp_groups
 
 						// Total number of group members (non-leaders)
 						$sql = 'SELECT COUNT(user_id) AS total_members
-							FROM ' . USER_GROUP_TABLE . "
+							FROM ' . AN602_USER_GROUP_TABLE . "
 							WHERE group_id = $group_id
 								AND group_leader = 0";
 						$result = $db->sql_query($sql);
@@ -800,7 +800,7 @@ class ucp_groups
 
 						// Grab the members
 						$sql = 'SELECT u.user_id, u.username, u.username_clean, u.user_colour, u.user_regdate, u.user_posts, u.group_id, ug.group_leader, ug.user_pending
-							FROM ' . USERS_TABLE . ' u, ' . USER_GROUP_TABLE . " ug
+							FROM ' . AN602_USERS_TABLE . ' u, ' . AN602_USER_GROUP_TABLE . " ug
 							WHERE ug.group_id = $group_id
 								AND u.user_id = ug.user_id
 								AND ug.group_leader = 0
@@ -852,8 +852,8 @@ class ucp_groups
 							$s_action_options .= '<option value="' . $option . '">' . $user->lang['GROUP_' . $lang] . '</option>';
 						}
 
-						/* @var $pagination \phpbb\pagination */
-						$pagination = $phpbb_container->get('pagination');
+						/* @var $pagination \an602\pagination */
+						$pagination = $an602_container->get('pagination');
 						$base_url = $this->u_action . "&amp;action=$action&amp;g=$group_id";
 						$start = $pagination->validate_start($start, $config['topics_per_page'], $total_members);
 						$pagination->generate_template_pagination($base_url, 'pagination', 'start', $total_members, $config['topics_per_page'], $start);
@@ -864,7 +864,7 @@ class ucp_groups
 
 							'U_ACTION'			=> $this->u_action . "&amp;g=$group_id",
 							'S_UCP_ACTION'		=> $this->u_action . "&amp;g=$group_id",
-							'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=ucp&amp;field=usernames'),
+							'U_FIND_USERNAME'	=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=ucp&amp;field=usernames'),
 						));
 
 					break;
@@ -930,7 +930,7 @@ class ucp_groups
 								do
 								{
 									$sql = 'SELECT user_id
-										FROM ' . USER_GROUP_TABLE . "
+										FROM ' . AN602_USER_GROUP_TABLE . "
 										WHERE group_id = $group_id
 										ORDER BY user_id";
 									$result = $db->sql_query_limit($sql, 200, $start);
@@ -1110,7 +1110,7 @@ class ucp_groups
 						$user->add_lang('acp/common');
 
 						$sql = 'SELECT g.group_id, g.group_name, g.group_colour, g.group_desc, g.group_desc_uid, g.group_desc_bitfield, g.group_desc_options, g.group_type, ug.group_leader
-							FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
+							FROM ' . AN602_GROUPS_TABLE . ' g, ' . AN602_USER_GROUP_TABLE . ' ug
 							WHERE ug.user_id = ' . $user->data['user_id'] . '
 								AND g.group_id = ug.group_id
 								AND ug.group_leader = 1

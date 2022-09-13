@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -26,8 +26,8 @@ if (!defined('IN_PHPBB'))
 function compose_pm($id, $mode, $action, $user_folders = array())
 {
 	global $template, $db, $auth, $user, $cache;
-	global $phpbb_root_path, $phpEx, $config, $language;
-	global $request, $phpbb_dispatcher, $phpbb_container;
+	global $an602_root_path, $phpEx, $config, $language;
+	global $request, $an602_dispatcher, $an602_container;
 
 	// Damn php and globals - i know, this is horrible
 	// Needed for handle_message_list_actions()
@@ -35,17 +35,17 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 
 	if (!function_exists('generate_smilies'))
 	{
-		include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+		include($an602_root_path . 'includes/functions_posting.' . $phpEx);
 	}
 
 	if (!function_exists('display_custom_bbcodes'))
 	{
-		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+		include($an602_root_path . 'includes/functions_display.' . $phpEx);
 	}
 
 	if (!class_exists('parse_message'))
 	{
-		include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+		include($an602_root_path . 'includes/message_parser.' . $phpEx);
 	}
 
 	if (!$action)
@@ -86,17 +86,17 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 	$error = array();
 	$current_time = time();
 
-	/** @var \phpbb\group\helper $group_helper */
-	$group_helper = $phpbb_container->get('group_helper');
+	/** @var \an602\group\helper $group_helper */
+	$group_helper = $an602_container->get('group_helper');
 
 	// Was cancel pressed? If so then redirect to the appropriate page
 	if ($cancel)
 	{
 		if ($msg_id)
 		{
-			redirect(append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;mode=view&amp;action=view_message&amp;p=' . $msg_id));
+			redirect(append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;mode=view&amp;action=view_message&amp;p=' . $msg_id));
 		}
-		redirect(append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm'));
+		redirect(append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm'));
 	}
 
 	// Since viewtopic.php language entries are used in several modes,
@@ -127,7 +127,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		'delete',
 		'reply_to_all',
 	);
-	extract($phpbb_dispatcher->trigger_event('core.ucp_pm_compose_modify_data', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.ucp_pm_compose_modify_data', compact($vars)));
 
 	// Output PM_TO box if message composing
 	if ($action != 'edit')
@@ -136,11 +136,11 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		if ($config['allow_mass_pm'] && $auth->acl_get('u_masspm_group'))
 		{
 			$sql = 'SELECT g.group_id, g.group_name, g.group_type, g.group_colour
-				FROM ' . GROUPS_TABLE . ' g';
+				FROM ' . AN602_GROUPS_TABLE . ' g';
 
 			if (!$auth->acl_gets('a_group', 'a_groupadd', 'a_groupdel'))
 			{
-				$sql .= ' LEFT JOIN ' . USER_GROUP_TABLE . ' ug
+				$sql .= ' LEFT JOIN ' . AN602_USER_GROUP_TABLE . ' ug
 					ON (
 						g.group_id = ug.group_id
 						AND ug.user_id = ' . $user->data['user_id'] . '
@@ -167,7 +167,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 			'S_SHOW_PM_BOX'		=> true,
 			'S_ALLOW_MASS_PM'	=> ($config['allow_mass_pm'] && $auth->acl_get('u_masspm')) ? true : false,
 			'S_GROUP_OPTIONS'	=> ($config['allow_mass_pm'] && $auth->acl_get('u_masspm_group')) ? $group_options : '',
-			'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=searchuser&amp;form=postform&amp;field=username_list&amp;select_single=" . (int) $select_single),
+			'U_FIND_USERNAME'	=> append_sid("{$an602_root_path}memberlist.$phpEx", "mode=searchuser&amp;form=postform&amp;field=username_list&amp;select_single=" . (int) $select_single),
 		));
 	}
 
@@ -204,7 +204,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 			if ($action == 'quotepost')
 			{
 				$sql = 'SELECT p.post_id as msg_id, p.forum_id, p.post_text as message_text, p.poster_id as author_id, p.post_time as message_time, p.bbcode_bitfield, p.bbcode_uid, p.enable_sig, p.enable_smilies, p.enable_magic_url, t.topic_title as message_subject, u.username as quote_username
-					FROM ' . POSTS_TABLE . ' p, ' . TOPICS_TABLE . ' t, ' . USERS_TABLE . " u
+					FROM ' . AN602_POSTS_TABLE . ' p, ' . AN602_TOPICS_TABLE . ' t, ' . AN602_USERS_TABLE . " u
 					WHERE p.post_id = $msg_id
 						AND t.topic_id = p.topic_id
 						AND u.user_id = p.poster_id";
@@ -212,7 +212,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 			else
 			{
 				$sql = 'SELECT t.folder_id, p.*, u.username as quote_username
-					FROM ' . PRIVMSGS_TO_TABLE . ' t, ' . PRIVMSGS_TABLE . ' p, ' . USERS_TABLE . ' u
+					FROM ' . AN602_PRIVMSGS_TO_TABLE . ' t, ' . AN602_PRIVMSGS_TABLE . ' p, ' . AN602_USERS_TABLE . ' u
 					WHERE t.user_id = ' . $user->data['user_id'] . "
 						AND p.author_id = u.user_id
 						AND t.msg_id = p.msg_id
@@ -228,7 +228,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 
 			// check for outbox (not read) status, we do not allow editing if one user already having the message
 			$sql = 'SELECT p.*, t.folder_id
-				FROM ' . PRIVMSGS_TO_TABLE . ' t, ' . PRIVMSGS_TABLE . ' p
+				FROM ' . AN602_PRIVMSGS_TO_TABLE . ' t, ' . AN602_PRIVMSGS_TABLE . ' p
 				WHERE t.user_id = ' . $user->data['user_id'] . '
 					AND t.folder_id = ' . PRIVMSGS_OUTBOX . "
 					AND t.msg_id = $msg_id
@@ -248,7 +248,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 			}
 
 			$sql = 'SELECT msg_id, pm_unread, pm_new, author_id, folder_id
-				FROM ' . PRIVMSGS_TO_TABLE . '
+				FROM ' . AN602_PRIVMSGS_TO_TABLE . '
 				WHERE user_id = ' . $user->data['user_id'] . "
 					AND msg_id = $msg_id";
 		break;
@@ -303,7 +303,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 			'delete',
 			'reply_to_all',
 		);
-		extract($phpbb_dispatcher->trigger_event('core.ucp_pm_compose_compose_pm_basic_info_query_before', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.ucp_pm_compose_compose_pm_basic_info_query_before', compact($vars)));
 
 		$result = $db->sql_query($sql);
 		$post = $db->sql_fetchrow($result);
@@ -336,7 +336,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 			'delete',
 			'reply_to_all',
 		];
-		extract($phpbb_dispatcher->trigger_event('core.ucp_pm_compose_compose_pm_basic_info_query_after', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.ucp_pm_compose_compose_pm_basic_info_query_after', compact($vars)));
 
 		if (!$post)
 		{
@@ -344,7 +344,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 			if ($action == 'edit')
 			{
 				$sql = 'SELECT p.*, t.folder_id
-					FROM ' . PRIVMSGS_TO_TABLE . ' t, ' . PRIVMSGS_TABLE . ' p
+					FROM ' . AN602_PRIVMSGS_TO_TABLE . ' t, ' . AN602_PRIVMSGS_TABLE . ' p
 					WHERE t.user_id = ' . $user->data['user_id'] . "
 						AND t.msg_id = $msg_id
 						AND t.msg_id = p.msg_id";
@@ -398,13 +398,13 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 				'delete',
 				'reply_to_all',
 			);
-			extract($phpbb_dispatcher->trigger_event('core.ucp_pm_compose_quotepost_query_after', compact($vars)));
+			extract($an602_dispatcher->trigger_event('core.ucp_pm_compose_quotepost_query_after', compact($vars)));
 
 			// Passworded forum?
 			if ($post['forum_id'])
 			{
 				$sql = 'SELECT forum_id, forum_name, forum_password
-					FROM ' . FORUMS_TABLE . '
+					FROM ' . AN602_FORUMS_TABLE . '
 					WHERE forum_id = ' . (int) $post['forum_id'];
 				$result = $db->sql_query($sql);
 				$forum_data = $db->sql_fetchrow($result);
@@ -497,7 +497,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		* @since 3.1.11-RC1
 		*/
 		$vars = array('message_text', 'message_subject');
-		extract($phpbb_dispatcher->trigger_event('core.ucp_pm_compose_predefined_message', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.ucp_pm_compose_predefined_message', compact($vars)));
 
 		if ($to_user_id && $to_user_id != ANONYMOUS && $action == 'post')
 		{
@@ -534,15 +534,15 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		$icon_id = 0;
 	}
 
-	/* @var $plupload \phpbb\plupload\plupload */
-	$plupload = $phpbb_container->get('plupload');
+	/* @var $plupload \an602\plupload\plupload */
+	$plupload = $an602_container->get('plupload');
 	$message_parser = new parse_message();
 	$message_parser->set_plupload($plupload);
 
 	$message_parser->message = ($action == 'reply') ? '' : $message_text;
 	unset($message_text);
 
-	$s_action = append_sid("{$phpbb_root_path}ucp.$phpEx", "i=$id&amp;mode=$mode&amp;action=$action", true, $user->session_id);
+	$s_action = append_sid("{$an602_root_path}ucp.$phpEx", "i=$id&amp;mode=$mode&amp;action=$action", true, $user->session_id);
 	$s_action .= (($folder_id) ? "&amp;f=$folder_id" : '') . (($msg_id) ? "&amp;p=$msg_id" : '');
 
 	// Delete triggered ?
@@ -557,7 +557,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 			delete_pm($user->data['user_id'], $msg_id, $folder_id);
 
 			// jump to next message in "history"? nope, not for the moment. But able to be included later.
-			$meta_info = append_sid("{$phpbb_root_path}ucp.$phpEx", "i=pm&amp;folder=$folder_id");
+			$meta_info = append_sid("{$an602_root_path}ucp.$phpEx", "i=pm&amp;folder=$folder_id");
 			$message = $user->lang['MESSAGE_DELETED'];
 
 			meta_refresh(3, $meta_info);
@@ -572,15 +572,15 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 				'action'	=> 'delete'
 			);
 
-			// "{$phpbb_root_path}ucp.$phpEx?i=pm&amp;mode=compose"
+			// "{$an602_root_path}ucp.$phpEx?i=pm&amp;mode=compose"
 			confirm_box(false, 'DELETE_MESSAGE', build_hidden_fields($s_hidden_fields));
 		}
 
-		redirect(append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;mode=view&amp;action=view_message&amp;p=' . $msg_id));
+		redirect(append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;mode=view&amp;action=view_message&amp;p=' . $msg_id));
 	}
 
 	// Get maximum number of allowed recipients
-	$max_recipients = phpbb_get_max_setting_from_group($db, $user->data['user_id'], 'max_recipients');
+	$max_recipients = an602_get_max_setting_from_group($db, $user->data['user_id'], 'max_recipients');
 
 	// If it is 0, there is no limit set and we use the maximum value within the config.
 	$max_recipients = (!$max_recipients) ? $config['pm_max_recipients'] : $max_recipients;
@@ -637,7 +637,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 	{
 		// Do not change to SELECT *
 		$sql = 'SELECT attach_id, is_orphan, attach_comment, real_filename, filesize
-			FROM ' . ATTACHMENTS_TABLE . "
+			FROM ' . AN602_ATTACHMENTS_TABLE . "
 			WHERE post_msg_id = $msg_id
 				AND in_message = 1
 				AND is_orphan = 0
@@ -661,7 +661,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 	if ($auth->acl_get('u_savedrafts') && $action != 'delete')
 	{
 		$sql = 'SELECT draft_id
-			FROM ' . DRAFTS_TABLE . '
+			FROM ' . AN602_DRAFTS_TABLE . '
 			WHERE forum_id = 0
 				AND topic_id = 0
 				AND user_id = ' . $user->data['user_id'] .
@@ -706,7 +706,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		'flash_status',
 		'url_status',
 	];
-	extract($phpbb_dispatcher->trigger_event('core.ucp_pm_compose_modify_bbcode_status', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.ucp_pm_compose_modify_bbcode_status', compact($vars)));
 
 	// Save Draft
 	if ($save && $auth->acl_get('u_savedrafts'))
@@ -728,7 +728,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 				$message_parser->message = $message;
 				$message_parser->parse($bbcode_status, $url_status, $smilies_status, $img_status, $flash_status, true, $url_status);
 
-				$sql = 'INSERT INTO ' . DRAFTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+				$sql = 'INSERT INTO ' . AN602_DRAFTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 					'user_id'		=> $user->data['user_id'],
 					'topic_id'		=> 0,
 					'forum_id'		=> 0,
@@ -739,11 +739,11 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 				);
 				$db->sql_query($sql);
 
-				/** @var \phpbb\attachment\manager $attachment_manager */
-				$attachment_manager = $phpbb_container->get('attachment.manager');
+				/** @var \an602\attachment\manager $attachment_manager */
+				$attachment_manager = $an602_container->get('attachment.manager');
 				$attachment_manager->delete('attach', array_column($message_parser->attachment_data, 'attach_id'));
 
-				$redirect_url = append_sid("{$phpbb_root_path}ucp.$phpEx", "i=pm&amp;mode=$mode");
+				$redirect_url = append_sid("{$an602_root_path}ucp.$phpEx", "i=pm&amp;mode=$mode");
 
 				meta_refresh(3, $redirect_url);
 				$message = $user->lang['DRAFT_SAVED'] . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $redirect_url . '">', '</a>');
@@ -788,7 +788,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 	if ($draft_id && $auth->acl_get('u_savedrafts'))
 	{
 		$sql = 'SELECT draft_subject, draft_message
-			FROM ' . DRAFTS_TABLE . "
+			FROM ' . AN602_DRAFTS_TABLE . "
 			WHERE draft_id = $draft_id
 				AND topic_id = 0
 				AND forum_id = 0
@@ -857,7 +857,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 			'preview',
 			'error',
 		);
-		extract($phpbb_dispatcher->trigger_event('core.ucp_pm_compose_modify_parse_before', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.ucp_pm_compose_modify_parse_before', compact($vars)));
 
 		// Parse Attachments - before checksum is calculated
 		if ($message_parser->check_attachment_form_token($language, $request, 'ucp_pm_compose'))
@@ -935,7 +935,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 			'preview',
 			'error',
 		];
-		extract($phpbb_dispatcher->trigger_event('core.ucp_pm_compose_modify_parse_after', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.ucp_pm_compose_modify_parse_after', compact($vars)));
 
 		// Store message, sync counters
 		if (!count($error) && $submit)
@@ -969,14 +969,14 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 			// ((!$message_subject) ? $subject : $message_subject)
 			$msg_id = submit_pm($action, $subject, $pm_data);
 
-			$return_message_url = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;mode=view&amp;p=' . $msg_id);
-			$inbox_folder_url = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=inbox');
-			$outbox_folder_url = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=outbox');
+			$return_message_url = append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;mode=view&amp;p=' . $msg_id);
+			$inbox_folder_url = append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;folder=inbox');
+			$outbox_folder_url = append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;folder=outbox');
 
 			$folder_url = '';
 			if (($folder_id > 0) && isset($user_folders[$folder_id]))
 			{
-				$folder_url = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=' . $folder_id);
+				$folder_url = append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;folder=' . $folder_id);
 			}
 
 			$return_box_url = ($action === 'post' || $action === 'edit') ? $outbox_folder_url : $inbox_folder_url;
@@ -1099,11 +1099,11 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		{
 			$quote_attributes['msg_id'] = $post['msg_id'];
 		}
-		/** @var \phpbb\language\language $language */
-		$language = $phpbb_container->get('language');
-		/** @var \phpbb\textformatter\utils_interface $text_formatter_utils */
-		$text_formatter_utils = $phpbb_container->get('text_formatter.utils');
-		phpbb_format_quote($language, $message_parser, $text_formatter_utils, $bbcode_status, $quote_attributes, $message_link);
+		/** @var \an602\language\language $language */
+		$language = $an602_container->get('language');
+		/** @var \an602\textformatter\utils_interface $text_formatter_utils */
+		$text_formatter_utils = $an602_container->get('text_formatter.utils');
+		an602_format_quote($language, $message_parser, $text_formatter_utils, $bbcode_status, $quote_attributes, $message_link);
 	}
 
 	if (($action == 'reply' || $action == 'quote' || $action == 'quotepost') && !$preview && !$refresh)
@@ -1118,7 +1118,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		* @since 3.2.8-RC1
 		*/
 		$vars = array('message_subject');
-		extract($phpbb_dispatcher->trigger_event('core.pm_modify_message_subject', compact($vars)));
+		extract($an602_dispatcher->trigger_event('core.pm_modify_message_subject', compact($vars)));
 	}
 
 	if ($action == 'forward' && !$preview && !$refresh && !$submit)
@@ -1141,7 +1141,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		$forward_text[] = sprintf($user->lang['FWD_FROM'], $quote_username_text);
 		$forward_text[] = sprintf($user->lang['FWD_TO'], implode($user->lang['COMMA_SEPARATOR'], $fwd_to_field['to']));
 
-		$quote_text = $phpbb_container->get('text_formatter.utils')->generate_quote(
+		$quote_text = $an602_container->get('text_formatter.utils')->generate_quote(
 			censor_text($message_parser->message),
 			array('author' => $quote_username)
 		);
@@ -1177,7 +1177,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		if (!empty($address_list['u']))
 		{
 			$sql = 'SELECT user_id as id, username as name, user_colour as colour
-				FROM ' . USERS_TABLE . '
+				FROM ' . AN602_USERS_TABLE . '
 				WHERE ' . $db->sql_in_set('user_id', array_map('intval', array_keys($address_list['u']))) . '
 				ORDER BY username_clean ASC';
 			$result['u'] = $db->sql_query($sql);
@@ -1186,11 +1186,11 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		if (!empty($address_list['g']))
 		{
 			$sql = 'SELECT g.group_id AS id, g.group_name AS name, g.group_colour AS colour, g.group_type
-				FROM ' . GROUPS_TABLE . ' g';
+				FROM ' . AN602_GROUPS_TABLE . ' g';
 
 			if (!$auth->acl_gets('a_group', 'a_groupadd', 'a_groupdel'))
 			{
-				$sql .= ' LEFT JOIN ' . USER_GROUP_TABLE . ' ug
+				$sql .= ' LEFT JOIN ' . AN602_USER_GROUP_TABLE . ' ug
 					ON (
 						g.group_id = ug.group_id
 						AND ug.user_id = ' . $user->data['user_id'] . '
@@ -1261,7 +1261,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 				else
 				{
 					$tpl_ary = array_merge($tpl_ary, array(
-						'U_VIEW'		=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $id),
+						'U_VIEW'		=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $id),
 					));
 				}
 
@@ -1314,8 +1314,8 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 
 	$form_enctype = (@ini_get('file_uploads') == '0' || strtolower(@ini_get('file_uploads')) == 'off' || !$config['allow_pm_attach'] || !$auth->acl_get('u_pm_attach')) ? '' : ' enctype="multipart/form-data"';
 
-	/** @var \phpbb\controller\helper $controller_helper */
-	$controller_helper = $phpbb_container->get('controller.helper');
+	/** @var \an602\controller\helper $controller_helper */
+	$controller_helper = $an602_container->get('controller.helper');
 
 	// Start assigning vars for main posting page ...
 	$template_ary = array(
@@ -1325,7 +1325,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 
 		'SUBJECT'				=> (isset($message_subject)) ? $message_subject : '',
 		'MESSAGE'				=> $message_text,
-		'BBCODE_STATUS'			=> $user->lang(($bbcode_status ? 'BBCODE_IS_ON' : 'BBCODE_IS_OFF'), '<a href="' . $controller_helper->route('phpbb_help_bbcode_controller') . '">', '</a>'),
+		'BBCODE_STATUS'			=> $user->lang(($bbcode_status ? 'BBCODE_IS_ON' : 'BBCODE_IS_OFF'), '<a href="' . $controller_helper->route('an602_help_bbcode_controller') . '">', '</a>'),
 		'IMG_STATUS'			=> ($img_status) ? $user->lang['IMAGES_ARE_ON'] : $user->lang['IMAGES_ARE_OFF'],
 		'FLASH_STATUS'			=> ($flash_status) ? $user->lang['FLASH_IS_ON'] : $user->lang['FLASH_IS_OFF'],
 		'SMILIES_STATUS'		=> ($smilies_status) ? $user->lang['SMILIES_ARE_ON'] : $user->lang['SMILIES_ARE_OFF'],
@@ -1361,8 +1361,8 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 		'S_HIDDEN_FIELDS'			=> $s_hidden_fields,
 
 		'S_CLOSE_PROGRESS_WINDOW'	=> isset($_POST['add_file']),
-		'U_PROGRESS_BAR'			=> append_sid("{$phpbb_root_path}posting.$phpEx", 'f=0&amp;mode=popup'),
-		'UA_PROGRESS_BAR'			=> addslashes(append_sid("{$phpbb_root_path}posting.$phpEx", 'f=0&amp;mode=popup')),
+		'U_PROGRESS_BAR'			=> append_sid("{$an602_root_path}posting.$phpEx", 'f=0&amp;mode=popup'),
+		'UA_PROGRESS_BAR'			=> addslashes(append_sid("{$an602_root_path}posting.$phpEx", 'f=0&amp;mode=popup')),
 	);
 
 	/**
@@ -1373,7 +1373,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 	* @since 3.2.6-RC1
 	*/
 	$vars = array('template_ary');
-	extract($phpbb_dispatcher->trigger_event('core.ucp_pm_compose_template', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.ucp_pm_compose_template', compact($vars)));
 
 	$template->assign_vars($template_ary);
 
@@ -1408,7 +1408,7 @@ function compose_pm($id, $mode, $action, $user_folders = array())
 function handle_message_list_actions(&$address_list, &$error, $remove_u, $remove_g, $add_to, $add_bcc)
 {
 	global $auth, $db, $user;
-	global $request, $phpbb_dispatcher;
+	global $request, $an602_dispatcher;
 
 	// Delete User [TO/BCC]
 	if ($remove_u && $request->variable('remove_u', array(0 => '')))
@@ -1516,7 +1516,7 @@ function handle_message_list_actions(&$address_list, &$error, $remove_u, $remove
 		// 		Only check PM status if not a moderator or admin, since they
 		//		are allowed to override this user setting
 		$sql = 'SELECT user_id, user_allow_pm
-			FROM ' . USERS_TABLE . '
+			FROM ' . AN602_USERS_TABLE . '
 			WHERE ' . $db->sql_in_set('user_id', array_keys($address_list['u'])) . '
 				AND (
 						(user_type = ' . USER_INACTIVE . '
@@ -1574,7 +1574,7 @@ function handle_message_list_actions(&$address_list, &$error, $remove_u, $remove
 		}
 
 		// Check if users are banned
-		$banned_user_list = phpbb_get_banned_user_ids(array_keys($address_list['u']), false);
+		$banned_user_list = an602_get_banned_user_ids(array_keys($address_list['u']), false);
 		if (!empty($banned_user_list))
 		{
 			foreach ($banned_user_list as $banned_user)
@@ -1599,7 +1599,7 @@ function handle_message_list_actions(&$address_list, &$error, $remove_u, $remove
 	* @since 3.2.4-RC1
 	*/
 	$vars = array('address_list', 'error', 'remove_u', 'remove_g', 'add_to', 'add_bcc');
-	extract($phpbb_dispatcher->trigger_event('core.message_list_actions', compact($vars)));
+	extract($an602_dispatcher->trigger_event('core.message_list_actions', compact($vars)));
 }
 
 /**

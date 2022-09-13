@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the phpBB Forum Software package.
+* This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -24,9 +24,9 @@ if (!defined('IN_PHPBB'))
 */
 function message_options($id, $mode, $global_privmsgs_rules, $global_rule_conditions)
 {
-	global $phpbb_root_path, $phpEx, $user, $template, $config, $db, $request;
+	global $an602_root_path, $phpEx, $user, $template, $config, $db, $request;
 
-	$redirect_url = append_sid("{$phpbb_root_path}ucp.$phpEx", "i=pm&amp;mode=options");
+	$redirect_url = append_sid("{$an602_root_path}ucp.$phpEx", "i=pm&amp;mode=options");
 
 	add_form_key('ucp_pm_options');
 	// Change "full folder" setting - what to do if folder is full
@@ -61,7 +61,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 
 		if ($full_action)
 		{
-			$sql = 'UPDATE ' . USERS_TABLE . '
+			$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 				SET user_full_folder = ' . $set_folder_id . '
 				WHERE user_id = ' . $user->data['user_id'];
 			$db->sql_query($sql);
@@ -84,7 +84,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 			if ($folder_name)
 			{
 				$sql = 'SELECT folder_name
-					FROM ' . PRIVMSGS_FOLDER_TABLE . "
+					FROM ' . AN602_PRIVMSGS_FOLDER_TABLE . "
 					WHERE folder_name = '" . $db->sql_escape($folder_name) . "'
 						AND user_id = " . $user->data['user_id'];
 				$result = $db->sql_query_limit($sql, 1);
@@ -97,7 +97,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 				}
 
 				$sql = 'SELECT COUNT(folder_id) as num_folder
-					FROM ' . PRIVMSGS_FOLDER_TABLE . '
+					FROM ' . AN602_PRIVMSGS_FOLDER_TABLE . '
 						WHERE user_id = ' . $user->data['user_id'];
 				$result = $db->sql_query($sql);
 				$num_folder = (int) $db->sql_fetchfield('num_folder');
@@ -108,7 +108,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 					trigger_error('MAX_FOLDER_REACHED');
 				}
 
-				$sql = 'INSERT INTO ' . PRIVMSGS_FOLDER_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+				$sql = 'INSERT INTO ' . AN602_PRIVMSGS_FOLDER_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 					'user_id'		=> (int) $user->data['user_id'],
 					'folder_name'	=> $folder_name)
 				);
@@ -144,7 +144,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 
 			// Select custom folder
 			$sql = 'SELECT folder_name, pm_count
-				FROM ' . PRIVMSGS_FOLDER_TABLE . "
+				FROM ' . AN602_PRIVMSGS_FOLDER_TABLE . "
 				WHERE user_id = {$user->data['user_id']}
 					AND folder_id = $rename_folder_id";
 			$result = $db->sql_query_limit($sql, 1);
@@ -156,7 +156,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 				trigger_error('CANNOT_RENAME_FOLDER');
 			}
 
-			$sql = 'UPDATE ' . PRIVMSGS_FOLDER_TABLE . "
+			$sql = 'UPDATE ' . AN602_PRIVMSGS_FOLDER_TABLE . "
 				SET folder_name = '" . $db->sql_escape($new_folder_name) . "'
 				WHERE folder_id = $rename_folder_id
 					AND user_id = {$user->data['user_id']}";
@@ -191,7 +191,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 
 		// Select custom folder
 		$sql = 'SELECT folder_name, pm_count
-			FROM ' . PRIVMSGS_FOLDER_TABLE . "
+			FROM ' . AN602_PRIVMSGS_FOLDER_TABLE . "
 			WHERE user_id = {$user->data['user_id']}
 				AND folder_id = $remove_folder_id";
 		$result = $db->sql_query_limit($sql, 1);
@@ -215,7 +215,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 		{
 			// Gather message ids
 			$sql = 'SELECT msg_id
-				FROM ' . PRIVMSGS_TO_TABLE . '
+				FROM ' . AN602_PRIVMSGS_TO_TABLE . '
 				WHERE user_id = ' . $user->data['user_id'] . "
 					AND folder_id = $remove_folder_id";
 			$result = $db->sql_query($sql);
@@ -248,7 +248,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 			}
 
 			// Remove folder
-			$sql = 'DELETE FROM ' . PRIVMSGS_FOLDER_TABLE . "
+			$sql = 'DELETE FROM ' . AN602_PRIVMSGS_FOLDER_TABLE . "
 				WHERE user_id = {$user->data['user_id']}
 					AND folder_id = $remove_folder_id";
 			$db->sql_query($sql);
@@ -256,7 +256,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 			// Check full folder option. If the removed folder has been specified as destination switch back to inbox
 			if ($user->data['user_full_folder'] == $remove_folder_id)
 			{
-				$sql = 'UPDATE ' . USERS_TABLE . '
+				$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 					SET user_full_folder = ' . PRIVMSGS_INBOX . '
 					WHERE user_id = ' . $user->data['user_id'];
 				$db->sql_query($sql);
@@ -266,13 +266,13 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 
 			// Now make sure the folder is not used for rules
 			// We assign another folder id (the one the messages got moved to) or assign the INBOX (to not have to remove any rule)
-			$sql = 'UPDATE ' . PRIVMSGS_RULES_TABLE . ' SET rule_folder_id = ';
+			$sql = 'UPDATE ' . AN602_PRIVMSGS_RULES_TABLE . ' SET rule_folder_id = ';
 			$sql .= ($remove_action == 1) ? $move_to : PRIVMSGS_INBOX;
 			$sql .= ' WHERE rule_folder_id = ' . $remove_folder_id;
 
 			$db->sql_query($sql);
 
-			$meta_info = append_sid("{$phpbb_root_path}ucp.$phpEx", "i=pm&amp;mode=$mode");
+			$meta_info = append_sid("{$an602_root_path}ucp.$phpEx", "i=pm&amp;mode=$mode");
 			$message = $user->lang['FOLDER_REMOVED'];
 
 			meta_refresh(3, $meta_info);
@@ -323,7 +323,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 			);
 
 			$sql = 'SELECT rule_id
-				FROM ' . PRIVMSGS_RULES_TABLE . '
+				FROM ' . AN602_PRIVMSGS_RULES_TABLE . '
 				WHERE ' . $db->sql_build_array('SELECT', $rule_ary);
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
@@ -336,7 +336,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 
 			// Prevent users from flooding the rules table
 			$sql = 'SELECT COUNT(rule_id) AS num_rules
-				FROM ' . PRIVMSGS_RULES_TABLE . '
+				FROM ' . AN602_PRIVMSGS_RULES_TABLE . '
 				WHERE user_id = ' . (int) $user->data['user_id'];
 			$result = $db->sql_query($sql);
 			$num_rules = (int) $db->sql_fetchfield('num_rules');
@@ -347,11 +347,11 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 				trigger_error('RULE_LIMIT_REACHED');
 			}
 
-			$sql = 'INSERT INTO ' . PRIVMSGS_RULES_TABLE . ' ' . $db->sql_build_array('INSERT', $rule_ary);
+			$sql = 'INSERT INTO ' . AN602_PRIVMSGS_RULES_TABLE . ' ' . $db->sql_build_array('INSERT', $rule_ary);
 			$db->sql_query($sql);
 
 			// Set the user_message_rules bit
-			$sql = 'UPDATE ' . USERS_TABLE . '
+			$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 				SET user_message_rules = 1
 				WHERE user_id = ' . $user->data['user_id'];
 			$db->sql_query($sql);
@@ -375,23 +375,23 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 
 		if (!$delete_id)
 		{
-			redirect(append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;mode=' . $mode));
+			redirect(append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;mode=' . $mode));
 		}
 
 		// Do we need to confirm?
 		if (confirm_box(true))
 		{
-			$sql = 'DELETE FROM ' . PRIVMSGS_RULES_TABLE . '
+			$sql = 'DELETE FROM ' . AN602_PRIVMSGS_RULES_TABLE . '
 				WHERE user_id = ' . $user->data['user_id'] . "
 					AND rule_id = $delete_id";
 			$db->sql_query($sql);
 
-			$meta_info = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;mode=' . $mode);
+			$meta_info = append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;mode=' . $mode);
 			$message = $user->lang['RULE_DELETED'];
 
 			// Reset user_message_rules if no more assigned
 			$sql = 'SELECT rule_id
-				FROM ' . PRIVMSGS_RULES_TABLE . '
+				FROM ' . AN602_PRIVMSGS_RULES_TABLE . '
 				WHERE user_id = ' . $user->data['user_id'];
 			$result = $db->sql_query_limit($sql, 1);
 			$row = $db->sql_fetchrow($result);
@@ -400,7 +400,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 			// Unset the user_message_rules bit
 			if (!$row)
 			{
-				$sql = 'UPDATE ' . USERS_TABLE . '
+				$sql = 'UPDATE ' . AN602_USERS_TABLE . '
 					SET user_message_rules = 0
 					WHERE user_id = ' . $user->data['user_id'];
 				$db->sql_query($sql);
@@ -419,7 +419,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 	$folder = array();
 
 	$sql = 'SELECT COUNT(msg_id) as num_messages
-		FROM ' . PRIVMSGS_TO_TABLE . '
+		FROM ' . AN602_PRIVMSGS_TO_TABLE . '
 		WHERE user_id = ' . $user->data['user_id'] . '
 			AND folder_id = ' . PRIVMSGS_INBOX;
 	$result = $db->sql_query($sql);
@@ -432,7 +432,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 	);
 
 	$sql = 'SELECT folder_id, folder_name, pm_count
-		FROM ' . PRIVMSGS_FOLDER_TABLE . '
+		FROM ' . AN602_PRIVMSGS_FOLDER_TABLE . '
 			WHERE user_id = ' . $user->data['user_id'];
 	$result = $db->sql_query($sql);
 
@@ -500,7 +500,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 
 		'DEFAULT_ACTION'		=> ($config['full_folder_action'] == 1) ? $user->lang['DELETE_OLDEST_MESSAGES'] : $user->lang['HOLD_NEW_MESSAGES'],
 
-		'U_FIND_USERNAME'		=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=ucp&amp;field=rule_string&amp;select_single=true'),
+		'U_FIND_USERNAME'		=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=ucp&amp;field=rule_string&amp;select_single=true'),
 	));
 
 	$rule_lang = $action_lang = $check_lang = array();
@@ -699,10 +699,10 @@ function define_rule_option($hardcoded, $rule_option, $rule_lang, $check_ary)
 */
 function define_cond_option($hardcoded, $cond_option, $rule_option, $global_rule_conditions)
 {
-	global $db, $template, $auth, $user, $request, $phpbb_container;
+	global $db, $template, $auth, $user, $request, $an602_container;
 
-	/** @var \phpbb\group\helper $group_helper */
-	$group_helper = $phpbb_container->get('group_helper');
+	/** @var \an602\group\helper $group_helper */
+	$group_helper = $an602_container->get('group_helper');
 
 	$template->assign_vars(array(
 		'S_COND_DEFINED'	=> true,
@@ -744,7 +744,7 @@ function define_cond_option($hardcoded, $cond_option, $rule_option, $global_rule
 			if ($rule_string && !$rule_user_id)
 			{
 				$sql = 'SELECT user_id
-					FROM ' . USERS_TABLE . "
+					FROM ' . AN602_USERS_TABLE . "
 					WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($rule_string)) . "'";
 				$result = $db->sql_query($sql);
 				$rule_user_id = (int) $db->sql_fetchfield('user_id');
@@ -758,7 +758,7 @@ function define_cond_option($hardcoded, $cond_option, $rule_option, $global_rule
 			else if (!$rule_string && $rule_user_id)
 			{
 				$sql = 'SELECT username
-					FROM ' . USERS_TABLE . "
+					FROM ' . AN602_USERS_TABLE . "
 					WHERE user_id = $rule_user_id";
 				$result = $db->sql_query($sql);
 				$rule_string = $db->sql_fetchfield('username');
@@ -785,11 +785,11 @@ function define_cond_option($hardcoded, $cond_option, $rule_option, $global_rule
 			$rule_string = $request->variable('rule_string', '', true);
 
 			$sql = 'SELECT g.group_id, g.group_name, g.group_type
-					FROM ' . GROUPS_TABLE . ' g ';
+					FROM ' . AN602_GROUPS_TABLE . ' g ';
 
 			if (!$auth->acl_gets('a_group', 'a_groupadd', 'a_groupdel'))
 			{
-				$sql .= 'LEFT JOIN ' . USER_GROUP_TABLE . ' ug
+				$sql .= 'LEFT JOIN ' . AN602_USER_GROUP_TABLE . ' ug
 					ON (
 						g.group_id = ug.group_id
 						AND ug.user_id = ' . $user->data['user_id'] . '
@@ -852,7 +852,7 @@ function show_defined_rules($user_id, $check_lang, $rule_lang, $action_lang, $fo
 	global $db, $template;
 
 	$sql = 'SELECT *
-		FROM ' . PRIVMSGS_RULES_TABLE . '
+		FROM ' . AN602_PRIVMSGS_RULES_TABLE . '
 		WHERE user_id = ' . $user_id . '
 		ORDER BY rule_id ASC';
 	$result = $db->sql_query($sql);
