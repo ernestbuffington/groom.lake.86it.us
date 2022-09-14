@@ -2,7 +2,7 @@
 	"name": "an602/an602",
 	"description": "AN602 CMS Software application",
 	"type": "project",
-	"keywords": ["phpbb", "forum"],
+	"keywords": ["an602", "forum"],
 	"homepage": "https://www.groom.lake.86it.us",
 	"license": "GPL-2.0-only",
 	"authors": [

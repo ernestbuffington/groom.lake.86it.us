@@ -2,7 +2,7 @@
 	"name": "an602/an602-core",
 	"description": "Collection of core AN602 libraries",
 	"type": "library",
-	"keywords": ["phpbb", "forum"],
+	"keywords": ["an602", "forum"],
 	"homepage": "https://www.groom.lake.86it.us",
 	"license": "GPL-2.0",
 	"authors": [
