@@ -15,4 +15,6 @@ _private
 tpl_*.php
 .well-known
 cgi-bin
+config.php
+
 
