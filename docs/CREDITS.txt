@@ -18,16 +18,27 @@
 */
 
 
-AN602 Project Manager:   Marshalrusty (Yuriy Rusko)
+AN602 Project Manager:   ScotybCoder (Truman Scott Buffington)
 
-AN602 Lead Developer:    Marc (Marc Alexander)
+AN602 Lead Developer:    TheGhost (Ernest Allen Buffington)
 
-AN602 Developers:        CHItA (Máté Bartus)
-                         Derky (Derk Ruitenbeek)
-                         Hanakin (Michael Miday)
-                         mrgoldy (Gijs Martens)
-                         Nicofuma (Tristan Darricau)
-                         rubencm (Rubén Calvo)
+AN602 Developers:        TheWolf (Winston Terrance Wolf)
+                         AllenScott (Sebastain Scott Buffington)
+                         Shakey (Anna Weese)
+                         Alpha Client (Anthony Castellano)
+                         Pukey (Anthony Mazzola)
+                         Wolfy (Wolf Buffington)
+                         Posha (Pasha Buffington)
+                         Sam (Samantha Buffington)
+                         Sammy (Sampson Buffingtpn)
+                         Kier (Kier Buffington)
+                         Aylan (Aylan Buffington)
+                         Sadie (Sadie Buffington)
+                         Pat (Pat Buffington)
+                         MauhLeeza (Melissa Joy DaPoonte)
+                         Rico (Enrique Lebron)
+                         Rotten (Johnny Rotten - John Haughten)
+
 
 For a list of AN602 Team members, please see:
 https://www.groom.lake.86it.us/about/team/
@@ -37,16 +48,16 @@ https://github.com/an602/an602/graphs/contributors
 
 -- Former Developers --
 
-AN602 Project Manager:   theFinn (James Atkinson)      [Founder - 04/2007]
+PHPBB Project Manager:   theFinn (James Atkinson)      [Founder - 04/2007]
                          SHS` (Jonathan Stanley)
 
-AN602 Product Manager:   naderman (Nils Adermann)      [02/2016 - 02/2017]
+PHPBB Product Manager:   naderman (Nils Adermann)      [02/2016 - 02/2017]
 
-AN602 Lead Developer:    naderman (Nils Adermann)      [01/2010 - 02/2016]
+PHPBB Lead Developer:    naderman (Nils Adermann)      [01/2010 - 02/2016]
                          Acyd Burn (Meik Sievertsen)   [09/2005 - 01/2010]
                          psoTFX (Paul S. Owen)         [2001 - 09/2005]
 
-AN602 Developers:        A_Jelly_Doughnut (Josh Woody) [01/2010 - 11/2010]
+PHPBB Developers:        A_Jelly_Doughnut (Josh Woody) [01/2010 - 11/2010]
                          Acyd Burn (Meik Sievertsen)   [02/2003 - 09/2005]
                          APTX (Marek A. Ruszczyński)   [12/2007 - 04/2011]
                          Arty (Vjacheslav Trushkin)    [02/2012 - 07/2012]
