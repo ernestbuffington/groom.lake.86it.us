@@ -1,7 +1,7 @@
 an602_help_bbcode_controller:
     path: /bbcode
-    defaults: { _controller: phpbb.help.controller.bbcode:handle }
+    defaults: { _controller: an602.help.controller.bbcode:handle }
 
 an602_help_faq_controller:
     path: /faq
-    defaults: { _controller: phpbb.help.controller.faq:handle }
+    defaults: { _controller: an602.help.controller.faq:handle }
