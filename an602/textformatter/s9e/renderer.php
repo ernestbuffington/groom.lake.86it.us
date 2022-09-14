@@ -139,7 +139,7 @@ class renderer implements \an602\textformatter\renderer_interface
 		/**
 		* @see smiley_text()
 		*/
-		$root_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $path_helper->get_web_root_path();
+		$root_path = (defined('AN602_USE_BOARD_URL_PATH') && AN602_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $path_helper->get_web_root_path();
 
 		$this->set_smilies_path($root_path . $config['smilies_path']);
 	}

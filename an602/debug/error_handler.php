@@ -21,7 +21,7 @@ class error_handler extends ErrorHandler
 	{
 		if ($type === E_USER_WARNING || $type === E_USER_NOTICE)
 		{
-			$handler = defined('PHPBB_MSG_HANDLER') ? PHPBB_MSG_HANDLER : 'msg_handler';
+			$handler = defined('AN602_MSG_HANDLER') ? AN602_MSG_HANDLER : 'msg_handler';
 
 			$handler($type, $message, $file, $line);
 		}

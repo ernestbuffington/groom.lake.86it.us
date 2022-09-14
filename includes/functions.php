@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -3703,7 +3703,7 @@ function an602_get_avatar($row, $alt, $ignore_config = false, $lazy = false)
 			$an602_path_helper = $an602_container->get('path_helper');
 			$corrected_path = $an602_path_helper->get_web_root_path();
 
-			$web_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? $board_url : $corrected_path;
+			$web_path = (defined('AN602_USE_BOARD_URL_PATH') && AN602_USE_BOARD_URL_PATH) ? $board_url : $corrected_path;
 
 			$theme = "{$web_path}styles/" . rawurlencode($user->style['style_path']) . '/theme';
 
@@ -3899,7 +3899,7 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 	/* @var $an602_path_helper \an602\path_helper */
 	$an602_path_helper = $an602_container->get('path_helper');
 	$corrected_path = $an602_path_helper->get_web_root_path();
-	$web_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? $board_url : $corrected_path;
+	$web_path = (defined('AN602_USE_BOARD_URL_PATH') && AN602_USE_BOARD_URL_PATH) ? $board_url : $corrected_path;
 
 	// Send a proper content-language to the output
 	$user_lang = $user->lang['USER_LANG'];

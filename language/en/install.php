@@ -14,7 +14,7 @@
 /**
  * DO NOT CHANGE
  */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -82,8 +82,8 @@ $lang = array_merge($lang, array(
 
 	'ACP_LINK'	=> 'Take me to <a href="%1$s">the ACP</a>',
 
-	'INSTALL_PHPBB_INSTALLED'		=> 'AN602 is already installed.',
-	'INSTALL_PHPBB_NOT_INSTALLED'	=> 'AN602 is not installed yet.',
+	'INSTALL_AN602_INSTALLED'		=> 'AN602 is already installed.',
+	'INSTALL_AN602_NOT_INSTALLED'	=> 'AN602 is not installed yet.',
 ));
 
 // Requirements translation
@@ -496,7 +496,7 @@ $lang = array_merge($lang, array(
 	'CONVERT_NOT_EXIST'			=> 'The specified convertor does not exist.',
 	'DEV_NO_TEST_FILE'			=> 'No value has been specified for the test_file variable in the convertor. If you are a user of this convertor, you should not be seeing this error, please report this message to the convertor author. If you are a convertor author, you must specify the name of a file which exists in the source board to allow the path to it to be verified.',
 	'COULD_NOT_FIND_PATH'		=> 'Could not find path to your former board. Please check your settings and try again.<br />» %s was specified as the source path.',
-	'CONFIG_PHPBB_EMPTY'		=> 'The AN6023 config variable for “%s” is empty.',
+	'CONFIG_AN602_EMPTY'		=> 'The AN6023 config variable for “%s” is empty.',
 
 	'MAKE_FOLDER_WRITABLE'		=> 'Please make sure that this folder exists and is writable by the webserver then try again:<br />»<strong>%s</strong>.',
 	'MAKE_FOLDERS_WRITABLE'		=> 'Please make sure that these folders exist and are writable by the webserver then try again:<br />»<strong>%s</strong>.',

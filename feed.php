@@ -22,8 +22,8 @@ use Symfony\Component\Routing\Exception\InvalidParameterException;
 /**
 * @ignore
 **/
-define('IN_PHPBB', true);
-$an602_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
+define('IN_AN602', true);
+$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($an602_root_path . 'common.' . $phpEx);
 

@@ -20,7 +20,7 @@ if (php_sapi_name() != 'cli')
 	exit(1);
 }
 
-define('IN_PHPBB', true);
+define('IN_AN602', true);
 
 $an602_root_path = __DIR__ . '/../';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
@@ -33,9 +33,9 @@ $an602_class_loader->register();
 $an602_config_php_file = new \an602\config_php_file($an602_root_path, $phpEx);
 extract($an602_config_php_file->get_all());
 
-if (!defined('PHPBB_ENVIRONMENT'))
+if (!defined('AN602_ENVIRONMENT'))
 {
-	@define('PHPBB_ENVIRONMENT', 'production');
+	@define('AN602_ENVIRONMENT', 'production');
 }
 
 require($an602_root_path . 'includes/constants.' . $phpEx);
@@ -84,7 +84,7 @@ $user = $an602_container->get('user');
 $user->data['user_id'] = ANONYMOUS;
 $user->ip = '127.0.0.1';
 
-$application = new \an602\console\application('AN602 Console', PHPBB_VERSION, $language, $config);
+$application = new \an602\console\application('AN602 Console', AN602_VERSION, $language, $config);
 $application->setDispatcher($an602_container->get('dispatcher'));
 $application->register_container_commands($an602_container->get('console.command_collection'));
 $application->run($input);

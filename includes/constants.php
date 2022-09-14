@@ -14,24 +14,24 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
 
 /**
 * valid external constants:
-* PHPBB_MSG_HANDLER
-* PHPBB_DB_NEW_LINK
-* PHPBB_ROOT_PATH
-* PHPBB_ADMIN_PATH
+* AN602_MSG_HANDLER
+* AN602_DB_NEW_LINK
+* AN602_ROOT_PATH
+* AN602_ADMIN_PATH
 */
 
 // AN602 Version
-@define('PHPBB_VERSION', '3.3.8');
+@define('AN602_VERSION', '3.3.8');
 
 // QA-related
-// define('PHPBB_QA', 1);
+// define('AN602_QA', 1);
 
 // User related
 define('ANONYMOUS', 1);

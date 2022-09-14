@@ -14,7 +14,7 @@
 /**
  * DO NOT CHANGE
  */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }

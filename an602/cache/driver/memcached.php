@@ -13,25 +13,25 @@
 
 namespace an602\cache\driver;
 
-if (!defined('PHPBB_ACM_MEMCACHED_PORT'))
+if (!defined('AN602_ACM_MEMCACHED_PORT'))
 {
-	define('PHPBB_ACM_MEMCACHED_PORT', 11211);
+	define('AN602_ACM_MEMCACHED_PORT', 11211);
 }
 
-if (!defined('PHPBB_ACM_MEMCACHED_COMPRESS'))
+if (!defined('AN602_ACM_MEMCACHED_COMPRESS'))
 {
-	define('PHPBB_ACM_MEMCACHED_COMPRESS', true);
+	define('AN602_ACM_MEMCACHED_COMPRESS', true);
 }
 
-if (!defined('PHPBB_ACM_MEMCACHED_HOST'))
+if (!defined('AN602_ACM_MEMCACHED_HOST'))
 {
-	define('PHPBB_ACM_MEMCACHED_HOST', 'localhost');
+	define('AN602_ACM_MEMCACHED_HOST', 'localhost');
 }
 
-if (!defined('PHPBB_ACM_MEMCACHED'))
+if (!defined('AN602_ACM_MEMCACHED'))
 {
 	//can define multiple servers with host1/port1,host2/port2 format
-	define('PHPBB_ACM_MEMCACHED', PHPBB_ACM_MEMCACHED_HOST . '/' . PHPBB_ACM_MEMCACHED_PORT);
+	define('AN602_ACM_MEMCACHED', AN602_ACM_MEMCACHED_HOST . '/' . AN602_ACM_MEMCACHED_PORT);
 }
 
 /**
@@ -58,13 +58,13 @@ class memcached extends \an602\cache\driver\memory
 		// Call the parent constructor
 		parent::__construct();
 
-		$memcached_servers = $memcached_servers ?: PHPBB_ACM_MEMCACHED;
+		$memcached_servers = $memcached_servers ?: AN602_ACM_MEMCACHED;
 
 		$this->memcached = new \Memcached();
 		$this->memcached->setOption(\Memcached::OPT_BINARY_PROTOCOL, true);
 		// Memcached defaults to using compression, disable if we don't want
 		// to use it
-		if (!PHPBB_ACM_MEMCACHED_COMPRESS)
+		if (!AN602_ACM_MEMCACHED_COMPRESS)
 		{
 			$this->memcached->setOption(\Memcached::OPT_COMPRESSION, false);
 		}

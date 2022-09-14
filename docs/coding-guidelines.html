@@ -226,29 +226,29 @@ class ...</pre>
 	<p>There are some special constants application developers are able to utilize to bend some of AN602's internal functionality to suit their needs.</p>
 
 	<div class="codebox"><pre>
-PHPBB_MSG_HANDLER          (overwrite message handler)
-PHPBB_DB_NEW_LINK          (overwrite new_link parameter for sql_connect)
-PHPBB_ROOT_PATH            (overwrite $an602_root_path)
-PHPBB_ADMIN_PATH           (overwrite $an602_admin_path)
-PHPBB_USE_BOARD_URL_PATH   (use generate_board_url() for image paths instead of $an602_root_path)
-PHPBB_DISABLE_ACP_EDITOR   (disable ACP style editor for templates)
-PHPBB_DISABLE_CONFIG_CHECK (disable ACP config.php writeable check)
+AN602_MSG_HANDLER          (overwrite message handler)
+AN602_DB_NEW_LINK          (overwrite new_link parameter for sql_connect)
+AN602_ROOT_PATH            (overwrite $an602_root_path)
+AN602_ADMIN_PATH           (overwrite $an602_admin_path)
+AN602_USE_BOARD_URL_PATH   (use generate_board_url() for image paths instead of $an602_root_path)
+AN602_DISABLE_ACP_EDITOR   (disable ACP style editor for templates)
+AN602_DISABLE_CONFIG_CHECK (disable ACP config.php writeable check)
 
-PHPBB_ACM_MEMCACHED_PORT     (overwrite memcached port, default is 11211)
-PHPBB_ACM_MEMCACHED_COMPRESS (overwrite memcached compress setting, default is disabled)
-PHPBB_ACM_MEMCACHED_HOST     (overwrite memcached host name, default is localhost)
+AN602_ACM_MEMCACHED_PORT     (overwrite memcached port, default is 11211)
+AN602_ACM_MEMCACHED_COMPRESS (overwrite memcached compress setting, default is disabled)
+AN602_ACM_MEMCACHED_HOST     (overwrite memcached host name, default is localhost)
 
-PHPBB_ACM_REDIS_HOST        (overwrite redis host name, default is localhost)
-PHPBB_ACM_REDIS_PORT        (overwrite redis port, default is 6379)
-PHPBB_ACM_REDIS_PASSWORD    (overwrite redis password, default is empty)
-PHPBB_ACM_REDIS_DB          (overwrite redis default database)
+AN602_ACM_REDIS_HOST        (overwrite redis host name, default is localhost)
+AN602_ACM_REDIS_PORT        (overwrite redis port, default is 6379)
+AN602_ACM_REDIS_PASSWORD    (overwrite redis password, default is empty)
+AN602_ACM_REDIS_DB          (overwrite redis default database)
 
-PHPBB_QA                   (Set board to QA-Mode, which means the updater also checks for RC-releases)
+AN602_QA                   (Set board to QA-Mode, which means the updater also checks for RC-releases)
 </pre></div>
 
-<h4>PHPBB_USE_BOARD_URL_PATH</h4>
+<h4>AN602_USE_BOARD_URL_PATH</h4>
 
-<p>If the <code>PHPBB_USE_BOARD_URL_PATH</code> constant is set to true, AN602 uses generate_board_url() (this will return the boards url with the script path included) on all instances where web-accessible images are loaded. The exact locations are:</p>
+<p>If the <code>AN602_USE_BOARD_URL_PATH</code> constant is set to true, AN602 uses generate_board_url() (this will return the boards url with the script path included) on all instances where web-accessible images are loaded. The exact locations are:</p>
 
 <ul>
 	<li>/an602/user.php - \an602\user::img()</li>

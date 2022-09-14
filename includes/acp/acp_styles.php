@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -968,7 +968,7 @@ class acp_styles
 			'STYLE_ID'				=> $style['style_id'],
 			'STYLE_NAME'			=> htmlspecialchars($style['style_name'], ENT_COMPAT),
 			'STYLE_VERSION'			=> $style_cfg['style_version'] ?? '-',
-			'STYLE_PHPBB_VERSION'	=> $style_cfg['an602_version'],
+			'STYLE_AN602_VERSION'	=> $style_cfg['an602_version'],
 			'STYLE_PATH'			=> htmlspecialchars($style['style_path'], ENT_COMPAT),
 			'STYLE_COPYRIGHT'		=> strip_tags($style['style_copyright']),
 			'STYLE_ACTIVE'			=> $style['style_active'],

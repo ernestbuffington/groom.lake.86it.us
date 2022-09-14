@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -473,7 +473,7 @@ class acp_main
 		}
 
 		// Incomplete update?
-		if (an602_version_compare($config['version'], PHPBB_VERSION, '<'))
+		if (an602_version_compare($config['version'], AN602_VERSION, '<'))
 		{
 			$template->assign_var('S_UPDATE_INCOMPLETE', true);
 		}
@@ -671,7 +671,7 @@ class acp_main
 			}
 		}
 
-		if (!defined('PHPBB_DISABLE_CONFIG_CHECK'))
+		if (!defined('AN602_DISABLE_CONFIG_CHECK'))
 		{
 			// World-Writable? (000x)
 			$template->assign_var('S_WRITABLE_CONFIG', (bool) (@fileperms($an602_root_path . 'config.' . $phpEx) & 0x0002));

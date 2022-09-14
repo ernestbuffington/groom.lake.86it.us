@@ -577,7 +577,7 @@ class container_builder
 					$this->config_php_file->get('dbname'),
 					$this->config_php_file->get('dbport'),
 					false,
-					defined('PHPBB_DB_NEW_LINK') && PHPBB_DB_NEW_LINK
+					defined('AN602_DB_NEW_LINK') && AN602_DB_NEW_LINK
 				);
 			}
 			$this->container->set('dbal.conn.driver', $this->dbal_connection);
@@ -606,7 +606,7 @@ class container_builder
 	/**
 	 * Gets the environment parameters.
 	 *
-	 * Only the parameters starting with "PHPBB__" are considered.
+	 * Only the parameters starting with "AN602__" are considered.
 	 *
 	 * @return array An array of parameters
 	 */
@@ -615,7 +615,7 @@ class container_builder
 		$parameters = array();
 		foreach ($_SERVER as $key => $value)
 		{
-			if (0 === strpos($key, 'PHPBB__'))
+			if (0 === strpos($key, 'AN602__'))
 			{
 				$parameters[strtolower(str_replace('__', '.', substr($key, 9)))] = $value;
 			}
@@ -663,7 +663,7 @@ class container_builder
 	 */
 	protected function get_environment()
 	{
-		return $this->environment ?: PHPBB_ENVIRONMENT;
+		return $this->environment ?: AN602_ENVIRONMENT;
 	}
 
 	private function register_ext_compiler_pass()

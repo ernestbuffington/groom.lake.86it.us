@@ -26,7 +26,7 @@ class ext extends \an602\extension\base
 	 */
 	public function is_enableable()
 	{
-		return an602_version_compare(PHPBB_VERSION, '3.2.0-b1', '>=');
+		return an602_version_compare(AN602_VERSION, '3.2.0-b1', '>=');
 	}
 
 	/**

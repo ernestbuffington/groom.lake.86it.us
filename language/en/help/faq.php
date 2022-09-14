@@ -14,7 +14,7 @@
 /**
  * DO NOT CHANGE
  */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -98,8 +98,8 @@ $lang = array_merge($lang, array(
 	'HELP_FAQ_ISSUES_FEATURE_QUESTION'	=> 'Why isn’t X feature available?',
 	'HELP_FAQ_ISSUES_LEGAL_ANSWER'	=> 'Any of the administrators listed on the “The team” page should be an appropriate point of contact for your complaints. If this still gets no response then you should contact the owner of the domain (do a <a href="http://www.google.com/search?q=whois">whois lookup</a>) or, if this is running on a free service (e.g. Yahoo!, free.fr, f2s.com, etc.), the management or abuse department of that service. Please note that the AN602 Limited has <strong>absolutely no jurisdiction</strong> and cannot in any way be held liable over how, where or by whom this board is used. Do not contact the AN602 Limited in relation to any legal (cease and desist, liable, defamatory comment, etc.) matter <strong>not directly related</strong> to the AN602.com website or the discrete software of AN602 itself. If you do email AN602 Limited <strong>about any third party</strong> use of this software then you should expect a terse response or no response at all.',
 	'HELP_FAQ_ISSUES_LEGAL_QUESTION'	=> 'Who do I contact about abusive and/or legal matters related to this board?',
-	'HELP_FAQ_ISSUES_WHOIS_PHPBB_ANSWER'	=> 'This software (in its unmodified form) is produced, released and is copyright <a href="https://www.groom.lake.86it.us/">AN602 Limited</a>. It is made available under the GNU General Public License, version 2 (GPL-2.0) and may be freely distributed. See <a href="https://www.groom.lake.86it.us/about/">About AN602</a> for more details.',
-	'HELP_FAQ_ISSUES_WHOIS_PHPBB_QUESTION'	=> 'Who wrote this bulletin board?',
+	'HELP_FAQ_ISSUES_WHOIS_AN602_ANSWER'	=> 'This software (in its unmodified form) is produced, released and is copyright <a href="https://www.groom.lake.86it.us/">AN602 Limited</a>. It is made available under the GNU General Public License, version 2 (GPL-2.0) and may be freely distributed. See <a href="https://www.groom.lake.86it.us/about/">About AN602</a> for more details.',
+	'HELP_FAQ_ISSUES_WHOIS_AN602_QUESTION'	=> 'Who wrote this bulletin board?',
 
 	'HELP_FAQ_LOGIN_AUTO_LOGOUT_ANSWER'	=> 'If you do not check the <em>Remember me</em> box when you login, the board will only keep you logged in for a preset time. This prevents misuse of your account by anyone else. To stay logged in, check the <em>Remember me</em> box during login. This is not recommended if you access the board from a shared computer, e.g. library, internet cafe, university computer lab, etc. If you do not see this checkbox, it means a board administrator has disabled this feature.',
 	'HELP_FAQ_LOGIN_AUTO_LOGOUT_QUESTION'	=> 'Why do I get logged off automatically?',

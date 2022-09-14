@@ -11,7 +11,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -108,7 +108,7 @@ $lang = array_merge($lang, array(
 	'LICENSE'				=> 'Licence',
 
 	'REQUIREMENTS'			=> 'Requirements',
-	'PHPBB_VERSION'			=> 'AN602 Version',
+	'AN602_VERSION'			=> 'AN602 Version',
 	'PHP_VERSION'			=> 'PHP Version',
 	'AUTHOR_INFORMATION'	=> 'Author Information',
 	'AUTHOR_NAME'			=> 'Name',

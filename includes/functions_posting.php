@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -189,7 +189,7 @@ function generate_smilies($mode, $forum_id)
 
 	if (count($smilies))
 	{
-		$root_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $an602_path_helper->get_web_root_path();
+		$root_path = (defined('AN602_USE_BOARD_URL_PATH') && AN602_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $an602_path_helper->get_web_root_path();
 
 		foreach ($smilies as $row)
 		{
@@ -432,7 +432,7 @@ function posting_gen_topic_icons($mode, $icon_id)
 
 	if (count($icons))
 	{
-		$root_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $an602_root_path;
+		$root_path = (defined('AN602_USE_BOARD_URL_PATH') && AN602_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $an602_root_path;
 
 		foreach ($icons as $id => $data)
 		{

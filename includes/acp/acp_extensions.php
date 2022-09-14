@@ -17,7 +17,7 @@ use an602\exception\version_check_exception;
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if (!defined('IN_AN602'))
 {
 	exit;
 }
@@ -644,7 +644,7 @@ class acp_extensions
 			'META_REQUIRE_PHP_FAIL'	=> (isset($metadata['require']['php'])) ? false : true,
 
 			'META_REQUIRE_PHPBB'		=> (isset($metadata['extra']['soft-require']['an602/an602'])) ? $metadata['extra']['soft-require']['an602/an602'] : '',
-			'META_REQUIRE_PHPBB_FAIL'	=> (isset($metadata['extra']['soft-require']['an602/an602'])) ? false : true,
+			'META_REQUIRE_AN602_FAIL'	=> (isset($metadata['extra']['soft-require']['an602/an602'])) ? false : true,
 
 			'META_DISPLAY_NAME'	=> (isset($metadata['extra']['display-name'])) ? $metadata['extra']['display-name'] : '',
 		));

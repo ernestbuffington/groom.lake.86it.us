@@ -62,7 +62,7 @@ class upload extends \an602\avatar\driver\driver
 	*/
 	public function get_data($row)
 	{
-		$root_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $this->path_helper->get_web_root_path();
+		$root_path = (defined('AN602_USE_BOARD_URL_PATH') && AN602_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $this->path_helper->get_web_root_path();
 
 		return array(
 			'src' => $root_path . 'download/file.' . $this->php_ext . '?avatar=' . $row['avatar'],

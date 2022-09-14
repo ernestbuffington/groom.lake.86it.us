@@ -13,12 +13,12 @@
 
 /**
 */
-define('IN_PHPBB', true);
+define('IN_AN602', true);
 define('ADMIN_START', true);
 define('NEED_SID', true);
 
 // Include files
-$an602_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './../';
+$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './../';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 require($an602_root_path . 'common.' . $phpEx);
 require($an602_root_path . 'includes/functions_acp.' . $phpEx);
