@@ -46,7 +46,7 @@ class user_loader
 	* User loader constructor
 	*
 	* @param \an602\db\driver\driver_interface $db A database connection
-	* @param string $an602_root_path Path to the phpbb includes directory.
+	* @param string $an602_root_path Path to the AN602 includes directory.
 	* @param string $php_ext php file extension
 	* @param string $users_table The name of the database table (an602_users)
 	*/

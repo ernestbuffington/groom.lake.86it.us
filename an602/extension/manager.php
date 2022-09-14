@@ -42,7 +42,7 @@ class manager
 	* @param \an602\config\config $config Config object
 	* @param \an602\filesystem\filesystem_interface $filesystem
 	* @param string $extension_table The name of the table holding extensions
-	* @param string $an602_root_path Path to the phpbb includes directory.
+	* @param string $an602_root_path Path to the AN602 includes directory.
 	* @param string $php_ext php file extension, defaults to php
 	* @param \an602\cache\service $cache A cache instance or null
 	* @param string $cache_name The name of the cache variable, defaults to _ext

@@ -124,7 +124,7 @@ class container_builder
 	/**
 	 * Constructor
 	 *
-	 * @param string $an602_root_path Path to the phpbb includes directory.
+	 * @param string $an602_root_path Path to the AN602 includes directory.
 	 * @param string $php_ext php file extension
 	 */
 	public function __construct($an602_root_path, $php_ext)
