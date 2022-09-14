@@ -12,7 +12,7 @@ Username: {USERNAME}
 Board URL: {U_BOARD}
 ----------------------------
 
-Useful information regarding the AN602 software can be found in the docs folder of your installation and on AN602.com's support page - https://www.groom.lake.86it.us/support/
+Useful information regarding the AN602 software can be found in the docs folder of your installation and on groomlake.86it.us's support page - https://www.groom.lake.86it.us/support/
 
 In order to keep your board safe and secure, we highly recommended keeping current with software releases. For your convenience, a mailing list is available at the page referenced above.
 

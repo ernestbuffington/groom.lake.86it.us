@@ -1,10 +1,10 @@
 services:
 # ----- Cron tasks -----
-    phpbb.viglink.cron.task.viglink:
-        class: phpbb\viglink\cron\viglink
+    an602.viglink.cron.task.viglink:
+        class: an602\viglink\cron\viglink
         arguments:
             - '@config'
-            - '@phpbb.viglink.helper'
+            - '@an602.viglink.helper'
         calls:
             - [set_name, [cron.task.viglink]]
         tags:

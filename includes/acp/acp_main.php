@@ -671,7 +671,7 @@ class acp_main
 			}
 		}
 
-		if (!defined('AN602_DISABLE_CONFIG_CHECK'))
+		if (!defined('PHPBB_DISABLE_CONFIG_CHECK'))
 		{
 			// World-Writable? (000x)
 			$template->assign_var('S_WRITABLE_CONFIG', (bool) (@fileperms($an602_root_path . 'config.' . $phpEx) & 0x0002));

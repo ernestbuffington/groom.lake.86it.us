@@ -108,7 +108,7 @@ $lang = array_merge($lang, array(
 	'ACP_GROUPS_PERMISSIONS'		=> 'Group permissions',
 	'ACP_GROUPS_POSITION'			=> 'Manage group positions',
 
-	'ACP_HELP_PHPBB'			=> 'Help support AN602',
+	'ACP_HELP_AN602'			=> 'Help support AN602',
 
 	'ACP_ICONS'					=> 'Topic icons',
 	'ACP_ICONS_SMILIES'			=> 'Topic icons/smilies',
@@ -226,7 +226,7 @@ $lang = array_merge($lang, array(
 
 	'BACK'					=> 'Back',
 
-	'CONTAINER_EXCEPTION' => 'AN602 encountered an error building the container due to an installed extension. For this reason, all extensions have been temporarily disabled. Please try purging your forum cache. All extensions will automatically be re-enabled once the container error is resolved. If this error continues, please visit <a href="https://www.groom.lake.86it.us/support">AN602.com</a> for support.',
+	'CONTAINER_EXCEPTION' => 'AN602 encountered an error building the container due to an installed extension. For this reason, all extensions have been temporarily disabled. Please try purging your forum cache. All extensions will automatically be re-enabled once the container error is resolved. If this error continues, please visit <a href="https://www.groom.lake.86it.us/support">groomlake.86it.us</a> for support.',
 	'EXCEPTION' => 'Exception',
 
 	'COLOUR_SWATCH'			=> 'Web-safe colour swatch',

@@ -1,3 +1,3 @@
 updater:
     type: all
-    extensions: ['an602/viglink']
+    extensions: ['phpbb/viglink']

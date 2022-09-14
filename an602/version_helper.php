@@ -90,7 +90,7 @@ class version_helper
 		$this->config = $config;
 		$this->file_downloader = $file_downloader;
 
-		if (defined('AN602_QA'))
+		if (defined('PHPBB_QA'))
 		{
 			$this->force_stability = 'unstable';
 		}

@@ -6,7 +6,7 @@
 
 
 an602.prepareSendStats = function () {
-	var $form = $('#acp_help_phpbb');
+	var $form = $('#acp_help_an602');
 	var $dark = $('#darkenwrapper');
 	var $loadingIndicator;
 
@@ -340,7 +340,7 @@ $(function() {
 		});
 	}
 
-	if ($('#acp_help_phpbb')) {
+	if ($('#acp_help_an602')) {
 		an602.prepareSendStats();
 	}
 });

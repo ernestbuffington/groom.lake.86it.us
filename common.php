@@ -29,12 +29,12 @@ $an602_class_loader->register();
 $an602_config_php_file = new \an602\config_php_file($an602_root_path, $phpEx);
 extract($an602_config_php_file->get_all());
 
-if (!defined('AN602_ENVIRONMENT'))
+if (!defined('PHPBB_ENVIRONMENT'))
 {
-	@define('AN602_ENVIRONMENT', 'production');
+	@define('PHPBB_ENVIRONMENT', 'production');
 }
 
-if (!defined('AN602_INSTALLED'))
+if (!defined('PHPBB_INSTALLED'))
 {
 	// Redirect the user to the installer
 	require($an602_root_path . 'includes/functions.' . $phpEx);
@@ -86,7 +86,7 @@ if (!defined('AN602_INSTALLED'))
 
 // In case $an602_adm_relative_path is not set (in case of an update), use the default.
 $an602_adm_relative_path = (isset($an602_adm_relative_path)) ? $an602_adm_relative_path : 'admin/';
-$an602_admin_path = (defined('AN602_ADMIN_PATH')) ? AN602_ADMIN_PATH : $an602_root_path . $an602_adm_relative_path;
+$an602_admin_path = (defined('PHPBB_ADMIN_PATH')) ? PHPBB_ADMIN_PATH : $an602_root_path . $an602_adm_relative_path;
 
 // Include files
 require($an602_root_path . 'includes/functions.' . $phpEx);
@@ -98,13 +98,13 @@ require($an602_root_path . 'includes/utf/utf_tools.' . $phpEx);
 
 // Registered before building the container so the development environment stay capable of intercepting
 // the container builder exceptions.
-if (AN602_ENVIRONMENT === 'development')
+if (PHPBB_ENVIRONMENT === 'development')
 {
 	\an602\debug\debug::enable();
 }
 else
 {
-	set_error_handler(defined('AN602_MSG_HANDLER') ? AN602_MSG_HANDLER : 'msg_handler');
+	set_error_handler(defined('PHPBB_MSG_HANDLER') ? PHPBB_MSG_HANDLER : 'msg_handler');
 }
 
 $an602_class_loader_ext = new \an602\class_loader('\\', "{$an602_root_path}ext/", $phpEx);
@@ -118,10 +118,10 @@ try
 }
 catch (InvalidArgumentException $e)
 {
-	if (AN602_ENVIRONMENT !== 'development')
+	if (PHPBB_ENVIRONMENT !== 'development')
 	{
 		trigger_error(
-			'The requested environment ' . AN602_ENVIRONMENT . ' is not available.',
+			'The requested environment ' . PHPBB_ENVIRONMENT . ' is not available.',
 			E_USER_ERROR
 		);
 	}

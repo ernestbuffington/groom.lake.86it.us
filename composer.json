@@ -2,7 +2,7 @@
 	"name": "an602/an602",
 	"description": "AN602 CMS Software application",
 	"type": "project",
-	"keywords": ["an602", "forum"],
+	"keywords": ["phpbb", "forum"],
 	"homepage": "https://www.groom.lake.86it.us",
 	"license": "GPL-2.0-only",
 	"authors": [
@@ -23,7 +23,7 @@
 		"post-update-cmd": "echo 'You MUST manually modify the clean-vendor-dir target in build/build.xml when adding or upgrading dependencies.'"
 	},
 	"replace": {
-		"ernestbuffington/an602-core": "self.version"
+		"an602/an602-core": "self.version"
 	},
 	"require": {
 		"php": "^7.1.3",

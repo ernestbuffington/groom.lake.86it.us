@@ -21,17 +21,17 @@ if (!defined('IN_AN602'))
 
 /**
 * valid external constants:
-* AN602_MSG_HANDLER
-* AN602_DB_NEW_LINK
+* PHPBB_MSG_HANDLER
+* PHPBB_DB_NEW_LINK
 * AN602_ROOT_PATH
-* AN602_ADMIN_PATH
+* PHPBB_ADMIN_PATH
 */
 
 // AN602 Version
 @define('AN602_VERSION', '3.3.8');
 
 // QA-related
-// define('AN602_QA', 1);
+// define('PHPBB_QA', 1);
 
 // User related
 define('ANONYMOUS', 1);

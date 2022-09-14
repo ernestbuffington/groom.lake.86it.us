@@ -27,7 +27,7 @@ class v320rc2 extends migration
 		return array(
 			'\an602\db\migration\data\v31x\remove_duplicate_migrations',
 			'\an602\db\migration\data\v31x\add_log_time_index',
-			'\an602\db\migration\data\v320\add_help_phpbb',
+			'\an602\db\migration\data\v320\add_help_an602',
 		);
 	}
 

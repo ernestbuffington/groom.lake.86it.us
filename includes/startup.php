@@ -54,20 +54,20 @@ date_default_timezone_set(@date_default_timezone_get());
 //    vendor/autoload.php. If this file exists it will be
 //    automatically used by AN602. This is the default mode that AN602
 //    will use when shipped.
-// 2. To disable composer autoloading, AN602_NO_COMPOSER_AUTOLOAD can be specified.
-// 	  Additionally specify AN602_AUTOLOAD=/path/to/autoload.php in the
+// 2. To disable composer autoloading, PHPBB_NO_COMPOSER_AUTOLOAD can be specified.
+// 	  Additionally specify PHPBB_AUTOLOAD=/path/to/autoload.php in the
 //    environment. This is useful for running CLI scripts and tests.
 //    /path/to/autoload.php should define and register class loaders
 //    for all of AN602's dependencies.
-// 3. You can also set AN602_NO_COMPOSER_AUTOLOAD without setting AN602_AUTOLOAD.
+// 3. You can also set PHPBB_NO_COMPOSER_AUTOLOAD without setting PHPBB_AUTOLOAD.
 //    In this case autoloading needs to be defined before running any AN602
 //    script. This might be useful in cases when AN602 is integrated into a
 //    larger program.
-if (getenv('AN602_NO_COMPOSER_AUTOLOAD'))
+if (getenv('PHPBB_NO_COMPOSER_AUTOLOAD'))
 {
-	if (getenv('AN602_AUTOLOAD'))
+	if (getenv('PHPBB_AUTOLOAD'))
 	{
-		require(getenv('AN602_AUTOLOAD'));
+		require(getenv('PHPBB_AUTOLOAD'));
 	}
 }
 else

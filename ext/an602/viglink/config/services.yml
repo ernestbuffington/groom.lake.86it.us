@@ -2,30 +2,30 @@ imports:
     - { resource: cron.yml }
 
 services:
-    phpbb.viglink.listener:
-        class: phpbb\viglink\event\listener
+    an602.viglink.listener:
+        class: an602\viglink\event\listener
         arguments:
             - '@config'
             - '@template'
         tags:
             - { name: event.listener }
 
-    phpbb.viglink.acp_listener:
-        class: phpbb\viglink\event\acp_listener
+    an602.viglink.acp_listener:
+        class: an602\viglink\event\acp_listener
         arguments:
             - '@config'
             - '@language'
             - '@request'
             - '@template'
             - '@user'
-            - '@phpbb.viglink.helper'
+            - '@an602.viglink.helper'
             - '%core.root_path%'
             - '%core.php_ext%'
         tags:
             - { name: event.listener }
 
-    phpbb.viglink.helper:
-        class: phpbb\viglink\acp\viglink_helper
+    an602.viglink.helper:
+        class: an602\viglink\acp\viglink_helper
         arguments:
             - '@cache.driver'
             - '@config'

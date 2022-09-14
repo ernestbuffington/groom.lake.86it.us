@@ -13,7 +13,7 @@
 
 namespace an602\db\migration\data\v320;
 
-class add_help_phpbb extends \an602\db\migration\migration
+class add_help_an602 extends \an602\db\migration\migration
 {
 	static public function depends_on()
 	{
@@ -37,9 +37,9 @@ class add_help_phpbb extends \an602\db\migration\migration
 				'acp',
 				'ACP_SERVER_CONFIGURATION',
 				array(
-					'module_basename'	=> 'acp_help_phpbb',
-					'module_langname'	=> 'ACP_HELP_PHPBB',
-					'module_mode'		=> 'help_phpbb',
+					'module_basename'	=> 'acp_help_an602',
+					'module_langname'	=> 'ACP_HELP_AN602',
+					'module_mode'		=> 'help_an602',
 					'module_auth'		=> 'acl_a_server',
 				),
 			)),

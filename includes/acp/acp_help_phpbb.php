@@ -19,7 +19,7 @@ if (!defined('IN_AN602'))
 	exit;
 }
 
-class acp_help_phpbb
+class acp_help_an602
 {
 	var $u_action;
 
@@ -34,12 +34,12 @@ class acp_help_phpbb
 
 		$collect_url = "https://www.groom.lake.86it.us/statistics/send";
 
-		$this->tpl_name = 'acp_help_phpbb';
-		$this->page_title = 'ACP_HELP_PHPBB';
+		$this->tpl_name = 'acp_help_an602';
+		$this->page_title = 'ACP_HELP_AN602';
 
 		$submit = ($request->is_set_post('submit')) ? true : false;
 
-		$form_key = 'acp_help_phpbb';
+		$form_key = 'acp_help_an602';
 		add_form_key($form_key);
 		$error = array();
 

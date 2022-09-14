@@ -104,7 +104,7 @@ class install
 	{
 		if ($this->install_helper->is_an602_installed())
 		{
-			throw new http_exception(403, 'INSTALL_AN602_INSTALLED');
+			throw new http_exception(403, 'INSTALL_PHPBB_INSTALLED');
 		}
 
 		$this->template->assign_vars(array(

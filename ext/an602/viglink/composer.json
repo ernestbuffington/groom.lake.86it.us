@@ -1,6 +1,6 @@
 {
 	"name": "an602/viglink",
-	"type": "phpbb-extension",
+	"type": "an602-extension",
 	"description": "The VigLink extension for AN602 makes it possible to earn revenue, without any change to the user experience, when users post and follow links to commercial sites.",
 	"homepage": "https://www.groom.lake.86it.us",
 	"version": "1.0.5",

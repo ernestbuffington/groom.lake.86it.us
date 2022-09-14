@@ -42,12 +42,12 @@ if (isset($_GET['avatar']))
 	$an602_config_php_file = new \an602\config_php_file($an602_root_path, $phpEx);
 	extract($an602_config_php_file->get_all());
 
-	if (!defined('AN602_ENVIRONMENT'))
+	if (!defined('PHPBB_ENVIRONMENT'))
 	{
-		@define('AN602_ENVIRONMENT', 'production');
+		@define('PHPBB_ENVIRONMENT', 'production');
 	}
 
-	if (!defined('AN602_INSTALLED') || empty($dbms) || empty($acm_type))
+	if (!defined('PHPBB_INSTALLED') || empty($dbms) || empty($acm_type))
 	{
 		exit;
 	}

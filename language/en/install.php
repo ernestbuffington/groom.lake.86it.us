@@ -82,8 +82,8 @@ $lang = array_merge($lang, array(
 
 	'ACP_LINK'	=> 'Take me to <a href="%1$s">the ACP</a>',
 
-	'INSTALL_AN602_INSTALLED'		=> 'AN602 is already installed.',
-	'INSTALL_AN602_NOT_INSTALLED'	=> 'AN602 is not installed yet.',
+	'INSTALL_PHPBB_INSTALLED'		=> 'AN602 is already installed.',
+	'INSTALL_PHPBB_NOT_INSTALLED'	=> 'AN602 is not installed yet.',
 ));
 
 // Requirements translation
@@ -362,7 +362,7 @@ $lang = array_merge($lang, array(
 
 		<ol style="margin-left: 20px; font-size: 1.1em;">
 			<li><strong class="error">Backup all board files and the database.</strong></li>
-			<li>Go to the <a href="https://www.groom.lake.86it.us/downloads/" title="https://www.groom.lake.86it.us/downloads/">AN602.com downloads page</a> and download the latest "Full Package" archive.</li>
+			<li>Go to the <a href="https://www.groom.lake.86it.us/downloads/" title="https://www.groom.lake.86it.us/downloads/">groomlake.86it.us downloads page</a> and download the latest "Full Package" archive.</li>
 			<li>Unpack the archive.</li>
 			<li>Remove (delete) the <code class="inline">config.php</code> file, and the <code class="inline">/images</code>, <code class="inline">/store</code> and <code class="inline">/files</code> folders <em>from the package</em> (not your site).</li>
 			<li>Go to the ACP, Board settings, and make sure prosilver is set as the default style. If not, set it to prosilver.</li>
@@ -384,7 +384,7 @@ $lang = array_merge($lang, array(
 		<p>The advanced update package is only recommended for expert users in case core AN602 files have been modified in your installation. You are also able to update your installation using the methods listed within the INSTALL.html document. The steps for updating AN6023 using the advanced update package are:</p>
 
 		<ol style="margin-left: 20px; font-size: 1.1em;">
-			<li>Go to the <a href="https://www.groom.lake.86it.us/downloads/" title="https://www.groom.lake.86it.us/downloads/">AN602.com downloads page</a> and download the "Advanced Update Package" archive.</li>
+			<li>Go to the <a href="https://www.groom.lake.86it.us/downloads/" title="https://www.groom.lake.86it.us/downloads/">groomlake.86it.us downloads page</a> and download the "Advanced Update Package" archive.</li>
 			<li>Unpack the archive.</li>
 			<li>Upload the complete uncompressed "install" and "vendor" folders to your AN602 root directory (where your config.php file is).<br><br></li>
 		</ol>
@@ -496,7 +496,7 @@ $lang = array_merge($lang, array(
 	'CONVERT_NOT_EXIST'			=> 'The specified convertor does not exist.',
 	'DEV_NO_TEST_FILE'			=> 'No value has been specified for the test_file variable in the convertor. If you are a user of this convertor, you should not be seeing this error, please report this message to the convertor author. If you are a convertor author, you must specify the name of a file which exists in the source board to allow the path to it to be verified.',
 	'COULD_NOT_FIND_PATH'		=> 'Could not find path to your former board. Please check your settings and try again.<br />» %s was specified as the source path.',
-	'CONFIG_AN602_EMPTY'		=> 'The AN6023 config variable for “%s” is empty.',
+	'CONFIG_PHPBB_EMPTY'		=> 'The AN6023 config variable for “%s” is empty.',
 
 	'MAKE_FOLDER_WRITABLE'		=> 'Please make sure that this folder exists and is writable by the webserver then try again:<br />»<strong>%s</strong>.',
 	'MAKE_FOLDERS_WRITABLE'		=> 'Please make sure that these folders exist and are writable by the webserver then try again:<br />»<strong>%s</strong>.',

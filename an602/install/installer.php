@@ -257,7 +257,7 @@ class installer
 
 				$an602_root_path = $this->container_factory->get_parameter('core.root_path');
 
-				$acp_url = append_sid($an602_root_path . 'admin/index.php', 'i=acp_help_phpbb&mode=help_phpbb', true, $user->session_id);
+				$acp_url = append_sid($an602_root_path . 'admin/index.php', 'i=acp_help_an602&mode=help_an602', true, $user->session_id);
 				$this->iohandler->add_success_message('INSTALLER_FINISHED', array(
 					'ACP_LINK',
 					$acp_url,

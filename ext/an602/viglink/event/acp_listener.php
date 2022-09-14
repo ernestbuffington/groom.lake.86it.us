@@ -100,7 +100,7 @@ class acp_listener implements EventSubscriberInterface
 		if (empty($this->config['viglink_ask_admin']) && $this->user->data['user_type'] == USER_FOUNDER && (time() - intval($this->config['viglink_ask_admin_last']) > 86400))
 		{
 			$this->config->set('viglink_ask_admin_last', time());
-			redirect(append_sid($this->an602_root_path . 'admin/index.' . $this->php_ext, 'i=acp_help_phpbb&mode=help_phpbb'));
+			redirect(append_sid($this->an602_root_path . 'admin/index.' . $this->php_ext, 'i=acp_help_an602&mode=help_an602'));
 		}
 	}
 
@@ -129,7 +129,7 @@ class acp_listener implements EventSubscriberInterface
 		$this->template->assign_vars(array(
 			'S_ENABLE_VIGLINK'				=> !empty($this->config['viglink_enabled']) || !$this->config['help_send_statistics_time'],
 			'S_VIGLINK_ASK_ADMIN'			=> empty($this->config['viglink_ask_admin']) && $this->user->data['user_type'] == USER_FOUNDER,
-			'ACP_VIGLINK_SETTINGS_CHANGE'	=> $this->language->lang('ACP_VIGLINK_SETTINGS_CHANGE', append_sid($this->an602_root_path . 'admin/index.' . $this->php_ext, 'i=-phpbb-viglink-acp-viglink_module&mode=settings')),
+			'ACP_VIGLINK_SETTINGS_CHANGE'	=> $this->language->lang('ACP_VIGLINK_SETTINGS_CHANGE', append_sid($this->an602_root_path . 'admin/index.' . $this->php_ext, 'i=-an602-viglink-acp-viglink_module&mode=settings')),
 		));
 	}
 }

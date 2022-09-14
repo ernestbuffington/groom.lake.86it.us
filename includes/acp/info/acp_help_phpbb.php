@@ -16,10 +16,10 @@ class acp_help_an602_info
 	function module()
 	{
 		return array(
-			'filename'	=> 'acp_help_phpbb',
-			'title'		=> 'ACP_HELP_PHPBB',
+			'filename'	=> 'acp_help_an602',
+			'title'		=> 'ACP_HELP_AN602',
 			'modes'		=> array(
-				'help_phpbb'	=> array('title' => 'ACP_HELP_PHPBB', 'auth' => 'acl_a_server', 'cat' => array('ACP_SERVER_CONFIGURATION')),
+				'help_an602'	=> array('title' => 'ACP_HELP_AN602', 'auth' => 'acl_a_server', 'cat' => array('ACP_SERVER_CONFIGURATION')),
 			),
 		);
 	}
