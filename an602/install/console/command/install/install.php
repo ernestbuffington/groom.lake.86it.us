@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -109,7 +109,7 @@ class install extends \an602\console\command\command
 
 		if ($this->install_helper->is_an602_installed())
 		{
-			$iohandler->add_error_message('INSTALL_AN602_INSTALLED');
+			$iohandler->add_error_message('INSTALL_PHPBB_INSTALLED');
 
 			return 1;
 		}

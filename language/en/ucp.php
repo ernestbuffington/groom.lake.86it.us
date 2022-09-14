@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -40,12 +40,12 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'TERMS_OF_USE_CONTENT'	=> 'By accessing “%1$s” (hereinafter “we”, “us”, “our”, “%1$s”, “%2$s”), you agree to be legally bound by the following terms. If you do not agree to be legally bound by all of the following terms then please do not access and/or use “%1$s”. We may change these at any time and we’ll do our utmost in informing you, though it would be prudent to review this regularly yourself as your continued usage of “%1$s” after changes mean you agree to be legally bound by these terms as they are updated and/or amended.
 	<br><br>
-	Our forums are powered by AN602 (hereinafter “they”, “them”, “their”, “AN602 software”, “groom.lake.86it.us”, “PHP-AN602”, “AN602 Teams”) which is a bulletin board solution released under the “<a href="http://opensource.org/licenses/gpl-2.0.php">GNU General Public License v2</a>” (hereinafter “GPL”) and can be downloaded from <a href="https://groom.lake.86it.us/">groom.lake.86it.us</a>. The AN602 software only facilitates internet based discussions; PHP-AN602 is not responsible for what we allow and/or disallow as permissible content and/or conduct. For further information about AN602, please see: <a href="https://groom.lake.86it.us/">https://groom.lake.86it.us/</a>.
+	Our forums are powered by AN602 (hereinafter “they”, “them”, “their”, “AN602 software”, “www.groom.lake.86it.us”, “AN602 Limited”, “AN602 Teams”) which is a bulletin board solution released under the “<a href="http://opensource.org/licenses/gpl-2.0.php">GNU General Public License v2</a>” (hereinafter “GPL”) and can be downloaded from <a href="https://www.groom.lake.86it.us/">www.groom.lake.86it.us</a>. The AN602 software only facilitates internet based discussions; AN602 Limited is not responsible for what we allow and/or disallow as permissible content and/or conduct. For further information about AN602, please see: <a href="https://www.groom.lake.86it.us/">https://www.groom.lake.86it.us/</a>.
 	<br><br>
 	You agree not to post any abusive, obscene, vulgar, slanderous, hateful, threatening, sexually-orientated or any other material that may violate any laws be it of your country, the country where “%1$s” is hosted or International Law. Doing so may lead to you being immediately and permanently banned, with notification of your Internet Service Provider if deemed required by us. The IP address of all posts are recorded to aid in enforcing these conditions. You agree that “%1$s” have the right to remove, edit, move or close any topic at any time should we see fit. As a user you agree to any information you have entered to being stored in a database. While this information will not be disclosed to any third party without your consent, neither “%1$s” nor AN602 shall be held responsible for any hacking attempt that may lead to the data being compromised.
 	',
 
-	'PRIVACY_POLICY'		=> 'This policy explains in detail how “%1$s” along with its affiliated companies (hereinafter “we”, “us”, “our”, “%1$s”, “%2$s”) and AN602 (hereinafter “they”, “them”, “their”, “AN602 software”, “groom.lake.86it.us”, “PHP-AN602”, “AN602 Teams”) use any information collected during any session of usage by you (hereinafter “your information”).
+	'PRIVACY_POLICY'		=> 'This policy explains in detail how “%1$s” along with its affiliated companies (hereinafter “we”, “us”, “our”, “%1$s”, “%2$s”) and AN602 (hereinafter “they”, “them”, “their”, “AN602 software”, “www.groom.lake.86it.us”, “AN602 Limited”, “AN602 Teams”) use any information collected during any session of usage by you (hereinafter “your information”).
 	<br><br>
 	Your information is collected via two ways. Firstly, by browsing “%1$s” will cause the AN602 software to create a number of cookies, which are small text files that are downloaded on to your computer’s web browser temporary files. The first two cookies just contain a user identifier (hereinafter “user-id”) and an anonymous session identifier (hereinafter “session-id”), automatically assigned to you by the AN602 software. A third cookie will be created once you have browsed topics within “%1$s” and is used to store which topics have been read, thereby improving your user experience.
 	<br><br>

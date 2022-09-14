@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -73,7 +73,7 @@ class bookmark extends \an602\notification\type\post
 		$users = array();
 
 		$sql = 'SELECT user_id
-			FROM ' . AN602_BOOKMARKS_TABLE . '
+			FROM ' . BOOKMARKS_TABLE . '
 			WHERE ' . $this->db->sql_in_set('topic_id', $post['topic_id']) . '
 				AND user_id <> ' . (int) $post['poster_id'];
 		$result = $this->db->sql_query($sql);

@@ -1,6 +1,6 @@
 services:
     attachment.delete:
-        class: phpbb\attachment\delete
+        class: an602\attachment\delete
         shared: false
         arguments:
             - '@config'
@@ -11,7 +11,7 @@ services:
             - '%core.root_path%'
 
     attachment.manager:
-        class: phpbb\attachment\manager
+        class: an602\attachment\manager
         shared: false
         arguments:
             - '@attachment.delete'
@@ -19,13 +19,13 @@ services:
             - '@attachment.upload'
 
     attachment.resync:
-        class: phpbb\attachment\resync
+        class: an602\attachment\resync
         shared: false
         arguments:
             - '@dbal.conn'
 
     attachment.upload:
-        class: phpbb\attachment\upload
+        class: an602\attachment\upload
         shared: false
         arguments:
             - '@auth'

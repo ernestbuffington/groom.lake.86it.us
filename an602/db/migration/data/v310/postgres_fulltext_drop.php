@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -49,7 +49,7 @@ class postgres_fulltext_drop extends \an602\db\migration\migration
 		* Possibly time-consuming recreation of the search index (i.e.
 		* FULLTEXT indexes) is left as a task to the admin to not
 		* unnecessarily stall the upgrade process. The new search index will
-		* then require about 40% less table space (also see AN602-11040).
+		* then require about 40% less table space (also see PHPBB3-11040).
 		*/
 		return array(
 			'drop_keys' => array(

@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -154,8 +154,8 @@ abstract class captcha_abstract
 		global $db;
 
 		$sql = 'SELECT DISTINCT c.session_id
-			FROM ' . AN602_CONFIRM_TABLE . ' c
-			LEFT JOIN ' . AN602_SESSIONS_TABLE . ' s ON (c.session_id = s.session_id)
+			FROM ' . CONFIRM_TABLE . ' c
+			LEFT JOIN ' . SESSIONS_TABLE . ' s ON (c.session_id = s.session_id)
 			WHERE s.session_id IS NULL' .
 				((empty($type)) ? '' : ' AND c.confirm_type = ' . (int) $type);
 		$result = $db->sql_query($sql);
@@ -171,7 +171,7 @@ abstract class captcha_abstract
 
 			if (count($sql_in))
 			{
-				$sql = 'DELETE FROM ' . AN602_CONFIRM_TABLE . '
+				$sql = 'DELETE FROM ' . CONFIRM_TABLE . '
 					WHERE ' . $db->sql_in_set('session_id', $sql_in);
 				$db->sql_query($sql);
 			}
@@ -241,7 +241,7 @@ abstract class captcha_abstract
 		// compute $seed % 0x7fffffff
 		$this->seed -= 0x7fffffff * floor($this->seed / 0x7fffffff);
 
-		$sql = 'INSERT INTO ' . AN602_CONFIRM_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+		$sql = 'INSERT INTO ' . CONFIRM_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 				'confirm_id'	=> (string) $this->confirm_id,
 				'session_id'	=> (string) $user->session_id,
 				'confirm_type'	=> (int) $this->type,
@@ -264,7 +264,7 @@ abstract class captcha_abstract
 		// compute $seed % 0x7fffffff
 		$this->seed -= 0x7fffffff * floor($this->seed / 0x7fffffff);
 
-		$sql = 'UPDATE ' . AN602_CONFIRM_TABLE . ' SET ' . $db->sql_build_array('UPDATE', array(
+		$sql = 'UPDATE ' . CONFIRM_TABLE . ' SET ' . $db->sql_build_array('UPDATE', array(
 				'code'			=> (string) $this->code,
 				'seed'			=> (int) $this->seed)) . '
 				WHERE
@@ -286,7 +286,7 @@ abstract class captcha_abstract
 		// compute $seed % 0x7fffffff
 		$this->seed -= 0x7fffffff * floor($this->seed / 0x7fffffff);
 
-		$sql = 'UPDATE ' . AN602_CONFIRM_TABLE . ' SET ' . $db->sql_build_array('UPDATE', array(
+		$sql = 'UPDATE ' . CONFIRM_TABLE . ' SET ' . $db->sql_build_array('UPDATE', array(
 				'code'			=> (string) $this->code,
 				'seed'			=> (int) $this->seed)) . '
 				, attempts = attempts + 1
@@ -304,7 +304,7 @@ abstract class captcha_abstract
 		global $db, $user;
 
 		$sql = 'SELECT code, seed, attempts
-			FROM ' . AN602_CONFIRM_TABLE . "
+			FROM ' . CONFIRM_TABLE . "
 			WHERE confirm_id = '" . $db->sql_escape($this->confirm_id) . "'
 				AND session_id = '" . $db->sql_escape($user->session_id) . "'
 				AND confirm_type = " . $this->type;
@@ -337,7 +337,7 @@ abstract class captcha_abstract
 	{
 		global $db, $user;
 
-		$sql = 'DELETE FROM ' . AN602_CONFIRM_TABLE . "
+		$sql = 'DELETE FROM ' . CONFIRM_TABLE . "
 			WHERE session_id = '" . $db->sql_escape($user->session_id) . "'
 				AND confirm_type = " . (int) $this->type;
 		$db->sql_query($sql);

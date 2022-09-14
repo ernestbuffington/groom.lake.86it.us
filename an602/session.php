@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -76,7 +76,7 @@ class session
 		}
 		unset($args);
 
-		// The following examples given are for an request uri of {path to the an602 directory}/admin/adm/index.php?i=10&b=2
+		// The following examples given are for an request uri of {path to the phpbb directory}/admin/index.php?i=10&b=2
 
 		// The current query string
 		$query_string = trim(implode('&', $use_args));
@@ -115,14 +115,14 @@ class session
 			$page_dir = substr($page_dir, 0, -1);
 		}
 
-		// Current page from AN602 root (for example: admin/adm/index.php?i=10&b=2)
+		// Current page from AN602 root (for example: admin/index.php?i=10&b=2)
 		$page = (($page_dir) ? $page_dir . '/' : '') . $page_name;
 		if ($query_string)
 		{
 			$page .= '?' . $query_string;
 		}
 
-		// The script path from the webroot to the current directory (for example: /AN6023/admin/adm/) : always prefixed with / and ends in /
+		// The script path from the webroot to the current directory (for example: /AN6023/admin/) : always prefixed with / and ends in /
 		$script_path = $symfony_request->getBasePath();
 
 		// The script path from the webroot to the AN602 root (for example: /AN6023/)
@@ -352,7 +352,7 @@ class session
 		if (!empty($this->session_id))
 		{
 			$sql = 'SELECT u.*, s.*
-				FROM ' . AN602_SESSIONS_TABLE . ' s, ' . AN602_USERS_TABLE . " u
+				FROM ' . SESSIONS_TABLE . ' s, ' . USERS_TABLE . " u
 				WHERE s.session_id = '" . $db->sql_escape($this->session_id) . "'
 					AND u.user_id = s.session_user_id";
 			$result = $db->sql_query($sql);
@@ -567,7 +567,7 @@ class session
 		if (isset($this->cookie_data['k']) && $this->cookie_data['k'] && $this->cookie_data['u'] && empty($this->data))
 		{
 			$sql = 'SELECT u.*
-				FROM ' . AN602_USERS_TABLE . ' u, ' . AN602_SESSIONS_KEYS_TABLE . ' k
+				FROM ' . USERS_TABLE . ' u, ' . SESSIONS_KEYS_TABLE . ' k
 				WHERE u.user_id = ' . (int) $this->cookie_data['u'] . '
 					AND u.user_type IN (' . USER_NORMAL . ', ' . USER_FOUNDER . ")
 					AND k.user_id = u.user_id
@@ -590,7 +590,7 @@ class session
 			$this->cookie_data['u'] = $user_id;
 
 			$sql = 'SELECT *
-				FROM ' . AN602_USERS_TABLE . '
+				FROM ' . USERS_TABLE . '
 				WHERE user_id = ' . (int) $this->cookie_data['u'] . '
 					AND user_type IN (' . USER_NORMAL . ', ' . USER_FOUNDER . ')';
 			$result = $db->sql_query($sql);
@@ -620,15 +620,15 @@ class session
 			if (!$bot)
 			{
 				$sql = 'SELECT *
-					FROM ' . AN602_USERS_TABLE . '
+					FROM ' . USERS_TABLE . '
 					WHERE user_id = ' . (int) $this->cookie_data['u'];
 			}
 			else
 			{
 				// We give bots always the same session if it is not yet expired.
 				$sql = 'SELECT u.*, s.*
-					FROM ' . AN602_USERS_TABLE . ' u
-					LEFT JOIN ' . AN602_SESSIONS_TABLE . ' s ON (s.session_user_id = u.user_id)
+					FROM ' . USERS_TABLE . ' u
+					LEFT JOIN ' . SESSIONS_TABLE . ' s ON (s.session_user_id = u.user_id)
 					WHERE u.user_id = ' . (int) $bot;
 			}
 
@@ -688,7 +688,7 @@ class session
 				if ($this->time_now - $this->data['session_time'] > 60 || ($this->update_session_page && $this->data['session_page'] != $this->page['page']))
 				{
 					// Update the last visit time
-					$sql = 'UPDATE ' . AN602_USERS_TABLE . '
+					$sql = 'UPDATE ' . USERS_TABLE . '
 						SET user_lastvisit = ' . (int) $this->data['session_time'] . '
 						WHERE user_id = ' . (int) $this->data['user_id'];
 					$db->sql_query($sql);
@@ -701,7 +701,7 @@ class session
 			else
 			{
 				// If the ip and browser does not match make sure we only have one bot assigned to one session
-				$db->sql_query('DELETE FROM ' . AN602_SESSIONS_TABLE . ' WHERE session_user_id = ' . $this->data['user_id']);
+				$db->sql_query('DELETE FROM ' . SESSIONS_TABLE . ' WHERE session_user_id = ' . $this->data['user_id']);
 			}
 		}
 
@@ -731,7 +731,7 @@ class session
 		$db->sql_return_on_error(true);
 
 		$sql = 'DELETE
-			FROM ' . AN602_SESSIONS_TABLE . '
+			FROM ' . SESSIONS_TABLE . '
 			WHERE session_id = \'' . $db->sql_escape($this->session_id) . '\'
 				AND session_user_id = ' . ANONYMOUS;
 
@@ -743,7 +743,7 @@ class session
 //				$db->sql_return_on_error(false);
 
 				$sql = 'SELECT COUNT(session_id) AS sessions
-					FROM ' . AN602_SESSIONS_TABLE . '
+					FROM ' . SESSIONS_TABLE . '
 					WHERE session_time >= ' . ($this->time_now - 60);
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
@@ -776,7 +776,7 @@ class session
 		$sql_ary['session_page'] = (string) substr($this->page['page'], 0, 199);
 		$sql_ary['session_forum_id'] = $this->page['forum'];
 
-		$sql = 'INSERT INTO ' . AN602_SESSIONS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+		$sql = 'INSERT INTO ' . SESSIONS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 		$db->sql_query($sql);
 
 		$db->sql_return_on_error(false);
@@ -803,7 +803,7 @@ class session
 			unset($cookie_expire);
 
 			$sql = 'SELECT COUNT(session_id) AS sessions
-					FROM ' . AN602_SESSIONS_TABLE . '
+					FROM ' . SESSIONS_TABLE . '
 					WHERE session_user_id = ' . (int) $this->data['user_id'] . '
 					AND session_time >= ' . (int) ($this->time_now - (max((int) $config['session_length'], (int) $config['form_token_lifetime'])));
 			$result = $db->sql_query($sql);
@@ -814,7 +814,7 @@ class session
 			{
 				$this->data['user_form_salt'] = unique_id();
 				// Update the form key
-				$sql = 'UPDATE ' . AN602_USERS_TABLE . '
+				$sql = 'UPDATE ' . USERS_TABLE . '
 					SET user_form_salt = \'' . $db->sql_escape($this->data['user_form_salt']) . '\'
 					WHERE user_id = ' . (int) $this->data['user_id'];
 				$db->sql_query($sql);
@@ -825,7 +825,7 @@ class session
 			$this->data['session_time'] = $this->data['session_last_visit'] = $this->time_now;
 
 			// Update the last visit time
-			$sql = 'UPDATE ' . AN602_USERS_TABLE . '
+			$sql = 'UPDATE ' . USERS_TABLE . '
 				SET user_lastvisit = ' . (int) $this->data['session_time'] . '
 				WHERE user_id = ' . (int) $this->data['user_id'];
 			$db->sql_query($sql);
@@ -862,7 +862,7 @@ class session
 	{
 		global $SID, $_SID, $db, $an602_container, $an602_dispatcher;
 
-		$sql = 'DELETE FROM ' . AN602_SESSIONS_TABLE . "
+		$sql = 'DELETE FROM ' . SESSIONS_TABLE . "
 			WHERE session_id = '" . $db->sql_escape($this->session_id) . "'
 				AND session_user_id = " . (int) $this->data['user_id'];
 		$db->sql_query($sql);
@@ -898,14 +898,14 @@ class session
 				$this->data['session_time'] = time();
 			}
 
-			$sql = 'UPDATE ' . AN602_USERS_TABLE . '
+			$sql = 'UPDATE ' . USERS_TABLE . '
 				SET user_lastvisit = ' . (int) $this->data['session_time'] . '
 				WHERE user_id = ' . (int) $this->data['user_id'];
 			$db->sql_query($sql);
 
 			if ($this->cookie_data['k'])
 			{
-				$sql = 'DELETE FROM ' . AN602_SESSIONS_KEYS_TABLE . '
+				$sql = 'DELETE FROM ' . SESSIONS_KEYS_TABLE . '
 					WHERE user_id = ' . (int) $this->data['user_id'] . "
 						AND key_id = '" . $db->sql_escape(md5($this->cookie_data['k'])) . "'";
 				$db->sql_query($sql);
@@ -915,7 +915,7 @@ class session
 			$this->data = array();
 
 			$sql = 'SELECT *
-				FROM ' . AN602_USERS_TABLE . '
+				FROM ' . USERS_TABLE . '
 				WHERE user_id = ' . ANONYMOUS;
 			$result = $db->sql_query($sql);
 			$this->data = $db->sql_fetchrow($result);
@@ -965,10 +965,10 @@ class session
 		 * Outer SELECT gets data for them
 		 */
 		$sql_select = 'SELECT s1.session_page, s1.session_user_id, s1.session_time AS recent_time
-			FROM ' . AN602_SESSIONS_TABLE . ' AS s1
+			FROM ' . SESSIONS_TABLE . ' AS s1
 			INNER JOIN (
 				SELECT session_user_id, MAX(session_time) AS recent_time
-				FROM ' . AN602_SESSIONS_TABLE . '
+				FROM ' . SESSIONS_TABLE . '
 				WHERE session_time < ' . ($this->time_now - (int) $config['session_length']) . '
 					AND session_user_id <> ' . ANONYMOUS . '
 				GROUP BY session_user_id
@@ -983,7 +983,7 @@ class session
 				{
 					// For SQLite versions 3.8.3+ which support Common Table Expressions (CTE)
 					$sql = "WITH s3 (session_page, session_user_id, session_time) AS ($sql_select)
-						UPDATE " . AN602_USERS_TABLE . '
+						UPDATE " . USERS_TABLE . '
 						SET (user_lastpage, user_lastvisit) = (SELECT session_page, session_time FROM s3 WHERE session_user_id = user_id)
 						WHERE EXISTS (SELECT session_user_id FROM s3 WHERE session_user_id = user_id)';
 					$db->sql_query($sql);
@@ -996,7 +996,7 @@ class session
 				$result = $db->sql_query($sql_select);
 				while ($row = $db->sql_fetchrow($result))
 				{
-					$sql = 'UPDATE ' . AN602_USERS_TABLE . '
+					$sql = 'UPDATE ' . USERS_TABLE . '
 						SET user_lastvisit = ' . (int) $row['recent_time'] . ", user_lastpage = '" . $db->sql_escape($row['session_page']) . "'
 						WHERE user_id = " . (int) $row['session_user_id'];
 					$db->sql_query($sql);
@@ -1005,7 +1005,7 @@ class session
 			break;
 
 			case 'mysqli':
-				$sql = 'UPDATE ' . AN602_USERS_TABLE . " u,
+				$sql = 'UPDATE ' . USERS_TABLE . " u,
 					($sql_select) s3
 					SET u.user_lastvisit = s3.recent_time, u.user_lastpage = s3.session_page
 					WHERE u.user_id = s3.session_user_id";
@@ -1013,7 +1013,7 @@ class session
 			break;
 
 			default:
-				$sql = 'UPDATE ' . AN602_USERS_TABLE . "
+				$sql = 'UPDATE ' . USERS_TABLE . "
 					SET user_lastvisit = s3.recent_time, user_lastpage = s3.session_page
 					FROM ($sql_select) s3
 					WHERE user_id = s3.session_user_id";
@@ -1022,7 +1022,7 @@ class session
 		}
 
 		// Delete all expired sessions
-		$sql = 'DELETE FROM ' . AN602_SESSIONS_TABLE . '
+		$sql = 'DELETE FROM ' . SESSIONS_TABLE . '
 			WHERE session_time < ' . ($this->time_now - (int) $config['session_length']);
 		$db->sql_query($sql);
 
@@ -1031,7 +1031,7 @@ class session
 
 		if ($config['max_autologin_time'])
 		{
-			$sql = 'DELETE FROM ' . AN602_SESSIONS_KEYS_TABLE . '
+			$sql = 'DELETE FROM ' . SESSIONS_KEYS_TABLE . '
 				WHERE last_login < ' . (time() - (86400 * (int) $config['max_autologin_time']));
 			$db->sql_query($sql);
 		}
@@ -1041,7 +1041,7 @@ class session
 		$captcha_factory = $an602_container->get('captcha.factory');
 		$captcha_factory->garbage_collect($config['captcha_plugin']);
 
-		$sql = 'DELETE FROM ' . AN602_LOGIN_ATTEMPT_TABLE . '
+		$sql = 'DELETE FROM ' . LOGIN_ATTEMPT_TABLE . '
 			WHERE attempt_time < ' . (time() - (int) $config['ip_login_limit_time']);
 		$db->sql_query($sql);
 
@@ -1135,7 +1135,7 @@ class session
 		$where_sql = array();
 
 		$sql = 'SELECT ban_ip, ban_userid, ban_email, ban_exclude, ban_give_reason, ban_end
-			FROM ' . AN602_BANLIST_TABLE . '
+			FROM ' . BANLIST_TABLE . '
 			WHERE ';
 
 		// Determine which entries to check, only return those
@@ -1480,14 +1480,14 @@ class session
 
 		if ($key)
 		{
-			$sql = 'UPDATE ' . AN602_SESSIONS_KEYS_TABLE . '
+			$sql = 'UPDATE ' . SESSIONS_KEYS_TABLE . '
 				SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 				WHERE user_id = ' . (int) $user_id . "
 					AND key_id = '" . $db->sql_escape(md5($key)) . "'";
 		}
 		else
 		{
-			$sql = 'INSERT INTO ' . AN602_SESSIONS_KEYS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+			$sql = 'INSERT INTO ' . SESSIONS_KEYS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 		}
 
 		/**
@@ -1531,13 +1531,13 @@ class session
 
 		$user_id = ($user_id === false) ? (int) $this->data['user_id'] : (int) $user_id;
 
-		$sql = 'DELETE FROM ' . AN602_SESSIONS_KEYS_TABLE . '
+		$sql = 'DELETE FROM ' . SESSIONS_KEYS_TABLE . '
 			WHERE user_id = ' . (int) $user_id;
 		$db->sql_query($sql);
 
 		// If the user is logged in, update last visit info first before deleting sessions
 		$sql = 'SELECT session_time, session_page
-			FROM ' . AN602_SESSIONS_TABLE . '
+			FROM ' . SESSIONS_TABLE . '
 			WHERE session_user_id = ' . (int) $user_id . '
 			ORDER BY session_time DESC';
 		$result = $db->sql_query_limit($sql, 1);
@@ -1546,7 +1546,7 @@ class session
 
 		if ($row)
 		{
-			$sql = 'UPDATE ' . AN602_USERS_TABLE . '
+			$sql = 'UPDATE ' . USERS_TABLE . '
 				SET user_lastvisit = ' . (int) $row['session_time'] . ", user_lastpage = '" . $db->sql_escape($row['session_page']) . "'
 				WHERE user_id = " . (int) $user_id;
 			$db->sql_query($sql);
@@ -1557,7 +1557,7 @@ class session
 		$sql_where = 'session_user_id = ' . (int) $user_id;
 		$sql_where .= ($user_id === (int) $this->data['user_id']) ? " AND session_id <> '" . $db->sql_escape($this->session_id) . "'" : '';
 
-		$sql = 'DELETE FROM ' . AN602_SESSIONS_TABLE . "
+		$sql = 'DELETE FROM ' . SESSIONS_TABLE . "
 			WHERE $sql_where";
 		$db->sql_query($sql);
 
@@ -1614,7 +1614,7 @@ class session
 	function unset_admin()
 	{
 		global $db;
-		$sql = 'UPDATE ' . AN602_SESSIONS_TABLE . '
+		$sql = 'UPDATE ' . SESSIONS_TABLE . '
 			SET session_admin = 0
 			WHERE session_id = \'' . $db->sql_escape($this->session_id) . '\'';
 		$db->sql_query($sql);
@@ -1632,7 +1632,7 @@ class session
 
 		$session_id = ($session_id) ? $session_id : $this->session_id;
 
-		$sql = 'UPDATE ' . AN602_SESSIONS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $session_data) . "
+		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $session_data) . "
 			WHERE session_id = '" . $db->sql_escape($session_id) . "'";
 		$db->sql_query($sql);
 

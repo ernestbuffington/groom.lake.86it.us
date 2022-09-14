@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -382,20 +382,20 @@ class manager
 	* @param array $stored_hash_type An array containing the hash types
 	*				as described by stored password hash
 	* @param string $hash Stored password hash
-	* @param bool $skip_an6022_check True if AN6022 password check should be skipped
+	* @param bool $skip_phpbb2_check True if AN6022 password check should be skipped
 	*
 	* @return bool True if password is correct, false if not
 	*/
-	public function check_combined_hash($password, $stored_hash_type, $hash, bool $skip_an6022_check = false)
+	public function check_combined_hash($password, $stored_hash_type, $hash, bool $skip_phpbb2_check = false)
 	{
 		// Special case for passwords converted from AN6022:
 		// These could be phpass(md5(password)) and hence already be double
 		// hashed. For these, try to also check combined hash output of
 		// md5 version of supplied password.
-		$is_valid_an6022_pass = false;
-		if (!$skip_an6022_check)
+		$is_valid_phpbb2_pass = false;
+		if (!$skip_phpbb2_check)
 		{
-			$is_valid_an6022_pass = $this->check_combined_hash(md5($password), $stored_hash_type, $hash, true);
+			$is_valid_phpbb2_pass = $this->check_combined_hash(md5($password), $stored_hash_type, $hash, true);
 		}
 
 		$i = 0;
@@ -414,6 +414,6 @@ class manager
 			$i++;
 		}
 
-		return hash_equals($hash, $this->helper->combine_hash_output($data, 'hash', $password)) || $is_valid_an6022_pass;
+		return hash_equals($hash, $this->helper->combine_hash_output($data, 'hash', $password)) || $is_valid_phpbb2_pass;
 	}
 }

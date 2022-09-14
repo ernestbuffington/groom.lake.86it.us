@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -34,7 +34,7 @@ class bot_update extends \an602\db\migration\migration
 		$bot_name_clean = utf8_clean_string($bot_name);
 
 		$sql = 'SELECT user_id
-			FROM ' . AN602_USERS_TABLE . "
+			FROM ' . USERS_TABLE . "
 			WHERE username_clean = '" . $this->db->sql_escape($bot_name_clean) . "'";
 		$result = $this->db->sql_query($sql);
 		$bing_already_added = (bool) $this->db->sql_fetchfield('user_id');
@@ -45,7 +45,7 @@ class bot_update extends \an602\db\migration\migration
 			$bot_agent = 'bingbot/';
 			$bot_ip = '';
 			$sql = 'SELECT group_id, group_colour
-				FROM ' . AN602_GROUPS_TABLE . "
+				FROM ' . GROUPS_TABLE . "
 				WHERE group_name = 'BOTS'";
 			$result = $this->db->sql_query($sql);
 			$group_row = $this->db->sql_fetchrow($result);
@@ -60,7 +60,7 @@ class bot_update extends \an602\db\migration\migration
 
 			if (!function_exists('user_add'))
 			{
-				include($this->an602_root_path . 'includes/an602_functions_user.' . $this->php_ext);
+				include($this->an602_root_path . 'includes/functions_user.' . $this->php_ext);
 			}
 
 			$user_row = array(
@@ -80,7 +80,7 @@ class bot_update extends \an602\db\migration\migration
 
 			$user_id = user_add($user_row);
 
-			$sql = 'INSERT INTO ' . AN602_BOTS_TABLE . ' ' . $this->db->sql_build_array('INSERT', array(
+			$sql = 'INSERT INTO ' . BOTS_TABLE . ' ' . $this->db->sql_build_array('INSERT', array(
 					'bot_active'	=> 1,
 					'bot_name'		=> (string) $bot_name,
 					'user_id'		=> (int) $user_id,
@@ -97,7 +97,7 @@ class bot_update extends \an602\db\migration\migration
 		// Update bots
 		if (!function_exists('user_delete'))
 		{
-			include($this->an602_root_path . 'includes/an602_functions_user.' . $this->php_ext);
+			include($this->an602_root_path . 'includes/functions_user.' . $this->php_ext);
 		}
 
 		$bots_updates = array(
@@ -120,7 +120,7 @@ class bot_update extends \an602\db\migration\migration
 		foreach ($bots_updates as $bot_name => $bot_agent)
 		{
 			$sql = 'SELECT user_id
-				FROM ' . AN602_USERS_TABLE . '
+				FROM ' . USERS_TABLE . '
 				WHERE user_type = ' . USER_IGNORE . "
 					AND username_clean = '" . $this->db->sql_escape(utf8_clean_string($bot_name)) . "'";
 			$result = $this->db->sql_query($sql);
@@ -131,7 +131,7 @@ class bot_update extends \an602\db\migration\migration
 			{
 				if ($bot_agent === false)
 				{
-					$sql = 'DELETE FROM ' . AN602_BOTS_TABLE . "
+					$sql = 'DELETE FROM ' . BOTS_TABLE . "
 						WHERE user_id = $bot_user_id";
 					$this->sql_query($sql);
 
@@ -139,7 +139,7 @@ class bot_update extends \an602\db\migration\migration
 				}
 				else
 				{
-					$sql = 'UPDATE ' . AN602_BOTS_TABLE . "
+					$sql = 'UPDATE ' . BOTS_TABLE . "
 						SET bot_agent = '" .  $this->db->sql_escape($bot_agent) . "'
 						WHERE user_id = $bot_user_id";
 					$this->sql_query($sql);

@@ -1,11 +1,11 @@
 services:
     files.factory:
-        class: phpbb\files\factory
+        class: an602\files\factory
         arguments:
             - '@service_container'
 
     files.filespec:
-        class: phpbb\files\filespec
+        class: an602\files\filespec
         shared: false
         arguments:
             - '@filesystem'
@@ -17,7 +17,7 @@ services:
             - '@plupload'
 
     files.upload:
-        class: phpbb\files\upload
+        class: an602\files\upload
         shared: false
         arguments:
             - '@filesystem'
@@ -27,7 +27,7 @@ services:
             - '@request'
 
     files.types.form:
-        class: phpbb\files\types\form
+        class: an602\files\types\form
         shared: false
         arguments:
             - '@files.factory'
@@ -37,7 +37,7 @@ services:
             - '@request'
 
     files.types.local:
-        class: phpbb\files\types\local
+        class: an602\files\types\local
         shared: false
         arguments:
             - '@files.factory'
@@ -46,7 +46,7 @@ services:
             - '@request'
 
     files.types.remote:
-        class: phpbb\files\types\remote
+        class: an602\files\types\remote
         shared: false
         arguments:
             - '@config'

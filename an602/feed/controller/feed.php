@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -153,7 +153,7 @@ class feed
 	{
 		// Get at least one news forum
 		$sql = 'SELECT forum_id
-					FROM ' . AN602_FORUMS_TABLE . '
+					FROM ' . FORUMS_TABLE . '
 					WHERE ' . $this->db->sql_bit_and('forum_options', FORUM_OPTION_FEED_NEWS, '<> 0');
 		$result = $this->db->sql_query_limit($sql, 1, 0, 600);
 		$s_feed_news = (int) $this->db->sql_fetchfield('forum_id');
@@ -401,7 +401,7 @@ class feed
 		if (!empty($this->user->data['is_bot']))
 		{
 			// Let reverse proxies know we detected a bot.
-			$response->headers->set('X-AN602-IS-BOT', 'yes');
+			$response->headers->set('X-PHPBB-IS-BOT', 'yes');
 		}
 
 		return $response;

@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -18,7 +18,7 @@ class acp_prune_users_module extends \an602\db\migration\container_aware_migrati
 	public function effectively_installed()
 	{
 		$sql = 'SELECT module_id
-			FROM ' . AN602_MODULES_TABLE . "
+			FROM ' . MODULES_TABLE . "
 			WHERE module_class = 'acp'
 				AND module_langname = 'ACP_CAT_USERS'";
 		$result = $this->db->sql_query($sql);
@@ -26,7 +26,7 @@ class acp_prune_users_module extends \an602\db\migration\container_aware_migrati
 		$this->db->sql_freeresult($result);
 
 		$sql = 'SELECT parent_id
-			FROM ' . AN602_MODULES_TABLE . "
+			FROM ' . MODULES_TABLE . "
 			WHERE module_class = 'acp'
 				AND module_basename = 'acp_prune'
 				AND module_mode = 'users'";
@@ -54,7 +54,7 @@ class acp_prune_users_module extends \an602\db\migration\container_aware_migrati
 	public function move_prune_users_module()
 	{
 		$sql = 'SELECT module_id
-			FROM ' . AN602_MODULES_TABLE . "
+			FROM ' . MODULES_TABLE . "
 			WHERE module_class = 'acp'
 				AND module_basename = 'acp_prune'
 				AND module_mode = 'users'";
@@ -63,7 +63,7 @@ class acp_prune_users_module extends \an602\db\migration\container_aware_migrati
 		$this->db->sql_freeresult($result);
 
 		$sql = 'SELECT module_id
-			FROM ' . AN602_MODULES_TABLE . "
+			FROM ' . MODULES_TABLE . "
 			WHERE module_class = 'acp'
 				AND module_langname = 'ACP_CAT_USERS'";
 		$result = $this->db->sql_query($sql);

@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -269,7 +269,7 @@ abstract class base implements feed_interface
 		if (!isset($forum_ids) && ($forum_ids = $this->cache->get('_' . $cache_name)) === false)
 		{
 			$sql = 'SELECT forum_id
-				FROM ' . AN602_FORUMS_TABLE . '
+				FROM ' . FORUMS_TABLE . '
 				WHERE ' . $this->db->sql_bit_and('forum_options', FORUM_OPTION_FEED_EXCLUDE, '<> 0');
 			$result = $this->db->sql_query($sql);
 

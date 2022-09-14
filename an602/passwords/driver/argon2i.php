@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -39,7 +39,7 @@ class argon2i extends base_native
 
 		/**
 		 * For Sodium implementation of argon2 algorithm (since PHP 7.4), set special value of 1 for "threads" cost factor
-		 * See https://wiki.php.net/rfc/sodium.argon.hash and AN602-16266
+		 * See https://wiki.php.net/rfc/sodium.argon.hash and PHPBB3-16266
 		 * Don't allow cost factors to be below default settings where possible
 		 */
 		$this->memory_cost = max($memory_cost, defined('PASSWORD_ARGON2_DEFAULT_MEMORY_COST') ? PASSWORD_ARGON2_DEFAULT_MEMORY_COST : 65536);

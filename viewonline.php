@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,8 +14,8 @@
 /**
 * @ignore
 */
-define('IN_AN602', true);
-$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
+define('IN_PHPBB', true);
+$an602_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($an602_root_path . 'common.' . $phpEx);
 
@@ -66,11 +66,11 @@ if ($mode == 'whois' && $auth->acl_get('a_') && $session_id)
 {
 	if (!function_exists('user_get_id_name'))
 	{
-		include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
+		include($an602_root_path . 'includes/functions_user.' . $phpEx);
 	}
 
 	$sql = 'SELECT u.user_id, u.username, u.user_type, s.session_ip
-		FROM ' . AN602_USERS_TABLE . ' u, ' . AN602_SESSIONS_TABLE . " s
+		FROM ' . USERS_TABLE . ' u, ' . SESSIONS_TABLE . " s
 		WHERE s.session_id = '" . $db->sql_escape($session_id) . "'
 			AND	u.user_id = s.session_user_id";
 	$result = $db->sql_query($sql);
@@ -98,7 +98,7 @@ $user->update_session_infos();
 $sql_ary = array(
 	'SELECT'	=> 'f.forum_id, f.forum_name, f.parent_id, f.forum_type, f.left_id, f.right_id',
 	'FROM'		=> array(
-		AN602_FORUMS_TABLE	=> 'f',
+		FORUMS_TABLE	=> 'f',
 	),
 	'ORDER_BY'	=> 'f.left_id ASC',
 );
@@ -134,7 +134,7 @@ if (!$show_guests)
 			$sql = 'SELECT COUNT(session_ip) as num_guests
 				FROM (
 					SELECT DISTINCT session_ip
-						FROM ' . AN602_SESSIONS_TABLE . '
+						FROM ' . SESSIONS_TABLE . '
 						WHERE session_user_id = ' . ANONYMOUS . '
 							AND session_time >= ' . (time() - ($config['load_online_time'] * 60)) .
 				')';
@@ -142,7 +142,7 @@ if (!$show_guests)
 
 		default:
 			$sql = 'SELECT COUNT(DISTINCT session_ip) as num_guests
-				FROM ' . AN602_SESSIONS_TABLE . '
+				FROM ' . SESSIONS_TABLE . '
 				WHERE session_user_id = ' . ANONYMOUS . '
 					AND session_time >= ' . (time() - ($config['load_online_time'] * 60));
 		break;
@@ -156,8 +156,8 @@ if (!$show_guests)
 $sql_ary = array(
 	'SELECT'	=> 'u.user_id, u.username, u.username_clean, u.user_type, u.user_colour, s.session_id, s.session_time, s.session_page, s.session_ip, s.session_browser, s.session_viewonline, s.session_forum_id',
 	'FROM'		=> array(
-		AN602_USERS_TABLE		=> 'u',
-		AN602_SESSIONS_TABLE	=> 's',
+		USERS_TABLE		=> 'u',
+		SESSIONS_TABLE	=> 's',
 	),
 	'WHERE'		=> 'u.user_id = s.session_user_id
 		AND s.session_time >= ' . (time() - ($config['load_online_time'] * 60)) .
@@ -446,15 +446,15 @@ $order_legend = ($config['legend_sort_groupname']) ? 'group_name' : 'group_legen
 if ($auth->acl_gets('a_group', 'a_groupadd', 'a_groupdel'))
 {
 	$sql = 'SELECT group_id, group_name, group_colour, group_type, group_legend
-		FROM ' . AN602_GROUPS_TABLE . '
+		FROM ' . GROUPS_TABLE . '
 		WHERE group_legend > 0
 		ORDER BY ' . $order_legend . ' ASC';
 }
 else
 {
 	$sql = 'SELECT g.group_id, g.group_name, g.group_colour, g.group_type, g.group_legend
-		FROM ' . AN602_GROUPS_TABLE . ' g
-		LEFT JOIN ' . AN602_USER_GROUP_TABLE . ' ug
+		FROM ' . GROUPS_TABLE . ' g
+		LEFT JOIN ' . USER_GROUP_TABLE . ' ug
 			ON (
 				g.group_id = ug.group_id
 				AND ug.user_id = ' . $user->data['user_id'] . '

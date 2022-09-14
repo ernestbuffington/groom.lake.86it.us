@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -37,11 +37,11 @@ interface extractor_interface
 	/**
 	* Writes header comments to the database backup
 	*
-	* @param	string	$an602_table_prefix	prefix of AN602 database tables
+	* @param	string	$table_prefix	prefix of AN602 database tables
 	* @return null
 	* @throws \an602\db\extractor\exception\extractor_not_initialized_exception when calling this function before init_extractor()
 	*/
-	public function write_start($an602_table_prefix);
+	public function write_start($table_prefix);
 
 	/**
 	* Closes file and/or dumps download data

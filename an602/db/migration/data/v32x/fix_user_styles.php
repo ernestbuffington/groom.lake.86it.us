@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -37,7 +37,7 @@ class fix_user_styles extends \an602\db\migration\migration
 
 		// Get enabled styles
 		$sql = 'SELECT style_id
-			FROM ' . AN602_STYLES_TABLE . '
+			FROM ' . STYLES_TABLE . '
 			WHERE style_active = 1';
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))
@@ -47,7 +47,7 @@ class fix_user_styles extends \an602\db\migration\migration
 		$this->db->sql_freeresult($result);
 
 		// Set the default style to users who have an invalid style
-		$this->sql_query('UPDATE ' . AN602_USERS_TABLE . '
+		$this->sql_query('UPDATE ' . USERS_TABLE . '
 			SET user_style = ' . (int) $default_style . '
 			WHERE ' . $this->db->sql_in_set('user_style', $enabled_styles, true));
 	}

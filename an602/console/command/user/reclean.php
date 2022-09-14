@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -115,7 +115,7 @@ class reclean extends command
 
 		$this->db->sql_transaction('begin');
 
-		$sql = 'SELECT user_id, username, username_clean FROM ' . AN602_USERS_TABLE;
+		$sql = 'SELECT user_id, username, username_clean FROM ' . USERS_TABLE;
 		$result = $this->db->sql_query_limit($sql, $limit, $start);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
@@ -124,7 +124,7 @@ class reclean extends command
 
 			if ($username_clean != $row['username_clean'])
 			{
-				$sql = 'UPDATE ' . AN602_USERS_TABLE . "
+				$sql = 'UPDATE ' . USERS_TABLE . "
 					SET username_clean = '$username_clean'
 					WHERE user_id = {$row['user_id']}";
 				$this->db->sql_query($sql);
@@ -148,7 +148,7 @@ class reclean extends command
 	 */
 	protected function get_count()
 	{
-		$sql = 'SELECT COUNT(user_id) AS count FROM ' . AN602_USERS_TABLE;
+		$sql = 'SELECT COUNT(user_id) AS count FROM ' . USERS_TABLE;
 		$result = $this->db->sql_query($sql);
 		$count = (int) $this->db->sql_fetchfield('count');
 		$this->db->sql_freeresult($result);

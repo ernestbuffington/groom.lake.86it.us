@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -39,7 +39,7 @@ class release_3_0_7_rc2 extends \an602\db\migration\migration
 		$limit = 1000;
 
 		$sql = 'SELECT user_id, user_email, user_email_hash
-			FROM ' . AN602_USERS_TABLE . '
+			FROM ' . USERS_TABLE . '
 			WHERE user_type <> ' . USER_IGNORE . "
 				AND user_email <> ''";
 		$result = $this->db->sql_query_limit($sql, $limit, $start);
@@ -59,7 +59,7 @@ class release_3_0_7_rc2 extends \an602\db\migration\migration
 					'user_email_hash'	=> $user_email_hash,
 				);
 
-				$sql = 'UPDATE ' . AN602_USERS_TABLE . '
+				$sql = 'UPDATE ' . USERS_TABLE . '
 					SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
 					WHERE user_id = ' . (int) $row['user_id'];
 				$this->sql_query($sql);

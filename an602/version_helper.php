@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -23,7 +23,7 @@ class version_helper
 	/**
 	 * @var string Host
 	 */
-	protected $host = 'version.an602.com';
+	protected $host = 'version.groom.lake.86it.us';
 
 	/**
 	 * @var string Path to file
@@ -90,7 +90,7 @@ class version_helper
 		$this->config = $config;
 		$this->file_downloader = $file_downloader;
 
-		if (defined('AN602_QA'))
+		if (defined('PHPBB_QA'))
 		{
 			$this->force_stability = 'unstable';
 		}
@@ -101,7 +101,7 @@ class version_helper
 	/**
 	 * Set location to the file
 	 *
-	 * @param string $host Host (e.g. version.an602.com)
+	 * @param string $host Host (e.g. version.groom.lake.86it.us)
 	 * @param string $path Path to file (e.g. /an602)
 	 * @param string $file File name (Default: versions.json)
 	 * @param bool $use_ssl Use SSL or not (Default: false)
@@ -284,7 +284,7 @@ class version_helper
 			return $self->compare($data['current'], $current_version, '>=');
 		});
 
-		// Filter out any an602 branches less than the current version
+		// Filter out any phpbb branches less than the current version
 		$branches = array_filter(array_keys($versions), function($branch) use ($self, $current_branch) {
 			return $self->compare($branch, $current_branch, '>=');
 		});

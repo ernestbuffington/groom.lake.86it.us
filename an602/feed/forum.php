@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -48,7 +48,7 @@ class forum extends post_base
 	{
 		// Check if forum exists
 		$sql = 'SELECT forum_id, forum_name, forum_password, forum_type, forum_options
-			FROM ' . AN602_FORUMS_TABLE . '
+			FROM ' . FORUMS_TABLE . '
 			WHERE forum_id = ' . $this->forum_id;
 		$result = $this->db->sql_query($sql);
 		$this->forum_data = $this->db->sql_fetchrow($result);
@@ -116,7 +116,7 @@ class forum extends post_base
 	{
 		// Determine topics with recent activity
 		$sql = 'SELECT topic_id, topic_last_post_time
-			FROM ' . AN602_TOPICS_TABLE . '
+			FROM ' . TOPICS_TABLE . '
 			WHERE forum_id = ' . $this->forum_id . '
 				AND topic_moved_id = 0
 				AND ' . $this->content_visibility->get_visibility_sql('topic', $this->forum_id) . '
@@ -144,8 +144,8 @@ class forum extends post_base
 			'SELECT'	=>	'p.post_id, p.topic_id, p.post_time, p.post_edit_time, p.post_visibility, p.post_subject, p.post_text, p.bbcode_bitfield, p.bbcode_uid, p.enable_bbcode, p.enable_smilies, p.enable_magic_url, p.post_attachment, ' .
 				'u.username, u.user_id',
 			'FROM'		=> array(
-				AN602_POSTS_TABLE		=> 'p',
-				AN602_USERS_TABLE		=> 'u',
+				POSTS_TABLE		=> 'p',
+				USERS_TABLE		=> 'u',
 			),
 			'WHERE'		=> $this->db->sql_in_set('p.topic_id', $topic_ids) . '
 							AND ' . $this->content_visibility->get_visibility_sql('post', $this->forum_id, 'p.') . '

@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,12 +14,12 @@
 /**
 * @ignore
 */
-define('IN_AN602', true);
-$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
+define('IN_PHPBB', true);
+$an602_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 require($an602_root_path . 'common.' . $phpEx);
-require($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
-require($an602_root_path . 'includes/an602_functions_module.' . $phpEx);
+require($an602_root_path . 'includes/functions_user.' . $phpEx);
+require($an602_root_path . 'includes/functions_module.' . $phpEx);
 
 // Basic parameter data
 $id 	= $request->variable('i', '');
@@ -223,7 +223,7 @@ switch ($mode)
 		$user_id = $request->variable('u', 0);
 
 		$sql = 'SELECT *
-			FROM ' . AN602_USERS_TABLE . '
+			FROM ' . USERS_TABLE . '
 			WHERE user_id = ' . (int) $user_id;
 		$result = $db->sql_query($sql);
 		$user_row = $db->sql_fetchrow($result);
@@ -234,7 +234,7 @@ switch ($mode)
 			redirect(append_sid("{$an602_root_path}index.$phpEx"));
 		}
 
-		include($an602_root_path . 'includes/an602_acp/auth.' . $phpEx);
+		include($an602_root_path . 'includes/acp/auth.' . $phpEx);
 
 		$auth_admin = new auth_admin();
 		if (!$auth_admin->ghost_permissions($user_id, $user->data['user_id']))
@@ -242,7 +242,7 @@ switch ($mode)
 			redirect(append_sid("{$an602_root_path}index.$phpEx"));
 		}
 
-		$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_AN602_ACL_TRANSFER_PERMISSIONS', false, array($user_row['username']));
+		$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ACL_TRANSFER_PERMISSIONS', false, array($user_row['username']));
 
 		$message = sprintf($user->lang['PERMISSIONS_TRANSFERRED'], $user_row['username']) . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$an602_root_path}index.$phpEx") . '">', '</a>');
 
@@ -272,13 +272,13 @@ switch ($mode)
 		$auth->acl_cache($user->data);
 
 		$sql = 'SELECT username
-			FROM ' . AN602_USERS_TABLE . '
+			FROM ' . USERS_TABLE . '
 			WHERE user_id = ' . $user->data['user_perm_from'];
 		$result = $db->sql_query($sql);
 		$username = $db->sql_fetchfield('username');
 		$db->sql_freeresult($result);
 
-		$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_AN602_ACL_RESTORE_PERMISSIONS', false, array($username));
+		$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ACL_RESTORE_PERMISSIONS', false, array($username));
 
 		$message = $user->lang['PERMISSIONS_RESTORED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$an602_root_path}index.$phpEx") . '">', '</a>');
 
@@ -338,13 +338,13 @@ if ($module->is_active('zebra', 'friends'))
 		'SELECT'	=> 'u.user_id, u.username, u.username_clean, u.user_colour, MAX(s.session_time) as online_time, MIN(s.session_viewonline) AS viewonline',
 
 		'FROM'		=> array(
-			AN602_USERS_TABLE		=> 'u',
-			AN602_ZEBRA_TABLE		=> 'z',
+			USERS_TABLE		=> 'u',
+			ZEBRA_TABLE		=> 'z',
 		),
 
 		'LEFT_JOIN'	=> array(
 			array(
-				'FROM'	=> array(AN602_SESSIONS_TABLE => 's'),
+				'FROM'	=> array(SESSIONS_TABLE => 's'),
 				'ON'	=> 's.session_user_id = z.zebra_id',
 			),
 		),

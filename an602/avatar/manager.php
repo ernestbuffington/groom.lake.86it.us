@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -334,7 +334,7 @@ class manager
 		{
 			$result = $this->prefix_avatar_columns('user_', self::$default_row);
 
-			$sql = 'UPDATE ' . AN602_USERS_TABLE . '
+			$sql = 'UPDATE ' . USERS_TABLE . '
 				SET ' . $db->sql_build_array('UPDATE', $result) . "
 				WHERE user_avatar = '" . $db->sql_escape($avatar_data['avatar']) . "'";
 			$db->sql_query($sql);

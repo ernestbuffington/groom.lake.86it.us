@@ -1,23 +1,23 @@
 {
 	"name": "an602/an602",
-	"description": "PHP=AN602 CMS Software application",
+	"description": "AN602 CMS Software application",
 	"type": "project",
-	"keywords": ["php7","phpbb","phpbb2","phpbb3","programmers-sanbox","advanced-sitemap","amortization","advertising","downloads","blogs","cms","an602","phpbb", "forum"],
-	"homepage": "https://groom.lake.86it.us",
+	"keywords": ["phpbb", "forum"],
+	"homepage": "https://www.groom.lake.86it.us",
 	"license": "GPL-2.0-only",
 	"authors": [
 		{
-			"name": "PHP-AN602",
+			"name": "AN602 Limited",
 			"email": "operations@groom.lake.86it.us",
-			"homepage": "https://groom.lake.86it.us/go/authors"
+			"homepage": "https://www.groom.lake.86it.us/go/authors"
 		}
 	],
 	"support": {
 		"issues": "https://tracker.groom.lake.86it.us",
-		"forum": "https://groom.lake.86it.us/community/",
-		"docs": "https://groom.lake.86it.us/support/docs/",
+		"forum": "https://www.groom.lake.86it.us/community/",
+		"docs": "https://www.groom.lake.86it.us/support/docs/",
 		"irc": "irc://irc.libera.chat/an602",
-		"chat": "https://groom.lake.86it.us/support/chat/"
+		"chat": "https://www.groom.lake.86it.us/support/chat/"
 	},
 	"scripts": {
 		"post-update-cmd": "echo 'You MUST manually modify the clean-vendor-dir target in build/build.xml when adding or upgrading dependencies.'"

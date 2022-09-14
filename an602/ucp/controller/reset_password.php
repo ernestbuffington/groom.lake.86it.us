@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -252,7 +252,7 @@ class reset_password
 
 				if (!class_exists('messenger'))
 				{
-					include($this->root_path . 'includes/an602_functions_messenger.' . $this->php_ext);
+					include($this->root_path . 'includes/functions_messenger.' . $this->php_ext);
 				}
 
 				/** @var \messenger $messenger */
@@ -384,7 +384,7 @@ class reset_password
 
 			if (!function_exists('validate_data'))
 			{
-				include($this->root_path . 'includes/an602_functions_user.' . $this->php_ext);
+				include($this->root_path . 'includes/functions_user.' . $this->php_ext);
 			}
 
 			$data = [

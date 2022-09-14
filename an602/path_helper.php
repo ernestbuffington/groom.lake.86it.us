@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -47,7 +47,7 @@ class path_helper
 	* @param \an602\request\request_interface $request
 	* @param string $an602_root_path Relative path to AN602 root
 	* @param string $php_ext PHP file extension
-	* @param mixed $adm_relative_path Relative path admin path to admin/adm/ root
+	* @param mixed $adm_relative_path Relative path admin path to admin/ root
 	*/
 	public function __construct(\an602\symfony_request $symfony_request, \an602\filesystem\filesystem_interface $filesystem, \an602\request\request_interface $request, $an602_root_path, $php_ext, $adm_relative_path = null)
 	{

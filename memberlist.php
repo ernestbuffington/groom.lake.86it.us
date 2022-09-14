@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,11 +14,11 @@
 /**
 * @ignore
 */
-define('IN_AN602', true);
-$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
+define('IN_PHPBB', true);
+$an602_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($an602_root_path . 'common.' . $phpEx);
-include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
+include($an602_root_path . 'includes/functions_display.' . $phpEx);
 
 $mode = $request->variable('mode', '');
 
@@ -107,14 +107,14 @@ switch ($mode)
 		// Display a listing of board admins, moderators
 		if (!function_exists('user_get_id_name'))
 		{
-			include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		$page_title = $user->lang['THE_TEAM'];
 		$template_html = 'memberlist_team.html';
 
 		$sql = 'SELECT *
-			FROM ' . AN602_TEAMPAGE_TABLE . '
+			FROM ' . TEAMPAGE_TABLE . '
 			ORDER BY teampage_position ASC';
 		$result = $db->sql_query($sql, 3600);
 		$teampage_data = $db->sql_fetchrowset($result);
@@ -123,15 +123,15 @@ switch ($mode)
 		$sql_ary = array(
 			'SELECT'	=> 'g.group_id, g.group_name, g.group_colour, g.group_type, ug.user_id as ug_user_id, t.teampage_id',
 
-			'FROM'		=> array(AN602_GROUPS_TABLE => 'g'),
+			'FROM'		=> array(GROUPS_TABLE => 'g'),
 
 			'LEFT_JOIN'	=> array(
 				array(
-					'FROM'	=> array(AN602_TEAMPAGE_TABLE => 't'),
+					'FROM'	=> array(TEAMPAGE_TABLE => 't'),
 					'ON'	=> 't.group_id = g.group_id',
 				),
 				array(
-					'FROM'	=> array(AN602_USER_GROUP_TABLE => 'ug'),
+					'FROM'	=> array(USER_GROUP_TABLE => 'ug'),
 					'ON'	=> 'ug.group_id = g.group_id AND ug.user_pending = 0 AND ug.user_id = ' . (int) $user->data['user_id'],
 				),
 			),
@@ -167,16 +167,16 @@ switch ($mode)
 			'SELECT'	=> 'u.user_id, u.group_id as default_group, u.username, u.username_clean, u.user_colour, u.user_type, u.user_rank, u.user_posts, u.user_allow_pm, g.group_id',
 
 			'FROM'		=> array(
-				AN602_USER_GROUP_TABLE => 'ug',
+				USER_GROUP_TABLE => 'ug',
 			),
 
 			'LEFT_JOIN'	=> array(
 				array(
-					'FROM'	=> array(AN602_USERS_TABLE => 'u'),
+					'FROM'	=> array(USERS_TABLE => 'u'),
 					'ON'	=> 'ug.user_id = u.user_id',
 				),
 				array(
-					'FROM'	=> array(AN602_GROUPS_TABLE => 'g'),
+					'FROM'	=> array(GROUPS_TABLE => 'g'),
 					'ON'	=> 'ug.group_id = g.group_id',
 				),
 			),
@@ -242,7 +242,7 @@ switch ($mode)
 			}
 
 			$sql = 'SELECT forum_id, forum_name
-				FROM ' . AN602_FORUMS_TABLE;
+				FROM ' . FORUMS_TABLE;
 			$result = $db->sql_query($sql);
 
 			$forums = array();
@@ -402,7 +402,7 @@ switch ($mode)
 
 		// Grab relevant data
 		$sql = "SELECT user_id, username, user_email, user_lang, $sql_field
-			FROM " . AN602_USERS_TABLE . "
+			FROM " . USERS_TABLE . "
 			WHERE user_id = $user_id
 				AND user_type IN (" . USER_NORMAL . ', ' . USER_FOUNDER . ')';
 		$result = $db->sql_query($sql);
@@ -429,7 +429,7 @@ switch ($mode)
 					if (check_form_key('memberlist_messaging'))
 					{
 
-						include_once($an602_root_path . 'includes/an602_functions_messenger.' . $phpEx);
+						include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
 
 						$subject = sprintf($user->lang['IM_JABBER_SUBJECT'], $user->data['username'], $config['server_name']);
 						$message = $request->variable('message', '', true);
@@ -502,7 +502,7 @@ switch ($mode)
 		$sql_array = array(
 			'SELECT'	=> 'u.*',
 			'FROM'		=> array(
-				AN602_USERS_TABLE		=> 'u'
+				USERS_TABLE		=> 'u'
 			),
 			'WHERE'		=> (($username) ? "u.username_clean = '" . $db->sql_escape(utf8_clean_string($username)) . "'" : "u.user_id = $user_id"),
 		);
@@ -559,12 +559,12 @@ switch ($mode)
 			'SELECT'	=> 'g.group_id, g.group_name, g.group_type, ug.user_id',
 
 			'FROM'		=> [
-				AN602_GROUPS_TABLE => 'g',
+				GROUPS_TABLE => 'g',
 			],
 
 			'LEFT_JOIN' => [
 				[
-					'FROM' => [AN602_USER_GROUP_TABLE => 'ug'],
+					'FROM' => [USER_GROUP_TABLE => 'ug'],
 					'ON'   => 'g.group_id = ug.group_id',
 				],
 			],
@@ -650,7 +650,7 @@ switch ($mode)
 
 		// What colour is the zebra
 		$sql = 'SELECT friend, foe
-			FROM ' . AN602_ZEBRA_TABLE . "
+			FROM ' . ZEBRA_TABLE . "
 			WHERE zebra_id = $user_id
 				AND user_id = {$user->data['user_id']}";
 		$result = $db->sql_query($sql);
@@ -664,7 +664,7 @@ switch ($mode)
 		if ($config['load_onlinetrack'])
 		{
 			$sql = 'SELECT MAX(session_time) AS session_time, MIN(session_viewonline) AS session_viewonline
-				FROM ' . AN602_SESSIONS_TABLE . "
+				FROM ' . SESSIONS_TABLE . "
 				WHERE session_user_id = $user_id";
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
@@ -700,7 +700,7 @@ switch ($mode)
 		{
 			if (!class_exists('p_master'))
 			{
-				include($an602_root_path . 'includes/an602_functions_module.' . $phpEx);
+				include($an602_root_path . 'includes/functions_module.' . $phpEx);
 			}
 			$module = new p_master();
 
@@ -762,7 +762,7 @@ switch ($mode)
 		if ($auth->acl_getf_global('m_approve') || $auth->acl_get('a_user'))
 		{
 			$sql = 'SELECT COUNT(post_id) as posts_in_queue
-				FROM ' . AN602_POSTS_TABLE . '
+				FROM ' . POSTS_TABLE . '
 				WHERE poster_id = ' . $user_id . '
 					AND ' . $db->sql_in_set('post_visibility', array(ITEM_UNAPPROVED, ITEM_REAPPROVE));
 			$result = $db->sql_query($sql);
@@ -891,7 +891,7 @@ switch ($mode)
 	case 'email':
 		if (!class_exists('messenger'))
 		{
-			include($an602_root_path . 'includes/an602_functions_messenger.' . $phpEx);
+			include($an602_root_path . 'includes/functions_messenger.' . $phpEx);
 		}
 
 		$user_id	= $request->variable('u', 0);
@@ -942,8 +942,8 @@ switch ($mode)
 		else if ($topic_id)
 		{
 			$sql = 'SELECT f.parent_id, f.forum_parents, f.left_id, f.right_id, f.forum_type, f.forum_name, f.forum_id, f.forum_desc, f.forum_desc_uid, f.forum_desc_bitfield, f.forum_desc_options, f.forum_options, t.topic_title
-					FROM ' . AN602_FORUMS_TABLE . ' as f,
-						' . AN602_TOPICS_TABLE . ' as t
+					FROM ' . FORUMS_TABLE . ' as f,
+						' . TOPICS_TABLE . ' as t
 					WHERE t.forum_id = f.forum_id';
 			$result = $db->sql_query($sql);
 			$topic_data = $db->sql_fetchrow($result);
@@ -976,7 +976,7 @@ switch ($mode)
 		$username_chars = $request->variable('username', '', true);
 
 		$sql = 'SELECT username, user_id, user_colour
-			FROM ' . AN602_USERS_TABLE . '
+			FROM ' . USERS_TABLE . '
 			WHERE ' . $db->sql_in_set('user_type', $user_types) . '
 				AND username_clean ' . $db->sql_like_expression(utf8_clean_string($username_chars) . $db->get_any_char());
 		$result = $db->sql_query_limit($sql, 10);
@@ -1155,7 +1155,7 @@ switch ($mode)
 
 			if ($search_group_id)
 			{
-				$sql_from = ', ' . AN602_USER_GROUP_TABLE . ' ug ';
+				$sql_from = ', ' . USER_GROUP_TABLE . ' ug ';
 			}
 
 			if ($ipdomain && $auth->acl_getf_global('m_info'))
@@ -1188,7 +1188,7 @@ switch ($mode)
 					$ip_forums = array_keys($auth->acl_getf('m_info', true));
 
 					$sql = 'SELECT DISTINCT poster_id
-						FROM ' . AN602_POSTS_TABLE . '
+						FROM ' . POSTS_TABLE . '
 						WHERE poster_ip ' . ((strpos($ips, '%') !== false) ? 'LIKE' : 'IN') . " ($ips)
 							AND " . $db->sql_in_set('forum_id', $ip_forums);
 
@@ -1253,8 +1253,8 @@ switch ($mode)
 		{
 			// We JOIN here to save a query for determining membership for hidden groups. ;)
 			$sql = 'SELECT g.*, ug.user_id, ug.group_leader
-				FROM ' . AN602_GROUPS_TABLE . ' g
-				LEFT JOIN ' . AN602_USER_GROUP_TABLE . ' ug ON (ug.user_pending = 0 AND ug.user_id = ' . $user->data['user_id'] . " AND ug.group_id = $group_id)
+				FROM ' . GROUPS_TABLE . ' g
+				LEFT JOIN ' . USER_GROUP_TABLE . ' ug ON (ug.user_pending = 0 AND ug.user_id = ' . $user->data['user_id'] . " AND ug.group_id = $group_id)
 				WHERE g.group_id = $group_id";
 			$result = $db->sql_query($sql);
 			$group_row = $db->sql_fetchrow($result);
@@ -1318,7 +1318,7 @@ switch ($mode)
 			{
 				if (!class_exists('p_master'))
 				{
-					include($an602_root_path . 'includes/an602_functions_module.' . $phpEx);
+					include($an602_root_path . 'includes/functions_module.' . $phpEx);
 				}
 				$module = new p_master;
 				$module->list_modules('ucp');
@@ -1351,7 +1351,7 @@ switch ($mode)
 			);
 
 			$sql_select = ', ug.group_leader';
-			$sql_from = ', ' . AN602_USER_GROUP_TABLE . ' ug ';
+			$sql_from = ', ' . USER_GROUP_TABLE . ' ug ';
 			$order_by = 'ug.group_leader DESC, ';
 
 			$sql_where .= " AND ug.user_pending = 0 AND u.user_id = ug.user_id AND ug.group_id = $group_id";
@@ -1400,7 +1400,7 @@ switch ($mode)
 
 		// Count the users ...
 		$sql = 'SELECT COUNT(u.user_id) AS total_users
-			FROM ' . AN602_USERS_TABLE . " u$sql_from
+			FROM ' . USERS_TABLE . " u$sql_from
 			WHERE " . $db->sql_in_set('u.user_type', $user_types) . "
 			$sql_where";
 		$result = $db->sql_query($sql);
@@ -1530,7 +1530,7 @@ switch ($mode)
 			if ($auth->acl_gets('a_group', 'a_groupadd', 'a_groupdel'))
 			{
 				$sql = 'SELECT group_id, group_name, group_type
-					FROM ' . AN602_GROUPS_TABLE;
+					FROM ' . GROUPS_TABLE;
 
 				if (!$config['coppa_enable'])
 				{
@@ -1542,8 +1542,8 @@ switch ($mode)
 			else
 			{
 				$sql = 'SELECT g.group_id, g.group_name, g.group_type
-					FROM ' . AN602_GROUPS_TABLE . ' g
-					LEFT JOIN ' . AN602_USER_GROUP_TABLE . ' ug
+					FROM ' . GROUPS_TABLE . ' g
+					LEFT JOIN ' . USER_GROUP_TABLE . ' ug
 						ON (
 							g.group_id = ug.group_id
 							AND ug.user_id = ' . $user->data['user_id'] . '
@@ -1602,7 +1602,7 @@ switch ($mode)
 
 		// Get us some users :D
 		$sql = "SELECT u.user_id
-			FROM " . AN602_USERS_TABLE . " u
+			FROM " . USERS_TABLE . " u
 				$sql_from
 			WHERE " . $db->sql_in_set('u.user_type', $user_types) . "
 				$sql_where
@@ -1635,7 +1635,7 @@ switch ($mode)
 		{
 			// Session time?! Session time...
 			$sql = 'SELECT session_user_id, MAX(session_time) AS session_time
-				FROM ' . AN602_SESSIONS_TABLE . '
+				FROM ' . SESSIONS_TABLE . '
 				WHERE session_time >= ' . (time() - $config['session_length']) . '
 					AND ' . $db->sql_in_set('session_user_id', $user_list) . '
 				GROUP BY session_user_id';
@@ -1667,7 +1667,7 @@ switch ($mode)
 
 				$sql_array = array(
 					'SELECT'	=> 'u.*' . $sql_select,
-					'FROM'		=> array_merge([AN602_USERS_TABLE => 'u'], $extra_tables),
+					'FROM'		=> array_merge([USERS_TABLE => 'u'], $extra_tables),
 					'WHERE'		=> $db->sql_in_set('u.user_id', $user_list) . $sql_where_data . '',
 				);
 			}
@@ -1676,7 +1676,7 @@ switch ($mode)
 				$sql_array = array(
 					'SELECT'	=> 'u.*',
 					'FROM'		=> array(
-						AN602_USERS_TABLE		=> 'u'
+						USERS_TABLE		=> 'u'
 					),
 					'WHERE'		=> $db->sql_in_set('u.user_id', $user_list),
 				);

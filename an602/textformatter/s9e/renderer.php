@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -139,7 +139,7 @@ class renderer implements \an602\textformatter\renderer_interface
 		/**
 		* @see smiley_text()
 		*/
-		$root_path = (defined('AN602_USE_BOARD_URL_PATH') && AN602_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $path_helper->get_web_root_path();
+		$root_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $path_helper->get_web_root_path();
 
 		$this->set_smilies_path($root_path . $config['smilies_path']);
 	}

@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -80,7 +80,7 @@ $lang = array_merge($lang, [
 	'STYLE_UNINSTALL'							=> 'Uninstall',
 	'STYLE_UNINSTALL_DEPENDENT'					=> 'Style "%s" cannot be uninstalled because it has one or more child styles.',
 	'STYLE_UNINSTALLED'							=> 'Style "%s" uninstalled successfully.',
-	'STYLE_AN602_VERSION'						=> 'AN602 Version',
+	'STYLE_PHPBB_VERSION'						=> 'AN602 Version',
 	'STYLE_USED_BY'								=> 'Used by (including robots)',
 	'STYLE_VERSION'								=> 'Style version',
 

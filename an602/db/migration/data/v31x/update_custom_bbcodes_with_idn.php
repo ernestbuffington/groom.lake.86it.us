@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -33,13 +33,13 @@ class update_custom_bbcodes_with_idn extends \an602\db\migration\migration
 	{
 		if (!class_exists('acp_bbcodes'))
 		{
-			include($this->an602_root_path . 'includes/an602_acp/acp_bbcodes.' . $this->php_ext);
+			include($this->an602_root_path . 'includes/acp/acp_bbcodes.' . $this->php_ext);
 		}
 
 		$bbcodes = new \acp_bbcodes();
 
 		$sql = 'SELECT bbcode_id, bbcode_match, bbcode_tpl
-			FROM ' . AN602_BBCODES_TABLE;
+			FROM ' . BBCODES_TABLE;
 		$result = $this->sql_query($sql);
 
 		$sql_ary = array();
@@ -60,7 +60,7 @@ class update_custom_bbcodes_with_idn extends \an602\db\migration\migration
 
 		foreach ($sql_ary as $bbcode_id => $bbcode_data)
 		{
-			$sql = 'UPDATE ' . AN602_BBCODES_TABLE . '
+			$sql = 'UPDATE ' . BBCODES_TABLE . '
 				SET ' . $this->db->sql_build_array('UPDATE', $bbcode_data) . '
 				WHERE bbcode_id = ' . (int) $bbcode_id;
 			$this->sql_query($sql);

@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -95,7 +95,7 @@ class create_schema_file extends \an602\install\task_base
 		}
 		else
 		{
-			global $an602_table_prefix;
+			global $table_prefix;
 
 			// As this task may take a large amount of time to complete refreshing the page might be necessary for some
 			// server configurations with limited resources
@@ -108,9 +108,9 @@ class create_schema_file extends \an602\install\task_base
 				}
 			}
 
-			$an602_table_prefix = $this->config->get('table_prefix');
+			$table_prefix = $this->config->get('table_prefix');
 
-			if (!defined('AN602_CONFIG_TABLE'))
+			if (!defined('CONFIG_TABLE'))
 			{
 				// We need to include the constants file for the table constants
 				// when we generate the schema from the migration files.
@@ -128,7 +128,7 @@ class create_schema_file extends \an602\install\task_base
 				$db_tools,
 				$this->an602_root_path,
 				$this->php_ext,
-				$an602_table_prefix
+				$table_prefix
 			);
 			$db_table_schema = $schema_generator->get_schema();
 			$db_table_schema = json_encode($db_table_schema, JSON_PRETTY_PRINT);

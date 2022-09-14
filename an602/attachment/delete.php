@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -272,7 +272,7 @@ class delete
 	{
 		// Collect post and topic ids for later use if we need to touch remaining entries (if resync is enabled)
 		$sql = 'SELECT post_msg_id, topic_id, in_message, physical_filename, thumbnail, filesize, is_orphan
-			FROM ' . AN602_ATTACHMENTS_TABLE . '
+			FROM ' . ATTACHMENTS_TABLE . '
 			WHERE ' . $this->db->sql_in_set($this->sql_id, $this->ids);
 
 		$sql .= $this->sql_where;
@@ -350,7 +350,7 @@ class delete
 		unset($sql_id, $post_ids, $topic_ids, $message_ids, $physical);
 
 		// Delete attachments
-		$sql = 'DELETE FROM ' . AN602_ATTACHMENTS_TABLE . '
+		$sql = 'DELETE FROM ' . ATTACHMENTS_TABLE . '
 			WHERE ' . $this->db->sql_in_set($this->sql_id, $this->ids);
 
 		$sql .= $this->sql_where;
@@ -447,7 +447,7 @@ class delete
 	{
 		// Because of copying topics or modifications a physical filename could be assigned more than once. If so, do not remove the file itself.
 		$sql = 'SELECT COUNT(attach_id) AS num_entries
-		FROM ' . AN602_ATTACHMENTS_TABLE . "
+		FROM ' . ATTACHMENTS_TABLE . "
 		WHERE physical_filename = '" . $this->db->sql_escape(utf8_basename($filename)) . "'";
 		$result = $this->db->sql_query($sql);
 		$num_entries = (int) $this->db->sql_fetchfield('num_entries');

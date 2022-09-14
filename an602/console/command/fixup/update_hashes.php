@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -80,7 +80,7 @@ class update_hashes extends \an602\console\command\command
 	{
 		// Get count to be able to display progress
 		$sql = 'SELECT COUNT(user_id) AS count
-				FROM ' . AN602_USERS_TABLE . '
+				FROM ' . USERS_TABLE . '
 				WHERE user_password ' . $this->db->sql_like_expression('$H$' . $this->db->get_any_char()) . '
 					OR user_password ' . $this->db->sql_like_expression('$CP$' . $this->db->get_any_char());
 		$result = $this->db->sql_query($sql);
@@ -92,7 +92,7 @@ class update_hashes extends \an602\console\command\command
 		$progress_bar->start();
 
 		$sql = 'SELECT user_id, user_password
-				FROM ' . AN602_USERS_TABLE . '
+				FROM ' . USERS_TABLE . '
 				WHERE user_password ' . $this->db->sql_like_expression('$H$' . $this->db->get_any_char()) . '
 					OR user_password ' . $this->db->sql_like_expression('$CP$' . $this->db->get_any_char());
 		$result = $this->db->sql_query($sql);
@@ -102,7 +102,7 @@ class update_hashes extends \an602\console\command\command
 			$old_hash = preg_replace('/^\$CP\$/', '', $row['user_password']);
 			$new_hash = $this->passwords_manager->hash($old_hash, array($this->default_type));
 
-			$sql = 'UPDATE ' . AN602_USERS_TABLE . "
+			$sql = 'UPDATE ' . USERS_TABLE . "
 					SET user_password = '" . $this->db->sql_escape($new_hash) . "'
 					WHERE user_id = " . (int) $row['user_id'];
 			$this->db->sql_query($sql);

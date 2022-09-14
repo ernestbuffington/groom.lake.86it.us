@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -96,7 +96,7 @@ abstract class report_handler implements report_handler_interface
 			'reported_post_enable_magic_url'	=> $report_data['reported_post_enable_magic_url'],
 		);
 
-		$sql = 'INSERT INTO ' . AN602_REPORTS_TABLE . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
+		$sql = 'INSERT INTO ' . REPORTS_TABLE . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
 		$this->db->sql_query($sql);
 
 		return $this->db->sql_nextid();

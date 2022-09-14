@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -39,7 +39,7 @@ class release_3_0_11_rc1 extends \an602\db\migration\migration
 	{
 		// Updates users having current style a deactivated one
 		$sql = 'SELECT style_id
-			FROM ' . AN602_STYLES_TABLE . '
+			FROM ' . STYLES_TABLE . '
 			WHERE style_active = 0';
 		$result = $this->sql_query($sql);
 
@@ -52,7 +52,7 @@ class release_3_0_11_rc1 extends \an602\db\migration\migration
 
 		if (!empty($deactivated_style_ids))
 		{
-			$sql = 'UPDATE ' . AN602_USERS_TABLE . '
+			$sql = 'UPDATE ' . USERS_TABLE . '
 				SET user_style = ' . (int) $this->config['default_style'] .'
 				WHERE ' . $this->db->sql_in_set('user_style', $deactivated_style_ids);
 			$this->sql_query($sql);
@@ -67,11 +67,11 @@ class release_3_0_11_rc1 extends \an602\db\migration\migration
 		$sql_array = array(
 			'SELECT'	=> 'p.msg_id',
 			'FROM'		=> array(
-				AN602_PRIVMSGS_TABLE	=> 'p',
+				PRIVMSGS_TABLE	=> 'p',
 			),
 			'LEFT_JOIN'	=> array(
 				array(
-					'FROM'	=> array(AN602_PRIVMSGS_TO_TABLE => 't'),
+					'FROM'	=> array(PRIVMSGS_TO_TABLE => 't'),
 					'ON'	=> 'p.msg_id = t.msg_id',
 				),
 			),
@@ -90,7 +90,7 @@ class release_3_0_11_rc1 extends \an602\db\migration\migration
 
 		if (!empty($delete_pms))
 		{
-			$sql = 'DELETE FROM ' . AN602_PRIVMSGS_TABLE . '
+			$sql = 'DELETE FROM ' . PRIVMSGS_TABLE . '
 				WHERE ' . $this->db->sql_in_set('msg_id', $delete_pms);
 			$this->sql_query($sql);
 

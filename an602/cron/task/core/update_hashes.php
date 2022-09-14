@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -97,7 +97,7 @@ class update_hashes extends \an602\cron\task\base
 		if ($this->update_lock->acquire())
 		{
 			$sql = 'SELECT user_id, user_password
-				FROM ' . AN602_USERS_TABLE . '
+				FROM ' . USERS_TABLE . '
 				WHERE user_password ' . $this->db->sql_like_expression('$H$' . $this->db->get_any_char()) . '
 				OR user_password ' . $this->db->sql_like_expression('$CP$' . $this->db->get_any_char());
 			$result = $this->db->sql_query_limit($sql, 20);
@@ -112,7 +112,7 @@ class update_hashes extends \an602\cron\task\base
 				// Increase number so we know that users were selected from the database
 				$affected_rows++;
 
-				$sql = 'UPDATE ' . AN602_USERS_TABLE . "
+				$sql = 'UPDATE ' . USERS_TABLE . "
 					SET user_password = '" . $this->db->sql_escape($new_hash) . "'
 					WHERE user_id = " . (int) $row['user_id'];
 				$this->db->sql_query($sql);

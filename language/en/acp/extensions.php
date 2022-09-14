@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -11,7 +11,7 @@
 *
 */
 
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -108,7 +108,7 @@ $lang = array_merge($lang, array(
 	'LICENSE'				=> 'Licence',
 
 	'REQUIREMENTS'			=> 'Requirements',
-	'AN602_VERSION'			=> 'AN602 Version',
+	'PHPBB_VERSION'			=> 'AN602 Version',
 	'PHP_VERSION'			=> 'PHP Version',
 	'AUTHOR_INFORMATION'	=> 'Author Information',
 	'AUTHOR_NAME'			=> 'Name',

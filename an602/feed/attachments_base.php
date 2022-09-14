@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -34,7 +34,7 @@ abstract class attachments_base extends base
 		$sql_array = array(
 			'SELECT'   => 'a.*',
 			'FROM'     => array(
-				AN602_ATTACHMENTS_TABLE => 'a'
+				ATTACHMENTS_TABLE => 'a'
 			),
 			'WHERE'    => 'a.in_message = 0 ',
 			'ORDER_BY' => 'a.filetime DESC, a.post_msg_id ASC',
@@ -61,7 +61,7 @@ abstract class attachments_base extends base
 		{
 			$sql_array['LEFT_JOIN'] = array(
 				array(
-					'FROM' => array(AN602_TOPICS_TABLE => 't'),
+					'FROM' => array(TOPICS_TABLE => 't'),
 					'ON'   => 'a.topic_id = t.topic_id',
 				)
 			);

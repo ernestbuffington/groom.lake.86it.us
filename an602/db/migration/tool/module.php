@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -169,7 +169,7 @@ class module implements \an602\db\migration\tool\tool_interface
 	*			specs in the info file for the module(s).  For this to work the
 	*			modules must be correctly setup in the info file.
 	*		An example follows (this would insert the settings, log, and flag
-	*			modes from the includes/an602_acp/info/acp_asacp.php file):
+	*			modes from the includes/acp/info/acp_asacp.php file):
 	* 		array(
 	* 			'module_basename'	=> 'asacp',
 	* 			'modes'				=> array('settings', 'log', 'flag'),

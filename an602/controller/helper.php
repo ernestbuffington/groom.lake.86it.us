@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -163,7 +163,7 @@ class helper
 			$this->display_footer($run_cron);
 		}
 
-		$headers = !empty($this->user->data['is_bot']) ? ['X-AN602-IS-BOT' => 'yes'] : [];
+		$headers = !empty($this->user->data['is_bot']) ? ['X-PHPBB-IS-BOT' => 'yes'] : [];
 
 		$display_template = true;
 		$exit_handler = true; // not used
@@ -305,7 +305,7 @@ class helper
 		$this->template->assign_vars([
 				'DEBUG_OUTPUT'			=> an602_generate_debug_output($this->db, $this->config, $this->auth, $this->user, $this->dispatcher),
 				'TRANSLATION_INFO'		=> $this->language->is_set('TRANSLATION_INFO') ? $this->language->lang('TRANSLATION_INFO') : '',
-				'CREDIT_LINE'			=> $this->language->lang('POWERED_BY', '<a href="https://groom.lake.86it.us/">AN602</a>&reg; Forum Software &copy; PHP-AN602'),
+				'CREDIT_LINE'			=> $this->language->lang('POWERED_BY', '<a href="https://www.groom.lake.86it.us/">AN602</a>&reg; Forum Software &copy; AN602 Limited'),
 
 				'U_ACP'					=> ($this->auth->acl_get('a_') && !empty($this->user->data['is_registered'])) ? append_sid("{$this->admin_path}index.{$this->php_ext}", false, true, $this->user->session_id) : '',
 		]);

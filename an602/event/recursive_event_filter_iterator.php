@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -59,7 +59,7 @@ class recursive_event_filter_iterator extends \RecursiveFilterIterator
 			&& strpos($relative_path, $this->root_path . 'docs/') !== 0
 			&& strpos($relative_path, $this->root_path . 'ext/') !== 0
 			&& strpos($relative_path, $this->root_path . 'files/') !== 0
-			&& strpos($relative_path, $this->root_path . 'includes/an602_utf/') !== 0
+			&& strpos($relative_path, $this->root_path . 'includes/utf/') !== 0
 			&& strpos($relative_path, $this->root_path . 'language/') !== 0
 			&& strpos($relative_path, $this->root_path . 'an602/db/migration/data/') !== 0
 			&& strpos($relative_path, $this->root_path . 'an602/event/') !== 0

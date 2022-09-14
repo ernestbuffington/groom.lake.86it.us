@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -124,7 +124,7 @@ class container_builder
 	/**
 	 * Constructor
 	 *
-	 * @param string $an602_root_path Path to the an602 includes directory.
+	 * @param string $an602_root_path Path to the phpbb includes directory.
 	 * @param string $php_ext php file extension
 	 */
 	public function __construct($an602_root_path, $php_ext)
@@ -577,7 +577,7 @@ class container_builder
 					$this->config_php_file->get('dbname'),
 					$this->config_php_file->get('dbport'),
 					false,
-					defined('AN602_DB_NEW_LINK') && AN602_DB_NEW_LINK
+					defined('PHPBB_DB_NEW_LINK') && PHPBB_DB_NEW_LINK
 				);
 			}
 			$this->container->set('dbal.conn.driver', $this->dbal_connection);
@@ -606,7 +606,7 @@ class container_builder
 	/**
 	 * Gets the environment parameters.
 	 *
-	 * Only the parameters starting with "AN602__" are considered.
+	 * Only the parameters starting with "PHPBB__" are considered.
 	 *
 	 * @return array An array of parameters
 	 */
@@ -615,7 +615,7 @@ class container_builder
 		$parameters = array();
 		foreach ($_SERVER as $key => $value)
 		{
-			if (0 === strpos($key, 'AN602__'))
+			if (0 === strpos($key, 'PHPBB__'))
 			{
 				$parameters[strtolower(str_replace('__', '.', substr($key, 9)))] = $value;
 			}
@@ -663,7 +663,7 @@ class container_builder
 	 */
 	protected function get_environment()
 	{
-		return $this->environment ?: AN602_ENVIRONMENT;
+		return $this->environment ?: PHPBB_ENVIRONMENT;
 	}
 
 	private function register_ext_compiler_pass()

@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -226,17 +226,17 @@ class database
 	 * Validates table prefix
 	 *
 	 * @param string	$dbms			The selected dbms
-	 * @param string	$an602_table_prefix	The table prefix to validate
+	 * @param string	$table_prefix	The table prefix to validate
 	 *
 	 * @return bool|array	true if table prefix is valid, array of errors otherwise
 	 *
 	 * @throws invalid_dbms_exception When $dbms is not a valid
 	 */
-	public function validate_table_prefix($dbms, $an602_table_prefix)
+	public function validate_table_prefix($dbms, $table_prefix)
 	{
 		$errors = array();
 
-		if (!preg_match('#^[a-zA-Z][a-zA-Z0-9_]*$#', $an602_table_prefix))
+		if (!preg_match('#^[a-zA-Z][a-zA-Z0-9_]*$#', $table_prefix))
 		{
 			$errors[] = array(
 				'title' => 'INST_ERR_DB_INVALID_PREFIX',
@@ -268,7 +268,7 @@ class database
 		}
 
 		// Check the prefix length to ensure that index names are not too long
-		if (strlen($an602_table_prefix) > $prefix_length)
+		if (strlen($table_prefix) > $prefix_length)
 		{
 			$errors[] = array(
 				'title' => array('INST_ERR_PREFIX_TOO_LONG', $prefix_length),
@@ -285,7 +285,7 @@ class database
 	 * any other problems that could cause an error during the installation
 	 * such as if there is any database table names conflicting.
 	 *
-	 * Note: The function assumes that $an602_table_prefix has been already validated
+	 * Note: The function assumes that $table_prefix has been already validated
 	 * with validate_table_prefix().
 	 *
 	 * @param string	$dbms			Selected database type
@@ -294,11 +294,11 @@ class database
 	 * @param string	$dbuser			Database username
 	 * @param string	$dbpass			Database password
 	 * @param string	$dbname			Database name
-	 * @param string	$an602_table_prefix	Database table prefix
+	 * @param string	$table_prefix	Database table prefix
 	 *
 	 * @return array|bool	Returns true if test is successful, array of errors otherwise
 	 */
-	public function check_database_connection($dbms, $dbhost, $dbport, $dbuser, $dbpass, $dbname, $an602_table_prefix)
+	public function check_database_connection($dbms, $dbhost, $dbport, $dbuser, $dbpass, $dbname, $table_prefix)
 	{
 		$dbms_info = $this->get_available_dbms($dbms);
 		$dbms_info = $dbms_info[$dbms];
@@ -347,7 +347,7 @@ class database
 		else
 		{
 			// Check if there is any table name collisions
-			$temp_prefix = strtolower($an602_table_prefix);
+			$temp_prefix = strtolower($table_prefix);
 			$table_ary = array(
 				$temp_prefix . 'attachments',
 				$temp_prefix . 'config',

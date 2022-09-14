@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -430,7 +430,7 @@ class ajax_iohandler extends iohandler_base
 	public function render_update_file_status($status_array)
 	{
 		$this->template->assign_vars(array(
-			'T_IMAGE_PATH'	=> $this->path_helper->get_web_root_path() . 'admin/adm/images/',
+			'T_IMAGE_PATH'	=> $this->path_helper->get_web_root_path() . 'admin/images/',
 		));
 
 		foreach ($status_array as $block => $list)

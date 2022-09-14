@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -82,7 +82,7 @@ class release_3_0_3_rc1 extends \an602\db\migration\migration
 	public function set_group_default_max_recipients()
 	{
 		// Set maximum number of recipients for the registered users, bots, guests group
-		$sql = 'UPDATE ' . AN602_GROUPS_TABLE . ' SET group_max_recipients = 5
+		$sql = 'UPDATE ' . GROUPS_TABLE . ' SET group_max_recipients = 5
 			WHERE ' . $this->db->sql_in_set('group_name', array('GUESTS', 'REGISTERED', 'REGISTERED_COPPA', 'BOTS'));
 		$this->sql_query($sql);
 	}

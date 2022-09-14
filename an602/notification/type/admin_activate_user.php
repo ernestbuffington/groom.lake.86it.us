@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -96,7 +96,7 @@ class admin_activate_user extends \an602\notification\type\base
 
 		// Grab founders
 		$sql = 'SELECT user_id
-			FROM ' . AN602_USERS_TABLE . '
+			FROM ' . USERS_TABLE . '
 			WHERE user_type = ' . USER_FOUNDER;
 		$result = $this->db->sql_query($sql);
 

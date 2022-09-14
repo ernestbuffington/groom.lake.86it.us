@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,8 +14,8 @@
 /**
 * @ignore
 */
-define('IN_AN602', true);
-$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './../';
+define('IN_PHPBB', true);
+$an602_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './../';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 
 // Thank you sun.
@@ -33,7 +33,7 @@ else if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'
 
 if (isset($_GET['avatar']))
 {
-	require($an602_root_path . 'includes/an602_startup.' . $phpEx);
+	require($an602_root_path . 'includes/startup.' . $phpEx);
 
 	require($an602_root_path . 'an602/class_loader.' . $phpEx);
 	$an602_class_loader = new \an602\class_loader('an602\\', "{$an602_root_path}an602/", $phpEx);
@@ -42,20 +42,20 @@ if (isset($_GET['avatar']))
 	$an602_config_php_file = new \an602\config_php_file($an602_root_path, $phpEx);
 	extract($an602_config_php_file->get_all());
 
-	if (!defined('AN602_ENVIRONMENT'))
+	if (!defined('PHPBB_ENVIRONMENT'))
 	{
-		@define('AN602_ENVIRONMENT', 'production');
+		@define('PHPBB_ENVIRONMENT', 'production');
 	}
 
-	if (!defined('AN602_INSTALLED') || empty($dbms) || empty($acm_type))
+	if (!defined('PHPBB_INSTALLED') || empty($dbms) || empty($acm_type))
 	{
 		exit;
 	}
 
-	require($an602_root_path . 'includes/an602_constants.' . $phpEx);
-	require($an602_root_path . 'includes/an602_functions.' . $phpEx);
-	require($an602_root_path . 'includes/an602_functions_download' . '.' . $phpEx);
-	require($an602_root_path . 'includes/an602_utf/utf_tools.' . $phpEx);
+	require($an602_root_path . 'includes/constants.' . $phpEx);
+	require($an602_root_path . 'includes/functions.' . $phpEx);
+	require($an602_root_path . 'includes/functions_download' . '.' . $phpEx);
+	require($an602_root_path . 'includes/utf/utf_tools.' . $phpEx);
 
 	// Setup class loader first
 	$an602_class_loader_ext = new \an602\class_loader('\\', "{$an602_root_path}ext/", $phpEx);
@@ -148,7 +148,7 @@ if (isset($_GET['avatar']))
 
 // implicit else: we are not in avatar mode
 include($an602_root_path . 'common.' . $phpEx);
-require($an602_root_path . 'includes/an602_functions_download' . '.' . $phpEx);
+require($an602_root_path . 'includes/functions_download' . '.' . $phpEx);
 
 $attach_id = $request->variable('id', 0);
 $mode = $request->variable('mode', '');
@@ -174,7 +174,7 @@ if (!$attach_id)
 }
 
 $sql = 'SELECT attach_id, post_msg_id, topic_id, in_message, poster_id, is_orphan, physical_filename, real_filename, extension, mimetype, filesize, filetime
-	FROM ' . AN602_ATTACHMENTS_TABLE . "
+	FROM ' . ATTACHMENTS_TABLE . "
 	WHERE attach_id = $attach_id";
 $result = $db->sql_query($sql);
 $attachment = $db->sql_fetchrow($result);
@@ -221,7 +221,7 @@ else
 			an602_download_handle_forum_auth($db, $auth, $attachment['topic_id']);
 
 			$sql = 'SELECT forum_id, poster_id, post_visibility
-				FROM ' . AN602_POSTS_TABLE . '
+				FROM ' . POSTS_TABLE . '
 				WHERE post_id = ' . (int) $attachment['post_msg_id'];
 			$result = $db->sql_query($sql);
 			$post_row = $db->sql_fetchrow($result);

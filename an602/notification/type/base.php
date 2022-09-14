@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -433,7 +433,7 @@ abstract class base implements \an602\notification\type\type_interface
 			$user_ids = array();
 
 			$sql = 'SELECT user_id
-				FROM ' . AN602_USERS_TABLE . '
+				FROM ' . USERS_TABLE . '
 				WHERE user_id <> ' . ANONYMOUS . '
 					AND user_type <> ' . USER_IGNORE;
 			$result = $this->db->sql_query($sql);

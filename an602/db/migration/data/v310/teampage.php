@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -72,7 +72,7 @@ class teampage extends \an602\db\migration\migration
 	public function add_groups_teampage()
 	{
 		$sql = 'SELECT teampage_id
-			FROM ' . AN602_TEAMPAGE_TABLE;
+			FROM ' . TEAMPAGE_TABLE;
 		$result = $this->db->sql_query_limit($sql, 1);
 		$added_groups_teampage = (bool) $this->db->sql_fetchfield('teampage_id');
 		$this->db->sql_freeresult($result);
@@ -80,7 +80,7 @@ class teampage extends \an602\db\migration\migration
 		if (!$added_groups_teampage)
 		{
 			$sql = 'SELECT *
-				FROM ' . AN602_GROUPS_TABLE . '
+				FROM ' . GROUPS_TABLE . '
 				WHERE group_type = ' . GROUP_SPECIAL . "
 					AND (group_name = 'ADMINISTRATORS'
 						OR group_name = 'GLOBAL_MODERATORS')
@@ -101,7 +101,7 @@ class teampage extends \an602\db\migration\migration
 
 			if (count($teampage_entries))
 			{
-				$this->db->sql_multi_insert(AN602_TEAMPAGE_TABLE, $teampage_entries);
+				$this->db->sql_multi_insert(TEAMPAGE_TABLE, $teampage_entries);
 			}
 			unset($teampage_entries);
 		}

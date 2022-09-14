@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -147,7 +147,7 @@ class container_factory
 		$an602_container_builder = new \an602\di\container_builder($this->an602_root_path, $this->php_ext);
 
 		// For BC with functions that we need during install
-		global $an602_container, $an602_table_prefix;
+		global $an602_container, $table_prefix;
 
 		$other_config_path = $this->an602_root_path . 'install/update/new/config';
 		$config_path = (is_dir($other_config_path)) ? $other_config_path : $this->an602_root_path . 'config';
@@ -173,7 +173,7 @@ class container_factory
 		$this->container->compile();
 
 		$an602_container = $this->container;
-		$an602_table_prefix = $an602_config_php_file->get('table_prefix');
+		$table_prefix = $an602_config_php_file->get('table_prefix');
 
 		// Restore super globals to previous state
 		if ($disable_super_globals)

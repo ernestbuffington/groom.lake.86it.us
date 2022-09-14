@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -254,7 +254,7 @@ class user extends \an602\session
 		}
 
 		$sql = 'SELECT *
-			FROM ' . AN602_STYLES_TABLE . '
+			FROM ' . STYLES_TABLE . '
 			WHERE style_id = ' . (int) $style_id;
 		$result = $db->sql_query($sql, 3600);
 		$this->style = $db->sql_fetchrow($result);
@@ -266,7 +266,7 @@ class user extends \an602\session
 			$style_id = $this->data['user_style'];
 
 			$sql = 'SELECT *
-				FROM ' . AN602_STYLES_TABLE . '
+				FROM ' . STYLES_TABLE . '
 				WHERE style_id = ' . (int) $style_id;
 			$result = $db->sql_query($sql, 3600);
 			$this->style = $db->sql_fetchrow($result);
@@ -278,7 +278,7 @@ class user extends \an602\session
 		{
 			// Verify default style exists in the database
 			$sql = 'SELECT style_id
-				FROM ' . AN602_STYLES_TABLE . '
+				FROM ' . STYLES_TABLE . '
 				WHERE style_id = ' . (int) $config['default_style'];
 			$result = $db->sql_query($sql);
 			$style_id = (int) $db->sql_fetchfield('style_id');
@@ -290,14 +290,14 @@ class user extends \an602\session
 
 				// Update $user row
 				$sql = 'SELECT *
-					FROM ' . AN602_STYLES_TABLE . '
+					FROM ' . STYLES_TABLE . '
 					WHERE style_id = ' . (int) $config['default_style'];
 				$result = $db->sql_query($sql);
 				$this->style = $db->sql_fetchrow($result);
 				$db->sql_freeresult($result);
 
 				// Update user style preference
-				$sql = 'UPDATE ' . AN602_USERS_TABLE . '
+				$sql = 'UPDATE ' . USERS_TABLE . '
 					SET user_style = ' . (int) $style_id . '
 					WHERE user_id = ' . (int) $this->data['user_id'];
 				$db->sql_query($sql);
@@ -407,7 +407,7 @@ class user extends \an602\session
 				// Reset online status if not allowed to hide the session...
 				if (!$auth->acl_get('u_hideonline'))
 				{
-					$sql = 'UPDATE ' . AN602_SESSIONS_TABLE . '
+					$sql = 'UPDATE ' . SESSIONS_TABLE . '
 						SET session_viewonline = 1
 						WHERE session_user_id = ' . $this->data['user_id'];
 					$db->sql_query($sql);
@@ -419,7 +419,7 @@ class user extends \an602\session
 				// the user wants to hide and is allowed to  -> cloaking device on.
 				if ($auth->acl_get('u_hideonline'))
 				{
-					$sql = 'UPDATE ' . AN602_SESSIONS_TABLE . '
+					$sql = 'UPDATE ' . SESSIONS_TABLE . '
 						SET session_viewonline = 0
 						WHERE session_user_id = ' . $this->data['user_id'];
 					$db->sql_query($sql);
@@ -714,7 +714,7 @@ class user extends \an602\session
 		}
 
 		$sql = 'SELECT lang_id
-			FROM ' . AN602_LANG_TABLE . "
+			FROM ' . LANG_TABLE . "
 			WHERE lang_iso = '" . $db->sql_escape($this->lang_name) . "'";
 		$result = $db->sql_query($sql);
 		$this->lang_id = (int) $db->sql_fetchfield('lang_id');
@@ -736,7 +736,7 @@ class user extends \an602\session
 		}
 
 		$sql = 'SELECT *
-			FROM ' . AN602_PROFILE_FIELDS_DATA_TABLE . "
+			FROM ' . PROFILE_FIELDS_DATA_TABLE . "
 			WHERE user_id = $user_id";
 		$result = $db->sql_query_limit($sql, 1);
 		$this->profile_fields = (!($row = $db->sql_fetchrow($result))) ? array() : $row;
@@ -822,7 +822,7 @@ class user extends \an602\session
 		{
 			global $an602_root_path, $phpEx;
 
-			include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/functions_user.' . $phpEx);
 		}
 		if ($group = remove_newly_registered($this->data['user_id'], $this->data))
 		{
@@ -846,8 +846,8 @@ class user extends \an602\session
 		global $db;
 
 		$sql = 'SELECT f.forum_id, fa.user_id
-			FROM ' . AN602_FORUMS_TABLE . ' f
-			LEFT JOIN ' . AN602_FORUMS_ACCESS_TABLE . " fa
+			FROM ' . FORUMS_TABLE . ' f
+			LEFT JOIN ' . FORUMS_ACCESS_TABLE . " fa
 				ON (fa.forum_id = f.forum_id
 					AND fa.session_id = '" . $db->sql_escape($this->session_id) . "')
 			WHERE f.forum_password <> ''";

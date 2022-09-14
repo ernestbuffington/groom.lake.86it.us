@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -84,7 +84,7 @@ class style_update_p1 extends \an602\db\migration\migration
 		if ($this->db_tools->sql_table_exists($this->table_prefix . 'styles_imageset'))
 		{
 			$sql = 'SELECT s.style_id, t.template_path, t.template_id, t.bbcode_bitfield, t.template_inherits_id, t.template_inherit_path, c.theme_path, c.theme_id, i.imageset_path
-				FROM ' . AN602_STYLES_TABLE . ' s, ' . $this->table_prefix . 'styles_template t, ' . $this->table_prefix . 'styles_theme c, ' . $this->table_prefix . "styles_imageset i
+				FROM ' . STYLES_TABLE . ' s, ' . $this->table_prefix . 'styles_template t, ' . $this->table_prefix . 'styles_theme c, ' . $this->table_prefix . "styles_imageset i
 				WHERE t.template_id = s.template_id
 					AND c.theme_id = s.theme_id
 					AND i.imageset_id = s.imageset_id";
@@ -92,7 +92,7 @@ class style_update_p1 extends \an602\db\migration\migration
 		else
 		{
 			$sql = 'SELECT s.style_id, t.template_path, t.template_id, t.bbcode_bitfield, t.template_inherits_id, t.template_inherit_path, c.theme_path, c.theme_id
-				FROM ' . AN602_STYLES_TABLE . ' s, ' . $this->table_prefix . 'styles_template t, ' . $this->table_prefix . "styles_theme c
+				FROM ' . STYLES_TABLE . ' s, ' . $this->table_prefix . 'styles_template t, ' . $this->table_prefix . "styles_theme c
 				WHERE t.template_id = s.template_id
 					AND c.theme_id = s.theme_id";
 		}
@@ -125,7 +125,7 @@ class style_update_p1 extends \an602\db\migration\migration
 					'style_parent_id'	=> 0,
 					'style_parent_tree'	=> '',
 				);
-				$this->sql_query('UPDATE ' . AN602_STYLES_TABLE . '
+				$this->sql_query('UPDATE ' . STYLES_TABLE . '
 					SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
 					WHERE style_id = ' . $style_row['style_id']);
 				$valid_styles[] = (int) $style_row['style_id'];
@@ -136,11 +136,11 @@ class style_update_p1 extends \an602\db\migration\migration
 		if (!count($valid_styles))
 		{
 			// No valid styles: remove everything and add prosilver
-			$this->sql_query('DELETE FROM ' . AN602_STYLES_TABLE);
+			$this->sql_query('DELETE FROM ' . STYLES_TABLE);
 
 			$sql_ary = array(
 				'style_name'		=> 'prosilver',
-				'style_copyright'	=> '&copy; PHP-AN602',
+				'style_copyright'	=> '&copy; AN602 Limited',
 				'style_active'		=> 1,
 				'style_path'		=> 'prosilver',
 				'bbcode_bitfield'	=> 'lNg=',
@@ -153,11 +153,11 @@ class style_update_p1 extends \an602\db\migration\migration
 				'theme_id'			=> 0,
 			);
 
-			$sql = 'INSERT INTO ' . AN602_STYLES_TABLE . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
+			$sql = 'INSERT INTO ' . STYLES_TABLE . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
 			$this->sql_query($sql);
 
 			$sql = 'SELECT style_id
-				FROM ' . AN602_STYLES_TABLE . "
+				FROM ' . STYLES_TABLE . "
 				WHERE style_name = 'prosilver'";
 			$result = $this->sql_query($sql);
 			$default_style = (int) $this->db->sql_fetchfield('style_id');
@@ -165,25 +165,25 @@ class style_update_p1 extends \an602\db\migration\migration
 
 			$this->config->set('default_style', $default_style);
 
-			$sql = 'UPDATE ' . AN602_USERS_TABLE . ' SET user_style = ' .  (int) $default_style;
+			$sql = 'UPDATE ' . USERS_TABLE . ' SET user_style = ' .  (int) $default_style;
 			$this->sql_query($sql);
 		}
 		else
 		{
 			// There are valid styles in styles table. Remove styles that are outdated
-			$this->sql_query('DELETE FROM ' . AN602_STYLES_TABLE . '
+			$this->sql_query('DELETE FROM ' . STYLES_TABLE . '
 				WHERE ' . $this->db->sql_in_set('style_id', $valid_styles, true));
 
 			// Change default style
 			if (!in_array($this->config['default_style'], $valid_styles))
 			{
-				$this->sql_query('UPDATE ' . AN602_CONFIG_TABLE . "
+				$this->sql_query('UPDATE ' . CONFIG_TABLE . "
 					SET config_value = '" . $valid_styles[0] . "'
 					WHERE config_name = 'default_style'");
 			}
 
 			// Reset styles for users
-			$this->sql_query('UPDATE ' . AN602_USERS_TABLE . "
+			$this->sql_query('UPDATE ' . USERS_TABLE . "
 				SET user_style = '" . (int) $valid_styles[0] . "'
 				WHERE " . $this->db->sql_in_set('user_style', $valid_styles, true));
 		}

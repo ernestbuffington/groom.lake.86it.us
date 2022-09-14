@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -114,7 +114,7 @@ class fulltext_postgres extends \an602\search\base
 		 */
 		if (!function_exists('utf8_strlen'))
 		{
-			include($an602_root_path . 'includes/an602_utf/utf_tools.' . $phpEx);
+			include($an602_root_path . 'includes/utf/utf_tools.' . $phpEx);
 		}
 
 		$error = false;
@@ -409,7 +409,7 @@ class fulltext_postgres extends \an602\search\base
 		switch ($sql_sort[0])
 		{
 			case 'u':
-				$sql_sort_table	= AN602_USERS_TABLE . ' u, ';
+				$sql_sort_table	= USERS_TABLE . ' u, ';
 				$sql_sort_join	= ($type == 'posts') ? ' AND u.user_id = p.poster_id ' : ' AND u.user_id = t.topic_poster ';
 			break;
 
@@ -418,7 +418,7 @@ class fulltext_postgres extends \an602\search\base
 			break;
 
 			case 'f':
-				$sql_sort_table	= AN602_FORUMS_TABLE . ' f, ';
+				$sql_sort_table	= FORUMS_TABLE . ' f, ';
 				$sql_sort_join	= ' AND f.forum_id = p.forum_id ';
 			break;
 		}
@@ -458,7 +458,7 @@ class fulltext_postgres extends \an602\search\base
 		* @var	string	tsearch_query		The parsed keywords used for this search
 		* @var	int		result_count		The previous result count for the format of the query.
 		*									Set to 0 to force a re-count
-		* @var	bool	join_topic			Weather or not AN602_TOPICS_TABLE should be CROSS JOIN'ED
+		* @var	bool	join_topic			Weather or not TOPICS_TABLE should be CROSS JOIN'ED
 		* @var	array	author_ary			Array of user_id containing the users to filter the results to
 		* @var	string	author_name			An extra username to search on (!empty(author_ary) must be true, to be relevant)
 		* @var	array	ex_fid_ary			Which forums not to search on
@@ -499,7 +499,7 @@ class fulltext_postgres extends \an602\search\base
 		extract($this->an602_dispatcher->trigger_event('core.search_postgres_keywords_main_query_before', compact($vars)));
 
 		$sql_select			= ($type == 'posts') ? 'p.post_id' : 'DISTINCT t.topic_id, ' . $sort_by_sql[$sort_key];
-		$sql_from			= ($join_topic) ? AN602_TOPICS_TABLE . ' t, ' : '';
+		$sql_from			= ($join_topic) ? TOPICS_TABLE . ' t, ' : '';
 		$field				= ($type == 'posts') ? 'post_id' : 'topic_id';
 
 		if (count($author_ary) && $author_name)
@@ -530,7 +530,7 @@ class fulltext_postgres extends \an602\search\base
 
 		$this->db->sql_transaction('begin');
 
-		$sql_from = "FROM $sql_from$sql_sort_table" . AN602_POSTS_TABLE . " p";
+		$sql_from = "FROM $sql_from$sql_sort_table" . POSTS_TABLE . " p";
 		$sql_where = "WHERE (" . $tmp_sql_match . ")
 			$sql_where_options";
 		$sql = "SELECT $sql_select
@@ -697,17 +697,17 @@ class fulltext_postgres extends \an602\search\base
 		switch ($sql_sort[0])
 		{
 			case 'u':
-				$sql_sort_table	= AN602_USERS_TABLE . ' u, ';
+				$sql_sort_table	= USERS_TABLE . ' u, ';
 				$sql_sort_join	= ($type == 'posts') ? ' AND u.user_id = p.poster_id ' : ' AND u.user_id = t.topic_poster ';
 			break;
 
 			case 't':
-				$sql_sort_table	= ($type == 'posts' && !$firstpost_only) ? AN602_TOPICS_TABLE . ' t, ' : '';
+				$sql_sort_table	= ($type == 'posts' && !$firstpost_only) ? TOPICS_TABLE . ' t, ' : '';
 				$sql_sort_join	= ($type == 'posts' && !$firstpost_only) ? ' AND t.topic_id = p.topic_id ' : '';
 			break;
 
 			case 'f':
-				$sql_sort_table	= AN602_FORUMS_TABLE . ' f, ';
+				$sql_sort_table	= FORUMS_TABLE . ' f, ';
 				$sql_sort_join	= ' AND f.forum_id = p.forum_id ';
 			break;
 		}
@@ -767,7 +767,7 @@ class fulltext_postgres extends \an602\search\base
 		if ($type == 'posts')
 		{
 			$sql = "SELECT p.post_id
-				FROM " . $sql_sort_table . AN602_POSTS_TABLE . ' p' . (($firstpost_only) ? ', ' . AN602_TOPICS_TABLE . ' t ' : ' ') . "
+				FROM " . $sql_sort_table . POSTS_TABLE . ' p' . (($firstpost_only) ? ', ' . TOPICS_TABLE . ' t ' : ' ') . "
 				WHERE $sql_author
 					$sql_topic_id
 					$sql_firstpost
@@ -781,7 +781,7 @@ class fulltext_postgres extends \an602\search\base
 		else
 		{
 			$sql = "SELECT t.topic_id
-				FROM " . $sql_sort_table . AN602_TOPICS_TABLE . ' t, ' . AN602_POSTS_TABLE . " p
+				FROM " . $sql_sort_table . TOPICS_TABLE . ' t, ' . POSTS_TABLE . " p
 				WHERE $sql_author
 					$sql_topic_id
 					$sql_firstpost
@@ -812,7 +812,7 @@ class fulltext_postgres extends \an602\search\base
 			if ($type == 'posts')
 			{
 				$sql_count = "SELECT COUNT(*) as result_count
-					FROM " . $sql_sort_table . AN602_POSTS_TABLE . ' p' . (($firstpost_only) ? ', ' . AN602_TOPICS_TABLE . ' t ' : ' ') . "
+					FROM " . $sql_sort_table . POSTS_TABLE . ' p' . (($firstpost_only) ? ', ' . TOPICS_TABLE . ' t ' : ' ') . "
 					WHERE $sql_author
 						$sql_topic_id
 						$sql_firstpost
@@ -824,7 +824,7 @@ class fulltext_postgres extends \an602\search\base
 			else
 			{
 				$sql_count = "SELECT COUNT(*) as result_count
-					FROM " . $sql_sort_table . AN602_TOPICS_TABLE . ' t, ' . AN602_POSTS_TABLE . " p
+					FROM " . $sql_sort_table . TOPICS_TABLE . ' t, ' . POSTS_TABLE . " p
 					WHERE $sql_author
 						$sql_topic_id
 						$sql_firstpost
@@ -968,17 +968,17 @@ class fulltext_postgres extends \an602\search\base
 
 		if (!isset($this->stats['post_subject']))
 		{
-			$sql_queries[] = "CREATE INDEX " . AN602_POSTS_TABLE . "_" . $this->config['fulltext_postgres_ts_name'] . "_post_subject ON " . AN602_POSTS_TABLE . " USING gin (to_tsvector ('" . $this->db->sql_escape($this->config['fulltext_postgres_ts_name']) . "', post_subject))";
+			$sql_queries[] = "CREATE INDEX " . POSTS_TABLE . "_" . $this->config['fulltext_postgres_ts_name'] . "_post_subject ON " . POSTS_TABLE . " USING gin (to_tsvector ('" . $this->db->sql_escape($this->config['fulltext_postgres_ts_name']) . "', post_subject))";
 		}
 
 		if (!isset($this->stats['post_content']))
 		{
-			$sql_queries[] = "CREATE INDEX " . AN602_POSTS_TABLE . "_" . $this->config['fulltext_postgres_ts_name'] . "_post_content ON " . AN602_POSTS_TABLE . " USING gin (to_tsvector ('" . $this->db->sql_escape($this->config['fulltext_postgres_ts_name']) . "', post_text))";
+			$sql_queries[] = "CREATE INDEX " . POSTS_TABLE . "_" . $this->config['fulltext_postgres_ts_name'] . "_post_content ON " . POSTS_TABLE . " USING gin (to_tsvector ('" . $this->db->sql_escape($this->config['fulltext_postgres_ts_name']) . "', post_text))";
 		}
 
 		if (!isset($this->stats['post_subject_content']))
 		{
-			$sql_queries[] = "CREATE INDEX " . AN602_POSTS_TABLE . "_" . $this->config['fulltext_postgres_ts_name'] . "_post_subject_content ON " . AN602_POSTS_TABLE . " USING gin (to_tsvector ('" . $this->db->sql_escape($this->config['fulltext_postgres_ts_name']) . "', post_subject || ' ' || post_text))";
+			$sql_queries[] = "CREATE INDEX " . POSTS_TABLE . "_" . $this->config['fulltext_postgres_ts_name'] . "_post_subject_content ON " . POSTS_TABLE . " USING gin (to_tsvector ('" . $this->db->sql_escape($this->config['fulltext_postgres_ts_name']) . "', post_subject || ' ' || post_text))";
 		}
 
 		$stats = $this->stats;
@@ -1002,7 +1002,7 @@ class fulltext_postgres extends \an602\search\base
 			$this->db->sql_query($sql_query);
 		}
 
-		$this->db->sql_query('TRUNCATE TABLE ' . AN602_SEARCH_RESULTS_TABLE);
+		$this->db->sql_query('TRUNCATE TABLE ' . SEARCH_RESULTS_TABLE);
 
 		return false;
 	}
@@ -1063,7 +1063,7 @@ class fulltext_postgres extends \an602\search\base
 			$this->db->sql_query($sql_query);
 		}
 
-		$this->db->sql_query('TRUNCATE TABLE ' . AN602_SEARCH_RESULTS_TABLE);
+		$this->db->sql_query('TRUNCATE TABLE ' . SEARCH_RESULTS_TABLE);
 
 		return false;
 	}
@@ -1109,7 +1109,7 @@ class fulltext_postgres extends \an602\search\base
 
 		$sql = "SELECT c2.relname, pg_catalog.pg_get_indexdef(i.indexrelid, 0, true) AS indexdef
 			  FROM pg_catalog.pg_class c1, pg_catalog.pg_index i, pg_catalog.pg_class c2
-			 WHERE c1.relname = '" . AN602_POSTS_TABLE . "'
+			 WHERE c1.relname = '" . POSTS_TABLE . "'
 			   AND pg_catalog.pg_table_is_visible(c1.oid)
 			   AND c1.oid = i.indrelid
 			   AND i.indexrelid = c2.oid";
@@ -1120,15 +1120,15 @@ class fulltext_postgres extends \an602\search\base
 			// deal with older PostgreSQL versions which didn't use Index_type
 			if (strpos($row['indexdef'], 'to_tsvector') !== false)
 			{
-				if ($row['relname'] == AN602_POSTS_TABLE . '_' . $this->config['fulltext_postgres_ts_name'] . '_post_subject' || $row['relname'] == AN602_POSTS_TABLE . '_post_subject')
+				if ($row['relname'] == POSTS_TABLE . '_' . $this->config['fulltext_postgres_ts_name'] . '_post_subject' || $row['relname'] == POSTS_TABLE . '_post_subject')
 				{
 					$this->stats['post_subject'] = $row;
 				}
-				else if ($row['relname'] == AN602_POSTS_TABLE . '_' . $this->config['fulltext_postgres_ts_name'] . '_post_content' || $row['relname'] == AN602_POSTS_TABLE . '_post_content')
+				else if ($row['relname'] == POSTS_TABLE . '_' . $this->config['fulltext_postgres_ts_name'] . '_post_content' || $row['relname'] == POSTS_TABLE . '_post_content')
 				{
 					$this->stats['post_content'] = $row;
 				}
-				else if ($row['relname'] == AN602_POSTS_TABLE . '_' . $this->config['fulltext_postgres_ts_name'] . '_post_subject_content' || $row['relname'] == AN602_POSTS_TABLE . '_post_subject_content')
+				else if ($row['relname'] == POSTS_TABLE . '_' . $this->config['fulltext_postgres_ts_name'] . '_post_subject_content' || $row['relname'] == POSTS_TABLE . '_post_subject_content')
 				{
 					$this->stats['post_subject_content'] = $row;
 				}

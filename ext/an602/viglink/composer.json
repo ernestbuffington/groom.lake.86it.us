@@ -1,16 +1,16 @@
 {
 	"name": "an602/viglink",
-	"type": "an602-extension",
+	"type": "phpbb-extension",
 	"description": "The VigLink extension for AN602 makes it possible to earn revenue, without any change to the user experience, when users post and follow links to commercial sites.",
-	"homepage": "https://groom.lake.86it.us",
+	"homepage": "https://www.groom.lake.86it.us",
 	"version": "1.0.5",
-	"keywords": ["an602", "extension", "viglink"],
+	"keywords": ["phpbb", "extension", "viglink"],
 	"license": "GPL-2.0-only",
 	"authors": [
 		{
-			"name": "PHP-AN602",
-			"email": "operations@an602.com",
-			"homepage": "https://groom.lake.86it.us/go/authors"
+			"name": "AN602 Limited",
+			"email": "operations@groom.lake.86it.us",
+			"homepage": "https://www.groom.lake.86it.us/go/authors"
 		}
 	],
 	"require": {

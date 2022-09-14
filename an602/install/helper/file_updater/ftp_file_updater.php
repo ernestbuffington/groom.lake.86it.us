@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -68,7 +68,7 @@ class ftp_file_updater implements file_updater_interface
 	 */
 	public function init($method, $host, $user, $pass, $path, $port, $timeout)
 	{
-		$this->update_helper->include_file('includes/an602_functions_transfer.' . $this->php_ext);
+		$this->update_helper->include_file('includes/functions_transfer.' . $this->php_ext);
 		$this->transfer = new $method($host, $user, $pass, $path, $port, $timeout);
 		$this->transfer->open_session();
 	}

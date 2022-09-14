@@ -11,7 +11,7 @@
 
 </head>
 
-<body id="an602" class="section-docs">
+<body id="phpbb" class="section-docs">
 
 <div id="wrap">
 	<a id="top" name="top" accesskey="t"></a>
@@ -44,7 +44,7 @@
 	<p>
 		A basic overview of running AN602 can be found in the accompanying <a href="README.html">README</a> file.
 		Please ensure you read that document in addition to this! For more detailed information on using, installing,
-		updating and converting AN602 you should read <a href="https://groom.lake.86it.us/support/docs/en/3.3/ug/">the documentation</a>
+		updating and converting AN602 you should read <a href="https://www.groom.lake.86it.us/support/docs/en/3.3/ug/">the documentation</a>
 		available online.
 	</p>
 </div>
@@ -229,7 +229,7 @@
 
 	<h4>Administrator details</h4>
 
-	<p>Now you have to create your administration user. This user will have full administration access and he/she will be the first user on your forum. All fields on this page are required. You can also set the default language of your forum on this page. In a vanilla AN602 installation, we only include British English. You can download further languages from <a href="https://groom.lake.86it.us/">groom.lake.86it.us</a>, and add them before installing or later.</p>
+	<p>Now you have to create your administration user. This user will have full administration access and he/she will be the first user on your forum. All fields on this page are required. You can also set the default language of your forum on this page. In a vanilla AN602 installation, we only include British English. You can download further languages from <a href="https://www.groom.lake.86it.us/">www.groom.lake.86it.us</a>, and add them before installing or later.</p>
 
 	<h4>Configuration file</h4>
 
@@ -293,7 +293,7 @@
 
 	<p>The patch file is one solution for those with changes in to the AN602 core files and do not want to re-add them back to all the changed files. To use this you will need command line access to a standard UNIX type <strong>patch</strong> application. If you do not have access to such an application, but still want to use this update approach, we strongly recommend the <a href="#update_full">Full package update</a> explained above. It is also the recommended update method.</p>
 
-	<p>A number of patch files are provided to allow you to update from previous stable releases. Select the correct patch, e.g. if your current version is <strong>3.3.0</strong>, you need the <code>AN602-3.3.1-patch.zip/tar.bz2</code> file. Place the correct patch in the parent directory containing the AN602 core files (i.e. index.php, viewforum.php, etc.). With this done you should run the following command: <code>patch -cl -d [AN602 DIRECTORY] -p1 &lt; [PATCH NAME]</code> (where AN602 DIRECTORY is the directory name your AN602 Installation resides in, for example AN602, and where PATCH NAME is the relevant filename of the selected patch file). This should complete quickly, hopefully without any HUNK FAILED comments.</p>
+	<p>A number of patch files are provided to allow you to update from previous stable releases. Select the correct patch, e.g. if your current version is <strong>3.3.0</strong>, you need the <code>AN602-3.3.1-patch.zip/tar.bz2</code> file. Place the correct patch in the parent directory containing the AN602 core files (i.e. index.php, viewforum.php, etc.). With this done you should run the following command: <code>patch -cl -d [PHPBB DIRECTORY] -p1 &lt; [PATCH NAME]</code> (where PHPBB DIRECTORY is the directory name your AN602 Installation resides in, for example AN602, and where PATCH NAME is the relevant filename of the selected patch file). This should complete quickly, hopefully without any HUNK FAILED comments.</p>
 
 	<p>If you do get failures, you should look at using the <a href="#update_files">Changed Files</a> package to replace the files which failed to patch. Please note that you will need to manually re-add any MODs to these particular files. Alternatively, if you know how, you can examine the .rej files to determine what failed where and make manual adjustments to the relevant source.</p>
 
@@ -310,7 +310,7 @@
 	<p>To perform the update, either follow the instructions from the <strong>Administration Control Panel-&gt;System</strong> Tab - this should point out that you are running an outdated version and will guide you through the update - or follow the instructions listed below.</p>
 
 	<ul>
-		<li>Go to the <a href="https://groom.lake.86it.us/downloads/">downloads page</a> and download the latest update package listed there, matching your current version.</li>
+		<li>Go to the <a href="https://www.groom.lake.86it.us/downloads/">downloads page</a> and download the latest update package listed there, matching your current version.</li>
 		<li>Upload the uncompressed archive contents to your AN602 installation - only the <code>install/</code> and <code>vendor/</code> folders are required. Upload these folders in their entirety, retaining the file structure.</li>
 		<li>After the install folder is present, AN602 will go offline automatically.</li>
 		<li>Point your browser to the install directory, for example <code>http://www.example.com/AN6023/install/</code></li>
@@ -393,7 +393,7 @@
 
 	<p>As with install, the conversion is automated. Your previous 2.0.x database tables will not be changed and the original 2.0.x files will remain unaltered. The conversion is actually only filling your AN602 3.x database tables and copying additional data over to your AN602 3.x installation. This has the benefit that if something goes wrong, you are able to either re-run the conversion or continue a conversion, while your old board is still accessible. We really recommend that you disable your old installation while converting, else you may have inconsistent data after the conversion.</p>
 
-	<p>Please note that this conversion process may take quite some time and depending on your hosting provider this may result in it failing (due to web server resource limits or other timeout issues). If this is the case, you should ask your provider if they are willing to allow the convert script to temporarily exceed their limits (be nice and they will probably be quite helpful). If your host is unwilling to increase the limits to run the convertor, please see this article for performing the conversion on your local machine: <a href="https://groom.lake.86it.us/kb/article/offline-conversions/">Knowledge Base - Offline Conversions</a></p>
+	<p>Please note that this conversion process may take quite some time and depending on your hosting provider this may result in it failing (due to web server resource limits or other timeout issues). If this is the case, you should ask your provider if they are willing to allow the convert script to temporarily exceed their limits (be nice and they will probably be quite helpful). If your host is unwilling to increase the limits to run the convertor, please see this article for performing the conversion on your local machine: <a href="https://www.groom.lake.86it.us/kb/article/offline-conversions/">Knowledge Base - Offline Conversions</a></p>
 
 	<p>Once completed, your board should be immediately available. If you encountered errors, you should report the problems to our bug tracker or seek help via our forums (see <a href="README.html">README</a> for details).</p>
 
@@ -458,11 +458,11 @@
 
 <a name="webserver_configuration"></a><h3>6.ii. Webserver configuration</h3>
 
-	<p>Depending on your web server, you may have to configure your server to deny web access to the <code>cache/</code>, <code>files/</code>, <code>includes</code>, <code>an602</code>, <code>store/</code>, and <code>vendor</code> directories. This is to prevent users from accessing sensitive files.</p>
+	<p>Depending on your web server, you may have to configure your server to deny web access to the <code>cache/</code>, <code>files/</code>, <code>includes</code>, <code>phpbb</code>, <code>store/</code>, and <code>vendor</code> directories. This is to prevent users from accessing sensitive files.</p>
 
 	<p>
 		For <strong>Apache</strong> there are <code>.htaccess</code> files already in place to do this for the most sensitive files and folders. We do however recommend to completely deny all access to the aforementioned folders and their respective subfolders in your Apache configuration.<br />
-		On Apache 2.4, denying access to the <code>an602</code> folder in a AN602 instance located at <code>/var/www/html/</code> would be accomplished by adding the following access rules to the Apache configuration file (typically apache.conf):
+		On Apache 2.4, denying access to the <code>phpbb</code> folder in a AN602 instance located at <code>/var/www/html/</code> would be accomplished by adding the following access rules to the Apache configuration file (typically apache.conf):
 		<pre>
 &lt;Directory /var/www/html/an602/*&gt;
 	Require all denied
@@ -471,7 +471,7 @@
 	Require all denied
 &lt;/Directory&gt;</pre>
 		<br />
-	<p>The same settings can be applied to the other mentioned directories by replacing <code>an602</code> by the respective directory name. Please note that there are differences in syntax between Apache version <a href="https://httpd.apache.org/docs/2.2/howto/access.html">2.2</a> and <a href="https://httpd.apache.org/docs/2.4/howto/access.html">2.4</a>.</p>
+	<p>The same settings can be applied to the other mentioned directories by replacing <code>phpbb</code> by the respective directory name. Please note that there are differences in syntax between Apache version <a href="https://httpd.apache.org/docs/2.2/howto/access.html">2.2</a> and <a href="https://httpd.apache.org/docs/2.4/howto/access.html">2.4</a>.</p>
 	<p>For <strong>Windows</strong> based servers using <strong>IIS</strong> there are <code>web.config</code> files already in place to do this for you. For other webservers, you will have to adjust the configuration yourself. Sample files for <strong>nginx</strong> and <strong>lighttpd</strong> to help you get started may be found in the <code>docs/</code> directory.</p>
 
 		</div>
@@ -489,7 +489,7 @@
 		<div class="inner">
 
 		<div class="content">
-	<p>Like any online site that allows user input, your board could be subject to unwanted posts; often referred to as <a href="http://en.wikipedia.org/wiki/Forum_spam">forum spam</a>. The vast majority of these attacks will be from automated computer programs known as <a href="http://en.wikipedia.org/wiki/Spambot">spambots</a>. The attacks, generally, are not personal as the spammers are just trying to find accessible targets. AN602 has a number of anti-spam measures built in, including a range of CAPTCHAs. However, administrators are strongly urged to read and follow the advice for <a href="https://groom.lake.86it.us/support/spam/">Preventing Spam in AN602</a> as soon as possible after completing the installation of your board.</p>
+	<p>Like any online site that allows user input, your board could be subject to unwanted posts; often referred to as <a href="http://en.wikipedia.org/wiki/Forum_spam">forum spam</a>. The vast majority of these attacks will be from automated computer programs known as <a href="http://en.wikipedia.org/wiki/Spambot">spambots</a>. The attacks, generally, are not personal as the spammers are just trying to find accessible targets. AN602 has a number of anti-spam measures built in, including a range of CAPTCHAs. However, administrators are strongly urged to read and follow the advice for <a href="https://www.groom.lake.86it.us/support/spam/">Preventing Spam in AN602</a> as soon as possible after completing the installation of your board.</p>
 		</div>
 
 		<div class="back2top"><a href="#wrap" class="top">Back to Top</a></div>
@@ -506,7 +506,7 @@
 
 		<div class="content">
 
-	<p>AN602 is free software, released under the terms of the <a href="http://opensource.org/licenses/gpl-2.0.php">GNU General Public License, version 2 (GPL-2.0)</a>. Copyright © <a href="https://groom.lake.86it.us">PHP-AN602</a>. For full copyright and license information, please see the docs/CREDITS.txt file.</p>
+	<p>AN602 is free software, released under the terms of the <a href="http://opensource.org/licenses/gpl-2.0.php">GNU General Public License, version 2 (GPL-2.0)</a>. Copyright © <a href="https://www.groom.lake.86it.us">AN602 Limited</a>. For full copyright and license information, please see the docs/CREDITS.txt file.</p>
 
 		</div>
 

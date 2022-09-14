@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -120,10 +120,10 @@ class set_up_database extends \an602\install\task_base
 		$dbms = $this->config->get('dbms');
 		$dbms_info = $this->database_helper->get_available_dbms($dbms);
 		$delimiter = $dbms_info[$dbms]['DELIM'];
-		$an602_table_prefix = $this->config->get('table_prefix');
+		$table_prefix = $this->config->get('table_prefix');
 
 		$sql_query = @file_get_contents($this->schema_file_path);
-		$sql_query = preg_replace('#an602_#i', $an602_table_prefix, $sql_query);
+		$sql_query = preg_replace('#an602_#i', $table_prefix, $sql_query);
 		$sql_query = $this->database_helper->remove_comments($sql_query);
 		$sql_query = $this->database_helper->split_sql_file($sql_query, $delimiter);
 

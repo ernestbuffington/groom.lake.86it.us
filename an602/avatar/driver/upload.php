@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -62,7 +62,7 @@ class upload extends \an602\avatar\driver\driver
 	*/
 	public function get_data($row)
 	{
-		$root_path = (defined('AN602_USE_BOARD_URL_PATH') && AN602_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $this->path_helper->get_web_root_path();
+		$root_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $this->path_helper->get_web_root_path();
 
 		return array(
 			'src' => $root_path . 'download/file.' . $this->php_ext . '?avatar=' . $row['avatar'],
@@ -128,7 +128,7 @@ class upload extends \an602\avatar\driver\driver
 
 			if (!function_exists('validate_data'))
 			{
-				require($this->an602_root_path . 'includes/an602_functions_user.' . $this->php_ext);
+				require($this->an602_root_path . 'includes/functions_user.' . $this->php_ext);
 			}
 
 			$validate_array = validate_data(

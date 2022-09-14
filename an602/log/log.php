@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -528,7 +528,7 @@ class log implements \an602\log\log_interface
 			'SELECT' => 'l.*, u.username, u.username_clean, u.user_colour',
 			'FROM' => array(
 						$this->log_table => 'l',
-						AN602_USERS_TABLE => 'u',
+						USERS_TABLE => 'u',
 					),
 			'WHERE' => 'l.log_type = ' . (int) $log_type . "
 					AND l.user_id = u.user_id
@@ -901,7 +901,7 @@ class log implements \an602\log\log_interface
 		$sql_ary = array(
 			'SELECT'	=> 'topic_id, forum_id',
 			'FROM'		=> array(
-				AN602_TOPICS_TABLE	=> 't',
+				TOPICS_TABLE	=> 't',
 			),
 			'WHERE'		=> $this->db->sql_in_set('topic_id', array_map('intval', $topic_ids)),
 		);
@@ -970,7 +970,7 @@ class log implements \an602\log\log_interface
 		$reportee_data_list = array();
 
 		$sql = 'SELECT user_id, username, user_colour
-			FROM ' . AN602_USERS_TABLE . '
+			FROM ' . USERS_TABLE . '
 			WHERE ' . $this->db->sql_in_set('user_id', $reportee_ids);
 		$result = $this->db->sql_query($sql);
 

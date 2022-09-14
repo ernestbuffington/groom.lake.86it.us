@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -108,7 +108,7 @@ class release_3_0_1_rc1 extends \an602\db\migration\migration
 			{
 				list($width, $height) = getimagesize($this->an602_root_path . 'images/smilies/' . $smiley);
 
-				$sql = 'UPDATE ' . AN602_SMILIES_TABLE . '
+				$sql = 'UPDATE ' . SMILIES_TABLE . '
 					SET smiley_width = ' . $width . ', smiley_height = ' . $height . "
 					WHERE smiley_url = '" . $this->db->sql_escape($smiley) . "'";
 

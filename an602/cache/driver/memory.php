@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -25,10 +25,10 @@ abstract class memory extends \an602\cache\driver\base
 	*/
 	function __construct()
 	{
-		global $dbname, $an602_table_prefix, $an602_container;
+		global $dbname, $table_prefix, $an602_container;
 
 		$this->cache_dir	= $an602_container->getParameter('core.cache_dir');
-		$this->key_prefix	= substr(md5($dbname . $an602_table_prefix), 0, 8) . '_';
+		$this->key_prefix	= substr(md5($dbname . $table_prefix), 0, 8) . '_';
 
 		if (!isset($this->extension) || !extension_loaded($this->extension))
 		{

@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -90,7 +90,7 @@ class release_3_0_4_rc1 extends \an602\db\migration\migration
 	{
 		// Update the Custom Profile Fields based on previous settings to the new \format
 		$sql = 'SELECT field_id, field_required, field_show_on_reg, field_hide
-				FROM ' . AN602_PROFILE_FIELDS_TABLE;
+				FROM ' . PROFILE_FIELDS_TABLE;
 		$result = $this->db->sql_query($sql);
 
 		while ($row = $this->db->sql_fetchrow($result))

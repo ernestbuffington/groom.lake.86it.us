@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -133,7 +133,7 @@ class delete extends command
 
 			if (!function_exists('user_delete'))
 			{
-				require($this->an602_root_path . 'includes/an602_functions_user.' . $this->php_ext);
+				require($this->an602_root_path . 'includes/functions_user.' . $this->php_ext);
 			}
 
 			user_delete($mode, $user_row['user_id'], $user_row['username']);

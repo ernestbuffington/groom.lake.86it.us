@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -35,7 +35,7 @@ class user_form extends form
 	protected function get_user_row($user_id)
 	{
 		$sql = 'SELECT user_id, username, user_colour, user_email, user_allow_viewemail, user_lang, user_jabber, user_notify_type
-			FROM ' . AN602_USERS_TABLE . '
+			FROM ' . USERS_TABLE . '
 			WHERE user_id = ' . (int) $user_id . '
 				AND user_type IN (' . USER_NORMAL . ', ' . USER_FOUNDER . ')';
 		$result = $this->db->sql_query($sql);

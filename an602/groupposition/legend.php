@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -60,7 +60,7 @@ class legend implements \an602\groupposition\groupposition_interface
 	public function get_group_value($group_id)
 	{
 		$sql = 'SELECT group_legend
-			FROM ' . AN602_GROUPS_TABLE . '
+			FROM ' . GROUPS_TABLE . '
 			WHERE group_id = ' . (int) $group_id;
 		$result = $this->db->sql_query($sql);
 		$current_value = $this->db->sql_fetchfield('group_legend');
@@ -83,7 +83,7 @@ class legend implements \an602\groupposition\groupposition_interface
 	public function get_group_count()
 	{
 		$sql = 'SELECT group_legend
-			FROM ' . AN602_GROUPS_TABLE . '
+			FROM ' . GROUPS_TABLE . '
 			ORDER BY group_legend DESC';
 		$result = $this->db->sql_query_limit($sql, 1);
 		$group_count = (int) $this->db->sql_fetchfield('group_legend');
@@ -104,7 +104,7 @@ class legend implements \an602\groupposition\groupposition_interface
 			// Group is currently not displayed, add it at the end.
 			$next_value = 1 + $this->get_group_count();
 
-			$sql = 'UPDATE ' . AN602_GROUPS_TABLE . '
+			$sql = 'UPDATE ' . GROUPS_TABLE . '
 				SET group_legend = ' . $next_value . '
 				WHERE group_legend = ' . self::GROUP_DISABLED . '
 					AND group_id = ' . (int) $group_id;
@@ -130,14 +130,14 @@ class legend implements \an602\groupposition\groupposition_interface
 		{
 			$this->db->sql_transaction('begin');
 
-			$sql = 'UPDATE ' . AN602_GROUPS_TABLE . '
+			$sql = 'UPDATE ' . GROUPS_TABLE . '
 				SET group_legend = group_legend - 1
 				WHERE group_legend > ' . $current_value;
 			$this->db->sql_query($sql);
 
 			if (!$skip_group)
 			{
-				$sql = 'UPDATE ' . AN602_GROUPS_TABLE . '
+				$sql = 'UPDATE ' . GROUPS_TABLE . '
 					SET group_legend = ' . self::GROUP_DISABLED . '
 					WHERE group_id = ' . (int) $group_id;
 				$this->db->sql_query($sql);
@@ -187,7 +187,7 @@ class legend implements \an602\groupposition\groupposition_interface
 
 			// First we move all groups between our current value and the target value up/down 1,
 			// so we have a gap for our group to move.
-			$sql = 'UPDATE ' . AN602_GROUPS_TABLE . '
+			$sql = 'UPDATE ' . GROUPS_TABLE . '
 				SET group_legend = group_legend' . (($move_up) ? ' + 1' : ' - 1') . '
 				WHERE group_legend > ' . self::GROUP_DISABLED . '
 					AND group_legend' . (($move_up) ? ' >= ' : ' <= ') . ($current_value - $delta) . '
@@ -202,7 +202,7 @@ class legend implements \an602\groupposition\groupposition_interface
 			{
 				// And now finally, when we moved some other groups and built a gap,
 				// we can move the desired group to it.
-				$sql = 'UPDATE ' . AN602_GROUPS_TABLE . '
+				$sql = 'UPDATE ' . GROUPS_TABLE . '
 					SET group_legend = group_legend ' . (($move_up) ? ' - ' : ' + ') . $delta . '
 					WHERE group_id = ' . (int) $group_id;
 				$this->db->sql_query($sql);

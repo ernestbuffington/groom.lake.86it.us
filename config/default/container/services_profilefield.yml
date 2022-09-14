@@ -1,6 +1,6 @@
 services:
     profilefields.manager:
-        class: phpbb\profilefields\manager
+        class: an602\profilefields\manager
         arguments:
             - '@auth'
             - '@config_text'
@@ -19,21 +19,21 @@ services:
             - '%tables.profile_fields_language%'
 
     profilefields.lang_helper:
-        class: phpbb\profilefields\lang_helper
+        class: an602\profilefields\lang_helper
         arguments:
             - '@dbal.conn'
             - '%tables.profile_fields_options_language%'
 
 # ----- Profile fields types -----
     profilefields.type_collection:
-        class: phpbb\di\service_collection
+        class: an602\di\service_collection
         arguments:
             - '@service_container'
         tags:
             - { name: service_collection, tag: profilefield.type }
 
     profilefields.type.bool:
-        class: phpbb\profilefields\type\type_bool
+        class: an602\profilefields\type\type_bool
         arguments:
             - '@profilefields.lang_helper'
             - '@request'
@@ -43,7 +43,7 @@ services:
             - { name: profilefield.type }
 
     profilefields.type.date:
-        class: phpbb\profilefields\type\type_date
+        class: an602\profilefields\type\type_date
         arguments:
             - '@request'
             - '@template'
@@ -52,7 +52,7 @@ services:
             - { name: profilefield.type }
 
     profilefields.type.dropdown:
-        class: phpbb\profilefields\type\type_dropdown
+        class: an602\profilefields\type\type_dropdown
         arguments:
             - '@profilefields.lang_helper'
             - '@request'
@@ -62,7 +62,7 @@ services:
             - { name: profilefield.type }
 
     profilefields.type.int:
-        class: phpbb\profilefields\type\type_int
+        class: an602\profilefields\type\type_int
         arguments:
             - '@request'
             - '@template'
@@ -71,7 +71,7 @@ services:
             - { name: profilefield.type }
 
     profilefields.type.string:
-        class: phpbb\profilefields\type\type_string
+        class: an602\profilefields\type\type_string
         arguments:
             - '@request'
             - '@template'
@@ -80,7 +80,7 @@ services:
             - { name: profilefield.type }
 
     profilefields.type.text:
-        class: phpbb\profilefields\type\type_text
+        class: an602\profilefields\type\type_text
         arguments:
             - '@request'
             - '@template'
@@ -89,7 +89,7 @@ services:
             - { name: profilefield.type }
 
     profilefields.type.url:
-        class: phpbb\profilefields\type\type_url
+        class: an602\profilefields\type\type_url
         arguments:
             - '@request'
             - '@template'

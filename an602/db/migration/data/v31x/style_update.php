@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -50,7 +50,7 @@ class style_update extends \an602\db\migration\migration
 		if (empty($style_paths) && in_array('prosilver', $styles))
 		{
 			// Try to parse config file
-			$cfg = parse_cfg_file($this->an602_root_path . 'themes/theme_core/styles/prosilver/style.cfg');
+			$cfg = parse_cfg_file($this->an602_root_path . 'styles/prosilver/style.cfg');
 
 			// Stop running this if prosilver cfg file can't be read
 			if (empty($cfg))
@@ -60,7 +60,7 @@ class style_update extends \an602\db\migration\migration
 
 			$style = array(
 				'style_name'		=> 'prosilver',
-				'style_copyright'	=> '&copy; PHP-AN602',
+				'style_copyright'	=> '&copy; AN602 Limited',
 				'style_active'		=> 1,
 				'style_path'		=> 'prosilver',
 				'bbcode_bitfield'	=> 'kNg=',
@@ -110,7 +110,7 @@ class style_update extends \an602\db\migration\migration
 	protected function find_style_dirs()
 	{
 		$styles = array();
-		$styles_path = $this->an602_root_path . 'themes/theme_core/styles/';
+		$styles_path = $this->an602_root_path . 'styles/';
 
 		$dp = @opendir($styles_path);
 		if ($dp)

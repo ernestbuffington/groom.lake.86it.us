@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -62,7 +62,7 @@ $lang = array_merge($lang, array(
 	'SITE_HOME_TEXT'				=> 'Main website text',
 	'SITE_HOME_TEXT_EXPLAIN'		=> 'This text will be displayed as a link to your website homepage in the board’s breadcrumbs. If not specified, it will default to “Home”.',
 	'SITE_HOME_URL'					=> 'Main website URL',
-	'SITE_HOME_URL_EXPLAIN'			=> 'If specified, a link to this URL will be prepended to your board’s breadcrumbs and the board logo will link to this URL instead of the forum index. An absolute URL is required, e.g. <samp>http://groom.lake.86it.us</samp>.',
+	'SITE_HOME_URL_EXPLAIN'			=> 'If specified, a link to this URL will be prepended to your board’s breadcrumbs and the board logo will link to this URL instead of the forum index. An absolute URL is required, e.g. <samp>http://www.groom.lake.86it.us</samp>.',
 	'SITE_NAME'						=> 'Site name',
 	'SYSTEM_TIMEZONE'				=> 'Guest timezone',
 	'SYSTEM_TIMEZONE_EXPLAIN'			=> 'Timezone to use for displaying times to users who are not logged in (guests, bots). Logged in users set their timezone during registration and can change it in their user control panel.',
@@ -308,7 +308,7 @@ $lang = array_merge($lang, array(
 // Visual Confirmation Settings
 $lang = array_merge($lang, array(
 	'ACP_VC_SETTINGS_EXPLAIN'				=> 'Here you can select and configure plugins, which are designed to block automated form submissions by spambots. These plugins typically work by challenging the user with a <em>CAPTCHA</em>, a test which is designed to be difficult for computers to solve.',
-	'ACP_VC_EXT_GET_MORE'					=> 'For additional (and possibly better) anti-spam plugins, visit the <a href="https://groom.lake.86it.us/go/anti-spam-ext"><strong>AN602.com Extensions Database</strong></a>. For more information on preventing spam on your board, visit the <a href="https://groom.lake.86it.us/go/anti-spam"><strong>AN602.com Knowledge Base</strong></a>.',
+	'ACP_VC_EXT_GET_MORE'					=> 'For additional (and possibly better) anti-spam plugins, visit the <a href="https://www.groom.lake.86it.us/go/anti-spam-ext"><strong>AN602.com Extensions Database</strong></a>. For more information on preventing spam on your board, visit the <a href="https://www.groom.lake.86it.us/go/anti-spam"><strong>AN602.com Knowledge Base</strong></a>.',
 	'AVAILABLE_CAPTCHAS'					=> 'Available plugins',
 	'CAPTCHA_UNAVAILABLE'					=> 'The plugin cannot be selected as its requirements are not met.',
 	'CAPTCHA_GD'							=> 'GD image',
@@ -350,7 +350,7 @@ $lang = array_merge($lang, array(
 
 // Cookie Settings
 $lang = array_merge($lang, array(
-	'ACP_COOKIE_SETTINGS_EXPLAIN'		=> 'These details define the data used to send cookies to your users browsers. In most cases the default values for the cookie settings should be sufficient. If you do need to change any do so with care, incorrect settings can prevent users logging in. If you have problems with users staying logging in to your board, visit the <strong><a href="https://groom.lake.86it.us/support/go/cookie-settings">AN602.com Knowledge Base - Fixing incorrect cookie settings</a></strong>.',
+	'ACP_COOKIE_SETTINGS_EXPLAIN'		=> 'These details define the data used to send cookies to your users browsers. In most cases the default values for the cookie settings should be sufficient. If you do need to change any do so with care, incorrect settings can prevent users logging in. If you have problems with users staying logging in to your board, visit the <strong><a href="https://www.groom.lake.86it.us/support/go/cookie-settings">AN602.com Knowledge Base - Fixing incorrect cookie settings</a></strong>.',
 
 	'COOKIE_DOMAIN'				=> 'Cookie domain',
 	'COOKIE_DOMAIN_EXPLAIN'		=> 'In most cases the cookie domain is optional. Leave it blank if you are unsure.<br><br> In the case where you have a board integrated with other software or have multiple domains, then to determine the cookie domain you need to do the following. If you have something like <i>example.com</i> and <i>forums.example.com</i>, or perhaps <i>forums.example.com</i> and <i>blog.example.com</i>. Remove the subdomains until you find the common domain, <i>example.com</i>. Now add a dot in front of the common domain and you would enter .example.com (note the dot at the beginning).',
@@ -600,7 +600,7 @@ $lang = array_merge($lang, array(
 	'SMTP_VERIFY_PEER_EXPLAIN'		=> 'Require verification of SSL certificate used by SMTP server. <br><em><strong>Warning:</strong> Connecting peers with unverified SSL certificates may cause security implications.</em>',
 	'SMTP_VERIFY_PEER_NAME'			=> 'Verify SMTP peer name',
 	'SMTP_VERIFY_PEER_NAME_EXPLAIN'	=> 'Require verification of peer name for SMTP servers using SSL / TLS connections. <br><em><strong>Warning:</strong> Connecting to unverified peers may cause security implications.</em>',
-	'TEST_EMAIL_SENT'				=> 'The test email has been sent.<br>If you don’t receive it, please check your emails configuration.<br><br>If you require assistance, please visit the <a href="https://groom.lake.86it.us/community/">AN602 support forums</a>.',
+	'TEST_EMAIL_SENT'				=> 'The test email has been sent.<br>If you don’t receive it, please check your emails configuration.<br><br>If you require assistance, please visit the <a href="https://www.groom.lake.86it.us/community/">AN602 support forums</a>.',
 
 	'USE_SMTP'						=> 'Use SMTP server for email',
 	'USE_SMTP_EXPLAIN'				=> 'Select “Yes” if you want or have to send email via a named server instead of the local mail function.',

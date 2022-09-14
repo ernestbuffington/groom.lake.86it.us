@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -111,7 +111,7 @@ class release_3_0_5_rc1 extends container_aware_migration
 			{
 				// Select auth_option_ids... the largest id will be preserved
 				$sql = 'SELECT auth_option_id
-					FROM ' . AN602_ACL_OPTIONS_TABLE . "
+					FROM ' . ACL_OPTIONS_TABLE . "
 					WHERE auth_option = '" . $this->db->sql_escape($option) . "'
 					ORDER BY auth_option_id DESC";
 				// sql_query_limit not possible here, due to bug in postgresql layer
@@ -123,10 +123,10 @@ class release_3_0_5_rc1 extends container_aware_migration
 				while ($row = $this->db->sql_fetchrow($result))
 				{
 					// Ok, remove this auth option...
-					$this->sql_query('DELETE FROM ' . AN602_ACL_OPTIONS_TABLE . ' WHERE auth_option_id = ' . $row['auth_option_id']);
-					$this->sql_query('DELETE FROM ' . AN602_ACL_ROLES_DATA_TABLE . ' WHERE auth_option_id = ' . $row['auth_option_id']);
-					$this->sql_query('DELETE FROM ' . AN602_ACL_AN602_GROUPS_TABLE . ' WHERE auth_option_id = ' . $row['auth_option_id']);
-					$this->sql_query('DELETE FROM ' . AN602_ACL_AN602_USERS_TABLE . ' WHERE auth_option_id = ' . $row['auth_option_id']);
+					$this->sql_query('DELETE FROM ' . ACL_OPTIONS_TABLE . ' WHERE auth_option_id = ' . $row['auth_option_id']);
+					$this->sql_query('DELETE FROM ' . ACL_ROLES_DATA_TABLE . ' WHERE auth_option_id = ' . $row['auth_option_id']);
+					$this->sql_query('DELETE FROM ' . ACL_GROUPS_TABLE . ' WHERE auth_option_id = ' . $row['auth_option_id']);
+					$this->sql_query('DELETE FROM ' . ACL_USERS_TABLE . ' WHERE auth_option_id = ' . $row['auth_option_id']);
 				}
 				$this->db->sql_freeresult($result);
 			}

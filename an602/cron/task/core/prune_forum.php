@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -147,7 +147,7 @@ class prune_forum extends \an602\cron\task\base implements \an602\cron\task\para
 			$forum_id = $request->variable('f', 0);
 
 			$sql = 'SELECT forum_id, prune_next, enable_prune, prune_days, prune_viewed, forum_flags, prune_freq
-				FROM ' . AN602_FORUMS_TABLE . "
+				FROM ' . FORUMS_TABLE . "
 				WHERE forum_id = $forum_id";
 			$result = $this->db->sql_query($sql);
 			$row = $this->db->sql_fetchrow($result);

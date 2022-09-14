@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -17,11 +17,11 @@
 /**
 * @ignore
 */
-define('IN_AN602', true);
-$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
+define('IN_PHPBB', true);
+$an602_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($an602_root_path . 'common.' . $phpEx);
-include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
+include($an602_root_path . 'includes/functions_display.' . $phpEx);
 
 // Start session management
 $user->session_begin();
@@ -91,15 +91,15 @@ $order_legend = ($config['legend_sort_groupname']) ? 'group_name' : 'group_legen
 if ($auth->acl_gets('a_group', 'a_groupadd', 'a_groupdel'))
 {
 	$sql = 'SELECT group_id, group_name, group_colour, group_type, group_legend
-		FROM ' . AN602_GROUPS_TABLE . '
+		FROM ' . GROUPS_TABLE . '
 		WHERE group_legend > 0
 		ORDER BY ' . $order_legend . ' ASC';
 }
 else
 {
 	$sql = 'SELECT g.group_id, g.group_name, g.group_colour, g.group_type, g.group_legend
-		FROM ' . AN602_GROUPS_TABLE . ' g
-		LEFT JOIN ' . AN602_USER_GROUP_TABLE . ' ug
+		FROM ' . GROUPS_TABLE . ' g
+		LEFT JOIN ' . USER_GROUP_TABLE . ' ug
 			ON (
 				g.group_id = ug.group_id
 				AND ug.user_id = ' . $user->data['user_id'] . '
@@ -152,11 +152,11 @@ if ($show_birthdays)
 	$sql_ary = array(
 		'SELECT' => 'u.user_id, u.username, u.user_colour, u.user_birthday',
 		'FROM' => array(
-			AN602_USERS_TABLE => 'u',
+			USERS_TABLE => 'u',
 		),
 		'LEFT_JOIN' => array(
 			array(
-				'FROM' => array(AN602_BANLIST_TABLE => 'b'),
+				'FROM' => array(BANLIST_TABLE => 'b'),
 				'ON' => 'u.user_id = b.ban_userid',
 			),
 		),

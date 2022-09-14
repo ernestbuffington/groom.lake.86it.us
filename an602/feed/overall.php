@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -34,7 +34,7 @@ class overall extends post_base
 
 		// Determine topics with recent activity
 		$sql = 'SELECT topic_id, topic_last_post_time
-			FROM ' . AN602_TOPICS_TABLE . '
+			FROM ' . TOPICS_TABLE . '
 			WHERE topic_moved_id = 0
 				AND ' . $this->content_visibility->get_forums_visibility_sql('topic', $forum_ids) . '
 			ORDER BY topic_last_post_time DESC, topic_last_post_id DESC';
@@ -63,12 +63,12 @@ class overall extends post_base
 				'p.post_id, p.topic_id, p.post_time, p.post_edit_time, p.post_visibility, p.post_subject, p.post_text, p.bbcode_bitfield, p.bbcode_uid, p.enable_bbcode, p.enable_smilies, p.enable_magic_url, p.post_attachment, ' .
 				'u.username, u.user_id',
 			'FROM'		=> array(
-				AN602_USERS_TABLE		=> 'u',
-				AN602_POSTS_TABLE		=> 'p',
+				USERS_TABLE		=> 'u',
+				POSTS_TABLE		=> 'p',
 			),
 			'LEFT_JOIN'	=> array(
 				array(
-					'FROM'	=> array(AN602_FORUMS_TABLE	=> 'f'),
+					'FROM'	=> array(FORUMS_TABLE	=> 'f'),
 					'ON'	=> 'f.forum_id = p.forum_id',
 				),
 			),

@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -113,7 +113,7 @@ class notify_user extends \an602\install\task_base
 
 		if ($this->config['email_enable'])
 		{
-			include ($this->an602_root_path . 'includes/an602_functions_messenger.' . $this->php_ext);
+			include ($this->an602_root_path . 'includes/functions_messenger.' . $this->php_ext);
 
 			$messenger = new \messenger(false);
 			$messenger->template('installed', $this->install_config->get('user_language', 'en'));

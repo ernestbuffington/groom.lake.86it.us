@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -179,7 +179,7 @@ class add_bots extends \an602\install\task_base
 		$this->db->sql_return_on_error(true);
 
 		$sql = 'SELECT group_id
-			FROM ' . AN602_GROUPS_TABLE . "
+			FROM ' . GROUPS_TABLE . "
 			WHERE group_name = 'BOTS'";
 		$result = $this->db->sql_query($sql);
 		$group_id = (int) $this->db->sql_fetchfield('group_id');
@@ -214,7 +214,7 @@ class add_bots extends \an602\install\task_base
 
 			if (!function_exists('user_add'))
 			{
-				include($this->an602_root_path . 'includes/an602_functions_user.' . $this->php_ext);
+				include($this->an602_root_path . 'includes/functions_user.' . $this->php_ext);
 			}
 
 			$user_id = user_add($user_row);
@@ -228,7 +228,7 @@ class add_bots extends \an602\install\task_base
 				continue;
 			}
 
-			$sql = 'INSERT INTO ' . AN602_BOTS_TABLE . ' ' . $this->db->sql_build_array('INSERT', array(
+			$sql = 'INSERT INTO ' . BOTS_TABLE . ' ' . $this->db->sql_build_array('INSERT', array(
 				'bot_active'	=> 1,
 				'bot_name'		=> (string) $bot_name,
 				'user_id'		=> (int) $user_id,

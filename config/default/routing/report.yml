@@ -1,4 +1,4 @@
-phpbb_report_pm_controller:
+an602_report_pm_controller:
     path:             /pm/{id}/report
     methods:          [GET, POST]
     defaults:
@@ -7,7 +7,7 @@ phpbb_report_pm_controller:
     requirements:
         id:           \d+
 
-phpbb_report_post_controller:
+an602_report_post_controller:
     path:             /post/{id}/report
     methods:          [GET, POST]
     defaults:

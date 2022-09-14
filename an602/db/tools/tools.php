@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -1491,15 +1491,15 @@ class tools implements tools_interface
 		if (strlen($index_name) > $max_index_name_length)
 		{
 			// Try removing the table prefix if it's at the beginning
-			$an602_table_prefix = substr(AN602_CONFIG_TABLE, 0, -6); // strlen(config)
-			if (strpos($index_name, $an602_table_prefix) === 0)
+			$table_prefix = substr(CONFIG_TABLE, 0, -6); // strlen(config)
+			if (strpos($index_name, $table_prefix) === 0)
 			{
-				$index_name = substr($index_name, strlen($an602_table_prefix));
+				$index_name = substr($index_name, strlen($table_prefix));
 				return $this->check_index_name_length($table_name, $index_name, $throw_error);
 			}
 
 			// Try removing the remaining suffix part of table name then
-			$table_suffix = substr($table_name, strlen($an602_table_prefix));
+			$table_suffix = substr($table_name, strlen($table_prefix));
 			if (strpos($index_name, $table_suffix) === 0)
 			{
 				// Remove the suffix and underscore separator between table_name and index_name

@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -151,7 +151,7 @@ class base
 			if (!empty($keywords) || count($author_ary))
 			{
 				$sql = 'SELECT search_time
-					FROM ' . AN602_SEARCH_RESULTS_TABLE . '
+					FROM ' . SEARCH_RESULTS_TABLE . '
 					WHERE search_key = \'' . $db->sql_escape($search_key) . '\'';
 				$result = $db->sql_query($sql);
 
@@ -164,13 +164,13 @@ class base
 						'search_authors'	=> ' ' . implode(' ', $author_ary) . ' '
 					);
 
-					$sql = 'INSERT INTO ' . AN602_SEARCH_RESULTS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+					$sql = 'INSERT INTO ' . SEARCH_RESULTS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 					$db->sql_query($sql);
 				}
 				$db->sql_freeresult($result);
 			}
 
-			$sql = 'UPDATE ' . AN602_USERS_TABLE . '
+			$sql = 'UPDATE ' . USERS_TABLE . '
 				SET user_last_search = ' . time() . '
 				WHERE user_id = ' . $user->data['user_id'];
 			$db->sql_query($sql);
@@ -224,7 +224,7 @@ class base
 			}
 			$cache->put('_search_results_' . $search_key, $store, $config['search_store_results']);
 
-			$sql = 'UPDATE ' . AN602_SEARCH_RESULTS_TABLE . '
+			$sql = 'UPDATE ' . SEARCH_RESULTS_TABLE . '
 				SET search_time = ' . time() . '
 				WHERE search_key = \'' . $db->sql_escape($search_key) . '\'';
 			$db->sql_query($sql);
@@ -252,7 +252,7 @@ class base
 			}
 
 			$sql = 'SELECT search_key
-				FROM ' . AN602_SEARCH_RESULTS_TABLE . "
+				FROM ' . SEARCH_RESULTS_TABLE . "
 				WHERE search_keywords LIKE '%*%' $sql_where";
 			$result = $db->sql_query($sql);
 
@@ -273,7 +273,7 @@ class base
 			}
 
 			$sql = 'SELECT search_key
-				FROM ' . AN602_SEARCH_RESULTS_TABLE . "
+				FROM ' . SEARCH_RESULTS_TABLE . "
 				WHERE $sql_where";
 			$result = $db->sql_query($sql);
 
@@ -285,7 +285,7 @@ class base
 		}
 
 		$sql = 'DELETE
-			FROM ' . AN602_SEARCH_RESULTS_TABLE . '
+			FROM ' . SEARCH_RESULTS_TABLE . '
 			WHERE search_time < ' . (time() - (int) $config['search_store_results']);
 		$db->sql_query($sql);
 	}

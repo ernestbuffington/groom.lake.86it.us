@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -15,12 +15,12 @@
 * Minimum Requirement: PHP 7.1.3
 */
 
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
 
-require($an602_root_path . 'includes/an602_startup.' . $phpEx);
+require($an602_root_path . 'includes/startup.' . $phpEx);
 require($an602_root_path . 'an602/class_loader.' . $phpEx);
 
 $an602_class_loader = new \an602\class_loader('an602\\', "{$an602_root_path}an602/", $phpEx);
@@ -29,15 +29,15 @@ $an602_class_loader->register();
 $an602_config_php_file = new \an602\config_php_file($an602_root_path, $phpEx);
 extract($an602_config_php_file->get_all());
 
-if (!defined('AN602_ENVIRONMENT'))
+if (!defined('PHPBB_ENVIRONMENT'))
 {
-	@define('AN602_ENVIRONMENT', 'production');
+	@define('PHPBB_ENVIRONMENT', 'production');
 }
 
-if (!defined('AN602_INSTALLED'))
+if (!defined('PHPBB_INSTALLED'))
 {
 	// Redirect the user to the installer
-	require($an602_root_path . 'includes/an602_functions.' . $phpEx);
+	require($an602_root_path . 'includes/functions.' . $phpEx);
 
 	// We have to generate a full HTTP/1.1 header here since we can't guarantee to have any of the information
 	// available as used by the redirect function
@@ -85,26 +85,26 @@ if (!defined('AN602_INSTALLED'))
 }
 
 // In case $an602_adm_relative_path is not set (in case of an update), use the default.
-$an602_adm_relative_path = (isset($an602_adm_relative_path)) ? $an602_adm_relative_path : 'admin/adm/';
-$an602_admin_path = (defined('AN602_ADMIN_PATH')) ? AN602_ADMIN_PATH : $an602_root_path . $an602_adm_relative_path;
+$an602_adm_relative_path = (isset($an602_adm_relative_path)) ? $an602_adm_relative_path : 'admin/';
+$an602_admin_path = (defined('PHPBB_ADMIN_PATH')) ? PHPBB_ADMIN_PATH : $an602_root_path . $an602_adm_relative_path;
 
 // Include files
-require($an602_root_path . 'includes/an602_functions.' . $phpEx);
-require($an602_root_path . 'includes/an602_functions_content.' . $phpEx);
-include($an602_root_path . 'includes/an602_functions_compatibility.' . $phpEx);
+require($an602_root_path . 'includes/functions.' . $phpEx);
+require($an602_root_path . 'includes/functions_content.' . $phpEx);
+include($an602_root_path . 'includes/functions_compatibility.' . $phpEx);
 
-require($an602_root_path . 'includes/an602_constants.' . $phpEx);
-require($an602_root_path . 'includes/an602_utf/utf_tools.' . $phpEx);
+require($an602_root_path . 'includes/constants.' . $phpEx);
+require($an602_root_path . 'includes/utf/utf_tools.' . $phpEx);
 
 // Registered before building the container so the development environment stay capable of intercepting
 // the container builder exceptions.
-if (AN602_ENVIRONMENT === 'development')
+if (PHPBB_ENVIRONMENT === 'development')
 {
 	\an602\debug\debug::enable();
 }
 else
 {
-	set_error_handler(defined('AN602_MSG_HANDLER') ? AN602_MSG_HANDLER : 'msg_handler');
+	set_error_handler(defined('PHPBB_MSG_HANDLER') ? PHPBB_MSG_HANDLER : 'msg_handler');
 }
 
 $an602_class_loader_ext = new \an602\class_loader('\\', "{$an602_root_path}ext/", $phpEx);
@@ -118,10 +118,10 @@ try
 }
 catch (InvalidArgumentException $e)
 {
-	if (AN602_ENVIRONMENT !== 'development')
+	if (PHPBB_ENVIRONMENT !== 'development')
 	{
 		trigger_error(
-			'The requested environment ' . AN602_ENVIRONMENT . ' is not available.',
+			'The requested environment ' . PHPBB_ENVIRONMENT . ' is not available.',
 			E_USER_ERROR
 		);
 	}
@@ -141,12 +141,12 @@ $an602_class_loader_ext->set_cache($an602_container->get('cache.driver'));
 
 $an602_container->get('dbal.conn')->set_debug_sql_explain($an602_container->getParameter('debug.sql_explain'));
 $an602_container->get('dbal.conn')->set_debug_load_time($an602_container->getParameter('debug.load_time'));
-require($an602_root_path . 'includes/an602_compatibility_globals.' . $phpEx);
+require($an602_root_path . 'includes/compatibility_globals.' . $phpEx);
 
 register_compatibility_globals();
 
 // Add own hook handler
-require($an602_root_path . 'includes/an602_hooks/index.' . $phpEx);
+require($an602_root_path . 'includes/hooks/index.' . $phpEx);
 $an602_hook = new an602_hook(array('exit_handler', 'an602_user_session_handler', 'append_sid', array('template', 'display')));
 
 /* @var $an602_hook_finder \an602\hook\finder */
@@ -154,7 +154,7 @@ $an602_hook_finder = $an602_container->get('hook_finder');
 
 foreach ($an602_hook_finder->find() as $hook)
 {
-	@include($an602_root_path . 'includes/an602_hooks/' . $hook . '.' . $phpEx);
+	@include($an602_root_path . 'includes/hooks/' . $hook . '.' . $phpEx);
 }
 
 /**

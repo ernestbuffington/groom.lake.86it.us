@@ -1,6 +1,6 @@
 services:
     avatar.manager:
-        class: phpbb\avatar\manager
+        class: an602\avatar\manager
         arguments:
             - '@config'
             - '@dispatcher'
@@ -8,14 +8,14 @@ services:
 
 # ----- Avatar drivers -----
     avatar.driver_collection:
-        class: phpbb\di\service_collection
+        class: an602\di\service_collection
         arguments:
             - '@service_container'
         tags:
             - { name: service_collection, tag: avatar.driver }
 
     avatar.driver.gravatar:
-        class: phpbb\avatar\driver\gravatar
+        class: an602\avatar\driver\gravatar
         arguments:
             - '@config'
             - '@upload_imagesize'
@@ -29,7 +29,7 @@ services:
             - { name: avatar.driver }
 
     avatar.driver.local:
-        class: phpbb\avatar\driver\local
+        class: an602\avatar\driver\local
         arguments:
             - '@config'
             - '@upload_imagesize'
@@ -43,7 +43,7 @@ services:
             - { name: avatar.driver }
 
     avatar.driver.remote:
-        class: phpbb\avatar\driver\remote
+        class: an602\avatar\driver\remote
         arguments:
             - '@config'
             - '@upload_imagesize'
@@ -57,7 +57,7 @@ services:
             - { name: avatar.driver }
 
     avatar.driver.upload:
-        class: phpbb\avatar\driver\upload
+        class: an602\avatar\driver\upload
         arguments:
             - '@config'
             - '%core.root_path%'

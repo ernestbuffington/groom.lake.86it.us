@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -46,7 +46,7 @@ class remove_outdated_media extends \an602\db\migration\migration
 	{
 		// select group ids of outdated media
 		$sql = 'SELECT group_id
-			FROM ' . AN602_EXTENSION_AN602_GROUPS_TABLE . '
+			FROM ' . EXTENSION_GROUPS_TABLE . '
 			WHERE ' . $this->db->sql_in_set('cat_id', $this->cat_id);
 		$result = $this->db->sql_query($sql);
 
@@ -65,7 +65,7 @@ class remove_outdated_media extends \an602\db\migration\migration
 
 		// get the group id of downloadable files
 		$sql = 'SELECT group_id
-			FROM ' . AN602_EXTENSION_AN602_GROUPS_TABLE . "
+			FROM ' . EXTENSION_GROUPS_TABLE . "
 			WHERE group_name = 'DOWNLOADABLE_FILES'";
 		$result = $this->db->sql_query($sql);
 		$download_id = (int) $this->db->sql_fetchfield('group_id');
@@ -73,14 +73,14 @@ class remove_outdated_media extends \an602\db\migration\migration
 
 		if (empty($download_id))
 		{
-			$sql = 'UPDATE ' . AN602_EXTENSIONS_TABLE . '
+			$sql = 'UPDATE ' . EXTENSIONS_TABLE . '
 				SET group_id = 0
 				WHERE ' . $this->db->sql_in_set('group_id', $group_ids);
 		}
 		else
 		{
 			// move outdated media extensions to downloadable files
-			$sql = 'UPDATE ' . AN602_EXTENSIONS_TABLE . "
+			$sql = 'UPDATE ' . EXTENSIONS_TABLE . "
 				SET group_id = $download_id" . '
 				WHERE ' . $this->db->sql_in_set('group_id', $group_ids);
 		}
@@ -88,7 +88,7 @@ class remove_outdated_media extends \an602\db\migration\migration
 		$this->db->sql_query($sql);
 
 		// delete the now empty, outdated media extension groups
-		$sql = 'DELETE FROM ' . AN602_EXTENSION_AN602_GROUPS_TABLE . '
+		$sql = 'DELETE FROM ' . EXTENSION_GROUPS_TABLE . '
 			WHERE ' . $this->db->sql_in_set('group_id', $group_ids);
 		$this->db->sql_query($sql);
 	}

@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -158,7 +158,7 @@ class faq extends controller
 			'HELP_FAQ_BLOCK_ISSUES',
 			false,
 			array(
-				'HELP_FAQ_ISSUES_WHOIS_AN602_QUESTION' => 'HELP_FAQ_ISSUES_WHOIS_AN602_ANSWER',
+				'HELP_FAQ_ISSUES_WHOIS_PHPBB_QUESTION' => 'HELP_FAQ_ISSUES_WHOIS_PHPBB_ANSWER',
 				'HELP_FAQ_ISSUES_FEATURE_QUESTION' => 'HELP_FAQ_ISSUES_FEATURE_ANSWER',
 				'HELP_FAQ_ISSUES_LEGAL_QUESTION' => 'HELP_FAQ_ISSUES_LEGAL_ANSWER',
 				'HELP_FAQ_ISSUES_ADMIN_QUESTION' => 'HELP_FAQ_ISSUES_ADMIN_ANSWER',

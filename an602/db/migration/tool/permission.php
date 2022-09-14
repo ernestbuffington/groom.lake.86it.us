@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -55,7 +55,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 
 		if (!class_exists('auth_admin'))
 		{
-			include($this->an602_root_path . 'includes/an602_acp/auth.' . $this->php_ext);
+			include($this->an602_root_path . 'includes/acp/auth.' . $this->php_ext);
 		}
 		$this->auth_admin = new \auth_admin();
 	}
@@ -90,7 +90,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 		}
 
 		$sql = 'SELECT auth_option_id
-			FROM ' . AN602_ACL_OPTIONS_TABLE . "
+			FROM ' . ACL_OPTIONS_TABLE . "
 			WHERE auth_option = '" . $this->db->sql_escape($auth_option) . "'"
 				. $type_sql;
 		$result = $this->db->sql_query($sql);
@@ -134,7 +134,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 				'is_global'	=> 1,
 				'is_local'	=> 1,
 			);
-			$sql = 'UPDATE ' . AN602_ACL_OPTIONS_TABLE . '
+			$sql = 'UPDATE ' . ACL_OPTIONS_TABLE . '
 				SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . "
 				WHERE auth_option = '" . $this->db->sql_escape($auth_option) . "'";
 			$this->db->sql_query($sql);
@@ -157,7 +157,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 			$old_id = $this->auth_admin->acl_options['id'][$copy_from];
 			$new_id = $this->auth_admin->acl_options['id'][$auth_option];
 
-			$tables = array(AN602_ACL_AN602_GROUPS_TABLE, AN602_ACL_ROLES_DATA_TABLE, AN602_ACL_AN602_USERS_TABLE);
+			$tables = array(ACL_GROUPS_TABLE, ACL_ROLES_DATA_TABLE, ACL_USERS_TABLE);
 
 			foreach ($tables as $table)
 			{
@@ -210,7 +210,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 			$type_sql = ' AND is_local = 1';
 		}
 		$sql = 'SELECT auth_option_id, is_global, is_local
-			FROM ' . AN602_ACL_OPTIONS_TABLE . "
+			FROM ' . ACL_OPTIONS_TABLE . "
 			WHERE auth_option = '" . $this->db->sql_escape($auth_option) . "'" .
 				$type_sql;
 		$result = $this->db->sql_query($sql);
@@ -222,7 +222,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 		// If it is a local and global permission, do not remove the row! :P
 		if ($row['is_global'] && $row['is_local'])
 		{
-			$sql = 'UPDATE ' . AN602_ACL_OPTIONS_TABLE . '
+			$sql = 'UPDATE ' . ACL_OPTIONS_TABLE . '
 				SET ' . (($global) ? 'is_global = 0' : 'is_local = 0') . '
 				WHERE auth_option_id = ' . $id;
 			$this->db->sql_query($sql);
@@ -230,7 +230,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 		else
 		{
 			// Delete time
-			$tables = array(AN602_ACL_AN602_GROUPS_TABLE, AN602_ACL_ROLES_DATA_TABLE, AN602_ACL_AN602_USERS_TABLE, AN602_ACL_OPTIONS_TABLE);
+			$tables = array(ACL_GROUPS_TABLE, ACL_ROLES_DATA_TABLE, ACL_USERS_TABLE, ACL_OPTIONS_TABLE);
 			foreach ($tables as $table)
 			{
 				$this->db->sql_query('DELETE FROM ' . $table . '
@@ -253,7 +253,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 	public function role_exists($role_name)
 	{
 		$sql = 'SELECT role_id
-			FROM ' . AN602_ACL_ROLES_TABLE . "
+			FROM ' . ACL_ROLES_TABLE . "
 			WHERE role_name = '" . $this->db->sql_escape($role_name) . "'";
 		$result = $this->db->sql_query($sql);
 		$role_id = (int) $this->db->sql_fetchfield('role_id');
@@ -279,7 +279,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 		}
 
 		$sql = 'SELECT MAX(role_order) AS max_role_order
-			FROM ' . AN602_ACL_ROLES_TABLE . "
+			FROM ' . ACL_ROLES_TABLE . "
 			WHERE role_type = '" . $this->db->sql_escape($role_type) . "'";
 		$this->db->sql_query($sql);
 		$role_order = (int) $this->db->sql_fetchfield('max_role_order');
@@ -292,7 +292,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 			'role_order'		=> $role_order,
 		);
 
-		$sql = 'INSERT INTO ' . AN602_ACL_ROLES_TABLE . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
+		$sql = 'INSERT INTO ' . ACL_ROLES_TABLE . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
 		$this->db->sql_query($sql);
 
 		return $this->db->sql_nextid();
@@ -313,7 +313,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 			throw new \an602\db\migration\exception('ROLE_NOT_EXIST', $old_role_name);
 		}
 
-		$sql = 'UPDATE ' . AN602_ACL_ROLES_TABLE . "
+		$sql = 'UPDATE ' . ACL_ROLES_TABLE . "
 			SET role_name = '" . $this->db->sql_escape($new_role_name) . "'
 			WHERE role_name = '" . $this->db->sql_escape($old_role_name) . "'";
 		$this->db->sql_query($sql);
@@ -334,7 +334,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 
 		// Get the role type
 		$sql = 'SELECT role_type
-			FROM ' . AN602_ACL_ROLES_TABLE . '
+			FROM ' . ACL_ROLES_TABLE . '
 			WHERE role_id = ' . (int) $role_id;
 		$result = $this->db->sql_query($sql);
 		$role_type = $this->db->sql_fetchfield('role_type');
@@ -342,20 +342,20 @@ class permission implements \an602\db\migration\tool\tool_interface
 
 		// Get complete auth array
 		$sql = 'SELECT auth_option, auth_option_id
-			FROM ' . AN602_ACL_OPTIONS_TABLE . "
+			FROM ' . ACL_OPTIONS_TABLE . "
 			WHERE auth_option " . $this->db->sql_like_expression($role_type . $this->db->get_any_char());
 		$result = $this->db->sql_query($sql);
 
 		$auth_settings = [];
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			$auth_settings[$row['auth_option']] = AN602_ACL_NO;
+			$auth_settings[$row['auth_option']] = ACL_NO;
 		}
 		$this->db->sql_freeresult($result);
 
 		// Get the role auth settings we need to re-set...
 		$sql = 'SELECT o.auth_option, r.auth_setting
-			FROM ' . AN602_ACL_ROLES_DATA_TABLE . ' r, ' . AN602_ACL_OPTIONS_TABLE . ' o
+			FROM ' . ACL_ROLES_DATA_TABLE . ' r, ' . ACL_OPTIONS_TABLE . ' o
 			WHERE o.auth_option_id = r.auth_option_id
 				AND r.role_id = ' . (int) $role_id;
 		$result = $this->db->sql_query($sql);
@@ -384,19 +384,19 @@ class permission implements \an602\db\migration\tool\tool_interface
 		}
 
 		// Remove role from users and groups just to be sure (happens through acl_set)
-		$sql = 'DELETE FROM ' . AN602_ACL_AN602_USERS_TABLE . '
+		$sql = 'DELETE FROM ' . ACL_USERS_TABLE . '
 			WHERE auth_role_id = ' . $role_id;
 		$this->db->sql_query($sql);
 
-		$sql = 'DELETE FROM ' . AN602_ACL_AN602_GROUPS_TABLE . '
+		$sql = 'DELETE FROM ' . ACL_GROUPS_TABLE . '
 			WHERE auth_role_id = ' . $role_id;
 		$this->db->sql_query($sql);
 
-		$sql = 'DELETE FROM ' . AN602_ACL_ROLES_DATA_TABLE . '
+		$sql = 'DELETE FROM ' . ACL_ROLES_DATA_TABLE . '
 			WHERE role_id = ' . $role_id;
 		$this->db->sql_query($sql);
 
-		$sql = 'DELETE FROM ' . AN602_ACL_ROLES_TABLE . '
+		$sql = 'DELETE FROM ' . ACL_ROLES_TABLE . '
 			WHERE role_id = ' . $role_id;
 		$this->db->sql_query($sql);
 
@@ -426,7 +426,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 
 		$new_auth = array();
 		$sql = 'SELECT auth_option_id
-			FROM ' . AN602_ACL_OPTIONS_TABLE . '
+			FROM ' . ACL_OPTIONS_TABLE . '
 			WHERE ' . $this->db->sql_in_set('auth_option', $auth_option);
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))
@@ -453,7 +453,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 				}
 
 				$sql = 'SELECT auth_option_id, auth_setting
-					FROM ' . AN602_ACL_ROLES_DATA_TABLE . '
+					FROM ' . ACL_ROLES_DATA_TABLE . '
 					WHERE role_id = ' . $role_id;
 				$result = $this->db->sql_query($sql);
 				while ($row = $this->db->sql_fetchrow($result))
@@ -465,7 +465,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 
 			case 'group':
 				$sql = 'SELECT group_id
-					FROM ' . AN602_GROUPS_TABLE . "
+					FROM ' . GROUPS_TABLE . "
 					WHERE group_name = '" . $this->db->sql_escape($name) . "'";
 				$this->db->sql_query($sql);
 				$group_id = (int) $this->db->sql_fetchfield('group_id');
@@ -477,7 +477,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 
 				// If the group has a role set for them we will add the requested permissions to that role.
 				$sql = 'SELECT auth_role_id
-					FROM ' . AN602_ACL_AN602_GROUPS_TABLE . '
+					FROM ' . ACL_GROUPS_TABLE . '
 					WHERE group_id = ' . $group_id . '
 						AND auth_role_id <> 0
 						AND forum_id = 0';
@@ -486,7 +486,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 				if ($role_id)
 				{
 					$sql = 'SELECT role_name, role_type
-						FROM ' . AN602_ACL_ROLES_TABLE . '
+						FROM ' . ACL_ROLES_TABLE . '
 						WHERE role_id = ' . $role_id;
 					$this->db->sql_query($sql);
 					$role_data = $this->db->sql_fetchrow();
@@ -514,7 +514,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 				}
 
 				$sql = 'SELECT auth_option_id, auth_setting
-					FROM ' . AN602_ACL_AN602_GROUPS_TABLE . '
+					FROM ' . ACL_GROUPS_TABLE . '
 					WHERE group_id = ' . $group_id;
 				$result = $this->db->sql_query($sql);
 				while ($row = $this->db->sql_fetchrow($result))
@@ -541,7 +541,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 					}
 				}
 
-				$this->db->sql_multi_insert(AN602_ACL_ROLES_DATA_TABLE, $sql_ary);
+				$this->db->sql_multi_insert(ACL_ROLES_DATA_TABLE, $sql_ary);
 			break;
 
 			case 'group':
@@ -557,7 +557,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 					}
 				}
 
-				$this->db->sql_multi_insert(AN602_ACL_AN602_GROUPS_TABLE, $sql_ary);
+				$this->db->sql_multi_insert(ACL_GROUPS_TABLE, $sql_ary);
 			break;
 		}
 
@@ -585,7 +585,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 
 		$to_remove = array();
 		$sql = 'SELECT auth_option_id
-			FROM ' . AN602_ACL_OPTIONS_TABLE . '
+			FROM ' . ACL_OPTIONS_TABLE . '
 			WHERE ' . $this->db->sql_in_set('auth_option', $auth_option);
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))
@@ -609,7 +609,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 					throw new \an602\db\migration\exception('ROLE_NOT_EXIST', $name);
 				}
 
-				$sql = 'DELETE FROM ' . AN602_ACL_ROLES_DATA_TABLE . '
+				$sql = 'DELETE FROM ' . ACL_ROLES_DATA_TABLE . '
 					WHERE ' . $this->db->sql_in_set('auth_option_id', $to_remove) . '
 						AND role_id = ' . (int) $role_id;
 				$this->db->sql_query($sql);
@@ -617,7 +617,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 
 			case 'group':
 				$sql = 'SELECT group_id
-					FROM ' . AN602_GROUPS_TABLE . "
+					FROM ' . GROUPS_TABLE . "
 					WHERE group_name = '" . $this->db->sql_escape($name) . "'";
 				$this->db->sql_query($sql);
 				$group_id = (int) $this->db->sql_fetchfield('group_id');
@@ -629,7 +629,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 
 				// If the group has a role set for them we will remove the requested permissions from that role.
 				$sql = 'SELECT auth_role_id
-					FROM ' . AN602_ACL_AN602_GROUPS_TABLE . '
+					FROM ' . ACL_GROUPS_TABLE . '
 					WHERE group_id = ' . $group_id . '
 						AND auth_role_id <> 0';
 				$this->db->sql_query($sql);
@@ -637,7 +637,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 				if ($role_id)
 				{
 					$sql = 'SELECT role_name
-						FROM ' . AN602_ACL_ROLES_TABLE . '
+						FROM ' . ACL_ROLES_TABLE . '
 						WHERE role_id = ' . $role_id;
 					$this->db->sql_query($sql);
 					$role_name = $this->db->sql_fetchfield('role_name');
@@ -649,7 +649,7 @@ class permission implements \an602\db\migration\tool\tool_interface
 					return $this->permission_unset($role_name, $auth_option, 'role');
 				}
 
-				$sql = 'DELETE FROM ' . AN602_ACL_AN602_GROUPS_TABLE . '
+				$sql = 'DELETE FROM ' . ACL_GROUPS_TABLE . '
 					WHERE ' . $this->db->sql_in_set('auth_option_id', $to_remove);
 				$this->db->sql_query($sql);
 			break;

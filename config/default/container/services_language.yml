@@ -1,17 +1,17 @@
 services:
     language.helper.language_file:
-        class: phpbb\language\language_file_helper
+        class: an602\language\language_file_helper
         arguments:
             - '%core.root_path%'
 
     language:
-        class: phpbb\language\language
+        class: an602\language\language
         arguments:
             - '@language.loader'
 
     language.loader_abstract:
         abstract: true
-        class: phpbb\language\language_file_loader
+        class: an602\language\language_file_loader
         arguments:
             - '%core.root_path%'
             - '%core.php_ext%'

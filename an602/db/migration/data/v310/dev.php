@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -209,13 +209,13 @@ class dev extends \an602\db\migration\container_aware_migration
 	{
 		// Move language management to new location in the Customise tab
 		// First get language module id
-		$sql = 'SELECT module_id FROM ' . AN602_MODULES_TABLE . "
+		$sql = 'SELECT module_id FROM ' . MODULES_TABLE . "
 			WHERE module_basename = 'acp_language'";
 		$result = $this->db->sql_query($sql);
 		$language_module_id = $this->db->sql_fetchfield('module_id');
 		$this->db->sql_freeresult($result);
 		// Next get language management module id of the one just created
-		$sql = 'SELECT module_id FROM ' . AN602_MODULES_TABLE . "
+		$sql = 'SELECT module_id FROM ' . MODULES_TABLE . "
 			WHERE module_langname = 'ACP_LANGUAGE'";
 		$result = $this->db->sql_query($sql);
 		$language_management_module_id = $this->db->sql_fetchfield('module_id');
@@ -233,7 +233,7 @@ class dev extends \an602\db\migration\container_aware_migration
 	public function update_ucp_pm_basename()
 	{
 		$sql = 'SELECT module_id, module_basename
-			FROM ' . AN602_MODULES_TABLE . "
+			FROM ' . MODULES_TABLE . "
 			WHERE module_basename <> 'ucp_pm' AND
 				module_langname='UCP_PM'";
 		$result = $this->db->sql_query_limit($sql, 1);
@@ -242,7 +242,7 @@ class dev extends \an602\db\migration\container_aware_migration
 		{
 			// This update is still not applied. Applying it
 
-			$sql = 'UPDATE ' . AN602_MODULES_TABLE . "
+			$sql = 'UPDATE ' . MODULES_TABLE . "
 				SET module_basename = 'ucp_pm'
 				WHERE  module_id = " . (int) $row['module_id'];
 
@@ -254,7 +254,7 @@ class dev extends \an602\db\migration\container_aware_migration
 	public function update_ucp_profile_auth()
 	{
 		// Update the auth setting for the module
-		$sql = 'UPDATE ' . AN602_MODULES_TABLE . "
+		$sql = 'UPDATE ' . MODULES_TABLE . "
 			SET module_auth = 'acl_u_chgprofileinfo'
 			WHERE module_class = 'ucp'
 				AND module_basename = 'ucp_profile'
@@ -265,7 +265,7 @@ class dev extends \an602\db\migration\container_aware_migration
 	public function rename_styles_module()
 	{
 		// Rename styles module to Customise
-		$sql = 'UPDATE ' . AN602_MODULES_TABLE . "
+		$sql = 'UPDATE ' . MODULES_TABLE . "
 			SET module_langname = 'ACP_CAT_CUSTOMISE'
 			WHERE module_langname = 'ACP_CAT_STYLES'";
 		$this->sql_query($sql);
@@ -275,7 +275,7 @@ class dev extends \an602\db\migration\container_aware_migration
 	{
 		// rename all module basenames to full classname
 		$sql = 'SELECT module_id, module_basename, module_class
-			FROM ' . AN602_MODULES_TABLE;
+			FROM ' . MODULES_TABLE;
 		$result = $this->db->sql_query($sql);
 
 		while ($row = $this->db->sql_fetchrow($result))
@@ -293,7 +293,7 @@ class dev extends \an602\db\migration\container_aware_migration
 
 					$sql_update = $this->db->sql_build_array('UPDATE', $row);
 
-					$sql = 'UPDATE ' . AN602_MODULES_TABLE . '
+					$sql = 'UPDATE ' . MODULES_TABLE . '
 						SET ' . $sql_update . '
 						WHERE module_id = ' . $module_id;
 					$this->sql_query($sql);
@@ -306,13 +306,13 @@ class dev extends \an602\db\migration\container_aware_migration
 
 	public function add_group_teampage()
 	{
-		$sql = 'UPDATE ' . AN602_GROUPS_TABLE . '
+		$sql = 'UPDATE ' . GROUPS_TABLE . '
 			SET group_teampage = 1
 			WHERE group_type = ' . GROUP_SPECIAL . "
 				AND group_name = 'ADMINISTRATORS'";
 		$this->sql_query($sql);
 
-		$sql = 'UPDATE ' . AN602_GROUPS_TABLE . '
+		$sql = 'UPDATE ' . GROUPS_TABLE . '
 			SET group_teampage = 2
 			WHERE group_type = ' . GROUP_SPECIAL . "
 				AND group_name = 'GLOBAL_MODERATORS'";
@@ -322,7 +322,7 @@ class dev extends \an602\db\migration\container_aware_migration
 	public function update_group_legend()
 	{
 		$sql = 'SELECT group_id
-			FROM ' . AN602_GROUPS_TABLE . '
+			FROM ' . GROUPS_TABLE . '
 			WHERE group_legend = 1
 			ORDER BY group_name ASC';
 		$result = $this->db->sql_query($sql);
@@ -330,7 +330,7 @@ class dev extends \an602\db\migration\container_aware_migration
 		$next_legend = 1;
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			$sql = 'UPDATE ' . AN602_GROUPS_TABLE . '
+			$sql = 'UPDATE ' . GROUPS_TABLE . '
 				SET group_legend = ' . $next_legend . '
 				WHERE group_id = ' . (int) $row['group_id'];
 			$this->sql_query($sql);
@@ -344,7 +344,7 @@ class dev extends \an602\db\migration\container_aware_migration
 	{
 		// Localise Global Announcements
 		$sql = 'SELECT topic_id, topic_approved, (topic_replies + 1) AS topic_posts, topic_last_post_id, topic_last_post_subject, topic_last_post_time, topic_last_poster_id, topic_last_poster_name, topic_last_poster_colour
-			FROM ' . AN602_TOPICS_TABLE . '
+			FROM ' . TOPICS_TABLE . '
 			WHERE forum_id = 0
 				AND topic_type = ' . POST_GLOBAL;
 		$result = $this->db->sql_query($sql);
@@ -386,14 +386,14 @@ class dev extends \an602\db\migration\container_aware_migration
 		{
 			// Update the post/topic-count for the forum and the last-post if needed
 			$sql = 'SELECT forum_id
-				FROM ' . AN602_FORUMS_TABLE . '
+				FROM ' . FORUMS_TABLE . '
 				WHERE forum_type = ' . FORUM_POST;
 			$result = $this->db->sql_query_limit($sql, 1);
 			$ga_forum_id = $this->db->sql_fetchfield('forum_id');
 			$this->db->sql_freeresult($result);
 
 			$sql = 'SELECT forum_last_post_time
-				FROM ' . AN602_FORUMS_TABLE . '
+				FROM ' . FORUMS_TABLE . '
 				WHERE forum_id = ' . $ga_forum_id;
 			$result = $this->db->sql_query($sql);
 			$lastpost = (int) $this->db->sql_fetchfield('forum_last_post_time');
@@ -407,13 +407,13 @@ class dev extends \an602\db\migration\container_aware_migration
 				$sql_update .= ', ' . $this->db->sql_build_array('UPDATE', $update_lastpost_data);
 			}
 
-			$sql = 'UPDATE ' . AN602_FORUMS_TABLE . '
+			$sql = 'UPDATE ' . FORUMS_TABLE . '
 				SET ' . $sql_update . '
 				WHERE forum_id = ' . $ga_forum_id;
 			$this->sql_query($sql);
 
 			// Update some forum_ids
-			$table_ary = array(AN602_TOPICS_TABLE, AN602_POSTS_TABLE, AN602_LOG_TABLE, AN602_DRAFTS_TABLE, AN602_TOPICS_TRACK_TABLE);
+			$table_ary = array(TOPICS_TABLE, POSTS_TABLE, LOG_TABLE, DRAFTS_TABLE, TOPICS_TRACK_TABLE);
 			foreach ($table_ary as $table)
 			{
 				$sql = "UPDATE $table

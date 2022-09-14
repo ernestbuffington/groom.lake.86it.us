@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -121,7 +121,7 @@ class helper
 		$this->request = $request;
 		$this->router = $router;
 		$this->an602_root_path = $an602_root_path;
-		$this->an602_admin_path = $an602_root_path . 'admin/adm/';
+		$this->an602_admin_path = $an602_root_path . 'admin/';
 	}
 
 	/**
@@ -254,7 +254,7 @@ class helper
 	protected function page_header($page_title, $selected_language = false)
 	{
 		// Path to templates
-		$paths = array($this->an602_root_path . 'install/update/new/admin/adm/', $this->an602_admin_path);
+		$paths = array($this->an602_root_path . 'install/update/new/admin/', $this->an602_admin_path);
 		$paths = array_filter($paths, 'is_dir');
 		$path = array_shift($paths);
 		$path = substr($path, strlen($this->an602_root_path));

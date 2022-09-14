@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -222,7 +222,7 @@ class twig extends \an602\template\base
 	* @param string|array $names Array of names (or detailed names) or string of name of template(s) in inheritance tree order, used by extensions.
 	*	E.g. array(
 	*			'name' 		=> 'adm',
-	*			'ext_path' 	=> 'admin/adm/style/',
+	*			'ext_path' 	=> 'admin/style/',
 	*		)
 	* @param string|array $paths Array of style paths, relative to current root directory
 	* @return \an602\template\template $this
@@ -258,14 +258,14 @@ class twig extends \an602\template\base
 						}
 						else
 						{
-							$ext_style_path = $ext_path . 'themes/theme_core/styles/' . $template_dir['name'] . '/';
+							$ext_style_path = $ext_path . 'styles/' . $template_dir['name'] . '/';
 							$ext_style_template_path = $ext_style_path . 'template/';
 							$ext_style_theme_path = $ext_style_path . 'theme/';
 						}
 					}
 					else
 					{
-						$ext_style_path = $ext_path . 'themes/theme_core/styles/' . $template_dir . '/';
+						$ext_style_path = $ext_path . 'styles/' . $template_dir . '/';
 						$ext_style_template_path = $ext_style_path . 'template/';
 						$ext_style_theme_path = $ext_style_path . 'theme/';
 					}

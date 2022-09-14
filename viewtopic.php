@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,13 +14,13 @@
 /**
 * @ignore
 */
-define('IN_AN602', true);
-$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
+define('IN_PHPBB', true);
+$an602_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($an602_root_path . 'common.' . $phpEx);
-include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
-include($an602_root_path . 'includes/an602_bbcode.' . $phpEx);
-include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
+include($an602_root_path . 'includes/functions_display.' . $phpEx);
+include($an602_root_path . 'includes/bbcode.' . $phpEx);
+include($an602_root_path . 'includes/functions_user.' . $phpEx);
 
 // Start session management
 $user->session_begin();
@@ -73,7 +73,7 @@ if ($view && !$post_id)
 	if ($view == 'unread')
 	{
 		$sql = 'SELECT forum_id
-			FROM ' . AN602_TOPICS_TABLE . "
+			FROM ' . TOPICS_TABLE . "
 			WHERE topic_id = $topic_id";
 		$result = $db->sql_query($sql);
 		$forum_id = (int) $db->sql_fetchfield('forum_id');
@@ -89,7 +89,7 @@ if ($view && !$post_id)
 		$topic_last_read = (isset($topic_tracking_info[$topic_id])) ? $topic_tracking_info[$topic_id] : 0;
 
 		$sql = 'SELECT post_id, topic_id, forum_id
-			FROM ' . AN602_POSTS_TABLE . "
+			FROM ' . POSTS_TABLE . "
 			WHERE topic_id = $topic_id
 				AND " . $an602_content_visibility->get_visibility_sql('post', $forum_id) . "
 				AND post_time > $topic_last_read
@@ -102,7 +102,7 @@ if ($view && !$post_id)
 		if (!$row)
 		{
 			$sql = 'SELECT topic_last_post_id as post_id, topic_id, forum_id
-				FROM ' . AN602_TOPICS_TABLE . '
+				FROM ' . TOPICS_TABLE . '
 				WHERE topic_id = ' . $topic_id;
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
@@ -126,7 +126,7 @@ if ($view && !$post_id)
 		$sql_ordering = ($view == 'next') ? 'ASC' : 'DESC';
 
 		$sql = 'SELECT forum_id, topic_last_post_time
-			FROM ' . AN602_TOPICS_TABLE . '
+			FROM ' . TOPICS_TABLE . '
 			WHERE topic_id = ' . $topic_id;
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
@@ -142,7 +142,7 @@ if ($view && !$post_id)
 		{
 			$forum_id = $row['forum_id'];
 			$sql = 'SELECT topic_id, forum_id
-				FROM ' . AN602_TOPICS_TABLE . '
+				FROM ' . TOPICS_TABLE . '
 				WHERE forum_id = ' . $forum_id . "
 					AND topic_moved_id = 0
 					AND topic_last_post_time $sql_condition {$row['topic_last_post_time']}
@@ -155,7 +155,7 @@ if ($view && !$post_id)
 			if (!$row)
 			{
 				$sql = 'SELECT forum_style
-					FROM ' . AN602_FORUMS_TABLE . "
+					FROM ' . FORUMS_TABLE . "
 					WHERE forum_id = $forum_id";
 				$result = $db->sql_query($sql);
 				$forum_style = (int) $db->sql_fetchfield('forum_style');
@@ -184,18 +184,18 @@ if ($view && !$post_id)
 $sql_array = array(
 	'SELECT'	=> 't.*, f.*',
 
-	'FROM'		=> array(AN602_FORUMS_TABLE => 'f'),
+	'FROM'		=> array(FORUMS_TABLE => 'f'),
 );
 
 // The FROM-Order is quite important here, else t.* columns can not be correctly bound.
 if ($post_id)
 {
 	$sql_array['SELECT'] .= ', p.post_visibility, p.post_time, p.post_id';
-	$sql_array['FROM'][AN602_POSTS_TABLE] = 'p';
+	$sql_array['FROM'][POSTS_TABLE] = 'p';
 }
 
 // Topics table need to be the last in the chain
-$sql_array['FROM'][AN602_TOPICS_TABLE] = 't';
+$sql_array['FROM'][TOPICS_TABLE] = 't';
 
 if ($user->data['is_registered'])
 {
@@ -203,7 +203,7 @@ if ($user->data['is_registered'])
 	$sql_array['LEFT_JOIN'] = array();
 
 	$sql_array['LEFT_JOIN'][] = array(
-		'FROM'	=> array(AN602_TOPICS_WATCH_TABLE => 'tw'),
+		'FROM'	=> array(TOPICS_WATCH_TABLE => 'tw'),
 		'ON'	=> 'tw.user_id = ' . $user->data['user_id'] . ' AND t.topic_id = tw.topic_id'
 	);
 
@@ -211,7 +211,7 @@ if ($user->data['is_registered'])
 	{
 		$sql_array['SELECT'] .= ', bm.topic_id as bookmarked';
 		$sql_array['LEFT_JOIN'][] = array(
-			'FROM'	=> array(AN602_BOOKMARKS_TABLE => 'bm'),
+			'FROM'	=> array(BOOKMARKS_TABLE => 'bm'),
 			'ON'	=> 'bm.user_id = ' . $user->data['user_id'] . ' AND t.topic_id = bm.topic_id'
 		);
 	}
@@ -221,12 +221,12 @@ if ($user->data['is_registered'])
 		$sql_array['SELECT'] .= ', tt.mark_time, ft.mark_time as forum_mark_time';
 
 		$sql_array['LEFT_JOIN'][] = array(
-			'FROM'	=> array(AN602_TOPICS_TRACK_TABLE => 'tt'),
+			'FROM'	=> array(TOPICS_TRACK_TABLE => 'tt'),
 			'ON'	=> 'tt.user_id = ' . $user->data['user_id'] . ' AND t.topic_id = tt.topic_id'
 		);
 
 		$sql_array['LEFT_JOIN'][] = array(
-			'FROM'	=> array(AN602_FORUMS_TRACK_TABLE => 'ft'),
+			'FROM'	=> array(FORUMS_TRACK_TABLE => 'ft'),
 			'ON'	=> 'ft.user_id = ' . $user->data['user_id'] . ' AND t.forum_id = ft.forum_id'
 		);
 	}
@@ -316,7 +316,7 @@ if ($post_id)
 	else
 	{
 		$sql = 'SELECT COUNT(p.post_id) AS prev_posts
-			FROM ' . AN602_POSTS_TABLE . " p
+			FROM ' . POSTS_TABLE . " p
 			WHERE p.topic_id = {$topic_data['topic_id']}
 				AND " . $an602_content_visibility->get_visibility_sql('post', $forum_id, 'p.');
 
@@ -343,7 +343,7 @@ $topic_replies = $an602_content_visibility->get_count('topic_posts', $topic_data
 // Check sticky/announcement/global  time limit
 if (($topic_data['topic_type'] != POST_NORMAL) && $topic_data['topic_time_limit'] && ($topic_data['topic_time'] + $topic_data['topic_time_limit']) < time())
 {
-	$sql = 'UPDATE ' . AN602_TOPICS_TABLE . '
+	$sql = 'UPDATE ' . TOPICS_TABLE . '
 		SET topic_type = ' . POST_NORMAL . ', topic_time_limit = 0
 		WHERE topic_id = ' . $topic_id;
 	$db->sql_query($sql);
@@ -493,7 +493,7 @@ if ($sort_days)
 	$min_post_time = time() - ($sort_days * 86400);
 
 	$sql = 'SELECT COUNT(post_id) AS num_posts
-		FROM ' . AN602_POSTS_TABLE . "
+		FROM ' . POSTS_TABLE . "
 		WHERE topic_id = $topic_id
 			AND post_time >= $min_post_time
 				AND " . $an602_content_visibility->get_visibility_sql('post', $forum_id);
@@ -582,7 +582,7 @@ if ($config['allow_bookmarks'] && $user->data['is_registered'] && $request->vari
 	{
 		if (!$topic_data['bookmarked'])
 		{
-			$sql = 'INSERT INTO ' . AN602_BOOKMARKS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+			$sql = 'INSERT INTO ' . BOOKMARKS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 				'user_id'	=> $user->data['user_id'],
 				'topic_id'	=> $topic_id,
 			));
@@ -590,7 +590,7 @@ if ($config['allow_bookmarks'] && $user->data['is_registered'] && $request->vari
 		}
 		else
 		{
-			$sql = 'DELETE FROM ' . AN602_BOOKMARKS_TABLE . "
+			$sql = 'DELETE FROM ' . BOOKMARKS_TABLE . "
 				WHERE user_id = {$user->data['user_id']}
 					AND topic_id = $topic_id";
 			$db->sql_query($sql);
@@ -859,7 +859,7 @@ $template->assign_vars(array(
 if (!empty($topic_data['poll_start']))
 {
 	$sql = 'SELECT o.*, p.bbcode_bitfield, p.bbcode_uid
-		FROM ' . AN602_POLL_OPTIONS_TABLE . ' o, ' . AN602_POSTS_TABLE . " p
+		FROM ' . POLL_OPTIONS_TABLE . ' o, ' . POSTS_TABLE . " p
 		WHERE o.topic_id = $topic_id
 			AND p.post_id = {$topic_data['topic_first_post_id']}
 			AND p.topic_id = o.topic_id
@@ -879,7 +879,7 @@ if (!empty($topic_data['poll_start']))
 	if ($user->data['is_registered'])
 	{
 		$sql = 'SELECT poll_option_id
-			FROM ' . AN602_POLL_VOTES_TABLE . '
+			FROM ' . POLL_VOTES_TABLE . '
 			WHERE topic_id = ' . $topic_id . '
 				AND vote_user_id = ' . $user->data['user_id'];
 		$result = $db->sql_query($sql);
@@ -977,7 +977,7 @@ if (!empty($topic_data['poll_start']))
 				continue;
 			}
 
-			$sql = 'UPDATE ' . AN602_POLL_OPTIONS_TABLE . '
+			$sql = 'UPDATE ' . POLL_OPTIONS_TABLE . '
 				SET poll_option_total = poll_option_total + 1
 				WHERE poll_option_id = ' . (int) $option . '
 					AND topic_id = ' . (int) $topic_id;
@@ -994,7 +994,7 @@ if (!empty($topic_data['poll_start']))
 					'vote_user_ip'		=> (string) $user->ip,
 				);
 
-				$sql = 'INSERT INTO ' . AN602_POLL_VOTES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+				$sql = 'INSERT INTO ' . POLL_VOTES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 				$db->sql_query($sql);
 			}
 		}
@@ -1003,7 +1003,7 @@ if (!empty($topic_data['poll_start']))
 		{
 			if (!in_array($option, $voted_id))
 			{
-				$sql = 'UPDATE ' . AN602_POLL_OPTIONS_TABLE . '
+				$sql = 'UPDATE ' . POLL_OPTIONS_TABLE . '
 					SET poll_option_total = poll_option_total - 1
 					WHERE poll_option_id = ' . (int) $option . '
 						AND topic_id = ' . (int) $topic_id;
@@ -1013,7 +1013,7 @@ if (!empty($topic_data['poll_start']))
 
 				if ($user->data['is_registered'])
 				{
-					$sql = 'DELETE FROM ' . AN602_POLL_VOTES_TABLE . '
+					$sql = 'DELETE FROM ' . POLL_VOTES_TABLE . '
 						WHERE topic_id = ' . (int) $topic_id . '
 							AND poll_option_id = ' . (int) $option . '
 							AND vote_user_id = ' . (int) $user->data['user_id'];
@@ -1027,7 +1027,7 @@ if (!empty($topic_data['poll_start']))
 			$user->set_cookie('poll_' . $topic_id, implode(',', $voted_id), time() + 31536000);
 		}
 
-		$sql = 'UPDATE ' . AN602_TOPICS_TABLE . '
+		$sql = 'UPDATE ' . TOPICS_TABLE . '
 			SET poll_last_vote = ' . time() . "
 			WHERE topic_id = $topic_id";
 		//, topic_last_post_time = ' . time() . " -- for bumping topics with new votes, ignore for now
@@ -1216,7 +1216,7 @@ $i = $i_total = 0;
 
 // Go ahead and pull all data for this topic
 $sql = 'SELECT p.post_id
-	FROM ' . AN602_POSTS_TABLE . ' p' . (($join_user_sql[$sort_key]) ? ', ' . AN602_USERS_TABLE . ' u': '') . "
+	FROM ' . POSTS_TABLE . ' p' . (($join_user_sql[$sort_key]) ? ', ' . USERS_TABLE . ' u': '') . "
 	WHERE p.topic_id = $topic_id
 		AND " . $an602_content_visibility->get_visibility_sql('post', $forum_id, 'p.') . "
 		" . (($join_user_sql[$sort_key]) ? 'AND u.user_id = p.poster_id': '') . "
@@ -1275,13 +1275,13 @@ $sql_ary = array(
 	'SELECT'	=> 'u.*, z.friend, z.foe, p.*',
 
 	'FROM'		=> array(
-		AN602_USERS_TABLE		=> 'u',
-		AN602_POSTS_TABLE		=> 'p',
+		USERS_TABLE		=> 'u',
+		POSTS_TABLE		=> 'p',
 	),
 
 	'LEFT_JOIN'	=> array(
 		array(
-			'FROM'	=> array(AN602_ZEBRA_TABLE => 'z'),
+			'FROM'	=> array(ZEBRA_TABLE => 'z'),
 			'ON'	=> 'z.user_id = ' . $user->data['user_id'] . ' AND z.zebra_id = p.poster_id',
 		),
 	),
@@ -1582,7 +1582,7 @@ if ($config['load_cpf_viewtopic'])
 if ($config['load_onlinetrack'] && count($id_cache))
 {
 	$sql = 'SELECT session_user_id, MAX(session_time) as online_time, MIN(session_viewonline) AS viewonline
-		FROM ' . AN602_SESSIONS_TABLE . '
+		FROM ' . SESSIONS_TABLE . '
 		WHERE ' . $db->sql_in_set('session_user_id', $id_cache) . '
 		GROUP BY session_user_id';
 	$result = $db->sql_query($sql);
@@ -1602,7 +1602,7 @@ if (count($attach_list))
 	if ($auth->acl_get('u_download') && $auth->acl_get('f_download', $forum_id))
 	{
 		$sql = 'SELECT *
-			FROM ' . AN602_ATTACHMENTS_TABLE . '
+			FROM ' . ATTACHMENTS_TABLE . '
 			WHERE ' . $db->sql_in_set('post_msg_id', $attach_list) . '
 				AND in_message = 0
 			ORDER BY attach_id DESC, post_msg_id ASC';
@@ -1617,7 +1617,7 @@ if (count($attach_list))
 		// No attachments exist, but post table thinks they do so go ahead and reset post_attach flags
 		if (!count($attachments))
 		{
-			$sql = 'UPDATE ' . AN602_POSTS_TABLE . '
+			$sql = 'UPDATE ' . POSTS_TABLE . '
 				SET post_attachment = 0
 				WHERE ' . $db->sql_in_set('post_id', $attach_list);
 			$db->sql_query($sql);
@@ -1627,7 +1627,7 @@ if (count($attach_list))
 			{
 				// Not all posts are displayed so we query the db to find if there's any attachment for this topic
 				$sql = 'SELECT a.post_msg_id as post_id
-					FROM ' . AN602_ATTACHMENTS_TABLE . ' a, ' . AN602_POSTS_TABLE . " p
+					FROM ' . ATTACHMENTS_TABLE . ' a, ' . POSTS_TABLE . " p
 					WHERE p.topic_id = $topic_id
 						AND p.post_visibility = " . ITEM_APPROVED . '
 						AND p.topic_id = a.topic_id';
@@ -1637,7 +1637,7 @@ if (count($attach_list))
 
 				if (!$row)
 				{
-					$sql = 'UPDATE ' . AN602_TOPICS_TABLE . "
+					$sql = 'UPDATE ' . TOPICS_TABLE . "
 						SET topic_attachment = 0
 						WHERE topic_id = $topic_id";
 					$db->sql_query($sql);
@@ -1645,7 +1645,7 @@ if (count($attach_list))
 			}
 			else
 			{
-				$sql = 'UPDATE ' . AN602_TOPICS_TABLE . "
+				$sql = 'UPDATE ' . TOPICS_TABLE . "
 					SET topic_attachment = 0
 					WHERE topic_id = $topic_id";
 				$db->sql_query($sql);
@@ -1654,7 +1654,7 @@ if (count($attach_list))
 		else if ($has_approved_attachments && !$topic_data['topic_attachment'])
 		{
 			// Topic has approved attachments but its flag is wrong
-			$sql = 'UPDATE ' . AN602_TOPICS_TABLE . "
+			$sql = 'UPDATE ' . TOPICS_TABLE . "
 				SET topic_attachment = 1
 				WHERE topic_id = $topic_id";
 			$db->sql_query($sql);
@@ -1787,7 +1787,7 @@ for ($i = 0, $end = count($post_list); $i < $end; ++$i)
 			$post_storage_list = (!$store_reverse) ? array_slice($post_list, $i) : array_slice(array_reverse($post_list), $i);
 
 			$sql = 'SELECT DISTINCT u.user_id, u.username, u.user_colour
-				FROM ' . AN602_POSTS_TABLE . ' p, ' . AN602_USERS_TABLE . ' u
+				FROM ' . POSTS_TABLE . ' p, ' . USERS_TABLE . ' u
 				WHERE ' . $db->sql_in_set('p.post_id', $post_storage_list) . '
 					AND p.post_edit_count <> 0
 					AND p.post_edit_user <> 0
@@ -1851,7 +1851,7 @@ for ($i = 0, $end = count($post_list); $i < $end; ++$i)
 			$post_storage_list = (!$store_reverse) ? array_slice($post_list, $i) : array_slice(array_reverse($post_list), $i);
 
 			$sql = 'SELECT DISTINCT u.user_id, u.username, u.user_colour
-				FROM ' . AN602_POSTS_TABLE . ' p, ' . AN602_USERS_TABLE . ' u
+				FROM ' . POSTS_TABLE . ' p, ' . USERS_TABLE . ' u
 				WHERE ' . $db->sql_in_set('p.post_id', $post_storage_list) . '
 					AND p.post_delete_user <> 0
 					AND p.post_delete_user = u.user_id';
@@ -2263,7 +2263,7 @@ unset($rowset, $user_cache);
 // Update topic view and if necessary attachment view counters ... but only for humans and if this is the first 'page view'
 if (isset($user->data['session_page']) && !$user->data['is_bot'] && (strpos($user->data['session_page'], '&t=' . $topic_id) === false || isset($user->data['session_created'])))
 {
-	$sql = 'UPDATE ' . AN602_TOPICS_TABLE . '
+	$sql = 'UPDATE ' . TOPICS_TABLE . '
 		SET topic_views = topic_views + 1, topic_last_view_time = ' . time() . "
 		WHERE topic_id = $topic_id";
 	$db->sql_query($sql);
@@ -2271,7 +2271,7 @@ if (isset($user->data['session_page']) && !$user->data['is_bot'] && (strpos($use
 	// Update the attachment download counts
 	if (count($update_count))
 	{
-		$sql = 'UPDATE ' . AN602_ATTACHMENTS_TABLE . '
+		$sql = 'UPDATE ' . ATTACHMENTS_TABLE . '
 			SET download_count = download_count + 1
 			WHERE ' . $db->sql_in_set('attach_id', array_unique($update_count));
 		$db->sql_query($sql);

@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -180,7 +180,7 @@ class create_config_file extends \an602\install\task_base
 			'dbpasswd'		=> $this->install_config->get('dbpasswd'),
 			'table_prefix'	=> $this->install_config->get('table_prefix'),
 
-			'an602_adm_relative_path'	=> 'admin/adm/',
+			'an602_adm_relative_path'	=> 'admin/',
 
 			'acm_type'		=> 'an602\cache\driver\file',
 		);
@@ -190,19 +190,19 @@ class create_config_file extends \an602\install\task_base
 			$config_content .= "\${$key} = '" . str_replace("'", "\\'", str_replace('\\', '\\\\', $value)) . "';\n";
 		}
 
-		$config_content .= "\n@define('AN602_INSTALLED', true);\n";
+		$config_content .= "\n@define('PHPBB_INSTALLED', true);\n";
 
 		if ($environment)
 		{
-			$config_content .= "@define('AN602_ENVIRONMENT', 'test');\n";
+			$config_content .= "@define('PHPBB_ENVIRONMENT', 'test');\n";
 		}
 		else if ($debug)
 		{
-			$config_content .= "@define('AN602_ENVIRONMENT', 'development');\n";
+			$config_content .= "@define('PHPBB_ENVIRONMENT', 'development');\n";
 		}
 		else
 		{
-			$config_content .= "@define('AN602_ENVIRONMENT', 'production');\n";
+			$config_content .= "@define('PHPBB_ENVIRONMENT', 'production');\n";
 		}
 
 		if ($debug_container)
@@ -218,7 +218,7 @@ class create_config_file extends \an602\install\task_base
 		{
 			$config_content .= "@define('DEBUG_TEST', true);\n";
 
-			// Mandatory for the functional tests, will be removed by AN602-12623
+			// Mandatory for the functional tests, will be removed by PHPBB3-12623
 			$config_content .= "@define('DEBUG', true);\n";
 		}
 

@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -257,7 +257,7 @@ class installer
 
 				$an602_root_path = $this->container_factory->get_parameter('core.root_path');
 
-				$acp_url = append_sid($an602_root_path . 'admin/adm/index.php', 'i=acp_help_an602&mode=help_an602', true, $user->session_id);
+				$acp_url = append_sid($an602_root_path . 'admin/index.php', 'i=acp_help_phpbb&mode=help_phpbb', true, $user->session_id);
 				$this->iohandler->add_success_message('INSTALLER_FINISHED', array(
 					'ACP_LINK',
 					$acp_url,

@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -20,7 +20,7 @@ class mysql_extractor extends base_extractor
 	/**
 	* {@inheritdoc}
 	*/
-	public function write_start($an602_table_prefix)
+	public function write_start($table_prefix)
 	{
 		if (!$this->is_initialized)
 		{
@@ -29,7 +29,7 @@ class mysql_extractor extends base_extractor
 
 		$sql_data = "#\n";
 		$sql_data .= "# AN602 Backup Script\n";
-		$sql_data .= "# Dump of tables for $an602_table_prefix\n";
+		$sql_data .= "# Dump of tables for $table_prefix\n";
 		$sql_data .= "# DATE : " . gmdate("d-m-Y H:i:s", $this->time) . " GMT\n";
 		$sql_data .= "#\n";
 		$this->flush($sql_data);

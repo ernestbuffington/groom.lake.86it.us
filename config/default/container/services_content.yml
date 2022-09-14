@@ -1,6 +1,6 @@
 services:
     content.visibility:
-        class: phpbb\content_visibility
+        class: an602\content_visibility
         arguments:
             - '@auth'
             - '@config'
@@ -15,20 +15,20 @@ services:
             - '%tables.users%'
 
     groupposition.legend:
-        class: phpbb\groupposition\legend
+        class: an602\groupposition\legend
         arguments:
             - '@dbal.conn'
             - '@user'
 
     groupposition.teampage:
-        class: phpbb\groupposition\teampage
+        class: an602\groupposition\teampage
         arguments:
             - '@dbal.conn'
             - '@user'
             - '@cache.driver'
 
     message.form.admin:
-        class: phpbb\message\admin_form
+        class: an602\message\admin_form
         arguments:
             - '@auth'
             - '@config'
@@ -40,7 +40,7 @@ services:
             - '%core.php_ext%'
 
     message.form.topic:
-        class: phpbb\message\topic_form
+        class: an602\message\topic_form
         arguments:
             - '@auth'
             - '@config'
@@ -50,7 +50,7 @@ services:
             - '%core.php_ext%'
 
     message.form.user:
-        class: phpbb\message\user_form
+        class: an602\message\user_form
         arguments:
             - '@auth'
             - '@config'
@@ -60,7 +60,7 @@ services:
             - '%core.php_ext%'
 
     pagination:
-        class: phpbb\pagination
+        class: an602\pagination
         arguments:
             - '@template'
             - '@user'
@@ -68,6 +68,6 @@ services:
             - '@dispatcher'
 
     viewonline_helper:
-        class: phpbb\viewonline_helper
+        class: an602\viewonline_helper
         arguments:
             - '@filesystem'

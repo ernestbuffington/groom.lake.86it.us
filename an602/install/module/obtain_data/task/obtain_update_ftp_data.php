@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -76,7 +76,7 @@ class obtain_update_ftp_data extends task_base
 	{
 		if ($this->iohandler->get_input('submit_ftp', false))
 		{
-			$this->update_helper->include_file('includes/an602_functions_transfer.' . $this->php_ext);
+			$this->update_helper->include_file('includes/functions_transfer.' . $this->php_ext);
 
 			$method = 'ftp';
 			$methods = \transfer::methods();

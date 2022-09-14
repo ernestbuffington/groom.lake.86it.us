@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -26,7 +26,7 @@ class error_collector
 	 * the error_reporting() function will be used to determine which errors
 	 * the collector will keep.
 	 *
-	 * @see https://tracker.groom.lake.86it.us/browse/AN602-13306
+	 * @see https://tracker.groom.lake.86it.us/browse/PHPBB3-13306
 	 * @param int|null $error_types
 	 */
 	function __construct($error_types = null)

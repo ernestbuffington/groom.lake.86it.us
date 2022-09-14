@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -13,7 +13,7 @@
 
 namespace an602\db\migration\data\v320;
 
-class add_help_an602 extends \an602\db\migration\migration
+class add_help_phpbb extends \an602\db\migration\migration
 {
 	static public function depends_on()
 	{
@@ -37,9 +37,9 @@ class add_help_an602 extends \an602\db\migration\migration
 				'acp',
 				'ACP_SERVER_CONFIGURATION',
 				array(
-					'module_basename'	=> 'acp_help_an602',
-					'module_langname'	=> 'ACP_HELP_AN602',
-					'module_mode'		=> 'help_an602',
+					'module_basename'	=> 'acp_help_phpbb',
+					'module_langname'	=> 'ACP_HELP_PHPBB',
+					'module_mode'		=> 'help_phpbb',
 					'module_auth'		=> 'acl_a_server',
 				),
 			)),

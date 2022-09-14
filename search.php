@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,8 +14,8 @@
 /**
 * @ignore
 */
-define('IN_AN602', true);
-$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
+define('IN_PHPBB', true);
+$an602_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($an602_root_path . 'common.' . $phpEx);
 
@@ -176,7 +176,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 		$sql_where = (strpos($author, '*') !== false) ? ' username_clean ' . $db->sql_like_expression(str_replace('*', $db->get_any_char(), utf8_clean_string($author))) : " username_clean = '" . $db->sql_escape(utf8_clean_string($author)) . "'";
 
 		$sql = 'SELECT user_id
-			FROM ' . AN602_USERS_TABLE . "
+			FROM ' . USERS_TABLE . "
 			WHERE $sql_where
 				AND user_type <> " . USER_IGNORE;
 		$result = $db->sql_query_limit($sql, 100);
@@ -190,7 +190,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 		$sql_where = (strpos($author, '*') !== false) ? ' post_username ' . $db->sql_like_expression(str_replace('*', $db->get_any_char(), utf8_clean_string($author))) : " post_username = '" . $db->sql_escape(utf8_clean_string($author)) . "'";
 
 		$sql = 'SELECT 1 as guest_post
-			FROM ' . AN602_POSTS_TABLE . "
+			FROM ' . POSTS_TABLE . "
 			WHERE $sql_where
 				AND poster_id = " . ANONYMOUS;
 		$result = $db->sql_query_limit($sql, 1);
@@ -237,8 +237,8 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 	$not_in_fid = (count($ex_fid_ary)) ? 'WHERE ' . $db->sql_in_set('f.forum_id', $ex_fid_ary, true) . " OR (f.forum_password <> '' AND fa.user_id <> " . (int) $user->data['user_id'] . ')' : "";
 
 	$sql = 'SELECT f.forum_id, f.forum_name, f.parent_id, f.forum_type, f.right_id, f.forum_password, f.forum_flags, fa.user_id
-		FROM ' . AN602_FORUMS_TABLE . ' f
-		LEFT JOIN ' . AN602_FORUMS_ACCESS_TABLE . " fa ON (fa.forum_id = f.forum_id
+		FROM ' . FORUMS_TABLE . ' f
+		LEFT JOIN ' . FORUMS_ACCESS_TABLE . " fa ON (fa.forum_id = f.forum_id
 			AND fa.session_id = '" . $db->sql_escape($user->session_id) . "')
 		$not_in_fid
 		ORDER BY f.left_id";
@@ -385,7 +385,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				$last_post_time_sql = ($sort_days) ? ' AND t.topic_last_post_time > ' . (time() - ($sort_days * 24 * 3600)) : '';
 
 				$sql = 'SELECT t.topic_last_post_time, t.topic_id
-					FROM ' . AN602_TOPICS_TABLE . " t
+					FROM ' . TOPICS_TABLE . " t
 					WHERE t.topic_moved_id = 0
 						$last_post_time_sql
 						AND " . $m_approve_topics_fid_sql . '
@@ -402,7 +402,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				$sort_by_sql['s'] = ($show_results == 'posts') ? 'p.post_subject' : 't.topic_title';
 				$sql_sort = 'ORDER BY ' . $sort_by_sql[$sort_key] . (($sort_dir == 'a') ? ' ASC' : ' DESC');
 
-				$sort_join = ($sort_key == 'f') ? AN602_FORUMS_TABLE . ' f, ' : '';
+				$sort_join = ($sort_key == 'f') ? FORUMS_TABLE . ' f, ' : '';
 				$sql_sort = ($sort_key == 'f') ? ' AND f.forum_id = p.forum_id ' . $sql_sort : $sql_sort;
 
 				if ($sort_days)
@@ -416,13 +416,13 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 
 				if ($sort_key == 'a')
 				{
-					$sort_join = AN602_USERS_TABLE . ' u, ';
+					$sort_join = USERS_TABLE . ' u, ';
 					$sql_sort = ' AND u.user_id = p.poster_id ' . $sql_sort;
 				}
 				if ($show_results == 'posts')
 				{
 					$sql = "SELECT p.post_id
-						FROM $sort_join" . AN602_POSTS_TABLE . ' p, ' . AN602_TOPICS_TABLE . " t
+						FROM $sort_join" . POSTS_TABLE . ' p, ' . TOPICS_TABLE . " t
 						WHERE t.topic_posts_approved = 1
 							AND p.topic_id = t.topic_id
 							$last_post_time
@@ -434,7 +434,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				else
 				{
 					$sql = 'SELECT DISTINCT ' . $sort_by_sql[$sort_key] . ", p.topic_id
-						FROM $sort_join" . AN602_POSTS_TABLE . ' p, ' . AN602_TOPICS_TABLE . " t
+						FROM $sort_join" . POSTS_TABLE . ' p, ' . TOPICS_TABLE . " t
 						WHERE t.topic_posts_approved = 1
 							AND t.topic_moved_id = 0
 							AND p.topic_id = t.topic_id
@@ -479,7 +479,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				if ($show_results == 'posts')
 				{
 					$sql = 'SELECT p.post_id
-						FROM ' . AN602_POSTS_TABLE . ' p
+						FROM ' . POSTS_TABLE . ' p
 						WHERE p.post_time > ' . $user->data['user_lastvisit'] . '
 							AND ' . $m_approve_posts_fid_sql . '
 							' . ((count($ex_fid_ary)) ? ' AND ' . $db->sql_in_set('p.forum_id', $ex_fid_ary, true) : '') . "
@@ -489,7 +489,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				else
 				{
 					$sql = 'SELECT t.topic_id
-						FROM ' . AN602_TOPICS_TABLE . ' t
+						FROM ' . TOPICS_TABLE . ' t
 						WHERE t.topic_last_post_time > ' . $user->data['user_lastvisit'] . '
 							AND t.topic_moved_id = 0
 							AND ' . $m_approve_topics_fid_sql . '
@@ -500,7 +500,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 		- Creates temporary table, query is far from optimized
 
 					$sql = 'SELECT t.topic_id
-						FROM ' . AN602_TOPICS_TABLE . ' t, ' . AN602_POSTS_TABLE . ' p
+						FROM ' . TOPICS_TABLE . ' t, ' . POSTS_TABLE . ' p
 						WHERE p.post_time > ' . $user->data['user_lastvisit'] . '
 							AND t.topic_id = p.topic_id
 							AND t.topic_moved_id = 0
@@ -661,11 +661,11 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 
 	if ($show_results == 'posts')
 	{
-		include($an602_root_path . 'includes/an602_functions_posting.' . $phpEx);
+		include($an602_root_path . 'includes/functions_posting.' . $phpEx);
 	}
 	else
 	{
-		include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
+		include($an602_root_path . 'includes/functions_display.' . $phpEx);
 	}
 
 	$user->add_lang('viewtopic');
@@ -726,7 +726,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 		{
 			// @todo Joining this query to the one below?
 			$sql = 'SELECT zebra_id, friend, foe
-				FROM ' . AN602_ZEBRA_TABLE . '
+				FROM ' . ZEBRA_TABLE . '
 				WHERE user_id = ' . $user->data['user_id'];
 			$result = $db->sql_query($sql);
 
@@ -739,19 +739,19 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 			$sql_array = array(
 				'SELECT'	=> 'p.*, f.forum_id, f.forum_name, t.*, u.username, u.username_clean, u.user_sig, u.user_sig_bbcode_uid, u.user_colour',
 				'FROM'		=> array(
-					AN602_POSTS_TABLE		=> 'p',
+					POSTS_TABLE		=> 'p',
 				),
 				'LEFT_JOIN' => array(
 					array(
-						'FROM'	=> array(AN602_TOPICS_TABLE => 't'),
+						'FROM'	=> array(TOPICS_TABLE => 't'),
 						'ON'	=> 'p.topic_id = t.topic_id',
 					),
 					array(
-						'FROM'	=> array(AN602_FORUMS_TABLE => 'f'),
+						'FROM'	=> array(FORUMS_TABLE => 'f'),
 						'ON'	=> 'p.forum_id = f.forum_id',
 					),
 					array(
-						'FROM'	=> array(AN602_USERS_TABLE => 'u'),
+						'FROM'	=> array(USERS_TABLE => 'u'),
 						'ON'	=> 'p.poster_id = u.user_id',
 					),
 				),
@@ -799,25 +799,25 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 		}
 		else
 		{
-			$sql_from = AN602_TOPICS_TABLE . ' t
-				LEFT JOIN ' . AN602_FORUMS_TABLE . ' f ON (f.forum_id = t.forum_id)
-				' . (($sort_key == 'a') ? ' LEFT JOIN ' . AN602_USERS_TABLE . ' u ON (u.user_id = t.topic_poster) ' : '');
+			$sql_from = TOPICS_TABLE . ' t
+				LEFT JOIN ' . FORUMS_TABLE . ' f ON (f.forum_id = t.forum_id)
+				' . (($sort_key == 'a') ? ' LEFT JOIN ' . USERS_TABLE . ' u ON (u.user_id = t.topic_poster) ' : '');
 			$sql_select = 't.*, f.forum_id, f.forum_name';
 
 			if ($user->data['is_registered'])
 			{
 				if ($config['load_db_track'] && $author_id !== $user->data['user_id'])
 				{
-					$sql_from .= ' LEFT JOIN ' . AN602_TOPICS_POSTED_TABLE . ' tp ON (tp.user_id = ' . $user->data['user_id'] . '
+					$sql_from .= ' LEFT JOIN ' . TOPICS_POSTED_TABLE . ' tp ON (tp.user_id = ' . $user->data['user_id'] . '
 						AND t.topic_id = tp.topic_id)';
 					$sql_select .= ', tp.topic_posted';
 				}
 
 				if ($config['load_db_lastread'])
 				{
-					$sql_from .= ' LEFT JOIN ' . AN602_TOPICS_TRACK_TABLE . ' tt ON (tt.user_id = ' . $user->data['user_id'] . '
+					$sql_from .= ' LEFT JOIN ' . TOPICS_TRACK_TABLE . ' tt ON (tt.user_id = ' . $user->data['user_id'] . '
 							AND t.topic_id = tt.topic_id)
-						LEFT JOIN ' . AN602_FORUMS_TRACK_TABLE . ' ft ON (ft.user_id = ' . $user->data['user_id'] . '
+						LEFT JOIN ' . FORUMS_TRACK_TABLE . ' ft ON (ft.user_id = ' . $user->data['user_id'] . '
 							AND ft.forum_id = f.forum_id)';
 					$sql_select .= ', tt.mark_time, ft.mark_time as f_mark_time';
 				}
@@ -897,7 +897,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 			if (count($shadow_topic_list))
 			{
 				$sql = 'SELECT *
-					FROM ' . AN602_TOPICS_TABLE . '
+					FROM ' . TOPICS_TABLE . '
 					WHERE ' . $db->sql_in_set('topic_id', array_keys($shadow_topic_list));
 				$result = $db->sql_query($sql);
 
@@ -1015,7 +1015,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 			if (count($attach_list))
 			{
 				$sql = 'SELECT *
-					FROM ' . AN602_ATTACHMENTS_TABLE . '
+					FROM ' . ATTACHMENTS_TABLE . '
 					WHERE ' . $db->sql_in_set('post_msg_id', $attach_list) . '
 						AND in_message = 0
 					ORDER BY filetime DESC, post_msg_id ASC';
@@ -1369,8 +1369,8 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 $rowset = array();
 $s_forums = '';
 $sql = 'SELECT f.forum_id, f.forum_name, f.parent_id, f.forum_type, f.left_id, f.right_id, f.forum_password, f.enable_indexing, fa.user_id
-	FROM ' . AN602_FORUMS_TABLE . ' f
-	LEFT JOIN ' . AN602_FORUMS_ACCESS_TABLE . " fa ON (fa.forum_id = f.forum_id
+	FROM ' . FORUMS_TABLE . ' f
+	LEFT JOIN ' . FORUMS_ACCESS_TABLE . " fa ON (fa.forum_id = f.forum_id
 		AND fa.session_id = '" . $db->sql_escape($user->session_id) . "')
 	ORDER BY f.left_id ASC";
 $result = $db->sql_query($sql);
@@ -1534,7 +1534,7 @@ if ($auth->acl_get('a_search'))
 	{
 		case 'oracle':
 			$sql = 'SELECT search_time, search_keywords
-				FROM ' . AN602_SEARCH_RESULTS_TABLE . '
+				FROM ' . SEARCH_RESULTS_TABLE . '
 				WHERE dbms_lob.getlength(search_keywords) > 0
 				ORDER BY search_time DESC';
 		break;
@@ -1542,14 +1542,14 @@ if ($auth->acl_get('a_search'))
 		case 'mssql_odbc':
 		case 'mssqlnative':
 			$sql = 'SELECT search_time, search_keywords
-				FROM ' . AN602_SEARCH_RESULTS_TABLE . '
+				FROM ' . SEARCH_RESULTS_TABLE . '
 				WHERE DATALENGTH(search_keywords) > 0
 				ORDER BY search_time DESC';
 		break;
 
 		default:
 			$sql = 'SELECT search_time, search_keywords
-				FROM ' . AN602_SEARCH_RESULTS_TABLE . '
+				FROM ' . SEARCH_RESULTS_TABLE . '
 				WHERE search_keywords <> \'\'
 				ORDER BY search_time DESC';
 		break;

@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -98,7 +98,7 @@ class generate extends \an602\console\command\command
 		$io->section($this->user->lang('CLI_THUMBNAIL_GENERATING'));
 
 		$sql = 'SELECT COUNT(*) AS nb_missing_thumbnails
-			FROM ' . AN602_ATTACHMENTS_TABLE . '
+			FROM ' . ATTACHMENTS_TABLE . '
 			WHERE thumbnail = 0';
 		$result = $this->db->sql_query($sql);
 		$nb_missing_thumbnails = (int) $this->db->sql_fetchfield('nb_missing_thumbnails');
@@ -113,13 +113,13 @@ class generate extends \an602\console\command\command
 		$extensions = $this->cache->obtain_attach_extensions(true);
 
 		$sql = 'SELECT attach_id, physical_filename, extension, real_filename, mimetype
-			FROM ' . AN602_ATTACHMENTS_TABLE . '
+			FROM ' . ATTACHMENTS_TABLE . '
 			WHERE thumbnail = 0';
 		$result = $this->db->sql_query($sql);
 
 		if (!function_exists('create_thumbnail'))
 		{
-			require($this->an602_root_path . 'includes/an602_functions_posting.' . $this->php_ext);
+			require($this->an602_root_path . 'includes/functions_posting.' . $this->php_ext);
 		}
 
 		$progress = $this->create_progress_bar($nb_missing_thumbnails, $io, $output);
@@ -178,7 +178,7 @@ class generate extends \an602\console\command\command
 	*/
 	protected function commit_changes(array $thumbnail_created)
 	{
-		$sql = 'UPDATE ' . AN602_ATTACHMENTS_TABLE . '
+		$sql = 'UPDATE ' . ATTACHMENTS_TABLE . '
 				SET thumbnail = 1
 				WHERE ' . $this->db->sql_in_set('attach_id', $thumbnail_created);
 		$this->db->sql_query($sql);

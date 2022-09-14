@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -80,10 +80,10 @@ class md_exporter
 	{
 		$this->crawl_eventsmd($md_file, 'adm');
 
-		$file_list = $this->get_recursive_file_list($this->path  . 'admin/adm/style/');
+		$file_list = $this->get_recursive_file_list($this->path  . 'admin/style/');
 		foreach ($file_list as $file)
 		{
-			$file_name = 'admin/adm/style/' . $file;
+			$file_name = 'admin/style/' . $file;
 			$this->validate_events_from_file($file_name, $this->crawl_file_for_events($file_name));
 		}
 
@@ -103,12 +103,12 @@ class md_exporter
 		foreach ($styles as $style)
 		{
 			$file_list = $this->get_recursive_file_list(
-				$this->path . 'themes/theme_core/styles/' . $style . '/template/'
+				$this->path . 'styles/' . $style . '/template/'
 			);
 
 			foreach ($file_list as $file)
 			{
-				$file_name = 'themes/theme_core/styles/' . $style . '/template/' . $file;
+				$file_name = 'styles/' . $style . '/template/' . $file;
 				$this->validate_events_from_file($file_name, $this->crawl_file_for_events($file_name));
 			}
 		}
@@ -525,13 +525,13 @@ class md_exporter
 					throw new \LogicException("Invalid file '{$file}' not found for event '{$this->current_event}'", 2);
 				}
 
-				if (($this->filter !== 'adm') && strpos($file, 'themes/theme_core/styles/prosilver/template/') === 0)
+				if (($this->filter !== 'adm') && strpos($file, 'styles/prosilver/template/') === 0)
 				{
-					$files_list['prosilver'][] = substr($file, strlen('themes/theme_core/styles/prosilver/template/'));
+					$files_list['prosilver'][] = substr($file, strlen('styles/prosilver/template/'));
 				}
-				else if (($this->filter === 'adm') && strpos($file, 'admin/adm/style/') === 0)
+				else if (($this->filter === 'adm') && strpos($file, 'admin/style/') === 0)
 				{
-					$files_list['adm'][] = substr($file, strlen('admin/adm/style/'));
+					$files_list['adm'][] = substr($file, strlen('admin/style/'));
 				}
 				else
 				{
@@ -549,7 +549,7 @@ class md_exporter
 				throw new \LogicException("Invalid file '{$file}' not found for event '{$this->current_event}'", 1);
 			}
 
-			$files_list['adm'][] =  substr($file, strlen('admin/adm/style/'));
+			$files_list['adm'][] =  substr($file, strlen('admin/style/'));
 
 			$this->events_by_file[$file][] = $this->current_event;
 		}

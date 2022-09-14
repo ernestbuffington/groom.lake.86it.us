@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -13,7 +13,7 @@
 
 namespace an602\db\migration\data\v30x;
 
-/** @todo DROP AN602_LOGIN_ATTEMPT_TABLE.attempt_id in 3.0.12-RC1 **/
+/** @todo DROP LOGIN_ATTEMPT_TABLE.attempt_id in 3.0.12-RC1 **/
 
 class release_3_0_12_rc1 extends \an602\db\migration\migration
 {
@@ -41,7 +41,7 @@ class release_3_0_12_rc1 extends \an602\db\migration\migration
 	{
 		// Disable receiving pms for bots
 		$sql = 'SELECT user_id
-			FROM ' . AN602_BOTS_TABLE;
+			FROM ' . BOTS_TABLE;
 		$result = $this->db->sql_query($sql);
 
 		$bot_user_ids = array();
@@ -53,7 +53,7 @@ class release_3_0_12_rc1 extends \an602\db\migration\migration
 
 		if (!empty($bot_user_ids))
 		{
-			$sql = 'UPDATE ' . AN602_USERS_TABLE . '
+			$sql = 'UPDATE ' . USERS_TABLE . '
 				SET user_allow_pm = 0
 				WHERE ' . $this->db->sql_in_set('user_id', $bot_user_ids);
 			$this->sql_query($sql);
@@ -62,7 +62,7 @@ class release_3_0_12_rc1 extends \an602\db\migration\migration
 
 	public function update_module_auth()
 	{
-		$sql = 'UPDATE ' . AN602_MODULES_TABLE . '
+		$sql = 'UPDATE ' . MODULES_TABLE . '
 			SET module_auth = \'acl_u_sig\'
 			WHERE module_class = \'ucp\'
 				AND module_basename = \'profile\'

@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -96,8 +96,8 @@ class diff_files extends task_base
 	public function run()
 	{
 		// Include diff engine
-		$this->update_helper->include_file('includes/an602_diff/diff.' . $this->php_ext);
-		$this->update_helper->include_file('includes/an602_diff/engine.' . $this->php_ext);
+		$this->update_helper->include_file('includes/diff/diff.' . $this->php_ext);
+		$this->update_helper->include_file('includes/diff/engine.' . $this->php_ext);
 
 		// Set up basic vars
 		$old_path = $this->update_helper->get_path_to_old_update_files();

@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,13 +14,13 @@
 /**
 * @ignore
 */
-define('IN_AN602', true);
-$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
+define('IN_PHPBB', true);
+$an602_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($an602_root_path . 'common.' . $phpEx);
-include($an602_root_path . 'includes/an602_functions_admin.' . $phpEx);
-include($an602_root_path . 'includes/an602_functions_mcp.' . $phpEx);
-require($an602_root_path . 'includes/an602_functions_module.' . $phpEx);
+include($an602_root_path . 'includes/functions_admin.' . $phpEx);
+include($an602_root_path . 'includes/functions_mcp.' . $phpEx);
+require($an602_root_path . 'includes/functions_module.' . $phpEx);
 
 // Start session management
 $user->session_begin();
@@ -82,7 +82,7 @@ if ($post_id)
 {
 	// We determine the topic and forum id here, to make sure the moderator really has moderative rights on this post
 	$sql = 'SELECT topic_id, forum_id
-		FROM ' . AN602_POSTS_TABLE . '
+		FROM ' . POSTS_TABLE . '
 		WHERE post_id = ' . (int) $post_id;
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
@@ -94,7 +94,7 @@ if ($post_id)
 else if ($topic_id)
 {
 	$sql = 'SELECT forum_id
-		FROM ' . AN602_TOPICS_TABLE . '
+		FROM ' . TOPICS_TABLE . '
 		WHERE topic_id = ' . (int) $topic_id;
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);

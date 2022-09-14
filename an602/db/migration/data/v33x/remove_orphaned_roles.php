@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -33,7 +33,7 @@ class remove_orphaned_roles extends \an602\db\migration\migration
 		$auth_role_ids = [];
 
 		$sql = 'SELECT auth_role_id
-			FROM ' . AN602_ACL_AN602_GROUPS_TABLE . '
+			FROM ' . ACL_GROUPS_TABLE . '
 			WHERE auth_role_id <> 0
 				AND forum_id = 0';
 		$result = $this->db->sql_query($sql);
@@ -46,7 +46,7 @@ class remove_orphaned_roles extends \an602\db\migration\migration
 		if (count($auth_role_ids))
 		{
 			$sql = 'SELECT role_id
-				FROM ' . AN602_ACL_ROLES_TABLE . '
+				FROM ' . ACL_ROLES_TABLE . '
 				WHERE ' . $this->db->sql_in_set('role_id', $auth_role_ids);
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))
@@ -65,11 +65,11 @@ class remove_orphaned_roles extends \an602\db\migration\migration
 		}
 
 		// Remove assigned non-existent roles from users and groups
-		$sql = 'DELETE FROM ' . AN602_ACL_AN602_USERS_TABLE . '
+		$sql = 'DELETE FROM ' . ACL_USERS_TABLE . '
 			WHERE ' . $this->db->sql_in_set('auth_role_id', $non_existent_role_ids);
 		$this->db->sql_query($sql);
 
-		$sql = 'DELETE FROM ' . AN602_ACL_AN602_GROUPS_TABLE . '
+		$sql = 'DELETE FROM ' . ACL_GROUPS_TABLE . '
 			WHERE ' . $this->db->sql_in_set('auth_role_id', $non_existent_role_ids);
 		$this->db->sql_query($sql);
 

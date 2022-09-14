@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -62,15 +62,15 @@ class remove_profilefield_wlm extends \an602\db\migration\migration
 	{
 		$field_id = $this->get_custom_profile_field_id();
 
-		$sql = 'DELETE FROM ' . AN602_PROFILE_FIELDS_TABLE . '
+		$sql = 'DELETE FROM ' . PROFILE_FIELDS_TABLE . '
 			WHERE field_id = ' . (int) $field_id;
 		$this->db->sql_query($sql);
 
-		$sql = 'DELETE FROM ' . AN602_PROFILE_LANG_TABLE . '
+		$sql = 'DELETE FROM ' . PROFILE_LANG_TABLE . '
 			WHERE field_id = ' . (int) $field_id;
 		$this->db->sql_query($sql);
 
-		$sql = 'DELETE FROM ' . AN602_PROFILE_FIELDS_LANG_TABLE . '
+		$sql = 'DELETE FROM ' . PROFILE_FIELDS_LANG_TABLE . '
 			WHERE field_id = ' . (int) $field_id;
 		$this->db->sql_query($sql);
 	}
@@ -82,7 +82,7 @@ class remove_profilefield_wlm extends \an602\db\migration\migration
 	public function get_custom_profile_field_id()
 	{
 		$sql = 'SELECT field_id
-			FROM ' . AN602_PROFILE_FIELDS_TABLE . "
+			FROM ' . PROFILE_FIELDS_TABLE . "
 			WHERE field_name = 'an602_wlm'";
 		$result = $this->db->sql_query($sql);
 		$field_id = (int) $this->db->sql_fetchfield('field_id');
@@ -94,7 +94,7 @@ class remove_profilefield_wlm extends \an602\db\migration\migration
 	public function create_custom_field()
 	{
 		$sql = 'SELECT MAX(field_order) as max_field_order
-			FROM ' . AN602_PROFILE_FIELDS_TABLE;
+			FROM ' . PROFILE_FIELDS_TABLE;
 		$result = $this->db->sql_query($sql);
 		$max_field_order = (int) $this->db->sql_fetchfield('max_field_order');
 		$this->db->sql_freeresult($result);
@@ -125,14 +125,14 @@ class remove_profilefield_wlm extends \an602\db\migration\migration
 			'field_order'			=> $max_field_order + 1,
 		);
 
-		$sql = 'INSERT INTO ' . AN602_PROFILE_FIELDS_TABLE . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
+		$sql = 'INSERT INTO ' . PROFILE_FIELDS_TABLE . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
 		$this->db->sql_query($sql);
 		$field_id = (int) $this->db->sql_nextid();
 
-		$insert_buffer = new \an602\db\sql_insert_buffer($this->db, AN602_PROFILE_LANG_TABLE);
+		$insert_buffer = new \an602\db\sql_insert_buffer($this->db, PROFILE_LANG_TABLE);
 
 		$sql = 'SELECT lang_id
-			FROM ' . AN602_LANG_TABLE;
+			FROM ' . LANG_TABLE;
 		$result = $this->db->sql_query($sql);
 		$lang_name = 'WLM';
 		while ($lang_id = (int) $this->db->sql_fetchfield('lang_id'))

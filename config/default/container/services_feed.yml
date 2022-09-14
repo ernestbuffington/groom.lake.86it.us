@@ -1,6 +1,6 @@
 services:
-    phpbb.feed.controller:
-        class: phpbb\feed\controller\feed
+    an602.feed.controller:
+        class: an602\feed\controller\feed
         arguments:
             - '@template.twig.environment'
             - '@symfony_request'
@@ -16,7 +16,7 @@ services:
             - '%core.php_ext%'
 
     feed.helper:
-        class: phpbb\feed\helper
+        class: an602\feed\helper
         arguments:
             - '@auth'
             - '@config'
@@ -26,7 +26,7 @@ services:
             - '@user'
 
     feed.forum:
-        class: phpbb\feed\forum
+        class: an602\feed\forum
         shared: false
         arguments:
             - '@feed.helper'
@@ -40,7 +40,7 @@ services:
             - '%core.php_ext%'
 
     feed.forums:
-        class: phpbb\feed\forums
+        class: an602\feed\forums
         shared: false
         arguments:
             - '@feed.helper'
@@ -54,7 +54,7 @@ services:
             - '%core.php_ext%'
 
     feed.news:
-        class: phpbb\feed\news
+        class: an602\feed\news
         shared: false
         arguments:
             - '@feed.helper'
@@ -68,7 +68,7 @@ services:
             - '%core.php_ext%'
 
     feed.overall:
-        class: phpbb\feed\overall
+        class: an602\feed\overall
         shared: false
         arguments:
             - '@feed.helper'
@@ -82,11 +82,11 @@ services:
             - '%core.php_ext%'
 
     feed.quote_helper:
-        class: phpbb\feed\quote_helper
+        class: an602\feed\quote_helper
         parent: text_formatter.s9e.quote_helper
 
     feed.topic:
-        class: phpbb\feed\topic
+        class: an602\feed\topic
         shared: false
         arguments:
             - '@feed.helper'
@@ -100,7 +100,7 @@ services:
             - '%core.php_ext%'
 
     feed.topics:
-        class: phpbb\feed\topics
+        class: an602\feed\topics
         shared: false
         arguments:
             - '@feed.helper'
@@ -114,7 +114,7 @@ services:
             - '%core.php_ext%'
 
     feed.topics_active:
-        class: phpbb\feed\topics_active
+        class: an602\feed\topics_active
         shared: false
         arguments:
             - '@feed.helper'

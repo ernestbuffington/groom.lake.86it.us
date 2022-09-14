@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -24,7 +24,7 @@ class merge_duplicate_bbcodes extends \an602\db\migration\container_aware_migrat
 
 	public function update_bbcodes_table()
 	{
-		$sql     = 'SELECT bbcode_id, bbcode_tag, bbcode_helpline, bbcode_match, bbcode_tpl FROM ' . AN602_BBCODES_TABLE;
+		$sql     = 'SELECT bbcode_id, bbcode_tag, bbcode_helpline, bbcode_match, bbcode_tpl FROM ' . BBCODES_TABLE;
 		$result  = $this->sql_query($sql);
 		$bbcodes = [];
 		while ($row = $this->db->sql_fetchrow($result))
@@ -72,12 +72,12 @@ class merge_duplicate_bbcodes extends \an602\db\migration\container_aware_migrat
 			'bbcode_tpl'      => $merged['template']
 		];
 
-		$sql = 'UPDATE ' . AN602_BBCODES_TABLE . '
+		$sql = 'UPDATE ' . BBCODES_TABLE . '
 			SET ' . $this->db->sql_build_array('UPDATE', $bbcode_data) . '
 			WHERE bbcode_id = ' . (int) $without['bbcode_id'];
 		$this->sql_query($sql);
 
-		$sql = 'DELETE FROM ' . AN602_BBCODES_TABLE . '
+		$sql = 'DELETE FROM ' . BBCODES_TABLE . '
 			WHERE bbcode_id = ' . (int) $with['bbcode_id'];
 		$this->sql_query($sql);
 	}

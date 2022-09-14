@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @copyright (c) 2010-2013 Moxiecode Systems AB
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
@@ -15,7 +15,7 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }

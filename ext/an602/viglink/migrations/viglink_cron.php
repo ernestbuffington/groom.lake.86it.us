@@ -3,7 +3,7 @@
  *
  * VigLink extension for the AN602 CMS Software package.
  *
- * @copyright (c) 2016 PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) 2016 AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */

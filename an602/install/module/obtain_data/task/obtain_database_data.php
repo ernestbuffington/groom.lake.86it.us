@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -81,10 +81,10 @@ class obtain_database_data extends \an602\install\task_base implements \an602\in
 		$dbuser			= $this->io_handler->get_input('dbuser', '', true);
 		$dbpasswd		= $this->io_handler->get_raw_input('dbpasswd', '', true);
 		$dbname			= $this->io_handler->get_input('dbname', '', true);
-		$an602_table_prefix	= $this->io_handler->get_input('table_prefix', '', true);
+		$table_prefix	= $this->io_handler->get_input('table_prefix', '', true);
 
 		// Check database data
-		$user_data_vaild = $this->check_database_data($dbms, $dbhost, $dbport, $dbuser, $dbpasswd, $dbname, $an602_table_prefix);
+		$user_data_vaild = $this->check_database_data($dbms, $dbhost, $dbport, $dbuser, $dbpasswd, $dbname, $table_prefix);
 
 		// Save database data if it is correct
 		if ($user_data_vaild)
@@ -95,7 +95,7 @@ class obtain_database_data extends \an602\install\task_base implements \an602\in
 			$this->install_config->set('dbuser', $dbuser);
 			$this->install_config->set('dbpasswd', $dbpasswd);
 			$this->install_config->set('dbname', $dbname);
-			$this->install_config->set('table_prefix', $an602_table_prefix);
+			$this->install_config->set('table_prefix', $table_prefix);
 		}
 		else
 		{
@@ -119,7 +119,7 @@ class obtain_database_data extends \an602\install\task_base implements \an602\in
 			$dbport			= $this->io_handler->get_input('dbport', '');
 			$dbuser			= $this->io_handler->get_input('dbuser', '');
 			$dbname			= $this->io_handler->get_input('dbname', '');
-			$an602_table_prefix	= $this->io_handler->get_input('table_prefix', 'an602_');
+			$table_prefix	= $this->io_handler->get_input('table_prefix', 'an602_');
 		}
 		else
 		{
@@ -128,7 +128,7 @@ class obtain_database_data extends \an602\install\task_base implements \an602\in
 			$dbport			= '';
 			$dbuser			= '';
 			$dbname			= '';
-			$an602_table_prefix	= 'an602_';
+			$table_prefix	= 'an602_';
 		}
 
 		$dbms_select = array();
@@ -177,7 +177,7 @@ class obtain_database_data extends \an602\install\task_base implements \an602\in
 				'label'			=> 'TABLE_PREFIX',
 				'description'	=> 'TABLE_PREFIX_EXPLAIN',
 				'type'			=> 'text',
-				'default'		=> $an602_table_prefix,
+				'default'		=> $table_prefix,
 			),
 			'submit_database' => array(
 				'label'	=> 'SUBMIT',
@@ -200,11 +200,11 @@ class obtain_database_data extends \an602\install\task_base implements \an602\in
 	 * @param string	$dbuser			Database username
 	 * @param string	$dbpass			Database password
 	 * @param string	$dbname			Database name
-	 * @param string	$an602_table_prefix	Database table prefix
+	 * @param string	$table_prefix	Database table prefix
 	 *
 	 * @return bool	True if database data is correct, false otherwise
 	 */
-	protected function check_database_data($dbms, $dbhost, $dbport, $dbuser, $dbpass, $dbname, $an602_table_prefix)
+	protected function check_database_data($dbms, $dbhost, $dbport, $dbuser, $dbpass, $dbname, $table_prefix)
 	{
 		$available_dbms = $this->database_helper->get_available_dbms();
 		$data_valid = true;
@@ -217,7 +217,7 @@ class obtain_database_data extends \an602\install\task_base implements \an602\in
 		}
 
 		// Validate table prefix
-		$prefix_valid = $this->database_helper->validate_table_prefix($dbms, $an602_table_prefix);
+		$prefix_valid = $this->database_helper->validate_table_prefix($dbms, $table_prefix);
 		if (is_array($prefix_valid))
 		{
 			foreach ($prefix_valid as $error)
@@ -234,7 +234,7 @@ class obtain_database_data extends \an602\install\task_base implements \an602\in
 		// Try to connect to database if all provided data is valid
 		if ($data_valid)
 		{
-			$connect_test = $this->database_helper->check_database_connection($dbms, $dbhost, $dbport, $dbuser, $dbpass, $dbname, $an602_table_prefix);
+			$connect_test = $this->database_helper->check_database_connection($dbms, $dbhost, $dbport, $dbuser, $dbpass, $dbname, $table_prefix);
 			if (is_array($connect_test))
 			{
 				foreach ($connect_test as $error)

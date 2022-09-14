@@ -3,7 +3,7 @@ parameters:
     core.disable_super_globals: true
 
     # Datetime class to use
-    datetime.class: \phpbb\datetime
+    datetime.class: \an602\datetime
 
     # Mimetype guesser priorities
     mimetype.guesser.priority.lowest: -2

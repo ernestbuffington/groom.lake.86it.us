@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -68,7 +68,7 @@ class add_languages extends \an602\install\task_base
 				'lang_author'		=> htmlspecialchars($lang_info['author'], ENT_COMPAT, 'UTF-8'),
 			);
 
-			$this->db->sql_query('INSERT INTO ' . AN602_LANG_TABLE . ' ' . $this->db->sql_build_array('INSERT', $lang_pack));
+			$this->db->sql_query('INSERT INTO ' . LANG_TABLE . ' ' . $this->db->sql_build_array('INSERT', $lang_pack));
 
 			$installed_languages[] = (int) $this->db->sql_nextid();
 			if ($this->db->get_sql_error_triggered())
@@ -78,10 +78,10 @@ class add_languages extends \an602\install\task_base
 			}
 		}
 
-		$sql = 'SELECT * FROM ' . AN602_PROFILE_FIELDS_TABLE;
+		$sql = 'SELECT * FROM ' . PROFILE_FIELDS_TABLE;
 		$result = $this->db->sql_query($sql);
 
-		$insert_buffer = new \an602\db\sql_insert_buffer($this->db, AN602_PROFILE_LANG_TABLE);
+		$insert_buffer = new \an602\db\sql_insert_buffer($this->db, PROFILE_LANG_TABLE);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			foreach ($installed_languages as $lang_id)

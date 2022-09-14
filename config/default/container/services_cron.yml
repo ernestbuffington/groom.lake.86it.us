@@ -1,6 +1,6 @@
 services:
     cron.manager:
-        class: phpbb\cron\manager
+        class: an602\cron\manager
         arguments:
             - '@service_container'
             - '@routing.helper'
@@ -9,17 +9,17 @@ services:
             - '@template'
 
     cron.lock_db:
-        class: phpbb\lock\db
+        class: an602\lock\db
         arguments:
             - cron_lock
             - '@config'
             - '@dbal.conn'
 
     cron.controller:
-        class: phpbb\cron\controller\cron
+        class: an602\cron\controller\cron
 
     cron.event_listener:
-        class: phpbb\cron\event\cron_runner_listener
+        class: an602\cron\event\cron_runner_listener
         arguments:
             - '@cron.lock_db'
             - '@cron.manager'
@@ -29,14 +29,14 @@ services:
 
 # ----- Cron tasks -----
     cron.task_collection:
-        class: phpbb\di\service_collection
+        class: an602\di\service_collection
         arguments:
             - '@service_container'
         tags:
             - { name: service_collection, tag: cron.task }
 
     cron.task.core.prune_all_forums:
-        class: phpbb\cron\task\core\prune_all_forums
+        class: an602\cron\task\core\prune_all_forums
         arguments:
             - '%core.root_path%'
             - '%core.php_ext%'
@@ -48,7 +48,7 @@ services:
             - { name: cron.task }
 
     cron.task.core.prune_forum:
-        class: phpbb\cron\task\core\prune_forum
+        class: an602\cron\task\core\prune_forum
         arguments:
             - '%core.root_path%'
             - '%core.php_ext%'
@@ -60,7 +60,7 @@ services:
             - { name: cron.task }
 
     cron.task.core.prune_shadow_topics:
-        class: phpbb\cron\task\core\prune_shadow_topics
+        class: an602\cron\task\core\prune_shadow_topics
         arguments:
             - '%core.root_path%'
             - '%core.php_ext%'
@@ -74,7 +74,7 @@ services:
             - { name: cron.task }
 
     cron.task.core.prune_notifications:
-        class: phpbb\cron\task\core\prune_notifications
+        class: an602\cron\task\core\prune_notifications
         arguments:
             - '@config'
             - '@notification_manager'
@@ -84,7 +84,7 @@ services:
             - { name: cron.task }
 
     cron.task.core.queue:
-        class: phpbb\cron\task\core\queue
+        class: an602\cron\task\core\queue
         arguments:
             - '%core.root_path%'
             - '%core.php_ext%'
@@ -96,7 +96,7 @@ services:
             - { name: cron.task }
 
     cron.task.core.tidy_cache:
-        class: phpbb\cron\task\core\tidy_cache
+        class: an602\cron\task\core\tidy_cache
         arguments:
             - '@config'
             - '@cache.driver'
@@ -106,7 +106,7 @@ services:
             - { name: cron.task }
 
     cron.task.core.tidy_database:
-        class: phpbb\cron\task\core\tidy_database
+        class: an602\cron\task\core\tidy_database
         arguments:
             - '%core.root_path%'
             - '%core.php_ext%'
@@ -117,7 +117,7 @@ services:
             - { name: cron.task }
 
     cron.task.core.tidy_plupload:
-        class: phpbb\cron\task\core\tidy_plupload
+        class: an602\cron\task\core\tidy_plupload
         arguments:
             - '%core.root_path%'
             - '@config'
@@ -129,7 +129,7 @@ services:
             - { name: cron.task }
 
     cron.task.core.tidy_search:
-        class: phpbb\cron\task\core\tidy_search
+        class: an602\cron\task\core\tidy_search
         arguments:
             - '%core.root_path%'
             - '%core.php_ext%'
@@ -144,7 +144,7 @@ services:
             - { name: cron.task }
 
     cron.task.core.tidy_sessions:
-        class: phpbb\cron\task\core\tidy_sessions
+        class: an602\cron\task\core\tidy_sessions
         arguments:
             - '@config'
             - '@user'
@@ -154,7 +154,7 @@ services:
             - { name: cron.task }
 
     cron.task.core.tidy_warnings:
-        class: phpbb\cron\task\core\tidy_warnings
+        class: an602\cron\task\core\tidy_warnings
         arguments:
             - '%core.root_path%'
             - '%core.php_ext%'
@@ -165,7 +165,7 @@ services:
             - { name: cron.task }
 
     cron.task.text_reparser.pm_text:
-        class: phpbb\cron\task\text_reparser\reparser
+        class: an602\cron\task\text_reparser\reparser
         arguments:
             - '@config'
             - '@config_text'
@@ -179,7 +179,7 @@ services:
             - { name: cron.task }
 
     cron.task.text_reparser.poll_option:
-        class: phpbb\cron\task\text_reparser\reparser
+        class: an602\cron\task\text_reparser\reparser
         arguments:
             - '@config'
             - '@config_text'
@@ -193,7 +193,7 @@ services:
             - { name: cron.task }
 
     cron.task.text_reparser.poll_title:
-        class: phpbb\cron\task\text_reparser\reparser
+        class: an602\cron\task\text_reparser\reparser
         arguments:
             - '@config'
             - '@config_text'
@@ -207,7 +207,7 @@ services:
             - { name: cron.task }
 
     cron.task.text_reparser.post_text:
-        class: phpbb\cron\task\text_reparser\reparser
+        class: an602\cron\task\text_reparser\reparser
         arguments:
             - '@config'
             - '@config_text'
@@ -221,7 +221,7 @@ services:
             - { name: cron.task }
 
     cron.task.text_reparser.user_signature:
-        class: phpbb\cron\task\text_reparser\reparser
+        class: an602\cron\task\text_reparser\reparser
         arguments:
             - '@config'
             - '@config_text'
@@ -235,7 +235,7 @@ services:
             - { name: cron.task }
 
     cron.task.core.update_hashes:
-        class: phpbb\cron\task\core\update_hashes
+        class: an602\cron\task\core\update_hashes
         arguments:
             - '@config'
             - '@dbal.conn'

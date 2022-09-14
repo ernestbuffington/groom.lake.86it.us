@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -35,7 +35,7 @@ class news extends topic_base
 		if (!isset($forum_ids) && ($forum_ids = $this->cache->get('_' . $cache_name)) === false)
 		{
 			$sql = 'SELECT forum_id
-				FROM ' . AN602_FORUMS_TABLE . '
+				FROM ' . FORUMS_TABLE . '
 				WHERE ' . $this->db->sql_bit_and('forum_options', FORUM_OPTION_FEED_NEWS, '<> 0');
 			$result = $this->db->sql_query($sql);
 
@@ -72,7 +72,7 @@ class news extends topic_base
 
 		// We really have to get the post ids first!
 		$sql = 'SELECT topic_first_post_id, topic_time
-			FROM ' . AN602_TOPICS_TABLE . '
+			FROM ' . TOPICS_TABLE . '
 			WHERE topic_moved_id = 0
 				AND ' . $this->content_visibility->get_forums_visibility_sql('topic', $in_fid_ary) . '
 			ORDER BY topic_time DESC';
@@ -97,12 +97,12 @@ class news extends topic_base
 							t.topic_id, t.topic_title, t.topic_poster, t.topic_first_poster_name, t.topic_posts_approved, t.topic_posts_unapproved, t.topic_posts_softdeleted, t.topic_views, t.topic_time, t.topic_last_post_time,
 							p.post_id, p.post_time, p.post_edit_time, p.post_text, p.bbcode_bitfield, p.bbcode_uid, p.enable_bbcode, p.enable_smilies, p.enable_magic_url, p.post_attachment, t.topic_visibility',
 			'FROM'		=> array(
-				AN602_TOPICS_TABLE	=> 't',
-				AN602_POSTS_TABLE		=> 'p',
+				TOPICS_TABLE	=> 't',
+				POSTS_TABLE		=> 'p',
 			),
 			'LEFT_JOIN'	=> array(
 				array(
-					'FROM'	=> array(AN602_FORUMS_TABLE => 'f'),
+					'FROM'	=> array(FORUMS_TABLE => 'f'),
 					'ON'	=> 'p.forum_id = f.forum_id',
 				),
 			),

@@ -3,15 +3,15 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
 * the docs/CREDITS.txt file.
 *
 * Idea and original RSS Feed 2.0 MOD (Version 1.0.8/9) by leviatan21
-* Original MOD: http://groom.lake.86it.us/community/viewtopic.php?f=69&t=1214645
-* MOD Author Profile: http://groom.lake.86it.us/community/memberlist.php?mode=viewprofile&u=345763
+* Original MOD: http://www.groom.lake.86it.us/community/viewtopic.php?f=69&t=1214645
+* MOD Author Profile: http://www.groom.lake.86it.us/community/memberlist.php?mode=viewprofile&u=345763
 * MOD Author Homepage: http://www.mssti.com/an6023/
 *
 **/
@@ -22,8 +22,8 @@ use Symfony\Component\Routing\Exception\InvalidParameterException;
 /**
 * @ignore
 **/
-define('IN_AN602', true);
-$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
+define('IN_PHPBB', true);
+$an602_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($an602_root_path . 'common.' . $phpEx);
 

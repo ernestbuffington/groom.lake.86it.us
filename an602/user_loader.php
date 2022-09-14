@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -46,7 +46,7 @@ class user_loader
 	* User loader constructor
 	*
 	* @param \an602\db\driver\driver_interface $db A database connection
-	* @param string $an602_root_path Path to the an602 includes directory.
+	* @param string $an602_root_path Path to the phpbb includes directory.
 	* @param string $php_ext php file extension
 	* @param string $users_table The name of the database table (an602_users)
 	*/
@@ -219,7 +219,7 @@ class user_loader
 
 		if (!function_exists('an602_get_user_rank'))
 		{
-			include($this->an602_root_path . 'includes/an602_functions_display.' . $this->php_ext);
+			include($this->an602_root_path . 'includes/functions_display.' . $this->php_ext);
 		}
 
 		$rank = array(

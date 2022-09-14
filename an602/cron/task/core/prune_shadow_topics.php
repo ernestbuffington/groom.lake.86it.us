@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -145,7 +145,7 @@ class prune_shadow_topics extends \an602\cron\task\base implements \an602\cron\t
 			$forum_id = $request->variable('f', 0);
 
 			$sql = 'SELECT forum_id, prune_shadow_next, enable_shadow_prune, prune_shadow_days, forum_flags, prune_shadow_freq
-				FROM ' . AN602_FORUMS_TABLE . "
+				FROM ' . FORUMS_TABLE . "
 				WHERE forum_id = $forum_id";
 			$result = $this->db->sql_query($sql);
 			$row = $this->db->sql_fetchrow($result);
@@ -171,7 +171,7 @@ class prune_shadow_topics extends \an602\cron\task\base implements \an602\cron\t
 	protected function auto_prune_shadow_topics($forum_id, $prune_mode, $prune_flags, $prune_days, $prune_freq)
 	{
 		$sql = 'SELECT forum_name
-			FROM ' . AN602_FORUMS_TABLE . "
+			FROM ' . FORUMS_TABLE . "
 			WHERE forum_id = $forum_id";
 		$result = $this->db->sql_query($sql, 3600);
 		$row = $this->db->sql_fetchrow($result);
@@ -184,7 +184,7 @@ class prune_shadow_topics extends \an602\cron\task\base implements \an602\cron\t
 
 			prune($forum_id, $prune_mode, $prune_date, $prune_flags, true);
 
-			$sql = 'UPDATE ' . AN602_FORUMS_TABLE . "
+			$sql = 'UPDATE ' . FORUMS_TABLE . "
 				SET prune_shadow_next = $next_prune
 				WHERE forum_id = $forum_id";
 			$this->db->sql_query($sql);

@@ -3,7 +3,7 @@
  *
  * VigLink extension for the AN602 CMS Software package.
  *
- * @copyright (c) 2014 PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) 2014 AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
@@ -81,7 +81,7 @@ class viglink_helper
 		{
 			try
 			{
-				$info = $this->file_downloader->get('groom.lake.86it.us', '/viglink', 'enabled', 443);
+				$info = $this->file_downloader->get('www.groom.lake.86it.us', '/viglink', 'enabled', 443);
 			}
 			catch (\an602\exception\runtime_exception $exception)
 			{
@@ -92,14 +92,14 @@ class viglink_helper
 			if ($info === '0')
 			{
 				$this->set_viglink_configs(array(
-					'allow_viglink_an602'	=> false,
+					'allow_viglink_phpbb'	=> false,
 				));
 			}
 			else
 			{
 				$info = '1';
 				$this->set_viglink_configs(array(
-					'allow_viglink_an602'	=> true,
+					'allow_viglink_phpbb'	=> true,
 				));
 			}
 
@@ -117,7 +117,7 @@ class viglink_helper
 	protected function set_viglink_configs($data)
 	{
 		$viglink_configs = array(
-			'allow_viglink_an602',
+			'allow_viglink_phpbb',
 			'an602_viglink_api_key',
 		);
 

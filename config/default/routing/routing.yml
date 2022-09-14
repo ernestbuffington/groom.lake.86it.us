@@ -8,25 +8,25 @@
 # instantiate the 'foo_service' service and call the 'method' method.
 #
 
-phpbb_cron_routing:
+an602_cron_routing:
     resource: cron.yml
     prefix: /cron
 
-phpbb_feed_routing:
+an602_feed_routing:
     resource: feed.yml
     prefix: /feed
 
-phpbb_feed_index:
+an602_feed_index:
     path: /feed
     defaults: { _controller: phpbb.feed.controller:overall }
 
-phpbb_help_routing:
+an602_help_routing:
     resource: help.yml
     prefix: /help
 
-phpbb_report_routing:
+an602_report_routing:
     resource: report.yml
 
-phpbb_ucp_routing:
+an602_ucp_routing:
     resource: ucp.yml
     prefix: /user

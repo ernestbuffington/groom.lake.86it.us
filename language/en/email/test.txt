@@ -8,6 +8,6 @@ Congratulations. If you received this email, AN602 is correctly configured to se
 {MESSAGE}
 
 <!-- ENDIF -->
-In case you require assistance, please visit the AN602 support forums - https://groom.lake.86it.us/community/
+In case you require assistance, please visit the AN602 support forums - https://www.groom.lake.86it.us/community/
 
 {EMAIL_SIG}

@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -41,7 +41,7 @@ class migrator
 	protected $helper;
 
 	/** @var string */
-	protected $an602_table_prefix;
+	protected $table_prefix;
 
 	/** @var string */
 	protected $an602_root_path;
@@ -94,7 +94,7 @@ class migrator
 	/**
 	* Constructor of the database migrator
 	*/
-	public function __construct(ContainerInterface $container, \an602\config\config $config, \an602\db\driver\driver_interface $db, \an602\db\tools\tools_interface $db_tools, $migrations_table, $an602_root_path, $php_ext, $an602_table_prefix, $tools, \an602\db\migration\helper $helper)
+	public function __construct(ContainerInterface $container, \an602\config\config $config, \an602\db\driver\driver_interface $db, \an602\db\tools\tools_interface $db_tools, $migrations_table, $an602_root_path, $php_ext, $table_prefix, $tools, \an602\db\migration\helper $helper)
 	{
 		$this->container = $container;
 		$this->config = $config;
@@ -107,7 +107,7 @@ class migrator
 		$this->an602_root_path = $an602_root_path;
 		$this->php_ext = $php_ext;
 
-		$this->table_prefix = $an602_table_prefix;
+		$this->table_prefix = $table_prefix;
 
 		$this->output_handler = new null_migrator_output_handler();
 
@@ -964,7 +964,7 @@ class migrator
 	/**
 	* This function adds all migrations sent to it to the migrations table
 	*
-	* THIS SHOULD NOT GENERALLY BE USED! THIS IS FOR THE AN602 INSTALLER.
+	* THIS SHOULD NOT GENERALLY BE USED! THIS IS FOR THE PHPBB INSTALLER.
 	* THIS WILL THROW ERRORS IF MIGRATIONS ALREADY EXIST IN THE TABLE, DO NOT CALL MORE THAN ONCE!
 	*
 	* @param array $migrations Array of migrations (names) to add to the migrations table

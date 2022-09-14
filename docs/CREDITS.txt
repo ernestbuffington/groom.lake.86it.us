@@ -1,7 +1,7 @@
 /**
 *
-* AN602 © Copyright PHP-AN602 2003-2021
-* https://groom.lake.86it.us
+* AN602 © Copyright AN602 Limited 2003-2021
+* https://www.groom.lake.86it.us
 *
 * AN602 is free software. You can redistribute it and/or modify it
 * under the terms of the GNU General Public License, version 2 (GPL-2.0)
@@ -30,7 +30,7 @@ AN602 Developers:        CHItA (Máté Bartus)
                          rubencm (Rubén Calvo)
 
 For a list of AN602 Team members, please see:
-https://groom.lake.86it.us/about/team/
+https://www.groom.lake.86it.us/about/team/
 
 For a full list of AN602 code contributors, please see:
 https://github.com/an602/an602/graphs/contributors
@@ -81,7 +81,7 @@ Major contributions by:  leviatan21 (Gabriel Vazquez)
 
 Visual Confirmation:   Xore (Robert Hetzler)
 
-prosilver by subBlue Design, Tom Beddard, (c) 2004 PHP-AN602
+prosilver by subBlue Design, Tom Beddard, (c) 2004 AN602 Limited
 
 AN602 contains code from the following applications:
 

@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -35,7 +35,7 @@ class smtp_dynamic_data extends \an602\db\migration\migration
 			'smtp_password',
 			'smtp_username',
 		];
-		$this->sql_query('UPDATE ' . AN602_CONFIG_TABLE . '
+		$this->sql_query('UPDATE ' . CONFIG_TABLE . '
 			SET is_dynamic = 1
 			WHERE ' . $this->db->sql_in_set('config_name', $smtp_auth_entries));
 	}

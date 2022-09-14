@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -13,9 +13,9 @@
 
 namespace an602\passwords\driver;
 
-class md5_an6022 extends base
+class md5_phpbb2 extends base
 {
-	const PREFIX = '$md5_an6022$';
+	const PREFIX = '$md5_phpbb2$';
 
 	/** @var \an602\request\request AN602 request object */
 	protected $request;
@@ -107,7 +107,7 @@ class md5_an6022 extends base
 		{
 			if (!function_exists('utf8_to_cp1252'))
 			{
-				include($this->an602_root_path . 'includes/an602_utf/data/recode_basic.' . $this->php_ext);
+				include($this->an602_root_path . 'includes/utf/data/recode_basic.' . $this->php_ext);
 			}
 
 			if ($this->helper->string_compare(md5($password_old_format), $hash) || $this->helper->string_compare(md5(\utf8_to_cp1252($password_old_format)), $hash)

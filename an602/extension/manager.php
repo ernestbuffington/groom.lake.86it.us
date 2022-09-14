@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -42,7 +42,7 @@ class manager
 	* @param \an602\config\config $config Config object
 	* @param \an602\filesystem\filesystem_interface $filesystem
 	* @param string $extension_table The name of the table holding extensions
-	* @param string $an602_root_path Path to the an602 includes directory.
+	* @param string $an602_root_path Path to the phpbb includes directory.
 	* @param string $php_ext php file extension, defaults to php
 	* @param \an602\cache\service $cache A cache instance or null
 	* @param string $cache_name The name of the cache variable, defaults to _ext
@@ -111,7 +111,7 @@ class manager
 	* Generates the path to an extension
 	*
 	* @param string $name The name of the extension
-	* @param bool $an602_relative Whether the path should be relative to an602 root
+	* @param bool $an602_relative Whether the path should be relative to phpbb root
 	* @return string Path to an extension
 	*/
 	public function get_extension_path($name, $an602_relative = false)
@@ -411,7 +411,7 @@ class manager
 	* All enabled and disabled extensions are considered configured. A purged
 	* extension that is no longer in the database is not configured.
 	*
-	* @param bool $an602_relative Whether the path should be relative to an602 root
+	* @param bool $an602_relative Whether the path should be relative to phpbb root
 	*
 	* @return array An array with extension names as keys and and the
 	*               database stored extension information as values
@@ -433,7 +433,7 @@ class manager
 
 	/**
 	* Retrieves all enabled extensions.
-	* @param bool $an602_relative Whether the path should be relative to an602 root
+	* @param bool $an602_relative Whether the path should be relative to phpbb root
 	*
 	* @return array An array with extension names as keys and and the
 	*               database stored extension information as values
@@ -454,7 +454,7 @@ class manager
 	/**
 	* Retrieves all disabled extensions.
 	*
-	* @param bool $an602_relative Whether the path should be relative to an602 root
+	* @param bool $an602_relative Whether the path should be relative to phpbb root
 	*
 	* @return array An array with extension names as keys and and the
 	*               database stored extension information as values

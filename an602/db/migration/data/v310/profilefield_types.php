@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -56,7 +56,7 @@ class profilefield_types extends \an602\db\migration\migration
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$sql = 'UPDATE ' . $this->table_prefix . "profile_fields
-				SET field_type = '" . $this->db->sql_escape($this->convert_an60230_field_type($row['field_type'])) . "'
+				SET field_type = '" . $this->db->sql_escape($this->convert_phpbb30_field_type($row['field_type'])) . "'
 				WHERE field_type = '" . $this->db->sql_escape($row['field_type']) . "'";
 			$this->sql_query($sql);
 		}
@@ -74,7 +74,7 @@ class profilefield_types extends \an602\db\migration\migration
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$sql = 'UPDATE ' . $this->table_prefix . "profile_fields_lang
-				SET field_type = '" . $this->db->sql_escape($this->convert_an60230_field_type($row['field_type'])) . "'
+				SET field_type = '" . $this->db->sql_escape($this->convert_phpbb30_field_type($row['field_type'])) . "'
 				WHERE field_type = '" . $this->db->sql_escape($row['field_type']) . "'";
 			$this->sql_query($sql);
 		}
@@ -87,7 +87,7 @@ class profilefield_types extends \an602\db\migration\migration
 	*	@param	$field_type	string		Field type in 3.0
 	*	@return		string		Field new type which is used since 3.1
 	*/
-	public function convert_an60230_field_type($field_type)
+	public function convert_phpbb30_field_type($field_type)
 	{
 		switch ($field_type)
 		{

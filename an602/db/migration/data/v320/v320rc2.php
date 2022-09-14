@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -27,7 +27,7 @@ class v320rc2 extends migration
 		return array(
 			'\an602\db\migration\data\v31x\remove_duplicate_migrations',
 			'\an602\db\migration\data\v31x\add_log_time_index',
-			'\an602\db\migration\data\v320\add_help_an602',
+			'\an602\db\migration\data\v320\add_help_phpbb',
 		);
 	}
 

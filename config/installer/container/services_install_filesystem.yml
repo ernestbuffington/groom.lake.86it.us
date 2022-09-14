@@ -1,6 +1,6 @@
 services:
     installer.install_filesystem.create_config_file:
-        class: phpbb\install\module\install_filesystem\task\create_config_file
+        class: an602\install\module\install_filesystem\task\create_config_file
         arguments:
             - '@filesystem'
             - '@installer.helper.config'
@@ -13,14 +13,14 @@ services:
             - { name: install_filesystem_install, order: 10 }
 
     installer.module.install_filesystem_collection:
-        class: phpbb\di\ordered_service_collection
+        class: an602\di\ordered_service_collection
         arguments:
             - '@service_container'
         tags:
             - { name: service_collection, tag: install_filesystem_install, class_name_aware: true }
 
     installer.module.filesystem_install:
-        class: phpbb\install\module\install_filesystem\module
+        class: an602\install\module\install_filesystem\module
         parent: installer.module_base
         arguments:
             - '@installer.module.install_filesystem_collection'

@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -1087,7 +1087,7 @@ abstract class driver implements driver_interface
 							</div>
 						</div>
 						<div id="page-footer">
-							Powered by <a href="https://groom.lake.86it.us/">AN602</a>&reg; Forum Software &copy; PHP-AN602
+							Powered by <a href="https://www.groom.lake.86it.us/">AN602</a>&reg; Forum Software &copy; AN602 Limited
 						</div>
 					</div>
 					</body>

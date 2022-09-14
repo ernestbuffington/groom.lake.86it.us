@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -54,7 +54,7 @@ class release_3_0_8_rc1 extends \an602\db\migration\migration
 	{
 		// Update file extension group names to use language strings.
 		$sql = 'SELECT lang_dir
-			FROM ' . AN602_LANG_TABLE;
+			FROM ' . LANG_TABLE;
 		$result = $this->db->sql_query($sql);
 
 		$extension_groups_updated = array();
@@ -67,15 +67,15 @@ class release_3_0_8_rc1 extends \an602\db\migration\migration
 
 			$lang_dir = basename($row['lang_dir']);
 
-			// The language strings we need are either in language/.../an602_acp/attachments.php
+			// The language strings we need are either in language/.../acp/attachments.php
 			// in the update package if we're updating to 3.0.8-RC1 or later,
 			// or they are in language/.../install.php when we're updating from 3.0.7-PL1 or earlier.
-			// On an already updated board, they can also already be in language/.../an602_acp/attachments.php
+			// On an already updated board, they can also already be in language/.../acp/attachments.php
 			// in the board root.
 			$lang_files = array(
-				"{$this->an602_root_path}install/update/new/language/$lang_dir/an602_acp/attachments.{$this->php_ext}",
+				"{$this->an602_root_path}install/update/new/language/$lang_dir/acp/attachments.{$this->php_ext}",
 				"{$this->an602_root_path}language/$lang_dir/install.{$this->php_ext}",
-				"{$this->an602_root_path}language/$lang_dir/an602_acp/attachments.{$this->php_ext}",
+				"{$this->an602_root_path}language/$lang_dir/acp/attachments.{$this->php_ext}",
 			);
 
 			foreach ($lang_files as $lang_file)
@@ -99,7 +99,7 @@ class release_3_0_8_rc1 extends \an602\db\migration\migration
 						'group_name'	=> substr($lang_key, 10), // Strip off 'EXT_GROUP_'
 					);
 
-					$sql = 'UPDATE ' . AN602_EXTENSION_AN602_GROUPS_TABLE . '
+					$sql = 'UPDATE ' . EXTENSION_GROUPS_TABLE . '
 						SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . "
 						WHERE group_name = '" . $this->db->sql_escape($lang_val) . "'";
 					$this->sql_query($sql);
@@ -113,7 +113,7 @@ class release_3_0_8_rc1 extends \an602\db\migration\migration
 
 	public function update_module_auth()
 	{
-		$sql = 'UPDATE ' . AN602_MODULES_TABLE . '
+		$sql = 'UPDATE ' . MODULES_TABLE . '
 			SET module_auth = \'cfg_allow_avatar && (cfg_allow_avatar_local || cfg_allow_avatar_remote || cfg_allow_avatar_upload || cfg_allow_avatar_remote_upload)\'
 			WHERE module_class = \'ucp\'
 				AND module_basename = \'profile\'
@@ -132,11 +132,11 @@ class release_3_0_8_rc1 extends \an602\db\migration\migration
 		$sql_array = array(
 			'SELECT'	=> 't1.topic_id, t1.forum_id',
 			'FROM'		=> array(
-				AN602_TOPICS_TABLE	=> 't1',
+				TOPICS_TABLE	=> 't1',
 			),
 			'LEFT_JOIN'	=> array(
 				array(
-					'FROM'	=> array(AN602_TOPICS_TABLE	=> 't2'),
+					'FROM'	=> array(TOPICS_TABLE	=> 't2'),
 					'ON'	=> 't1.topic_moved_id = t2.topic_id',
 				),
 			),
@@ -157,7 +157,7 @@ class release_3_0_8_rc1 extends \an602\db\migration\migration
 
 		if (!empty($topic_ids))
 		{
-			$sql = 'DELETE FROM ' . AN602_TOPICS_TABLE . '
+			$sql = 'DELETE FROM ' . TOPICS_TABLE . '
 				WHERE ' . $this->db->sql_in_set('topic_id', $topic_ids);
 			$this->db->sql_query($sql);
 

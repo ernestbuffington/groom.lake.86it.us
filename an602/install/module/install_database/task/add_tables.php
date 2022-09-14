@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -88,15 +88,15 @@ class add_tables extends \an602\install\task_base
 	{
 		$this->db->sql_return_on_error(true);
 
-		$an602_table_prefix = $this->config->get('table_prefix');
+		$table_prefix = $this->config->get('table_prefix');
 		$change_prefix = $this->config->get('change_table_prefix', true);
 
-		if (!defined('AN602_CONFIG_TABLE'))
+		if (!defined('CONFIG_TABLE'))
 		{
-			// AN602_CONFIG_TABLE is required by sql_create_index() to check the
+			// CONFIG_TABLE is required by sql_create_index() to check the
 			// length of index names. However table_prefix is not defined
 			// here yet, so we need to create the constant ourselves.
-			define('AN602_CONFIG_TABLE', $an602_table_prefix . 'config');
+			define('CONFIG_TABLE', $table_prefix . 'config');
 		}
 
 		$db_table_schema = @file_get_contents($this->schema_file_path);
@@ -110,7 +110,7 @@ class add_tables extends \an602\install\task_base
 			$i++;
 
 			$this->db_tools->sql_create_table(
-				( ($change_prefix) ? ($an602_table_prefix . substr($table_name, 6)) : $table_name ),
+				( ($change_prefix) ? ($table_prefix . substr($table_name, 6)) : $table_name ),
 				$table_data
 			);
 

@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -75,7 +75,7 @@ class release_3_0_7_rc1 extends \an602\db\migration\migration
 	public function delete_text_templates()
 	{
 		// Delete all text-templates from the template_data
-		$sql = 'DELETE FROM ' . AN602_STYLES_TEMPLATE_DATA_TABLE . '
+		$sql = 'DELETE FROM ' . STYLES_TEMPLATE_DATA_TABLE . '
 			WHERE template_filename ' . $this->db->sql_like_expression($this->db->get_any_char() . '.txt');
 		$this->sql_query($sql);
 	}

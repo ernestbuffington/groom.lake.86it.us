@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -72,7 +72,7 @@ class timezone extends \an602\db\migration\migration
 		foreach ($update_blocks as $timezone => $user_ids)
 		{
 			$timezone = explode(':', $timezone);
-			$converted_timezone = $this->convert_an60230_timezone($timezone[0], $timezone[1]);
+			$converted_timezone = $this->convert_phpbb30_timezone($timezone[0], $timezone[1]);
 
 			$sql = 'UPDATE ' . $this->table_prefix . "users
 				SET user_timezone = '" . $this->db->sql_escape($converted_timezone) . "'
@@ -88,7 +88,7 @@ class timezone extends \an602\db\migration\migration
 
 		// Update board default timezone
 		$sql = 'UPDATE ' . $this->table_prefix . "config
-			SET config_value = '" . $this->convert_an60230_timezone($this->config['board_timezone'], $this->config['board_dst']) . "'
+			SET config_value = '" . $this->convert_phpbb30_timezone($this->config['board_timezone'], $this->config['board_dst']) . "'
 			WHERE config_name = 'board_timezone'";
 		$this->sql_query($sql);
 	}
@@ -101,7 +101,7 @@ class timezone extends \an602\db\migration\migration
 	*	@param	$dst		int		Users daylight saving time
 	*	@return		string		Users new php Timezone which is used since 3.1
 	*/
-	public function convert_an60230_timezone($timezone, $dst)
+	public function convert_phpbb30_timezone($timezone, $dst)
 	{
 		$offset = (float) $timezone + (int) $dst;
 

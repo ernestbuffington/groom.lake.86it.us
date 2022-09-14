@@ -3,7 +3,7 @@
  *
  * VigLink extension for the AN602 CMS Software package.
  *
- * @copyright (c) 2014 PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) 2014 AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
@@ -99,9 +99,9 @@ class viglink_module
 		}
 
 		// Set a general error message if VigLink has been disabled by AN602
-		if (!$config['allow_viglink_an602'])
+		if (!$config['allow_viglink_phpbb'])
 		{
-			$error[] = $language->lang('ACP_VIGLINK_DISABLED_AN602');
+			$error[] = $language->lang('ACP_VIGLINK_DISABLED_PHPBB');
 		}
 
 		// Try to get convert account key from .com
@@ -110,7 +110,7 @@ class viglink_module
 
 		if (empty($convert_account_link) || strpos($config['viglink_convert_account_url'], 'subId=' . $sub_id) === false)
 		{
-			$convert_account_link = @file_get_contents('https://groom.lake.86it.us/viglink/convert?domain=' . urlencode($config['server_name']) . '&siteid=' . $config['viglink_api_siteid'] . '&uuid=' . $config['questionnaire_unique_id'] . '&key=' . $config['an602_viglink_api_key']);
+			$convert_account_link = @file_get_contents('https://www.groom.lake.86it.us/viglink/convert?domain=' . urlencode($config['server_name']) . '&siteid=' . $config['viglink_api_siteid'] . '&uuid=' . $config['questionnaire_unique_id'] . '&key=' . $config['an602_viglink_api_key']);
 			if (!empty($convert_account_link) && strpos($convert_account_link, 'https://www.viglink.com/users/convertAccount') === 0)
 			{
 				$type_caster = new type_cast_helper();

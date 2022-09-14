@@ -3,7 +3,7 @@
 *
 * VigLink extension for the AN602 CMS Software package.
 *
-* @copyright (c) 2014 PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) 2014 AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 */
@@ -33,7 +33,7 @@ class viglink_data extends \an602\db\migration\migration
 			array('config.add', array('viglink_api_key', '')),
 
 			// Special config options for AN602 use
-			array('config.add', array('allow_viglink_an602', 1)),
+			array('config.add', array('allow_viglink_phpbb', 1)),
 			array('config.add', array('allow_viglink_global', 1)),
 			array('config.add', array('an602_viglink_api_key', 'e4fd14f5d7f2bb6d80b8f8da1354718c')),
 			array('config.add', array('viglink_convert_account_url', '')),

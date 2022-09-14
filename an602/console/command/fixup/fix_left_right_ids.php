@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -71,18 +71,18 @@ class fix_left_right_ids extends \an602\console\command\command
 		$io = new SymfonyStyle($input, $output);
 
 		// Fix Left/Right IDs for the modules table
-		$result = $this->db->sql_query('SELECT DISTINCT(module_class) FROM ' . AN602_MODULES_TABLE);
+		$result = $this->db->sql_query('SELECT DISTINCT(module_class) FROM ' . MODULES_TABLE);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$i = 1;
 			$where = array("module_class = '" . $this->db->sql_escape($row['module_class']) . "'");
-			$this->fix_ids_tree($i, 'module_id', AN602_MODULES_TABLE, 0, $where);
+			$this->fix_ids_tree($i, 'module_id', MODULES_TABLE, 0, $where);
 		}
 		$this->db->sql_freeresult($result);
 
 		// Fix the Left/Right IDs for the forums table
 		$i = 1;
-		$this->fix_ids_tree($i, 'forum_id', AN602_FORUMS_TABLE);
+		$this->fix_ids_tree($i, 'forum_id', FORUMS_TABLE);
 
 		$this->cache->purge();
 
@@ -95,7 +95,7 @@ class fix_left_right_ids extends \an602\console\command\command
 	 *
 	 * @param int		$i			Item id offset index
 	 * @param string	$field		The key field to fix, forum_id|module_id
-	 * @param string	$table		The table name to perform, AN602_FORUMS_TABLE|AN602_MODULES_TABLE
+	 * @param string	$table		The table name to perform, FORUMS_TABLE|MODULES_TABLE
 	 * @param int		$parent_id	Parent item id
 	 * @param array		$where		Additional WHERE clause condition
 	 *

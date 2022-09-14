@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -134,7 +134,7 @@ class metadata_manager
 		// Basic fields
 		$fields = array(
 			'name'		=> '#^[a-zA-Z0-9_\x7f-\xff]{2,}/[a-zA-Z0-9_\x7f-\xff]{2,}$#',
-			'type'		=> '#^an602-extension$#',
+			'type'		=> '#^phpbb-extension$#',
 			'license'	=> '#.+#',
 			'version'	=> '#.+#',
 		);
@@ -206,7 +206,7 @@ class metadata_manager
 	public function validate_enable()
 	{
 		// Check for valid directory & AN602, PHP versions
-		return $this->validate_dir() && $this->validate_require_an602() && $this->validate_require_php();
+		return $this->validate_dir() && $this->validate_require_phpbb() && $this->validate_require_php();
 	}
 
 	/**
@@ -227,12 +227,12 @@ class metadata_manager
 
 
 	/**
-	* Validates the contents of the an602 requirement field
+	* Validates the contents of the phpbb requirement field
 	*
 	* @return boolean True when passes validation, throws an exception if invalid
 	* @throws \an602\extension\exception
 	*/
-	public function validate_require_an602()
+	public function validate_require_phpbb()
 	{
 		if (!isset($this->metadata['extra']['soft-require']['an602/an602']))
 		{

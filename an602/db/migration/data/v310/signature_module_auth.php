@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -18,7 +18,7 @@ class signature_module_auth extends \an602\db\migration\migration
 	public function effectively_installed()
 	{
 		$sql = 'SELECT module_auth
-			FROM ' . AN602_MODULES_TABLE . "
+			FROM ' . MODULES_TABLE . "
 			WHERE module_class = 'ucp'
 				AND module_basename = 'ucp_profile'
 				AND module_mode = 'signature'";
@@ -46,7 +46,7 @@ class signature_module_auth extends \an602\db\migration\migration
 
 	public function update_signature_module_auth()
 	{
-		$sql = 'UPDATE ' . AN602_MODULES_TABLE . "
+		$sql = 'UPDATE ' . MODULES_TABLE . "
 			SET module_auth = 'acl_u_sig'
 			WHERE module_class = 'ucp'
 				AND module_basename = 'ucp_profile'

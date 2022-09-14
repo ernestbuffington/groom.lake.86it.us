@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -372,7 +372,7 @@ class add_modules extends \an602\install\task_base
 		{
 			// Move main module 4 up...
 			$sql = 'SELECT *
-				FROM ' . AN602_MODULES_TABLE . "
+				FROM ' . MODULES_TABLE . "
 				WHERE module_basename = 'acp_main'
 					AND module_class = 'acp'
 					AND module_mode = 'main'";
@@ -384,7 +384,7 @@ class add_modules extends \an602\install\task_base
 
 			// Move permissions intro screen module 4 up...
 			$sql = 'SELECT *
-				FROM ' . AN602_MODULES_TABLE . "
+				FROM ' . MODULES_TABLE . "
 				WHERE module_basename = 'acp_permissions'
 					AND module_class = 'acp'
 					AND module_mode = 'intro'";
@@ -396,7 +396,7 @@ class add_modules extends \an602\install\task_base
 
 			// Move manage users screen module 5 up...
 			$sql = 'SELECT *
-				FROM ' . AN602_MODULES_TABLE . "
+				FROM ' . MODULES_TABLE . "
 				WHERE module_basename = 'acp_users'
 					AND module_class = 'acp'
 					AND module_mode = 'overview'";
@@ -408,7 +408,7 @@ class add_modules extends \an602\install\task_base
 
 			// Move extension management module 1 up...
 			$sql = 'SELECT *
-				FROM ' . AN602_MODULES_TABLE . "
+				FROM ' . MODULES_TABLE . "
 				WHERE module_langname = 'ACP_EXTENSION_MANAGEMENT'
 					AND module_class = 'acp'
 					AND module_mode = ''
@@ -424,7 +424,7 @@ class add_modules extends \an602\install\task_base
 		{
 			// Move pm report details module 3 down...
 			$sql = 'SELECT *
-				FROM ' . AN602_MODULES_TABLE . "
+				FROM ' . MODULES_TABLE . "
 				WHERE module_basename = 'mcp_pm_reports'
 					AND module_class = 'mcp'
 					AND module_mode = 'pm_report_details'";
@@ -436,7 +436,7 @@ class add_modules extends \an602\install\task_base
 
 			// Move closed pm reports module 3 down...
 			$sql = 'SELECT *
-				FROM ' . AN602_MODULES_TABLE . "
+				FROM ' . MODULES_TABLE . "
 				WHERE module_basename = 'mcp_pm_reports'
 					AND module_class = 'mcp'
 					AND module_mode = 'pm_reports_closed'";
@@ -448,7 +448,7 @@ class add_modules extends \an602\install\task_base
 
 			// Move open pm reports module 3 down...
 			$sql = 'SELECT *
-				FROM ' . AN602_MODULES_TABLE . "
+				FROM ' . MODULES_TABLE . "
 				WHERE module_basename = 'mcp_pm_reports'
 					AND module_class = 'mcp'
 					AND module_mode = 'pm_reports'";
@@ -463,7 +463,7 @@ class add_modules extends \an602\install\task_base
 		{
 			// Move attachment module 4 down...
 			$sql = 'SELECT *
-				FROM ' . AN602_MODULES_TABLE . "
+				FROM ' . MODULES_TABLE . "
 				WHERE module_basename = 'ucp_attachments'
 					AND module_class = 'ucp'
 					AND module_mode = 'attachments'";
@@ -475,7 +475,7 @@ class add_modules extends \an602\install\task_base
 
 			// Move notification options module 4 down...
 			$sql = 'SELECT *
-				FROM ' . AN602_MODULES_TABLE . "
+				FROM ' . MODULES_TABLE . "
 				WHERE module_basename = 'ucp_notifications'
 					AND module_class = 'ucp'
 					AND module_mode = 'notification_options'";
@@ -487,7 +487,7 @@ class add_modules extends \an602\install\task_base
 
 			// Move OAuth module 5 down...
 			$sql = 'SELECT *
-				FROM ' . AN602_MODULES_TABLE . "
+				FROM ' . MODULES_TABLE . "
 				WHERE module_basename = 'ucp_auth_link'
 					AND module_class = 'ucp'
 					AND module_mode = 'auth_link'";
@@ -509,7 +509,7 @@ class add_modules extends \an602\install\task_base
 		foreach ($this->module_extras[$module_class] as $cat_name => $mods)
 		{
 			$sql = 'SELECT module_id, left_id, right_id
-				FROM ' . AN602_MODULES_TABLE . "
+				FROM ' . MODULES_TABLE . "
 				WHERE module_langname = '" . $this->db->sql_escape($cat_name) . "'
 					AND module_class = '" . $this->db->sql_escape($module_class) . "'";
 			$result = $this->db->sql_query_limit($sql, 1);
@@ -519,7 +519,7 @@ class add_modules extends \an602\install\task_base
 			foreach ($mods as $mod_name)
 			{
 				$sql = 'SELECT *
-					FROM ' . AN602_MODULES_TABLE . "
+					FROM ' . MODULES_TABLE . "
 					WHERE module_langname = '" . $this->db->sql_escape($mod_name) . "'
 						AND module_class = '" . $this->db->sql_escape($module_class) . "'
 						AND module_basename <> ''";

@@ -319,11 +319,11 @@ class BBCodeMonkey
 	* Attributes come in two forms. Most commonly, in the form of a single token, e.g.
 	*   [a href={URL} title={TEXT}]
 	*
-	* Sometimes, however, we need to parse more than one single token. For instance, the AN602
+	* Sometimes, however, we need to parse more than one single token. For instance, the phpBB
 	* [FLASH] BBCode uses two tokens separated by a comma:
 	*   [flash={NUMBER},{NUMBER}]{URL}[/flash]
 	*
-	* In addition, some custom BBCodes circulating for AN602 use a combination of token and static
+	* In addition, some custom BBCodes circulating for phpBB use a combination of token and static
 	* text such as:
 	*   [youtube]http://www.youtube.com/watch?v={SIMPLETEXT}[/youtube]
 	*
@@ -333,8 +333,8 @@ class BBCodeMonkey
 	* number of created attributes. In the [FLASH] example above, an attribute preprocessor named
 	* "flash" would be created as well as two attributes named "flash0" and "flash1" respectively.
 	*
-	* @link https://groom.lake.86it.us/community/viewtopic.php?f=46&t=2127991
-	* @link https://groom.lake.86it.us/community/viewtopic.php?f=46&t=579376
+	* @link https://www.phpbb.com/community/viewtopic.php?f=46&t=2127991
+	* @link https://www.phpbb.com/community/viewtopic.php?f=46&t=579376
 	*
 	* @param  array  $definitions List of attributes definitions as [[name, definition]*]
 	* @param  BBCode $bbcode      Owner BBCode

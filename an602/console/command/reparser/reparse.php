@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -67,7 +67,7 @@ class reparse extends \an602\console\command\command
 	*/
 	public function __construct(\an602\user $user, \an602\lock\db $reparse_lock, \an602\textreparser\manager $reparser_manager, \an602\di\service_collection $reparsers)
 	{
-		require_once __DIR__ . '/../../../../includes/an602_functions_content.php';
+		require_once __DIR__ . '/../../../../includes/functions_content.php';
 
 		$this->reparse_lock = $reparse_lock;
 		$this->reparser_manager = $reparser_manager;

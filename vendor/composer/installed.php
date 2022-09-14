@@ -8,7 +8,7 @@
             0 => '3.3.x-dev',
         ),
         'reference' => '5e3dd4b55ea5009c2ef1d20bb11f364f4505b8bf',
-        'name' => 'an602/an602',
+        'name' => 'phpbb/phpbb',
         'dev' => false,
     ),
     'versions' => array(
@@ -99,7 +99,7 @@
             'reference' => 'e18ac876b2e4819c76349de8f78ccc8ef1554cd7',
             'dev_requirement' => false,
         ),
-        'an602/an602' => array(
+        'phpbb/phpbb' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
             'type' => 'project',
@@ -110,7 +110,7 @@
             'reference' => '5e3dd4b55ea5009c2ef1d20bb11f364f4505b8bf',
             'dev_requirement' => false,
         ),
-        'an602/an602-core' => array(
+        'phpbb/phpbb-core' => array(
             'dev_requirement' => false,
             'replaced' => array(
                 0 => '3.3.x-dev',

@@ -1,9 +1,9 @@
 <?php
 /**
-* THIS FILE DOES NOT APPEAR TO BE USED ANYWHERE - 09/13/2022 TheGhost
+*
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -181,7 +181,7 @@ function get_group_id($group_name)
 	if (empty($group_mapping))
 	{
 		$sql = 'SELECT group_name, group_id
-			FROM ' . AN602_GROUPS_TABLE;
+			FROM ' . GROUPS_TABLE;
 		$result = $db->sql_query($sql);
 
 		$group_mapping = array();
@@ -388,7 +388,7 @@ function remote_avatar_dims()
 	global $db;
 
 	$sql = 'SELECT user_id, user_avatar
-		FROM ' . AN602_USERS_TABLE . '
+		FROM ' . USERS_TABLE . '
 		WHERE user_avatar_type = ' . AVATAR_REMOTE;
 	$result = $db->sql_query($sql);
 
@@ -404,7 +404,7 @@ function remote_avatar_dims()
 		$width = (int) get_remote_avatar_dim($avatar, 0);
 		$height = (int) get_remote_avatar_dim($avatar, 1);
 
-		$sql = 'UPDATE ' . AN602_USERS_TABLE . '
+		$sql = 'UPDATE ' . USERS_TABLE . '
 			SET user_avatar_width = ' . (int) $width . ', user_avatar_height = ' . (int) $height . '
 			WHERE user_id = ' . $user_id;
 		$db->sql_query($sql);
@@ -485,7 +485,7 @@ function import_attachment_files($category_name = '')
 	global $config, $convert, $db, $user;
 
 	$sql = 'SELECT config_value AS upload_path
-		FROM ' . AN602_CONFIG_TABLE . "
+		FROM ' . CONFIG_TABLE . "
 		WHERE config_name = 'upload_path'";
 	$result = $db->sql_query($sql);
 	$config['upload_path'] = $db->sql_fetchfield('upload_path');
@@ -1112,7 +1112,7 @@ function add_user_group($group_id, $user_id, $group_leader = false)
 {
 	global $db;
 
-	$sql = 'INSERT INTO ' . AN602_USER_GROUP_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+	$sql = 'INSERT INTO ' . USER_GROUP_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 		'group_id'		=> $group_id,
 		'user_id'		=> $user_id,
 		'group_leader'	=> ($group_leader) ? 1 : 0,
@@ -1140,7 +1140,7 @@ function user_group_auth($group, $select_query, $use_src_db)
 	}
 
 	$sql = 'SELECT group_id
-		FROM ' . AN602_GROUPS_TABLE . "
+		FROM ' . GROUPS_TABLE . "
 		WHERE group_name = '" . $db->sql_escape(strtoupper($group)) . "'";
 	$result = $db->sql_query($sql);
 	$group_id = (int) $db->sql_fetchfield('group_id');
@@ -1154,7 +1154,7 @@ function user_group_auth($group, $select_query, $use_src_db)
 
 	if ($same_db || !$use_src_db)
 	{
-		$sql = 'INSERT INTO ' . AN602_USER_GROUP_TABLE . ' (user_id, group_id, user_pending)
+		$sql = 'INSERT INTO ' . USER_GROUP_TABLE . ' (user_id, group_id, user_pending)
 			' . str_replace('{' . strtoupper($group) . '}', $group_id . ', 0', $select_query);
 		$db->sql_query($sql);
 	}
@@ -1164,7 +1164,7 @@ function user_group_auth($group, $select_query, $use_src_db)
 		while ($row = $src_db->sql_fetchrow($result))
 		{
 			// this might become quite a lot of INSERTS unfortunately
-			$sql = 'INSERT INTO ' . AN602_USER_GROUP_TABLE . " (user_id, group_id, user_pending)
+			$sql = 'INSERT INTO ' . USER_GROUP_TABLE . " (user_id, group_id, user_pending)
 				VALUES ({$row['user_id']}, $group_id, 0)";
 			$db->sql_query($sql);
 		}
@@ -1175,7 +1175,7 @@ function user_group_auth($group, $select_query, $use_src_db)
 /**
 * Retrieves configuration information from the source forum and caches it as an array
 * Both database and file driven configuration formats can be handled
-* (the type used is specified in $config_schema, see convert_an60220.php for more details)
+* (the type used is specified in $config_schema, see convert_phpbb20.php for more details)
 */
 function get_config()
 {
@@ -1263,7 +1263,7 @@ function get_config()
 
 /**
 * Transfers the relevant configuration information from the source forum
-* The mapping of fields is specified in $config_schema, see convert_an60220.php for more details
+* The mapping of fields is specified in $config_schema, see convert_phpbb20.php for more details
 */
 function restore_config($schema)
 {
@@ -1315,14 +1315,14 @@ function update_folder_pm_count()
 	global $db;
 
 	$sql = 'SELECT user_id, folder_id, COUNT(msg_id) as num_messages
-		FROM ' . AN602_PRIVMSGS_TO_TABLE . '
+		FROM ' . PRIVMSGS_TO_TABLE . '
 		WHERE folder_id NOT IN (' . PRIVMSGS_NO_BOX . ', ' . PRIVMSGS_HOLD_BOX . ', ' . PRIVMSGS_INBOX . ', ' . PRIVMSGS_OUTBOX . ', ' . PRIVMSGS_SENTBOX . ')
 		GROUP BY folder_id, user_id';
 	$result = $db->sql_query($sql);
 
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$db->sql_query('UPDATE ' . AN602_PRIVMSGS_FOLDER_TABLE . ' SET pm_count = ' . $row['num_messages'] . '
+		$db->sql_query('UPDATE ' . PRIVMSGS_FOLDER_TABLE . ' SET pm_count = ' . $row['num_messages'] . '
 			WHERE user_id = ' . $row['user_id'] . ' AND folder_id = ' . $row['folder_id']);
 	}
 	$db->sql_freeresult($result);
@@ -1478,9 +1478,9 @@ function compare_table($tables, $tablename, &$prefixes)
 * @param mixed $forum_id forum ids (array|int|0) -> 0 == all forums
 * @param mixed $ug_id [int] user_id|group_id : [string] usergroup name
 * @param mixed $acl_list [string] acl entry : [array] acl entries : [string] role entry
-* @param int $setting AN602_ACL_YES|AN602_ACL_NO|AN602_ACL_NEVER
+* @param int $setting ACL_YES|ACL_NO|ACL_NEVER
 */
-function mass_auth($ug_type, $forum_id, $ug_id, $acl_list, $setting = AN602_ACL_NO)
+function mass_auth($ug_type, $forum_id, $ug_id, $acl_list, $setting = ACL_NO)
 {
 	global $db;
 	static $acl_option_ids, $group_ids;
@@ -1490,7 +1490,7 @@ function mass_auth($ug_type, $forum_id, $ug_id, $acl_list, $setting = AN602_ACL_
 		if (!isset($group_ids[$ug_id]))
 		{
 			$sql = 'SELECT group_id
-				FROM ' . AN602_GROUPS_TABLE . "
+				FROM ' . GROUPS_TABLE . "
 				WHERE group_name = '" . $db->sql_escape(strtoupper($ug_id)) . "'";
 			$result = $db->sql_query_limit($sql, 1);
 			$id = (int) $db->sql_fetchfield('group_id');
@@ -1507,7 +1507,7 @@ function mass_auth($ug_type, $forum_id, $ug_id, $acl_list, $setting = AN602_ACL_
 		$ug_id = (int) $group_ids[$ug_id];
 	}
 
-	$table = ($ug_type == 'user' || $ug_type == 'user_role') ? AN602_ACL_AN602_USERS_TABLE : AN602_ACL_AN602_GROUPS_TABLE;
+	$table = ($ug_type == 'user' || $ug_type == 'user_role') ? ACL_USERS_TABLE : ACL_GROUPS_TABLE;
 	$id_field = ($ug_type == 'user' || $ug_type == 'user_role') ? 'user_id' : 'group_id';
 
 	// Role based permissions are the simplest to handle so check for them first
@@ -1516,7 +1516,7 @@ function mass_auth($ug_type, $forum_id, $ug_id, $acl_list, $setting = AN602_ACL_
 		if (is_numeric($forum_id))
 		{
 			$sql = 'SELECT role_id
-				FROM ' . AN602_ACL_ROLES_TABLE . "
+				FROM ' . ACL_ROLES_TABLE . "
 				WHERE role_name = 'ROLE_" . $db->sql_escape($acl_list) . "'";
 			$result = $db->sql_query_limit($sql, 1);
 			$row = $db->sql_fetchrow($result);
@@ -1567,7 +1567,7 @@ function mass_auth($ug_type, $forum_id, $ug_id, $acl_list, $setting = AN602_ACL_
 	if (!is_array($acl_option_ids) || empty($acl_option_ids))
 	{
 		$sql = 'SELECT auth_option_id, auth_option
-			FROM ' . AN602_ACL_OPTIONS_TABLE;
+			FROM ' . ACL_OPTIONS_TABLE;
 		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
@@ -1579,7 +1579,7 @@ function mass_auth($ug_type, $forum_id, $ug_id, $acl_list, $setting = AN602_ACL_
 
 	$sql_forum = 'AND ' . $db->sql_in_set('a.forum_id', array_map('intval', $forum_id), false, true);
 
-	$sql = ($ug_type == 'user') ? 'SELECT o.auth_option_id, o.auth_option, a.forum_id, a.auth_setting FROM ' . AN602_ACL_AN602_USERS_TABLE . ' a, ' . AN602_ACL_OPTIONS_TABLE . " o WHERE a.auth_option_id = o.auth_option_id $sql_forum AND a.user_id = $ug_id" : 'SELECT o.auth_option_id, o.auth_option, a.forum_id, a.auth_setting FROM ' . AN602_ACL_AN602_GROUPS_TABLE . ' a, ' . AN602_ACL_OPTIONS_TABLE . " o WHERE a.auth_option_id = o.auth_option_id $sql_forum AND a.group_id = $ug_id";
+	$sql = ($ug_type == 'user') ? 'SELECT o.auth_option_id, o.auth_option, a.forum_id, a.auth_setting FROM ' . ACL_USERS_TABLE . ' a, ' . ACL_OPTIONS_TABLE . " o WHERE a.auth_option_id = o.auth_option_id $sql_forum AND a.user_id = $ug_id" : 'SELECT o.auth_option_id, o.auth_option, a.forum_id, a.auth_setting FROM ' . ACL_GROUPS_TABLE . ' a, ' . ACL_OPTIONS_TABLE . " o WHERE a.auth_option_id = o.auth_option_id $sql_forum AND a.group_id = $ug_id";
 	$result = $db->sql_query($sql);
 
 	$cur_auth = array();
@@ -1603,7 +1603,7 @@ function mass_auth($ug_type, $forum_id, $ug_id, $acl_list, $setting = AN602_ACL_
 
 			switch ($setting)
 			{
-				case AN602_ACL_NO:
+				case ACL_NO:
 					if (isset($cur_auth[$forum][$auth_option_id]))
 					{
 						$sql_ary['delete'][] = "DELETE FROM $table
@@ -1683,7 +1683,7 @@ function update_unread_count()
 	global $db;
 
 	$sql = 'SELECT user_id, COUNT(msg_id) as num_messages
-		FROM ' . AN602_PRIVMSGS_TO_TABLE . '
+		FROM ' . PRIVMSGS_TO_TABLE . '
 		WHERE pm_unread = 1
 			AND folder_id <> ' . PRIVMSGS_OUTBOX . '
 		GROUP BY user_id';
@@ -1691,7 +1691,7 @@ function update_unread_count()
 
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$db->sql_query('UPDATE ' . AN602_USERS_TABLE . ' SET user_unread_privmsg = ' . $row['num_messages'] . '
+		$db->sql_query('UPDATE ' . USERS_TABLE . ' SET user_unread_privmsg = ' . $row['num_messages'] . '
 			WHERE user_id = ' . $row['user_id']);
 	}
 	$db->sql_freeresult($result);
@@ -1715,7 +1715,7 @@ function add_default_groups()
 	);
 
 	$sql = 'SELECT *
-		FROM ' . AN602_GROUPS_TABLE . '
+		FROM ' . GROUPS_TABLE . '
 		WHERE ' . $db->sql_in_set('group_name', array_keys($default_groups));
 	$result = $db->sql_query($sql);
 
@@ -1743,7 +1743,7 @@ function add_default_groups()
 
 	if (count($sql_ary))
 	{
-		$db->sql_multi_insert(AN602_GROUPS_TABLE, $sql_ary);
+		$db->sql_multi_insert(GROUPS_TABLE, $sql_ary);
 	}
 }
 
@@ -1757,7 +1757,7 @@ function add_groups_to_teampage()
 	);
 
 	$sql = 'SELECT *
-		FROM ' . AN602_GROUPS_TABLE . '
+		FROM ' . GROUPS_TABLE . '
 		WHERE ' . $db->sql_in_set('group_name', array_keys($teampage_groups));
 	$result = $db->sql_query($sql);
 
@@ -1775,7 +1775,7 @@ function add_groups_to_teampage()
 
 	if (count($teampage_ary))
 	{
-		$db->sql_multi_insert(AN602_TEAMPAGE_TABLE, $teampage_ary);
+		$db->sql_multi_insert(TEAMPAGE_TABLE, $teampage_ary);
 	}
 }
 
@@ -1787,7 +1787,7 @@ function sync_post_count($offset, $limit)
 {
 	global $db;
 	$sql = 'SELECT COUNT(post_id) AS num_posts, poster_id
-			FROM ' . AN602_POSTS_TABLE . '
+			FROM ' . POSTS_TABLE . '
 			WHERE post_postcount = 1
 				AND post_visibility = ' . ITEM_APPROVED . '
 			GROUP BY poster_id
@@ -1796,7 +1796,7 @@ function sync_post_count($offset, $limit)
 
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$db->sql_query('UPDATE ' . AN602_USERS_TABLE . " SET user_posts = {$row['num_posts']} WHERE user_id = {$row['poster_id']}");
+		$db->sql_query('UPDATE ' . USERS_TABLE . " SET user_posts = {$row['num_posts']} WHERE user_id = {$row['poster_id']}");
 	}
 	$db->sql_freeresult($result);
 }
@@ -1811,9 +1811,9 @@ function add_bots()
 {
 	global $db, $convert, $user, $config, $an602_root_path, $phpEx;
 
-	$db->sql_query($convert->truncate_statement . AN602_BOTS_TABLE);
+	$db->sql_query($convert->truncate_statement . BOTS_TABLE);
 
-	$sql = 'SELECT group_id FROM ' . AN602_GROUPS_TABLE . " WHERE group_name = 'BOTS'";
+	$sql = 'SELECT group_id FROM ' . GROUPS_TABLE . " WHERE group_name = 'BOTS'";
 	$result = $db->sql_query($sql);
 	$group_id = (int) $db->sql_fetchfield('group_id', false, $result);
 	$db->sql_freeresult($result);
@@ -1822,7 +1822,7 @@ function add_bots()
 	{
 		add_default_groups();
 
-		$sql = 'SELECT group_id FROM ' . AN602_GROUPS_TABLE . " WHERE group_name = 'BOTS'";
+		$sql = 'SELECT group_id FROM ' . GROUPS_TABLE . " WHERE group_name = 'BOTS'";
 		$result = $db->sql_query($sql);
 		$group_id = (int) $db->sql_fetchfield('group_id', false, $result);
 		$db->sql_freeresult($result);
@@ -1894,7 +1894,7 @@ function add_bots()
 
 	if (!function_exists('user_add'))
 	{
-		include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
+		include($an602_root_path . 'includes/functions_user.' . $phpEx);
 	}
 
 	foreach ($bots as $bot_name => $bot_ary)
@@ -1917,7 +1917,7 @@ function add_bots()
 
 		if ($user_id)
 		{
-			$sql = 'INSERT INTO ' . AN602_BOTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+			$sql = 'INSERT INTO ' . BOTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 				'bot_active'	=> 1,
 				'bot_name'		=> $bot_name,
 				'user_id'		=> $user_id,
@@ -1939,7 +1939,7 @@ function update_dynamic_config()
 
 	// Get latest username
 	$sql = 'SELECT user_id, username, user_colour
-		FROM ' . AN602_USERS_TABLE . '
+		FROM ' . USERS_TABLE . '
 		WHERE user_type IN (' . USER_NORMAL . ', ' . USER_FOUNDER . ')';
 
 	if (!empty($config['increment_user_id']))
@@ -1965,7 +1965,7 @@ function update_dynamic_config()
 //	set_config('record_online_date', time(), true);
 
 	$sql = 'SELECT COUNT(post_id) AS stat
-		FROM ' . AN602_POSTS_TABLE . '
+		FROM ' . POSTS_TABLE . '
 		WHERE post_visibility = ' . ITEM_APPROVED;
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
@@ -1974,7 +1974,7 @@ function update_dynamic_config()
 	$config->set('num_posts', (int) $row['stat'], false);
 
 	$sql = 'SELECT COUNT(topic_id) AS stat
-		FROM ' . AN602_TOPICS_TABLE . '
+		FROM ' . TOPICS_TABLE . '
 		WHERE topic_visibility = ' . ITEM_APPROVED;
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
@@ -1983,7 +1983,7 @@ function update_dynamic_config()
 	$config->set('num_topics', (int) $row['stat'], false);
 
 	$sql = 'SELECT COUNT(user_id) AS stat
-		FROM ' . AN602_USERS_TABLE . '
+		FROM ' . USERS_TABLE . '
 		WHERE user_type IN (' . USER_NORMAL . ',' . USER_FOUNDER . ')';
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
@@ -1992,14 +1992,14 @@ function update_dynamic_config()
 	$config->set('num_users', (int) $row['stat'], false);
 
 	$sql = 'SELECT COUNT(attach_id) as stat
-		FROM ' . AN602_ATTACHMENTS_TABLE . '
+		FROM ' . ATTACHMENTS_TABLE . '
 		WHERE is_orphan = 0';
 	$result = $db->sql_query($sql);
 	$config->set('num_files', (int) $db->sql_fetchfield('stat'), false);
 	$db->sql_freeresult($result);
 
 	$sql = 'SELECT SUM(filesize) as stat
-		FROM ' . AN602_ATTACHMENTS_TABLE . '
+		FROM ' . ATTACHMENTS_TABLE . '
 		WHERE is_orphan = 0';
 	$result = $db->sql_query($sql);
 	$config->set('upload_dir_size', (float) $db->sql_fetchfield('stat'), false);
@@ -2008,14 +2008,14 @@ function update_dynamic_config()
 	/**
 	* We do not resync users post counts - this can be done by the admin after conversion if wanted.
 	$sql = 'SELECT COUNT(post_id) AS num_posts, poster_id
-		FROM ' . AN602_POSTS_TABLE . '
+		FROM ' . POSTS_TABLE . '
 		WHERE post_postcount = 1
 		GROUP BY poster_id';
 	$result = $db->sql_query($sql);
 
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$db->sql_query('UPDATE ' . AN602_USERS_TABLE . " SET user_posts = {$row['num_posts']} WHERE user_id = {$row['poster_id']}");
+		$db->sql_query('UPDATE ' . USERS_TABLE . " SET user_posts = {$row['num_posts']} WHERE user_id = {$row['poster_id']}");
 	}
 	$db->sql_freeresult($result);
 	*/
@@ -2031,11 +2031,11 @@ function update_topics_posted()
 	switch ($db->get_sql_layer())
 	{
 		case 'sqlite3':
-			$db->sql_query('DELETE FROM ' . AN602_TOPICS_POSTED_TABLE);
+			$db->sql_query('DELETE FROM ' . TOPICS_POSTED_TABLE);
 		break;
 
 		default:
-			$db->sql_query('TRUNCATE TABLE ' . AN602_TOPICS_POSTED_TABLE);
+			$db->sql_query('TRUNCATE TABLE ' . TOPICS_POSTED_TABLE);
 		break;
 	}
 
@@ -2044,7 +2044,7 @@ function update_topics_posted()
 
 	// Select forum ids, do not include categories
 	$sql = 'SELECT forum_id
-		FROM ' . AN602_FORUMS_TABLE . '
+		FROM ' . FORUMS_TABLE . '
 		WHERE forum_type <> ' . FORUM_CAT;
 	$result = $db->sql_query($sql);
 
@@ -2062,7 +2062,7 @@ function update_topics_posted()
 	foreach ($forum_ids as $forum_id)
 	{
 		$sql = 'SELECT p.poster_id, p.topic_id
-			FROM ' . AN602_POSTS_TABLE . ' p, ' . AN602_TOPICS_TABLE . ' t
+			FROM ' . POSTS_TABLE . ' p, ' . TOPICS_TABLE . ' t
 			WHERE t.forum_id = ' . $forum_id . '
 				AND t.topic_moved_id = 0
 				AND t.topic_last_post_time > ' . $get_from_time . '
@@ -2094,7 +2094,7 @@ function update_topics_posted()
 
 		if (count($sql_ary))
 		{
-			$db->sql_multi_insert(AN602_TOPICS_POSTED_TABLE, $sql_ary);
+			$db->sql_multi_insert(TOPICS_POSTED_TABLE, $sql_ary);
 		}
 	}
 }
@@ -2107,17 +2107,17 @@ function fix_empty_primary_groups()
 	global $db;
 
 	// Set group ids for users not already having it
-	$sql = 'UPDATE ' . AN602_USERS_TABLE . ' SET group_id = ' . get_group_id('registered') . '
+	$sql = 'UPDATE ' . USERS_TABLE . ' SET group_id = ' . get_group_id('registered') . '
 		WHERE group_id = 0 AND user_type = ' . USER_INACTIVE;
 	$db->sql_query($sql);
 
-	$sql = 'UPDATE ' . AN602_USERS_TABLE . ' SET group_id = ' . get_group_id('registered') . '
+	$sql = 'UPDATE ' . USERS_TABLE . ' SET group_id = ' . get_group_id('registered') . '
 		WHERE group_id = 0 AND user_type = ' . USER_NORMAL;
 	$db->sql_query($sql);
 
-	$db->sql_query('UPDATE ' . AN602_USERS_TABLE . ' SET group_id = ' . get_group_id('guests') . ' WHERE user_id = ' . ANONYMOUS);
+	$db->sql_query('UPDATE ' . USERS_TABLE . ' SET group_id = ' . get_group_id('guests') . ' WHERE user_id = ' . ANONYMOUS);
 
-	$sql = 'SELECT user_id FROM ' . AN602_USER_GROUP_TABLE . ' WHERE group_id = ' . get_group_id('administrators');
+	$sql = 'SELECT user_id FROM ' . USER_GROUP_TABLE . ' WHERE group_id = ' . get_group_id('administrators');
 	$result = $db->sql_query($sql);
 
 	$user_ids = array();
@@ -2129,11 +2129,11 @@ function fix_empty_primary_groups()
 
 	if (count($user_ids))
 	{
-		$db->sql_query('UPDATE ' . AN602_USERS_TABLE . ' SET group_id = ' . get_group_id('administrators') . '
+		$db->sql_query('UPDATE ' . USERS_TABLE . ' SET group_id = ' . get_group_id('administrators') . '
 			WHERE group_id = 0 AND ' . $db->sql_in_set('user_id', $user_ids));
 	}
 
-	$sql = 'SELECT user_id FROM ' . AN602_USER_GROUP_TABLE . ' WHERE group_id = ' . get_group_id('global_moderators');
+	$sql = 'SELECT user_id FROM ' . USER_GROUP_TABLE . ' WHERE group_id = ' . get_group_id('global_moderators');
 	$result = $db->sql_query($sql);
 
 	$user_ids = array();
@@ -2145,18 +2145,18 @@ function fix_empty_primary_groups()
 
 	if (count($user_ids))
 	{
-		$db->sql_query('UPDATE ' . AN602_USERS_TABLE . ' SET group_id = ' . get_group_id('global_moderators') . '
+		$db->sql_query('UPDATE ' . USERS_TABLE . ' SET group_id = ' . get_group_id('global_moderators') . '
 			WHERE group_id = 0 AND ' . $db->sql_in_set('user_id', $user_ids));
 	}
 
 	// Set user colour
-	$sql = 'SELECT group_id, group_colour FROM ' . AN602_GROUPS_TABLE . "
+	$sql = 'SELECT group_id, group_colour FROM ' . GROUPS_TABLE . "
 		WHERE group_colour <> ''";
 	$result = $db->sql_query($sql);
 
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$db->sql_query('UPDATE ' . AN602_USERS_TABLE . " SET user_colour = '{$row['group_colour']}' WHERE group_id = {$row['group_id']}");
+		$db->sql_query('UPDATE ' . USERS_TABLE . " SET user_colour = '{$row['group_colour']}' WHERE group_id = {$row['group_id']}");
 	}
 	$db->sql_freeresult($result);
 }
@@ -2170,7 +2170,7 @@ function remove_invalid_users()
 
 	// username_clean is UNIQUE
 	$sql = 'SELECT user_id
-		FROM ' . AN602_USERS_TABLE . "
+		FROM ' . USERS_TABLE . "
 		WHERE username_clean = ''";
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
@@ -2180,7 +2180,7 @@ function remove_invalid_users()
 	{
 		if (!function_exists('user_delete'))
 		{
-			include($an602_root_path . 'includes/an602_functions_user.' . $phpEx);
+			include($an602_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		user_delete('remove', $row['user_id']);

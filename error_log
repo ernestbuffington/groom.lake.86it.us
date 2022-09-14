@@ -1,0 +1,6 @@
+[14-Sep-2022 06:58:28 UTC] PHP Fatal error:  Uncaught Symfony\Component\DependencyInjection\Exception\RuntimeException: A string value must be composed of strings and/or numbers, but found parameter "core.table_prefix" of type "NULL" inside string value "%core.table_prefix%oauth_tokens". in /home/groomlake/public_html/vendor/symfony/dependency-injection/ParameterBag/ParameterBag.php:237
+Stack trace:
+#0 [internal function]: Symfony\Component\DependencyInjection\ParameterBag\ParameterBag->Symfony\Component\DependencyInjection\ParameterBag\{closure}(Array)
+#1 /home/groomlake/public_html/vendor/symfony/dependency-injection/ParameterBag/ParameterBag.php(222): preg_replace_callback('/%%|%([^%\\s]+)%...', Object(Closure), '%core.table_pre...')
+#2 /home/groomlake/public_html/vendor/symfony/dependency-injection/ParameterBag/ParameterBag.php(189): Symfony\Component\DependencyInjection\ParameterBag\ParameterBag->resolveString('%core.table_pre...', Array)
+#3 /home/groomlake/public_html/vendor/symfony/dependency-injection/ParameterBag/ParameterBag.php(219): Symfony\ in /home/groomlake/public_html/vendor/symfony/dependency-injection/ParameterBag/ParameterBag.php on line 237

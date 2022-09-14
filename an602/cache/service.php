@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -135,7 +135,7 @@ class service
 		if (($censors = $this->driver->get('_word_censors')) === false)
 		{
 			$sql = 'SELECT word, replacement
-				FROM ' . AN602_WORDS_TABLE;
+				FROM ' . WORDS_TABLE;
 			$result = $this->db->sql_query($sql);
 
 			$censors = array();
@@ -161,7 +161,7 @@ class service
 		{
 			// Topic icons
 			$sql = 'SELECT *
-				FROM ' . AN602_ICONS_TABLE . '
+				FROM ' . ICONS_TABLE . '
 				ORDER BY icons_order';
 			$result = $this->db->sql_query($sql);
 
@@ -190,7 +190,7 @@ class service
 		if (($ranks = $this->driver->get('_ranks')) === false)
 		{
 			$sql = 'SELECT *
-				FROM ' . AN602_RANKS_TABLE . '
+				FROM ' . RANKS_TABLE . '
 				ORDER BY rank_min DESC';
 			$result = $this->db->sql_query($sql);
 
@@ -233,7 +233,7 @@ class service
 
 			// The rule is to only allow those extensions defined. ;)
 			$sql = 'SELECT e.extension, g.*
-				FROM ' . AN602_EXTENSIONS_TABLE . ' e, ' . AN602_EXTENSION_AN602_GROUPS_TABLE . ' g
+				FROM ' . EXTENSIONS_TABLE . ' e, ' . EXTENSION_GROUPS_TABLE . ' g
 				WHERE e.group_id = g.group_id
 					AND (g.allow_group = 1 OR g.allow_in_pm = 1)';
 			$result = $this->db->sql_query($sql);
@@ -335,7 +335,7 @@ class service
 				case 'mssql_odbc':
 				case 'mssqlnative':
 					$sql = 'SELECT user_id, bot_agent, bot_ip
-						FROM ' . AN602_BOTS_TABLE . '
+						FROM ' . BOTS_TABLE . '
 						WHERE bot_active = 1
 					ORDER BY LEN(bot_agent) DESC';
 				break;
@@ -343,7 +343,7 @@ class service
 				// LENGTH supported by MySQL, IBM DB2 and Oracle for sure...
 				default:
 					$sql = 'SELECT user_id, bot_agent, bot_ip
-						FROM ' . AN602_BOTS_TABLE . '
+						FROM ' . BOTS_TABLE . '
 						WHERE bot_active = 1
 					ORDER BY LENGTH(bot_agent) DESC';
 				break;
@@ -375,7 +375,7 @@ class service
 			$parsed_array = array();
 		}
 
-		$filename = $this->an602_root_path . 'themes/theme_core/styles/' . $style['style_path'] . '/style.cfg';
+		$filename = $this->an602_root_path . 'styles/' . $style['style_path'] . '/style.cfg';
 
 		if (!file_exists($filename))
 		{
@@ -402,7 +402,7 @@ class service
 		if (($usernames = $this->driver->get('_disallowed_usernames')) === false)
 		{
 			$sql = 'SELECT disallow_username
-				FROM ' . AN602_DISALLOW_TABLE;
+				FROM ' . DISALLOW_TABLE;
 			$result = $this->db->sql_query($sql);
 
 			$usernames = array();

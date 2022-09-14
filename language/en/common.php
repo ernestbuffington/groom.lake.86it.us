@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -48,7 +48,7 @@ $lang = array_merge($lang, array(
 	'USER_LANG'			=> 'en-gb',
 
 	// You can define different rules for the determination of plural forms here.
-	// See https://area51.an602.com/docs/dev/3.3.x/language/plurals.html for more information
+	// See https://area51.groom.lake.86it.us/docs/dev/3.3.x/language/plurals.html for more information
 	// or ask the translation manager for help.
 	'PLURAL_RULE'		=> 1,
 
@@ -236,7 +236,7 @@ $lang = array_merge($lang, array(
 	'ERR_UNABLE_TO_LOGIN'				=> 'The specified username or password is incorrect.',
 	'ERR_UNWATCHING'					=> 'An error occurred while trying to unsubscribe.',
 	'ERR_WATCHING'						=> 'An error occurred while trying to subscribe.',
-	'ERR_WRONG_PATH_TO_AN602'			=> 'The AN602 path specified appears to be invalid.',
+	'ERR_WRONG_PATH_TO_PHPBB'			=> 'The AN602 path specified appears to be invalid.',
 	'ERROR'									=> 'Error',
 	'EXPAND_VIEW'						=> 'Expand view',
 	'EXTENSION'							=> 'Extension',

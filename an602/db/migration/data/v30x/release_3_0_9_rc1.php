@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -88,7 +88,7 @@ class release_3_0_9_rc1 extends \an602\db\migration\migration
 	{
 		// Update file extension group names to use language strings, again.
 		$sql = 'SELECT group_id, group_name
-			FROM ' . AN602_EXTENSION_AN602_GROUPS_TABLE . '
+			FROM ' . EXTENSION_GROUPS_TABLE . '
 			WHERE group_name ' . $this->db->sql_like_expression('EXT_GROUP_' . $this->db->get_any_char());
 		$result = $this->db->sql_query($sql);
 
@@ -98,7 +98,7 @@ class release_3_0_9_rc1 extends \an602\db\migration\migration
 				'group_name'	=> substr($row['group_name'], 10), // Strip off 'EXT_GROUP_'
 			);
 
-			$sql = 'UPDATE ' . AN602_EXTENSION_AN602_GROUPS_TABLE . '
+			$sql = 'UPDATE ' . EXTENSION_GROUPS_TABLE . '
 				SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
 				WHERE group_id = ' . $row['group_id'];
 			$this->sql_query($sql);

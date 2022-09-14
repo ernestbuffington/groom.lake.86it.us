@@ -4,7 +4,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -210,7 +210,7 @@ class ldap extends base
 				@ldap_close($ldap);
 
 				$sql ='SELECT user_id, username, user_password, user_passchg, user_email, user_type
-					FROM ' . AN602_USERS_TABLE . "
+					FROM ' . USERS_TABLE . "
 					WHERE username_clean = '" . $this->db->sql_escape(utf8_clean_string($username)) . "'";
 				$result = $this->db->sql_query($sql);
 				$row = $this->db->sql_fetchrow($result);
@@ -241,7 +241,7 @@ class ldap extends base
 				{
 					// retrieve default group id
 					$sql = 'SELECT group_id
-						FROM ' . AN602_GROUPS_TABLE . "
+						FROM ' . GROUPS_TABLE . "
 						WHERE group_name = '" . $this->db->sql_escape('REGISTERED') . "'
 							AND group_type = " . GROUP_SPECIAL;
 					$result = $this->db->sql_query($sql);

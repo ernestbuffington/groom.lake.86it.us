@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -33,7 +33,7 @@ class notifications_board extends \an602\db\migration\migration
 
 	public function update_module()
 	{
-		$sql = 'UPDATE ' . AN602_MODULES_TABLE . "
+		$sql = 'UPDATE ' . MODULES_TABLE . "
 			SET module_auth = 'cfg_allow_board_notifications'
 			WHERE module_basename = 'ucp_notifications'
 				AND module_mode = 'notification_list'";
@@ -42,7 +42,7 @@ class notifications_board extends \an602\db\migration\migration
 
 	public function update_user_subscriptions()
 	{
-		$sql = 'UPDATE ' . AN602_USER_NOTIFICATIONS_TABLE . "
+		$sql = 'UPDATE ' . USER_NOTIFICATIONS_TABLE . "
 			SET method = 'notification.method.board'
 			WHERE method = ''";
 		$this->sql_query($sql);
@@ -58,7 +58,7 @@ class notifications_board extends \an602\db\migration\migration
 
 	public function revert_user_subscriptions()
 	{
-		$sql = 'UPDATE ' . AN602_USER_NOTIFICATIONS_TABLE . "
+		$sql = 'UPDATE ' . USER_NOTIFICATIONS_TABLE . "
 			SET method = ''
 			WHERE method = 'notification.method.board'";
 		$this->sql_query($sql);
@@ -66,7 +66,7 @@ class notifications_board extends \an602\db\migration\migration
 
 	public function revert_module()
 	{
-		$sql = 'UPDATE ' . AN602_MODULES_TABLE . "
+		$sql = 'UPDATE ' . MODULES_TABLE . "
 			SET auth = ''
 			WHERE module_basename = 'ucp_notifications'
 				AND module_mode = 'notification_list'";

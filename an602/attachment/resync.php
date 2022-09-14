@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -58,7 +58,7 @@ class resync
 				$this->attach_sql_id = 'post_msg_id';
 				$this->sql_where = ' AND in_message = 1
 					AND is_orphan = 0';
-				$this->resync_table = AN602_PRIVMSGS_TABLE;
+				$this->resync_table = PRIVMSGS_TABLE;
 				$this->resync_sql_id = 'msg_id';
 			break;
 
@@ -66,14 +66,14 @@ class resync
 				$this->attach_sql_id = 'post_msg_id';
 				$this->sql_where = ' AND in_message = 0
 					AND is_orphan = 0';
-				$this->resync_table = AN602_POSTS_TABLE;
+				$this->resync_table = POSTS_TABLE;
 				$this->resync_sql_id = 'post_id';
 			break;
 
 			case 'topic':
 				$this->attach_sql_id = 'topic_id';
 				$this->sql_where = ' AND is_orphan = 0';
-				$this->resync_table = AN602_TOPICS_TABLE;
+				$this->resync_table = TOPICS_TABLE;
 				$this->resync_sql_id = 'topic_id';
 			break;
 		}
@@ -97,7 +97,7 @@ class resync
 		// Just check which elements are still having an assigned attachment
 		// not orphaned by querying the attachments table
 		$sql = 'SELECT ' . $this->attach_sql_id . '
-			FROM ' . AN602_ATTACHMENTS_TABLE . '
+			FROM ' . ATTACHMENTS_TABLE . '
 			WHERE ' . $this->db->sql_in_set($this->attach_sql_id, $ids)
 				. $this->sql_where;
 		$result = $this->db->sql_query($sql);

@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -41,7 +41,7 @@ class report_handler_post extends report_handler
 		$this->validate_report_request($id);
 
 		$sql = 'SELECT *
-			FROM ' . AN602_REPORTS_REASONS_TABLE . "
+			FROM ' . REPORTS_REASONS_TABLE . "
 			WHERE reason_id = $reason_id";
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
@@ -68,14 +68,14 @@ class report_handler_post extends report_handler
 
 		$this->create_report($report_data);
 
-		$sql = 'UPDATE ' . AN602_POSTS_TABLE . '
+		$sql = 'UPDATE ' . POSTS_TABLE . '
 			SET post_reported = 1
 			WHERE post_id = ' . $id;
 		$this->db->sql_query($sql);
 
 		if (!$this->report_data['topic_reported'])
 		{
-			$sql = 'UPDATE ' . AN602_TOPICS_TABLE . '
+			$sql = 'UPDATE ' . TOPICS_TABLE . '
 				SET topic_reported = 1
 				WHERE topic_id = ' . $this->report_data['topic_id'] . '
 					OR topic_moved_id = ' . $this->report_data['topic_id'];
@@ -103,7 +103,7 @@ class report_handler_post extends report_handler
 
 		// Grab all relevant data
 		$sql = 'SELECT t.*, p.*
-			FROM ' . AN602_POSTS_TABLE . ' p, ' . AN602_TOPICS_TABLE . " t
+			FROM ' . POSTS_TABLE . ' p, ' . TOPICS_TABLE . " t
 			WHERE p.post_id = $id
 				AND p.topic_id = t.topic_id";
 		$result = $this->db->sql_query($sql);
@@ -118,7 +118,7 @@ class report_handler_post extends report_handler
 		$forum_id = (int) $report_data['forum_id'];
 
 		$sql = 'SELECT *
-			FROM ' . AN602_FORUMS_TABLE . '
+			FROM ' . FORUMS_TABLE . '
 			WHERE forum_id = ' . $forum_id;
 		$result = $this->db->sql_query($sql);
 		$forum_data = $this->db->sql_fetchrow($result);

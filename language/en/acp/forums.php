@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -92,7 +92,7 @@ $lang = array_merge($lang, array(
 	'FORUM_IMAGE'						=> 'Forum image',
 	'FORUM_IMAGE_EXPLAIN'				=> 'Location, relative to the AN602 root directory, of an additional image to associate with this forum.',
 	'FORUM_IMAGE_NO_EXIST'				=> 'The specified forum image does not exist',
-	'FORUM_LINK_EXPLAIN'				=> 'Full URL (including the protocol, i.e.: <samp>http://</samp>) to the destination location that clicking this forum will take the user, e.g.: <samp>http://groom.lake.86it.us/</samp>.',
+	'FORUM_LINK_EXPLAIN'				=> 'Full URL (including the protocol, i.e.: <samp>http://</samp>) to the destination location that clicking this forum will take the user, e.g.: <samp>http://www.groom.lake.86it.us/</samp>.',
 	'FORUM_LINK_TRACK'					=> 'Track link redirects',
 	'FORUM_LINK_TRACK_EXPLAIN'			=> 'Records the number of times a forum link was clicked.',
 	'FORUM_NAME'						=> 'Forum name',

@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 namespace an602\groupposition;
 
 /**
-* Interface to manage group positions in various places of an602
+* Interface to manage group positions in various places of phpbb
 *
 * The interface provides simple methods to add, delete and move a group
 */

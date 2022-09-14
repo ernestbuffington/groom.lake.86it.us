@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * Sections (c) 2009 Fabien Potencier, Armin Ronacher
 * @license GNU General Public License, version 2 (GPL-2.0)
 *

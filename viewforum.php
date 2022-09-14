@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,11 +14,11 @@
 /**
 * @ignore
 */
-define('IN_AN602', true);
-$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
+define('IN_PHPBB', true);
+$an602_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($an602_root_path . 'common.' . $phpEx);
-include($an602_root_path . 'includes/an602_functions_display.' . $phpEx);
+include($an602_root_path . 'includes/functions_display.' . $phpEx);
 
 // Start session
 $user->session_begin();
@@ -47,20 +47,20 @@ if (!$forum_id)
 	trigger_error('NO_FORUM');
 }
 
-$sql_from = AN602_FORUMS_TABLE . ' f';
+$sql_from = FORUMS_TABLE . ' f';
 $lastread_select = '';
 
 // Grab appropriate forum data
 if ($config['load_db_lastread'] && $user->data['is_registered'])
 {
-	$sql_from .= ' LEFT JOIN ' . AN602_FORUMS_TRACK_TABLE . ' ft ON (ft.user_id = ' . $user->data['user_id'] . '
+	$sql_from .= ' LEFT JOIN ' . FORUMS_TRACK_TABLE . ' ft ON (ft.user_id = ' . $user->data['user_id'] . '
 		AND ft.forum_id = f.forum_id)';
 	$lastread_select .= ', ft.mark_time';
 }
 
 if ($user->data['is_registered'])
 {
-	$sql_from .= ' LEFT JOIN ' . AN602_FORUMS_WATCH_TABLE . ' fw ON (fw.forum_id = f.forum_id AND fw.user_id = ' . $user->data['user_id'] . ')';
+	$sql_from .= ' LEFT JOIN ' . FORUMS_WATCH_TABLE . ' fw ON (fw.forum_id = f.forum_id AND fw.user_id = ' . $user->data['user_id'] . ')';
 	$lastread_select .= ', fw.notify_status';
 }
 
@@ -112,7 +112,7 @@ if ($forum_data['forum_type'] == FORUM_LINK && $forum_data['forum_link'])
 	// Does it have click tracking enabled?
 	if ($forum_data['forum_flags'] & FORUM_FLAG_LINK_TRACK)
 	{
-		$sql = 'UPDATE ' . AN602_FORUMS_TABLE . '
+		$sql = 'UPDATE ' . FORUMS_TABLE . '
 			SET forum_posts_approved = forum_posts_approved + 1
 			WHERE forum_id = ' . $forum_id;
 		$db->sql_query($sql);
@@ -310,7 +310,7 @@ if ($sort_days)
 	$sql_array = array(
 		'SELECT'	=> 'COUNT(t.topic_id) AS num_topics',
 		'FROM'		=> array(
-			AN602_TOPICS_TABLE	=> 't',
+			TOPICS_TABLE	=> 't',
 		),
 		'WHERE'		=> 't.forum_id = ' . $forum_id . '
 			AND (t.topic_last_post_time >= ' . $min_post_time . '
@@ -445,7 +445,7 @@ $rowset = $announcement_list = $topic_list = $global_announce_forums = array();
 $sql_array = array(
 	'SELECT'	=> 't.*',
 	'FROM'		=> array(
-		AN602_TOPICS_TABLE		=> 't'
+		TOPICS_TABLE		=> 't'
 	),
 	'LEFT_JOIN'	=> array(),
 );
@@ -486,18 +486,18 @@ if ($user->data['is_registered'])
 {
 	if ($config['load_db_track'])
 	{
-		$sql_array['LEFT_JOIN'][] = array('FROM' => array(AN602_TOPICS_POSTED_TABLE => 'tp'), 'ON' => 'tp.topic_id = t.topic_id AND tp.user_id = ' . $user->data['user_id']);
+		$sql_array['LEFT_JOIN'][] = array('FROM' => array(TOPICS_POSTED_TABLE => 'tp'), 'ON' => 'tp.topic_id = t.topic_id AND tp.user_id = ' . $user->data['user_id']);
 		$sql_array['SELECT'] .= ', tp.topic_posted';
 	}
 
 	if ($config['load_db_lastread'])
 	{
-		$sql_array['LEFT_JOIN'][] = array('FROM' => array(AN602_TOPICS_TRACK_TABLE => 'tt'), 'ON' => 'tt.topic_id = t.topic_id AND tt.user_id = ' . $user->data['user_id']);
+		$sql_array['LEFT_JOIN'][] = array('FROM' => array(TOPICS_TRACK_TABLE => 'tt'), 'ON' => 'tt.topic_id = t.topic_id AND tt.user_id = ' . $user->data['user_id']);
 		$sql_array['SELECT'] .= ', tt.mark_time';
 
 		if ($s_display_active && count($active_forum_ary))
 		{
-			$sql_array['LEFT_JOIN'][] = array('FROM' => array(AN602_FORUMS_TRACK_TABLE => 'ft'), 'ON' => 'ft.forum_id = t.forum_id AND ft.user_id = ' . $user->data['user_id']);
+			$sql_array['LEFT_JOIN'][] = array('FROM' => array(FORUMS_TRACK_TABLE => 'ft'), 'ON' => 'ft.forum_id = t.forum_id AND ft.user_id = ' . $user->data['user_id']);
 			$sql_array['SELECT'] .= ', ft.mark_time AS forum_mark_time';
 		}
 	}
@@ -510,7 +510,7 @@ if ($forum_data['forum_type'] == FORUM_POST)
 	$g_forum_ary = array_unique(array_keys($g_forum_ary));
 
 	$sql_anounce_array['LEFT_JOIN'] = $sql_array['LEFT_JOIN'];
-	$sql_anounce_array['LEFT_JOIN'][] = array('FROM' => array(AN602_FORUMS_TABLE => 'f'), 'ON' => 'f.forum_id = t.forum_id');
+	$sql_anounce_array['LEFT_JOIN'][] = array('FROM' => array(FORUMS_TABLE => 'f'), 'ON' => 'f.forum_id = t.forum_id');
 	$sql_anounce_array['SELECT'] = $sql_array['SELECT'] . ', f.forum_name';
 
 	// Obtain announcements ... removed sort ordering, sort by time in all cases
@@ -580,7 +580,7 @@ if ($user->data['is_registered'] && $config['load_db_lastread'])
 	if (!empty($global_announce_forums))
 	{
 		$sql = 'SELECT forum_id, mark_time
-			FROM ' . AN602_FORUMS_TRACK_TABLE . '
+			FROM ' . FORUMS_TRACK_TABLE . '
 			WHERE ' . $db->sql_in_set('forum_id', $global_announce_forums) . '
 				AND user_id = ' . $user->data['user_id'];
 		$result = $db->sql_query($sql);
@@ -652,7 +652,7 @@ else
 $sql_ary = array(
 	'SELECT'	=> 't.topic_id',
 	'FROM'		=> array(
-		AN602_TOPICS_TABLE => 't',
+		TOPICS_TABLE => 't',
 	),
 	'WHERE'		=> "$sql_where
 		AND t.topic_type IN (" . POST_NORMAL . ', ' . POST_STICKY . ")
@@ -759,7 +759,7 @@ if (count($shadow_topic_list))
 	$sql_array = array(
 		'SELECT'	=> 't.*',
 		'FROM'		=> array(
-			AN602_TOPICS_TABLE		=> 't'
+			TOPICS_TABLE		=> 't'
 		),
 		'WHERE'		=> $db->sql_in_set('t.topic_id', array_keys($shadow_topic_list)),
 	);

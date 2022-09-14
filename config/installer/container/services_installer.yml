@@ -17,20 +17,20 @@ imports:
 services:
 # -------- Installer helpers ------------------------
     installer.helper.config:
-        class: phpbb\install\helper\config
+        class: an602\install\helper\config
         arguments:
             - '@filesystem'
             - '@php_ini'
             - '%core.root_path%'
 
     installer.helper.database:
-        class: phpbb\install\helper\database
+        class: an602\install\helper\database
         arguments:
             - '@filesystem'
             - '%core.root_path%'
 
     installer.helper.iohandler_factory:
-        class: phpbb\install\helper\iohandler\factory
+        class: an602\install\helper\iohandler\factory
         arguments:
             - '@service_container'
 
@@ -40,7 +40,7 @@ services:
             - [set_language, ['@language']]
 
     installer.helper.iohandler_ajax:
-        class: phpbb\install\helper\iohandler\ajax_iohandler
+        class: an602\install\helper\iohandler\ajax_iohandler
         parent: installer.helper.iohandler_abstract
         arguments:
             - '@path_helper'
@@ -50,15 +50,15 @@ services:
             - '%core.root_path%'
 
     installer.helper.iohandler_cli:
-        class: phpbb\install\helper\iohandler\cli_iohandler
+        class: an602\install\helper\iohandler\cli_iohandler
         parent: installer.helper.iohandler_abstract
 
     installer.helper.iohandler:
-        class: phpbb\install\helper\iohandler\iohandler_interface
+        class: an602\install\helper\iohandler\iohandler_interface
         factory: ['@installer.helper.iohandler_factory', get]
 
     installer.helper.container_factory:
-        class: phpbb\install\helper\container_factory
+        class: an602\install\helper\container_factory
         arguments:
             - '@language'
             - '@request'
@@ -67,13 +67,13 @@ services:
             - '%core.php_ext%'
 
     installer.helper.install_helper:
-        class: phpbb\install\helper\install_helper
+        class: an602\install\helper\install_helper
         arguments:
             - '%core.root_path%'
             - '%core.php_ext%'
 
     installer.helper.update_helper:
-        class: phpbb\install\helper\update_helper
+        class: an602\install\helper\update_helper
         arguments:
             - '%core.root_path%'
 
@@ -84,7 +84,7 @@ services:
             - [setup, ['@installer.helper.config', '@installer.helper.iohandler']]
 
     installer.installer.abstract:
-        class: phpbb\install\installer
+        class: an602\install\installer
         abstract: true
         arguments:
             - '@cache.driver'
@@ -93,14 +93,14 @@ services:
             - '@installer.helper.container_factory'
 
     installer.install.module_collection:
-        class: phpbb\di\ordered_service_collection
+        class: an602\di\ordered_service_collection
         arguments:
             - '@service_container'
         tags:
             - { name: service_collection, tag: installer_install_module }
 
     installer.update.module_collection:
-        class: phpbb\di\ordered_service_collection
+        class: an602\di\ordered_service_collection
         arguments:
             - '@service_container'
         tags:

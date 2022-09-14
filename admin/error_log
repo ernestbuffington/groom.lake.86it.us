@@ -1,0 +1,10 @@
+[14-Sep-2022 04:22:16 UTC] PHP Fatal error:  Uncaught Error: Class 'phpbb\config_php_file' not found in /home/devphpnuke/public_html/common.php:29
+Stack trace:
+#0 /home/devphpnuke/public_html/admin/index.php(23): require()
+#1 {main}
+  thrown in /home/devphpnuke/public_html/common.php on line 29
+[14-Sep-2022 04:22:22 UTC] PHP Fatal error:  Uncaught Error: Class 'phpbb\config_php_file' not found in /home/devphpnuke/public_html/common.php:29
+Stack trace:
+#0 /home/devphpnuke/public_html/admin/index.php(23): require()
+#1 {main}
+  thrown in /home/devphpnuke/public_html/common.php on line 29

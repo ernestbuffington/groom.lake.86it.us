@@ -1,6 +1,6 @@
 /* global bbfontstyle */
 
-var an602 = {};
+var phpbb = {};
 an602.alertTime = 100;
 
 (function($) {  // Avoid conflicts with other libraries
@@ -18,7 +18,7 @@ var keymap = {
 
 var $dark = $('#darkenwrapper');
 var $loadingIndicator;
-var an602AlertTimer = null;
+var phpbbAlertTimer = null;
 
 an602.isTouch = (window && typeof window.ontouchstart !== 'undefined');
 
@@ -47,7 +47,7 @@ an602.loadingIndicator = function() {
 		$loadingIndicator.fadeIn(an602.alertTime);
 		// Wait 60 seconds and display an error if nothing has been returned by then.
 		an602.clearLoadingTimeout();
-		an602AlertTimer = setTimeout(function() {
+		phpbbAlertTimer = setTimeout(function() {
 			an602.showTimeoutMessage();
 		}, 60000);
 	}
@@ -70,9 +70,9 @@ an602.showTimeoutMessage = function () {
  * Clear loading alert timeout
 */
 an602.clearLoadingTimeout = function() {
-	if (an602AlertTimer !== null) {
-		clearTimeout(an602AlertTimer);
-		an602AlertTimer = null;
+	if (phpbbAlertTimer !== null) {
+		clearTimeout(phpbbAlertTimer);
+		phpbbAlertTimer = null;
 	}
 };
 
@@ -83,7 +83,7 @@ an602.clearLoadingTimeout = function() {
 * @param {int} delay Delay in ms until darkenwrapper's click event is triggered
 */
 an602.closeDarkenWrapper = function(delay) {
-	an602AlertTimer = setTimeout(function() {
+	phpbbAlertTimer = setTimeout(function() {
 		$('#darkenwrapper').trigger('click');
 	}, delay);
 };
@@ -243,7 +243,7 @@ an602.parseQuerystring = function(string) {
  * callback.
  *
  * For more info, view the following page on the AN602 wiki:
- * http://wiki.an602.com/JavaScript_Function.an602.ajaxify
+ * http://wiki.groom.lake.86it.us/JavaScript_Function.an602.ajaxify
  *
  * @param {object} options Options.
  */
@@ -339,7 +339,7 @@ an602.ajaxify = function(options) {
 						refresh = false;
 					}
 
-					an602AlertTimer = setTimeout(function() {
+					phpbbAlertTimer = setTimeout(function() {
 						if (refresh) {
 							window.location = res.REFRESH_DATA.url;
 						}
@@ -803,7 +803,7 @@ an602.search.navigateResults = function($input, $container, $resultContainer) {
 	});
 };
 
-$('#an602').click(function() {
+$('#phpbb').click(function() {
 	var $this = $(this);
 
 	if (!$this.is('.live-search') && !$this.parents().is('.live-search')) {
@@ -1816,11 +1816,11 @@ an602.recaptcha = {
 
 // reCAPTCHA v2 doesn't accept callback functions nested inside objects
 // so we need to make this helper functions here
-window.an602RecaptchaOnLoad = function() {
+window.phpbbRecaptchaOnLoad = function() {
 	an602.recaptcha.load();
 };
 
-window.an602RecaptchaOnSubmit = function() {
+window.phpbbRecaptchaOnSubmit = function() {
 	an602.recaptcha.submitForm();
 };
 

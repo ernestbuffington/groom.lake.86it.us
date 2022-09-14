@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -81,7 +81,7 @@ class delete extends \an602\console\command\command
 		$io->section($this->user->lang('CLI_THUMBNAIL_DELETING'));
 
 		$sql = 'SELECT COUNT(*) AS nb_missing_thumbnails
-			FROM ' . AN602_ATTACHMENTS_TABLE . '
+			FROM ' . ATTACHMENTS_TABLE . '
 			WHERE thumbnail = 1';
 		$result = $this->db->sql_query($sql);
 		$nb_missing_thumbnails = (int) $this->db->sql_fetchfield('nb_missing_thumbnails');
@@ -94,7 +94,7 @@ class delete extends \an602\console\command\command
 		}
 
 		$sql = 'SELECT attach_id, physical_filename, extension, real_filename, mimetype
-			FROM ' . AN602_ATTACHMENTS_TABLE . '
+			FROM ' . ATTACHMENTS_TABLE . '
 			WHERE thumbnail = 1';
 		$result = $this->db->sql_query($sql);
 
@@ -152,7 +152,7 @@ class delete extends \an602\console\command\command
 	*/
 	protected function commit_changes(array $thumbnail_deleted)
 	{
-		$sql = 'UPDATE ' . AN602_ATTACHMENTS_TABLE . '
+		$sql = 'UPDATE ' . ATTACHMENTS_TABLE . '
 				SET thumbnail = 0
 				WHERE ' . $this->db->sql_in_set('attach_id', $thumbnail_deleted);
 		$this->db->sql_query($sql);

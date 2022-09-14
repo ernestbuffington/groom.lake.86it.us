@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -451,7 +451,7 @@ class content_visibility
 
 		if (!function_exists('truncate_string'))
 		{
-			include($this->an602_root_path . 'includes/an602_functions_content.' . $this->php_ext);
+			include($this->an602_root_path . 'includes/functions_content.' . $this->php_ext);
 		}
 
 		$data = array(
@@ -534,7 +534,7 @@ class content_visibility
 		{
 			if (!function_exists('update_post_information'))
 			{
-				include($this->an602_root_path . 'includes/an602_functions_posting.' . $this->php_ext);
+				include($this->an602_root_path . 'includes/functions_posting.' . $this->php_ext);
 			}
 
 			// update_post_information can only update the last post info ...
@@ -618,7 +618,7 @@ class content_visibility
 		if ($post_id)
 		{
 			$sql = 'SELECT 1 AS has_attachments
-				FROM ' . AN602_POSTS_TABLE . '
+				FROM ' . POSTS_TABLE . '
 				WHERE topic_id = ' . (int) $topic_id . '
 					AND post_attachment = 1
 					AND post_visibility = ' . ITEM_APPROVED . '
@@ -725,7 +725,7 @@ class content_visibility
 
 		if (!function_exists('truncate_string'))
 		{
-			include($this->an602_root_path . 'includes/an602_functions_content.' . $this->php_ext);
+			include($this->an602_root_path . 'includes/functions_content.' . $this->php_ext);
 		}
 
 		// Note, we do not set a reason for the posts, just for the topic
@@ -858,13 +858,13 @@ class content_visibility
 		}
 		else if ($data['post_visibility'] == ITEM_UNAPPROVED || $data['post_visibility'] == ITEM_REAPPROVE)
 		{
-			$sql_data[AN602_FORUMS_TABLE] = (($sql_data[AN602_FORUMS_TABLE]) ? $sql_data[AN602_FORUMS_TABLE] . ', ' : '') . 'forum_posts_unapproved = forum_posts_unapproved - 1';
-			$sql_data[AN602_TOPICS_TABLE] = (($sql_data[AN602_TOPICS_TABLE]) ? $sql_data[AN602_TOPICS_TABLE] . ', ' : '') . 'topic_posts_unapproved = topic_posts_unapproved - 1';
+			$sql_data[FORUMS_TABLE] = (($sql_data[FORUMS_TABLE]) ? $sql_data[FORUMS_TABLE] . ', ' : '') . 'forum_posts_unapproved = forum_posts_unapproved - 1';
+			$sql_data[TOPICS_TABLE] = (($sql_data[TOPICS_TABLE]) ? $sql_data[TOPICS_TABLE] . ', ' : '') . 'topic_posts_unapproved = topic_posts_unapproved - 1';
 		}
 		else if ($data['post_visibility'] == ITEM_DELETED)
 		{
-			$sql_data[AN602_FORUMS_TABLE] = (($sql_data[AN602_FORUMS_TABLE]) ? $sql_data[AN602_FORUMS_TABLE] . ', ' : '') . 'forum_posts_softdeleted = forum_posts_softdeleted - 1';
-			$sql_data[AN602_TOPICS_TABLE] = (($sql_data[AN602_TOPICS_TABLE]) ? $sql_data[AN602_TOPICS_TABLE] . ', ' : '') . 'topic_posts_softdeleted = topic_posts_softdeleted - 1';
+			$sql_data[FORUMS_TABLE] = (($sql_data[FORUMS_TABLE]) ? $sql_data[FORUMS_TABLE] . ', ' : '') . 'forum_posts_softdeleted = forum_posts_softdeleted - 1';
+			$sql_data[TOPICS_TABLE] = (($sql_data[TOPICS_TABLE]) ? $sql_data[TOPICS_TABLE] . ', ' : '') . 'topic_posts_softdeleted = topic_posts_softdeleted - 1';
 		}
 	}
 
@@ -879,7 +879,7 @@ class content_visibility
 	{
 		if ($data['topic_visibility'] == ITEM_APPROVED)
 		{
-			$sql_data[AN602_FORUMS_TABLE] .= 'forum_posts_approved = forum_posts_approved - 1, forum_topics_approved = forum_topics_approved - 1';
+			$sql_data[FORUMS_TABLE] .= 'forum_posts_approved = forum_posts_approved - 1, forum_topics_approved = forum_topics_approved - 1';
 
 			if ($data['post_postcount'])
 			{
@@ -888,11 +888,11 @@ class content_visibility
 		}
 		else if ($data['topic_visibility'] == ITEM_UNAPPROVED || $data['post_visibility'] == ITEM_REAPPROVE)
 		{
-			$sql_data[AN602_FORUMS_TABLE] .= 'forum_posts_unapproved = forum_posts_unapproved - 1, forum_topics_unapproved = forum_topics_unapproved - 1';
+			$sql_data[FORUMS_TABLE] .= 'forum_posts_unapproved = forum_posts_unapproved - 1, forum_topics_unapproved = forum_topics_unapproved - 1';
 		}
 		else if ($data['topic_visibility'] == ITEM_DELETED)
 		{
-			$sql_data[AN602_FORUMS_TABLE] .= 'forum_posts_softdeleted = forum_posts_softdeleted - 1, forum_topics_softdeleted = forum_topics_softdeleted - 1';
+			$sql_data[FORUMS_TABLE] .= 'forum_posts_softdeleted = forum_posts_softdeleted - 1, forum_topics_softdeleted = forum_topics_softdeleted - 1';
 		}
 
 	}

@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -52,7 +52,7 @@ class forums extends base
 			'SELECT'	=> 'f.forum_id, f.left_id, f.forum_name, f.forum_last_post_time,
 							f.forum_desc, f.forum_desc_bitfield, f.forum_desc_uid, f.forum_desc_options,
 							f.forum_topics_approved, f.forum_posts_approved',
-			'FROM'		=> array(AN602_FORUMS_TABLE => 'f'),
+			'FROM'		=> array(FORUMS_TABLE => 'f'),
 			'WHERE'		=> 'f.forum_type = ' . FORUM_POST . '
 							AND ' . $this->db->sql_in_set('f.forum_id', $in_fid_ary),
 			'ORDER_BY'	=> 'f.left_id ASC',

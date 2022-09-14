@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -110,7 +110,7 @@ class db extends base
 		$username_clean = utf8_clean_string($username);
 
 		$sql = 'SELECT *
-			FROM ' . AN602_USERS_TABLE . "
+			FROM ' . USERS_TABLE . "
 			WHERE username_clean = '" . $this->db->sql_escape($username_clean) . "'";
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
@@ -120,7 +120,7 @@ class db extends base
 			($this->user->forwarded_for && $this->config['ip_login_limit_use_forwarded']))
 		{
 			$sql = 'SELECT COUNT(*) AS attempts
-				FROM ' . AN602_LOGIN_ATTEMPT_TABLE . '
+				FROM ' . LOGIN_ATTEMPT_TABLE . '
 				WHERE attempt_time > ' . (time() - (int) $this->config['ip_login_limit_time']);
 			if ($this->config['ip_login_limit_use_forwarded'])
 			{
@@ -144,7 +144,7 @@ class db extends base
 				'username'				=> $username,
 				'username_clean'		=> $username_clean,
 			);
-			$sql = 'INSERT INTO ' . AN602_LOGIN_ATTEMPT_TABLE . $this->db->sql_build_array('INSERT', $attempt_data);
+			$sql = 'INSERT INTO ' . LOGIN_ATTEMPT_TABLE . $this->db->sql_build_array('INSERT', $attempt_data);
 			$this->db->sql_query($sql);
 		}
 		else
@@ -218,7 +218,7 @@ class db extends base
 				$hash = $this->passwords_manager->hash($password);
 
 				// Update the password in the users table to the new format
-				$sql = 'UPDATE ' . AN602_USERS_TABLE . "
+				$sql = 'UPDATE ' . USERS_TABLE . "
 					SET user_password = '" . $this->db->sql_escape($hash) . "'
 					WHERE user_id = {$row['user_id']}";
 				$this->db->sql_query($sql);
@@ -226,14 +226,14 @@ class db extends base
 				$row['user_password'] = $hash;
 			}
 
-			$sql = 'DELETE FROM ' . AN602_LOGIN_ATTEMPT_TABLE . '
+			$sql = 'DELETE FROM ' . LOGIN_ATTEMPT_TABLE . '
 				WHERE user_id = ' . $row['user_id'];
 			$this->db->sql_query($sql);
 
 			if ($row['user_login_attempts'] != 0)
 			{
 				// Successful, reset login attempts (the user passed all stages)
-				$sql = 'UPDATE ' . AN602_USERS_TABLE . '
+				$sql = 'UPDATE ' . USERS_TABLE . '
 					SET user_login_attempts = 0
 					WHERE user_id = ' . $row['user_id'];
 				$this->db->sql_query($sql);
@@ -258,7 +258,7 @@ class db extends base
 		}
 
 		// Password incorrect - increase login attempts
-		$sql = 'UPDATE ' . AN602_USERS_TABLE . '
+		$sql = 'UPDATE ' . USERS_TABLE . '
 			SET user_login_attempts = user_login_attempts + 1
 			WHERE user_id = ' . (int) $row['user_id'] . '
 				AND user_login_attempts < ' . LOGIN_ATTEMPTS_MAX;

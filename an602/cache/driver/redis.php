@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -13,14 +13,14 @@
 
 namespace an602\cache\driver;
 
-if (!defined('AN602_ACM_REDIS_PORT'))
+if (!defined('PHPBB_ACM_REDIS_PORT'))
 {
-	define('AN602_ACM_REDIS_PORT', 6379);
+	define('PHPBB_ACM_REDIS_PORT', 6379);
 }
 
-if (!defined('AN602_ACM_REDIS_HOST'))
+if (!defined('PHPBB_ACM_REDIS_HOST'))
 {
-	define('AN602_ACM_REDIS_HOST', 'localhost');
+	define('PHPBB_ACM_REDIS_HOST', 'localhost');
 }
 
 /**
@@ -41,10 +41,10 @@ class redis extends \an602\cache\driver\memory
 	*
 	* The following global constants affect operation:
 	*
-	* AN602_ACM_REDIS_HOST
-	* AN602_ACM_REDIS_PORT
-	* AN602_ACM_REDIS_PASSWORD
-	* AN602_ACM_REDIS_DB
+	* PHPBB_ACM_REDIS_HOST
+	* PHPBB_ACM_REDIS_PORT
+	* PHPBB_ACM_REDIS_PASSWORD
+	* PHPBB_ACM_REDIS_DB
 	*
 	* There are no publicly documented constructor parameters.
 	*/
@@ -62,7 +62,7 @@ class redis extends \an602\cache\driver\memory
 		}
 		else
 		{
-			$ok = $this->redis->connect(AN602_ACM_REDIS_HOST, AN602_ACM_REDIS_PORT);
+			$ok = $this->redis->connect(PHPBB_ACM_REDIS_HOST, PHPBB_ACM_REDIS_PORT);
 		}
 
 		if (!$ok)
@@ -70,9 +70,9 @@ class redis extends \an602\cache\driver\memory
 			trigger_error('Could not connect to redis server');
 		}
 
-		if (defined('AN602_ACM_REDIS_PASSWORD'))
+		if (defined('PHPBB_ACM_REDIS_PASSWORD'))
 		{
-			if (!$this->redis->auth(AN602_ACM_REDIS_PASSWORD))
+			if (!$this->redis->auth(PHPBB_ACM_REDIS_PASSWORD))
 			{
 				global $acm_type;
 
@@ -83,9 +83,9 @@ class redis extends \an602\cache\driver\memory
 		$this->redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
 		$this->redis->setOption(\Redis::OPT_PREFIX, $this->key_prefix);
 
-		if (defined('AN602_ACM_REDIS_DB'))
+		if (defined('PHPBB_ACM_REDIS_DB'))
 		{
-			if (!$this->redis->select(AN602_ACM_REDIS_DB))
+			if (!$this->redis->select(PHPBB_ACM_REDIS_DB))
 			{
 				global $acm_type;
 

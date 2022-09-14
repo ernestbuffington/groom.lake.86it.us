@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -16,7 +16,7 @@ namespace an602\db\migration\data\v310;
 /**
  * Migration to convert the Soft Delete MOD for 3.0
  *
- * https://groom.lake.86it.us/customise/db/mod/soft_delete/
+ * https://www.groom.lake.86it.us/customise/db/mod/soft_delete/
  */
 class soft_delete_mod_convert2 extends \an602\db\migration\migration
 {

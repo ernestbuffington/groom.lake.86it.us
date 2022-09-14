@@ -1,6 +1,6 @@
 services:
     router:
-        class: phpbb\routing\router
+        class: an602\routing\router
         arguments:
             - '@service_container'
             - '@routing.chained_resources_locator'
@@ -17,7 +17,7 @@ services:
             - { name: kernel.event_subscriber }
 
     routing.helper:
-        class: phpbb\routing\helper
+        class: an602\routing\helper
         arguments:
             - '@config'
             - '@router'
@@ -35,12 +35,12 @@ services:
             - '@routing.resolver'
 
     routing.resolver:
-        class: phpbb\routing\loader_resolver
+        class: an602\routing\loader_resolver
         arguments:
             - '@routing.loader.collection'
 
     routing.loader.collection:
-        class: phpbb\di\service_collection
+        class: an602\di\service_collection
         arguments:
             - '@service_container'
         tags:
@@ -56,19 +56,19 @@ services:
 # ---- Resources Locators ----
 
     routing.chained_resources_locator:
-        class: phpbb\routing\resources_locator\chained_resources_locator
+        class: an602\routing\resources_locator\chained_resources_locator
         arguments:
             - '@routing.resources_locator.collection'
 
     routing.resources_locator.collection:
-        class: phpbb\di\service_collection
+        class: an602\di\service_collection
         arguments:
             - '@service_container'
         tags:
             - { name: service_collection, tag: routing.resources_locator }
 
     routing.resources_locator.default:
-        class: phpbb\routing\resources_locator\default_resources_locator
+        class: an602\routing\resources_locator\default_resources_locator
         arguments:
             - '%core.root_path%'
             - '%core.environment%'

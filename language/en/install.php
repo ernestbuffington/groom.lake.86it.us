@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
  * DO NOT CHANGE
  */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -49,7 +49,7 @@ $lang = array_merge($lang, array(
 
 	// Support page
 	'SUPPORT_TITLE'		=> 'Support',
-	'SUPPORT_BODY'		=> 'Full support will be provided for the current stable release of AN6023, free of charge. This includes:</p><ul><li>installation</li><li>configuration</li><li>technical questions</li><li>problems relating to potential bugs in the software</li><li>updating from Release Candidate (RC) versions to the latest stable version</li><li>converting from AN602 2.0.x to AN6023</li><li>converting from other discussion board software to AN6023 (please see the <a href="https://groom.lake.86it.us/community/viewforum.php?f=486">Convertors Forum</a>)</li></ul><p>We encourage users still running beta versions of AN6023 to replace their installation with a fresh copy of the latest version.</p><h2>Extensions / Styles</h2><p>For issues relating to Extensions, please post in the appropriate <a href="https://groom.lake.86it.us/community/viewforum.php?f=451">Extensions Forum</a>.<br />For issues relating to styles, templates and themes, please post in the appropriate <a href="https://groom.lake.86it.us/community/viewforum.php?f=471">Styles Forum</a>.<br /><br />If your question relates to a specific package, please post directly in the topic dedicated to the package.</p><h2>Obtaining Support</h2><p><a href="https://groom.lake.86it.us/support/">Support Section</a><br /><a href="https://groom.lake.86it.us/support/docs/en/3.3/ug/quickstart/">Quick Start Guide</a><br /><br />To ensure you stay up to date with the latest news and releases, follow us on <a href="https://www.twitter.com/an602/">Twitter</a> and <a href="https://www.facebook.com/an602/">Facebook</a><br /><br />',
+	'SUPPORT_BODY'		=> 'Full support will be provided for the current stable release of AN6023, free of charge. This includes:</p><ul><li>installation</li><li>configuration</li><li>technical questions</li><li>problems relating to potential bugs in the software</li><li>updating from Release Candidate (RC) versions to the latest stable version</li><li>converting from AN602 2.0.x to AN6023</li><li>converting from other discussion board software to AN6023 (please see the <a href="https://www.groom.lake.86it.us/community/viewforum.php?f=486">Convertors Forum</a>)</li></ul><p>We encourage users still running beta versions of AN6023 to replace their installation with a fresh copy of the latest version.</p><h2>Extensions / Styles</h2><p>For issues relating to Extensions, please post in the appropriate <a href="https://www.groom.lake.86it.us/community/viewforum.php?f=451">Extensions Forum</a>.<br />For issues relating to styles, templates and themes, please post in the appropriate <a href="https://www.groom.lake.86it.us/community/viewforum.php?f=471">Styles Forum</a>.<br /><br />If your question relates to a specific package, please post directly in the topic dedicated to the package.</p><h2>Obtaining Support</h2><p><a href="https://www.groom.lake.86it.us/support/">Support Section</a><br /><a href="https://www.groom.lake.86it.us/support/docs/en/3.3/ug/quickstart/">Quick Start Guide</a><br /><br />To ensure you stay up to date with the latest news and releases, follow us on <a href="https://www.twitter.com/an602/">Twitter</a> and <a href="https://www.facebook.com/an602/">Facebook</a><br /><br />',
 
 	// License
 	'LICENSE_TITLE'		=> 'General Public License',
@@ -82,8 +82,8 @@ $lang = array_merge($lang, array(
 
 	'ACP_LINK'	=> 'Take me to <a href="%1$s">the ACP</a>',
 
-	'INSTALL_AN602_INSTALLED'		=> 'AN602 is already installed.',
-	'INSTALL_AN602_NOT_INSTALLED'	=> 'AN602 is not installed yet.',
+	'INSTALL_PHPBB_INSTALLED'		=> 'AN602 is already installed.',
+	'INSTALL_PHPBB_NOT_INSTALLED'	=> 'AN602 is not installed yet.',
 ));
 
 // Requirements translation
@@ -362,7 +362,7 @@ $lang = array_merge($lang, array(
 
 		<ol style="margin-left: 20px; font-size: 1.1em;">
 			<li><strong class="error">Backup all board files and the database.</strong></li>
-			<li>Go to the <a href="https://groom.lake.86it.us/downloads/" title="https://groom.lake.86it.us/downloads/">AN602.com downloads page</a> and download the latest "Full Package" archive.</li>
+			<li>Go to the <a href="https://www.groom.lake.86it.us/downloads/" title="https://www.groom.lake.86it.us/downloads/">AN602.com downloads page</a> and download the latest "Full Package" archive.</li>
 			<li>Unpack the archive.</li>
 			<li>Remove (delete) the <code class="inline">config.php</code> file, and the <code class="inline">/images</code>, <code class="inline">/store</code> and <code class="inline">/files</code> folders <em>from the package</em> (not your site).</li>
 			<li>Go to the ACP, Board settings, and make sure prosilver is set as the default style. If not, set it to prosilver.</li>
@@ -384,7 +384,7 @@ $lang = array_merge($lang, array(
 		<p>The advanced update package is only recommended for expert users in case core AN602 files have been modified in your installation. You are also able to update your installation using the methods listed within the INSTALL.html document. The steps for updating AN6023 using the advanced update package are:</p>
 
 		<ol style="margin-left: 20px; font-size: 1.1em;">
-			<li>Go to the <a href="https://groom.lake.86it.us/downloads/" title="https://groom.lake.86it.us/downloads/">AN602.com downloads page</a> and download the "Advanced Update Package" archive.</li>
+			<li>Go to the <a href="https://www.groom.lake.86it.us/downloads/" title="https://www.groom.lake.86it.us/downloads/">AN602.com downloads page</a> and download the "Advanced Update Package" archive.</li>
 			<li>Unpack the archive.</li>
 			<li>Upload the complete uncompressed "install" and "vendor" folders to your AN602 root directory (where your config.php file is).<br><br></li>
 		</ol>
@@ -496,7 +496,7 @@ $lang = array_merge($lang, array(
 	'CONVERT_NOT_EXIST'			=> 'The specified convertor does not exist.',
 	'DEV_NO_TEST_FILE'			=> 'No value has been specified for the test_file variable in the convertor. If you are a user of this convertor, you should not be seeing this error, please report this message to the convertor author. If you are a convertor author, you must specify the name of a file which exists in the source board to allow the path to it to be verified.',
 	'COULD_NOT_FIND_PATH'		=> 'Could not find path to your former board. Please check your settings and try again.<br />» %s was specified as the source path.',
-	'CONFIG_AN602_EMPTY'		=> 'The AN6023 config variable for “%s” is empty.',
+	'CONFIG_PHPBB_EMPTY'		=> 'The AN6023 config variable for “%s” is empty.',
 
 	'MAKE_FOLDER_WRITABLE'		=> 'Please make sure that this folder exists and is writable by the webserver then try again:<br />»<strong>%s</strong>.',
 	'MAKE_FOLDERS_WRITABLE'		=> 'Please make sure that these folders exist and are writable by the webserver then try again:<br />»<strong>%s</strong>.',
@@ -566,7 +566,7 @@ $lang = array_merge($lang, array(
 
 	// Finish conversion
 	'CONVERT_COMPLETE'			=> 'Conversion completed',
-	'CONVERT_COMPLETE_EXPLAIN'	=> 'You have now successfully converted your board to AN602 3.3. You can now login and <a href="../">access your board</a>. Please ensure that the settings were transferred correctly before enabling your board by deleting the install directory. Remember that help on using AN602 is available online via the <a href="https://groom.lake.86it.us/support/docs/en/3.3/ug/">Documentation</a> and the <a href="https://groom.lake.86it.us/community/viewforum.php?f=661">support forums</a>.',
+	'CONVERT_COMPLETE_EXPLAIN'	=> 'You have now successfully converted your board to AN602 3.3. You can now login and <a href="../">access your board</a>. Please ensure that the settings were transferred correctly before enabling your board by deleting the install directory. Remember that help on using AN602 is available online via the <a href="https://www.groom.lake.86it.us/support/docs/en/3.3/ug/">Documentation</a> and the <a href="https://www.groom.lake.86it.us/community/viewforum.php?f=661">support forums</a>.',
 
 	'CONV_ERROR_ATTACH_FTP_DIR'			=> 'FTP upload for attachments is enabled at the old board. Please disable the FTP upload option and make sure a valid upload directory is specified, then copy all attachment files to this new web accessible directory. Once you have done this, restart the convertor.',
 	'CONV_ERROR_CONFIG_EMPTY'			=> 'There is no configuration information available for the conversion.',

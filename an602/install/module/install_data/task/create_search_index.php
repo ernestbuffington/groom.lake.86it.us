@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -108,7 +108,7 @@ class create_search_index extends \an602\install\task_base
 		);
 
 		$sql = 'SELECT post_id, post_subject, post_text, poster_id, forum_id
-			FROM ' . AN602_POSTS_TABLE;
+			FROM ' . POSTS_TABLE;
 		$result = $this->db->sql_query($sql);
 
 		while ($row = $this->db->sql_fetchrow($result))

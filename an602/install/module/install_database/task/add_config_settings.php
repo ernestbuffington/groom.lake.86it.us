@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -299,7 +299,7 @@ class add_config_settings extends \an602\install\task_base
 		}
 
 		// We set a (semi-)unique cookie name to bypass login issues related to the cookie name.
-		$cookie_name = 'an6023_';
+		$cookie_name = 'phpbb3_';
 		$rand_str = md5(mt_rand());
 		$rand_str = str_replace('0', 'z', base_convert($rand_str, 16, 35));
 		$rand_str = substr($rand_str, 0, 5);

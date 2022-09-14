@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -156,7 +156,7 @@ class fulltext_sphinx
 
 		if (!class_exists('SphinxClient'))
 		{
-			require($this->an602_root_path . 'includes/an602_sphinxapi.' . $this->php_ext);
+			require($this->an602_root_path . 'includes/sphinxapi.' . $this->php_ext);
 		}
 
 		// Initialize sphinx client
@@ -270,8 +270,8 @@ class fulltext_sphinx
 				array('sql_db',						$dbname),
 				array('sql_port',					$dbport . ' # optional, default is 3306 for mysql and 5432 for pgsql'),
 				array('sql_query_pre',				'SET NAMES \'utf8\''),
-				array('sql_query_pre',				'UPDATE ' . AN602_SPHINX_TABLE . ' SET max_doc_id = (SELECT MAX(post_id) FROM ' . AN602_POSTS_TABLE . ') WHERE counter_id = 1'),
-				array('sql_query_range',			'SELECT MIN(post_id), MAX(post_id) FROM ' . AN602_POSTS_TABLE . ''),
+				array('sql_query_pre',				'UPDATE ' . SPHINX_TABLE . ' SET max_doc_id = (SELECT MAX(post_id) FROM ' . POSTS_TABLE . ') WHERE counter_id = 1'),
+				array('sql_query_range',			'SELECT MIN(post_id), MAX(post_id) FROM ' . POSTS_TABLE . ''),
 				array('sql_range_step',				'5000'),
 				array('sql_query',					'SELECT
 						p.post_id AS id,
@@ -286,12 +286,12 @@ class fulltext_sphinx
 						p.post_text as data,
 						t.topic_last_post_time,
 						0 as deleted
-					FROM ' . AN602_POSTS_TABLE . ' p, ' . AN602_TOPICS_TABLE . ' t
+					FROM ' . POSTS_TABLE . ' p, ' . TOPICS_TABLE . ' t
 					WHERE
 						p.topic_id = t.topic_id
 						AND p.post_id >= $start AND p.post_id <= $end'),
 				array('sql_query_post',				''),
-				array('sql_query_post_index',		'UPDATE ' . AN602_SPHINX_TABLE . ' SET max_doc_id = $maxid WHERE counter_id = 1'),
+				array('sql_query_post_index',		'UPDATE ' . SPHINX_TABLE . ' SET max_doc_id = $maxid WHERE counter_id = 1'),
 				array('sql_attr_uint',				'forum_id'),
 				array('sql_attr_uint',				'topic_id'),
 				array('sql_attr_uint',				'poster_id'),
@@ -319,10 +319,10 @@ class fulltext_sphinx
 						p.post_text as data,
 						t.topic_last_post_time,
 						0 as deleted
-					FROM ' . AN602_POSTS_TABLE . ' p, ' . AN602_TOPICS_TABLE . ' t
+					FROM ' . POSTS_TABLE . ' p, ' . TOPICS_TABLE . ' t
 					WHERE
 						p.topic_id = t.topic_id
-						AND p.post_id >=  ( SELECT max_doc_id FROM ' . AN602_SPHINX_TABLE . ' WHERE counter_id=1 )'),
+						AND p.post_id >=  ( SELECT max_doc_id FROM ' . SPHINX_TABLE . ' WHERE counter_id=1 )'),
 				array('sql_query_post_index',		''),
 			),
 			'index index_an602_' . $this->id . '_main' => array(
@@ -852,11 +852,11 @@ class fulltext_sphinx
 			$sql_array = array(
 				'SELECT'	=> 'p1.post_id',
 				'FROM'		=> array(
-					AN602_POSTS_TABLE	=> 'p1',
+					POSTS_TABLE	=> 'p1',
 				),
 				'LEFT_JOIN'	=> array(array(
 					'FROM'	=> array(
-						AN602_POSTS_TABLE	=> 'p2'
+						POSTS_TABLE	=> 'p2'
 					),
 					'ON'	=> 'p1.topic_id = p2.topic_id',
 				)),
@@ -919,16 +919,16 @@ class fulltext_sphinx
 				),
 				'PRIMARY_KEY'	=> 'counter_id',
 			);
-			$this->db_tools->sql_create_table(AN602_SPHINX_TABLE, $table_data);
+			$this->db_tools->sql_create_table(SPHINX_TABLE, $table_data);
 
-			$sql = 'TRUNCATE TABLE ' . AN602_SPHINX_TABLE;
+			$sql = 'TRUNCATE TABLE ' . SPHINX_TABLE;
 			$this->db->sql_query($sql);
 
 			$data = array(
 				'counter_id'	=> '1',
 				'max_doc_id'	=> '0',
 			);
-			$sql = 'INSERT INTO ' . AN602_SPHINX_TABLE . ' ' . $this->db->sql_build_array('INSERT', $data);
+			$sql = 'INSERT INTO ' . SPHINX_TABLE . ' ' . $this->db->sql_build_array('INSERT', $data);
 			$this->db->sql_query($sql);
 		}
 
@@ -947,7 +947,7 @@ class fulltext_sphinx
 			return false;
 		}
 
-		$this->db_tools->sql_table_drop(AN602_SPHINX_TABLE);
+		$this->db_tools->sql_table_drop(SPHINX_TABLE);
 
 		return false;
 	}
@@ -961,7 +961,7 @@ class fulltext_sphinx
 	{
 		$created = false;
 
-		if ($this->db_tools->sql_table_exists(AN602_SPHINX_TABLE))
+		if ($this->db_tools->sql_table_exists(SPHINX_TABLE))
 		{
 			$created = true;
 		}
@@ -996,13 +996,13 @@ class fulltext_sphinx
 		if ($this->index_created())
 		{
 			$sql = 'SELECT COUNT(post_id) as total_posts
-				FROM ' . AN602_POSTS_TABLE;
+				FROM ' . POSTS_TABLE;
 			$result = $this->db->sql_query($sql);
 			$this->stats['total_posts'] = (int) $this->db->sql_fetchfield('total_posts');
 			$this->db->sql_freeresult($result);
 
 			$sql = 'SELECT COUNT(p.post_id) as main_posts
-				FROM ' . AN602_POSTS_TABLE . ' p, ' . AN602_SPHINX_TABLE . ' m
+				FROM ' . POSTS_TABLE . ' p, ' . SPHINX_TABLE . ' m
 				WHERE p.post_id <= m.max_doc_id
 					AND m.counter_id = 1';
 			$result = $this->db->sql_query($sql);

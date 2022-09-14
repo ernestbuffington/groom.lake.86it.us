@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -35,7 +35,7 @@ class report_handler_pm extends report_handler
 		$this->validate_report_request($id);
 
 		$sql = 'SELECT *
-			FROM ' . AN602_REPORTS_REASONS_TABLE . "
+			FROM ' . REPORTS_REASONS_TABLE . "
 			WHERE reason_id = $reason_id";
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
@@ -62,7 +62,7 @@ class report_handler_pm extends report_handler
 
 		$report_id = $this->create_report($report_data);
 
-		$sql = 'UPDATE ' . AN602_PRIVMSGS_TABLE . '
+		$sql = 'UPDATE ' . PRIVMSGS_TABLE . '
 			SET message_reported = 1
 			WHERE msg_id = ' . $id;
 		$this->db->sql_query($sql);
@@ -80,7 +80,7 @@ class report_handler_pm extends report_handler
 			'folder_id'		=> PRIVMSGS_INBOX,
 		);
 
-		$sql = 'INSERT INTO ' . AN602_PRIVMSGS_TO_TABLE . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
+		$sql = 'INSERT INTO ' . PRIVMSGS_TO_TABLE . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
 		$this->db->sql_query($sql);
 
 		$this->notifications->add_notifications('notification.type.report_pm', array_merge($this->report_data, $row, array(
@@ -110,7 +110,7 @@ class report_handler_pm extends report_handler
 
 		// Grab all relevant data
 		$sql = 'SELECT p.*, pt.*
-			FROM ' . AN602_PRIVMSGS_TABLE . ' p, ' . AN602_PRIVMSGS_TO_TABLE . " pt
+			FROM ' . PRIVMSGS_TABLE . ' p, ' . PRIVMSGS_TO_TABLE . " pt
 			WHERE p.msg_id = $id
 				AND p.msg_id = pt.msg_id
 				AND (p.author_id = " . $this->user->data['user_id'] . "

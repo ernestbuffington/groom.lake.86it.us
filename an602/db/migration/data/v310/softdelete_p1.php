@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -193,7 +193,7 @@ class softdelete_p1 extends \an602\db\migration\migration
 
 		foreach ($update_forums as $forum_id => $forum_data)
 		{
-			$sql = 'UPDATE ' . AN602_FORUMS_TABLE . '
+			$sql = 'UPDATE ' . FORUMS_TABLE . '
 				SET ' . $this->db->sql_build_array('UPDATE', $forum_data) . '
 				WHERE forum_id = ' . $forum_id;
 			$this->sql_query($sql);

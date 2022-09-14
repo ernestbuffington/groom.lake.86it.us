@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -82,7 +82,7 @@ abstract class messenger_base extends \an602\notification\method\base
 		// We do not send emails to banned users
 		if (!function_exists('an602_get_banned_user_ids'))
 		{
-			include($this->an602_root_path . 'includes/an602_functions_user.' . $this->php_ext);
+			include($this->an602_root_path . 'includes/functions_user.' . $this->php_ext);
 		}
 		$banned_users = an602_get_banned_user_ids($user_ids);
 
@@ -92,7 +92,7 @@ abstract class messenger_base extends \an602\notification\method\base
 		// Load the messenger
 		if (!class_exists('messenger'))
 		{
-			include($this->an602_root_path . 'includes/an602_functions_messenger.' . $this->php_ext);
+			include($this->an602_root_path . 'includes/functions_messenger.' . $this->php_ext);
 		}
 		$messenger = new \messenger();
 

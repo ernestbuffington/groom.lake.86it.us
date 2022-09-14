@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -32,7 +32,7 @@ abstract class migration implements migration_interface
 	protected $db_tools;
 
 	/** @var string */
-	protected $an602_table_prefix;
+	protected $table_prefix;
 
 	/** @var string */
 	protected $an602_root_path;
@@ -54,14 +54,14 @@ abstract class migration implements migration_interface
 	* @param \an602\db\tools\tools_interface $db_tools
 	* @param string $an602_root_path
 	* @param string $php_ext
-	* @param string $an602_table_prefix
+	* @param string $table_prefix
 	*/
-	public function __construct(\an602\config\config $config, \an602\db\driver\driver_interface $db, \an602\db\tools\tools_interface $db_tools, $an602_root_path, $php_ext, $an602_table_prefix)
+	public function __construct(\an602\config\config $config, \an602\db\driver\driver_interface $db, \an602\db\tools\tools_interface $db_tools, $an602_root_path, $php_ext, $table_prefix)
 	{
 		$this->config = $config;
 		$this->db = $db;
 		$this->db_tools = $db_tools;
-		$this->table_prefix = $an602_table_prefix;
+		$this->table_prefix = $table_prefix;
 
 		$this->an602_root_path = $an602_root_path;
 		$this->php_ext = $php_ext;

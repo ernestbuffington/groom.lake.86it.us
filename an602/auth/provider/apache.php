@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -128,7 +128,7 @@ class apache extends base
 			}
 
 			$sql = 'SELECT user_id, username, user_password, user_passchg, user_email, user_type
-				FROM ' . AN602_USERS_TABLE . "
+				FROM ' . USERS_TABLE . "
 				WHERE username = '" . $this->db->sql_escape($php_auth_user) . "'";
 			$result = $this->db->sql_query($sql);
 			$row = $this->db->sql_fetchrow($result);
@@ -189,7 +189,7 @@ class apache extends base
 			$type_cast_helper->set_var($php_auth_user, $php_auth_user, 'string', true);
 
 			$sql = 'SELECT *
-				FROM ' . AN602_USERS_TABLE . "
+				FROM ' . USERS_TABLE . "
 				WHERE username = '" . $this->db->sql_escape($php_auth_user) . "'";
 			$result = $this->db->sql_query($sql);
 			$row = $this->db->sql_fetchrow($result);
@@ -202,14 +202,14 @@ class apache extends base
 
 			if (!function_exists('user_add'))
 			{
-				include($this->an602_root_path . 'includes/an602_functions_user.' . $this->php_ext);
+				include($this->an602_root_path . 'includes/functions_user.' . $this->php_ext);
 			}
 
 			// create the user if he does not exist yet
 			user_add($this->user_row($php_auth_user));
 
 			$sql = 'SELECT *
-				FROM ' . AN602_USERS_TABLE . "
+				FROM ' . USERS_TABLE . "
 				WHERE username_clean = '" . $this->db->sql_escape(utf8_clean_string($php_auth_user)) . "'";
 			$result = $this->db->sql_query($sql);
 			$row = $this->db->sql_fetchrow($result);
@@ -237,7 +237,7 @@ class apache extends base
 	{
 		// first retrieve default group id
 		$sql = 'SELECT group_id
-			FROM ' . AN602_GROUPS_TABLE . "
+			FROM ' . GROUPS_TABLE . "
 			WHERE group_name = '" . $this->db->sql_escape('REGISTERED') . "'
 				AND group_type = " . GROUP_SPECIAL;
 		$result = $this->db->sql_query($sql);

@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -36,7 +36,7 @@ class finder
 	/**
 	* Creates a new finder instance.
 	*
-	* @param string $an602_root_path Path to the an602 root directory
+	* @param string $an602_root_path Path to the phpbb root directory
 	* @param string $php_ext php file extension
 	* @param \an602\cache\driver\driver_interface $cache A cache instance or null
 	*/
@@ -67,7 +67,7 @@ class finder
 		$hook_files = array();
 
 		// Now search for hooks...
-		$dh = @opendir($this->an602_root_path . 'includes/an602_hooks/');
+		$dh = @opendir($this->an602_root_path . 'includes/hooks/');
 
 		if ($dh)
 		{

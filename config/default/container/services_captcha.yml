@@ -1,6 +1,6 @@
 services:
     captcha.factory:
-        class: phpbb\captcha\factory
+        class: an602\captcha\factory
         arguments:
             - '@service_container'
             - '@captcha.plugins.service_collection'
@@ -8,14 +8,14 @@ services:
 # ----- Captcha plugins -----
 # Service MUST NOT be shared for all the plugins to work.
     captcha.plugins.service_collection:
-        class: phpbb\di\service_collection
+        class: an602\di\service_collection
         arguments:
             - '@service_container'
         tags:
             - { name: service_collection, tag: captcha.plugins }
 
     core.captcha.plugins.gd:
-        class: phpbb\captcha\plugins\gd
+        class: an602\captcha\plugins\gd
         shared: false
         calls:
             - [set_name, [core.captcha.plugins.gd]]
@@ -23,7 +23,7 @@ services:
             - { name: captcha.plugins }
 
     core.captcha.plugins.gd_wave:
-        class: phpbb\captcha\plugins\gd_wave
+        class: an602\captcha\plugins\gd_wave
         shared: false
         calls:
             - [set_name, [core.captcha.plugins.gd_wave]]
@@ -31,7 +31,7 @@ services:
             - { name: captcha.plugins }
 
     core.captcha.plugins.nogd:
-        class: phpbb\captcha\plugins\nogd
+        class: an602\captcha\plugins\nogd
         shared: false
         calls:
             - [set_name, [core.captcha.plugins.nogd]]
@@ -39,7 +39,7 @@ services:
             - { name: captcha.plugins }
 
     core.captcha.plugins.qa:
-        class: phpbb\captcha\plugins\qa
+        class: an602\captcha\plugins\qa
         shared: false
         arguments:
             - '%tables.captcha_qa_questions%'
@@ -51,7 +51,7 @@ services:
             - { name: captcha.plugins }
 
     core.captcha.plugins.recaptcha:
-        class: phpbb\captcha\plugins\recaptcha
+        class: an602\captcha\plugins\recaptcha
         shared: false
         calls:
             - [set_name, [core.captcha.plugins.recaptcha]]
@@ -59,7 +59,7 @@ services:
             - { name: captcha.plugins }
 
     core.captcha.plugins.recaptcha_v3:
-        class: phpbb\captcha\plugins\recaptcha_v3
+        class: an602\captcha\plugins\recaptcha_v3
         shared: false
         calls:
             - ['set_name', ['core.captcha.plugins.recaptcha_v3']]

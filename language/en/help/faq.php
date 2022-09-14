@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
  * DO NOT CHANGE
  */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -94,12 +94,12 @@ $lang = array_merge($lang, array(
 
 	'HELP_FAQ_ISSUES_ADMIN_ANSWER'	=> 'All users of the board can use the “Contact us” form, if the option was enabled by the board administrator.<br />Members of the board can also use the “The team” link.',
 	'HELP_FAQ_ISSUES_ADMIN_QUESTION'	=> 'How do I contact a board administrator?',
-	'HELP_FAQ_ISSUES_FEATURE_ANSWER'	=> 'This software was written by and licensed through PHP-AN602. If you believe a feature needs to be added please visit the <a href="https://groom.lake.86it.us/ideas/">AN602 Ideas Centre</a>, where you can upvote existing ideas or suggest new features.',
+	'HELP_FAQ_ISSUES_FEATURE_ANSWER'	=> 'This software was written by and licensed through AN602 Limited. If you believe a feature needs to be added please visit the <a href="https://www.groom.lake.86it.us/ideas/">AN602 Ideas Centre</a>, where you can upvote existing ideas or suggest new features.',
 	'HELP_FAQ_ISSUES_FEATURE_QUESTION'	=> 'Why isn’t X feature available?',
-	'HELP_FAQ_ISSUES_LEGAL_ANSWER'	=> 'Any of the administrators listed on the “The team” page should be an appropriate point of contact for your complaints. If this still gets no response then you should contact the owner of the domain (do a <a href="http://www.google.com/search?q=whois">whois lookup</a>) or, if this is running on a free service (e.g. Yahoo!, free.fr, f2s.com, etc.), the management or abuse department of that service. Please note that the PHP-AN602 has <strong>absolutely no jurisdiction</strong> and cannot in any way be held liable over how, where or by whom this board is used. Do not contact the PHP-AN602 in relation to any legal (cease and desist, liable, defamatory comment, etc.) matter <strong>not directly related</strong> to the AN602.com website or the discrete software of AN602 itself. If you do email PHP-AN602 <strong>about any third party</strong> use of this software then you should expect a terse response or no response at all.',
+	'HELP_FAQ_ISSUES_LEGAL_ANSWER'	=> 'Any of the administrators listed on the “The team” page should be an appropriate point of contact for your complaints. If this still gets no response then you should contact the owner of the domain (do a <a href="http://www.google.com/search?q=whois">whois lookup</a>) or, if this is running on a free service (e.g. Yahoo!, free.fr, f2s.com, etc.), the management or abuse department of that service. Please note that the AN602 Limited has <strong>absolutely no jurisdiction</strong> and cannot in any way be held liable over how, where or by whom this board is used. Do not contact the AN602 Limited in relation to any legal (cease and desist, liable, defamatory comment, etc.) matter <strong>not directly related</strong> to the AN602.com website or the discrete software of AN602 itself. If you do email AN602 Limited <strong>about any third party</strong> use of this software then you should expect a terse response or no response at all.',
 	'HELP_FAQ_ISSUES_LEGAL_QUESTION'	=> 'Who do I contact about abusive and/or legal matters related to this board?',
-	'HELP_FAQ_ISSUES_WHOIS_AN602_ANSWER'	=> 'This software (in its unmodified form) is produced, released and is copyright <a href="https://groom.lake.86it.us/">PHP-AN602</a>. It is made available under the GNU General Public License, version 2 (GPL-2.0) and may be freely distributed. See <a href="https://groom.lake.86it.us/about/">About AN602</a> for more details.',
-	'HELP_FAQ_ISSUES_WHOIS_AN602_QUESTION'	=> 'Who wrote this bulletin board?',
+	'HELP_FAQ_ISSUES_WHOIS_PHPBB_ANSWER'	=> 'This software (in its unmodified form) is produced, released and is copyright <a href="https://www.groom.lake.86it.us/">AN602 Limited</a>. It is made available under the GNU General Public License, version 2 (GPL-2.0) and may be freely distributed. See <a href="https://www.groom.lake.86it.us/about/">About AN602</a> for more details.',
+	'HELP_FAQ_ISSUES_WHOIS_PHPBB_QUESTION'	=> 'Who wrote this bulletin board?',
 
 	'HELP_FAQ_LOGIN_AUTO_LOGOUT_ANSWER'	=> 'If you do not check the <em>Remember me</em> box when you login, the board will only keep you logged in for a preset time. This prevents misuse of your account by anyone else. To stay logged in, check the <em>Remember me</em> box during login. This is not recommended if you access the board from a shared computer, e.g. library, internet cafe, university computer lab, etc. If you do not see this checkbox, it means a board administrator has disabled this feature.',
 	'HELP_FAQ_LOGIN_AUTO_LOGOUT_QUESTION'	=> 'Why do I get logged off automatically?',
@@ -109,7 +109,7 @@ $lang = array_merge($lang, array(
 	'HELP_FAQ_LOGIN_CANNOT_LOGIN_QUESTION'	=> 'Why can’t I login?',
 	'HELP_FAQ_LOGIN_CANNOT_REGISTER_ANSWER'	=> 'It is possible a board administrator has disabled registration to prevent new visitors from signing up. A board administrator could have also banned your IP address or disallowed the username you are attempting to register. Contact a board administrator for assistance.',
 	'HELP_FAQ_LOGIN_CANNOT_REGISTER_QUESTION'	=> 'Why can’t I register?',
-	'HELP_FAQ_LOGIN_COPPA_ANSWER'	=> 'COPPA, or the Children’s Online Privacy Protection Act of 1998, is a law in the United States requiring websites which can potentially collect information from minors under the age of 13 to have written parental consent or some other method of legal guardian acknowledgment, allowing the collection of personally identifiable information from a minor under the age of 13. If you are unsure if this applies to you as someone trying to register or to the website you are trying to register on, contact legal counsel for assistance. Please note that PHP-AN602 and the owners of this board cannot provide legal advice and is not a point of contact for legal concerns of any kind, except as outlined in question “Who do I contact about abusive and/or legal matters related to this board?”.',
+	'HELP_FAQ_LOGIN_COPPA_ANSWER'	=> 'COPPA, or the Children’s Online Privacy Protection Act of 1998, is a law in the United States requiring websites which can potentially collect information from minors under the age of 13 to have written parental consent or some other method of legal guardian acknowledgment, allowing the collection of personally identifiable information from a minor under the age of 13. If you are unsure if this applies to you as someone trying to register or to the website you are trying to register on, contact legal counsel for assistance. Please note that AN602 Limited and the owners of this board cannot provide legal advice and is not a point of contact for legal concerns of any kind, except as outlined in question “Who do I contact about abusive and/or legal matters related to this board?”.',
 	'HELP_FAQ_LOGIN_COPPA_QUESTION'	=> 'What is COPPA?',
 	'HELP_FAQ_LOGIN_DELETE_COOKIES_ANSWER'	=> '“Delete cookies” deletes the cookies created by AN602 which keep you authenticated and logged into the board. Cookies also provide functions such as read tracking if they have been enabled by a board administrator. If you are having login or logout problems, deleting board cookies may help.',
 	'HELP_FAQ_LOGIN_DELETE_COOKIES_QUESTION'	=> 'What does the “Delete cookies” do?',
@@ -151,7 +151,7 @@ $lang = array_merge($lang, array(
 	'HELP_FAQ_POSTING_REPORT_QUESTION'	=> 'How can I report posts to a moderator?',
 	'HELP_FAQ_POSTING_SIGNATURE_ANSWER'	=> 'To add a signature to a post you must first create one via your User Control Panel. Once created, you can check the <em>Attach a signature</em> box on the posting form to add your signature. You can also add a signature by default to all your posts by checking the appropriate radio button in the User Control Panel. If you do so, you can still prevent a signature being added to individual posts by un-checking the add signature box within the posting form.',
 	'HELP_FAQ_POSTING_SIGNATURE_QUESTION'	=> 'How do I add a signature to my post?',
-	'HELP_FAQ_POSTING_WARNING_ANSWER'	=> 'Each board administrator has their own set of rules for their site. If you have broken a rule, you may be issued a warning. Please note that this is the board administrator’s decision, and the PHP-AN602 has nothing to do with the warnings on the given site. Contact the board administrator if you are unsure about why you were issued a warning.',
+	'HELP_FAQ_POSTING_WARNING_ANSWER'	=> 'Each board administrator has their own set of rules for their site. If you have broken a rule, you may be issued a warning. Please note that this is the board administrator’s decision, and the AN602 Limited has nothing to do with the warnings on the given site. Contact the board administrator if you are unsure about why you were issued a warning.',
 	'HELP_FAQ_POSTING_WARNING_QUESTION'	=> 'Why did I receive a warning?',
 
 	'HELP_FAQ_SEARCH_BLANK_ANSWER'	=> 'Your search returned too many results for the webserver to handle. Use “Advanced search” and be more specific in the terms used and forums that are to be searched.',
@@ -175,7 +175,7 @@ $lang = array_merge($lang, array(
 	'HELP_FAQ_USERSETTINGS_EMAIL_LOGIN_QUESTION'	=> 'When I click the email link for a user it asks me to login?',
 	'HELP_FAQ_USERSETTINGS_HIDE_ONLINE_ANSWER'	=> 'Within your User Control Panel, under “Board preferences”, you will find the option <em>Hide your online status</em>. Enable this option and you will only appear to the administrators, moderators and yourself. You will be counted as a hidden user.',
 	'HELP_FAQ_USERSETTINGS_HIDE_ONLINE_QUESTION'	=> 'How do I prevent my username appearing in the online user listings?',
-	'HELP_FAQ_USERSETTINGS_LANGUAGE_ANSWER'	=> 'Either the administrator has not installed your language or nobody has translated this board into your language. Try asking a board administrator if they can install the language pack you need. If the language pack does not exist, feel free to create a new translation. More information can be found at the <a href="https://groom.lake.86it.us/">AN602</a>&reg; website.',
+	'HELP_FAQ_USERSETTINGS_LANGUAGE_ANSWER'	=> 'Either the administrator has not installed your language or nobody has translated this board into your language. Try asking a board administrator if they can install the language pack you need. If the language pack does not exist, feel free to create a new translation. More information can be found at the <a href="https://www.groom.lake.86it.us/">AN602</a>&reg; website.',
 	'HELP_FAQ_USERSETTINGS_LANGUAGE_QUESTION'	=> 'My language is not in the list!',
 	'HELP_FAQ_USERSETTINGS_RANK_ANSWER'	=> 'Ranks, which appear below your username, indicate the number of posts you have made or identify certain users, e.g. moderators and administrators. In general, you cannot directly change the wording of any board ranks as they are set by the board administrator. Please do not abuse the board by posting unnecessarily just to increase your rank. Most boards will not tolerate this and the moderator or administrator will simply lower your post count.',
 	'HELP_FAQ_USERSETTINGS_RANK_QUESTION'	=> 'What is my rank and how do I change it?',

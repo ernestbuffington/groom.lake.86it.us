@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -49,7 +49,7 @@ class finder
 	* Creates a new finder instance with its dependencies
 	*
 	* @param \an602\filesystem\filesystem_interface $filesystem Filesystem instance
-	* @param string $an602_root_path Path to the an602 root directory
+	* @param string $an602_root_path Path to the phpbb root directory
 	* @param \an602\cache\service $cache A cache instance or null
 	* @param string $php_ext php file extension
 	* @param string $cache_name The name of the cache variable, defaults to

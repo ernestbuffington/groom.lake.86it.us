@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -294,7 +294,7 @@ class qa
 
 		$sql = 'SELECT c.confirm_id
 			FROM ' . $this->table_qa_confirm . ' c
-			LEFT JOIN ' . AN602_SESSIONS_TABLE . ' s
+			LEFT JOIN ' . SESSIONS_TABLE . ' s
 				ON (c.session_id = s.session_id)
 			WHERE s.session_id IS NULL' .
 				((empty($type)) ? '' : ' AND c.confirm_type = ' . (int) $type);
@@ -995,7 +995,7 @@ class qa
 		global $db;
 
 		$sql = 'SELECT *
-			FROM ' . AN602_LANG_TABLE;
+			FROM ' . LANG_TABLE;
 		$result = $db->sql_query($sql);
 
 		$langs = array();

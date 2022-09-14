@@ -1,11 +1,11 @@
 services:
 # ----- Auth management -----
     auth:
-        class: phpbb\auth\auth
+        class: an602\auth\auth
 
 # ----- Auth providers -----
     auth.provider_collection:
-        class: phpbb\auth\provider_collection
+        class: an602\auth\provider_collection
         arguments:
             - '@service_container'
             - '@config'
@@ -13,7 +13,7 @@ services:
             - { name: service_collection, tag: auth.provider }
 
     auth.provider.db:
-        class: phpbb\auth\provider\db
+        class: an602\auth\provider\db
         arguments:
             - '@captcha.factory'
             - '@config'
@@ -27,7 +27,7 @@ services:
             - { name: auth.provider }
 
     auth.provider.apache:
-        class: phpbb\auth\provider\apache
+        class: an602\auth\provider\apache
         arguments:
             - '@config'
             - '@dbal.conn'
@@ -40,7 +40,7 @@ services:
             - { name: auth.provider }
 
     auth.provider.ldap:
-        class: phpbb\auth\provider\ldap
+        class: an602\auth\provider\ldap
         arguments:
             - '@config'
             - '@dbal.conn'
@@ -50,7 +50,7 @@ services:
             - { name: auth.provider }
 
     auth.provider.oauth:
-        class: phpbb\auth\provider\oauth\oauth
+        class: an602\auth\provider\oauth\oauth
         arguments:
             - '@config'
             - '@dbal.conn'
@@ -71,14 +71,14 @@ services:
 
 # ----- OAuth services providers -----
     auth.provider.oauth.service_collection:
-        class: phpbb\di\service_collection
+        class: an602\di\service_collection
         arguments:
             - '@service_container'
         tags:
             - { name: service_collection, tag: auth.provider.oauth.service }
 
     auth.provider.oauth.service.bitly:
-        class: phpbb\auth\provider\oauth\service\bitly
+        class: an602\auth\provider\oauth\service\bitly
         arguments:
             - '@config'
             - '@request'
@@ -86,7 +86,7 @@ services:
             - { name: auth.provider.oauth.service }
 
     auth.provider.oauth.service.facebook:
-        class: phpbb\auth\provider\oauth\service\facebook
+        class: an602\auth\provider\oauth\service\facebook
         arguments:
             - '@config'
             - '@request'
@@ -94,7 +94,7 @@ services:
             - { name: auth.provider.oauth.service }
 
     auth.provider.oauth.service.google:
-        class: phpbb\auth\provider\oauth\service\google
+        class: an602\auth\provider\oauth\service\google
         arguments:
             - '@config'
             - '@request'
@@ -102,7 +102,7 @@ services:
             - { name: auth.provider.oauth.service }
 
     auth.provider.oauth.service.twitter:
-        class: phpbb\auth\provider\oauth\service\twitter
+        class: an602\auth\provider\oauth\service\twitter
         arguments:
             - '@config'
             - '@request'

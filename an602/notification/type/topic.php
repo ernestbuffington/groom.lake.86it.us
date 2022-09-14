@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -118,7 +118,7 @@ class topic extends \an602\notification\type\base
 		$users = array();
 
 		$sql = 'SELECT user_id
-			FROM ' . AN602_FORUMS_WATCH_TABLE . '
+			FROM ' . FORUMS_WATCH_TABLE . '
 			WHERE forum_id = ' . (int) $topic['forum_id'] . '
 				AND notify_status = ' . NOTIFY_YES . '
 				AND user_id <> ' . (int) $topic['poster_id'];
@@ -267,7 +267,7 @@ class topic extends \an602\notification\type\base
 		}
 
 		$tracking_data = array();
-		$sql = 'SELECT user_id, mark_time FROM ' . AN602_TOPICS_TRACK_TABLE . '
+		$sql = 'SELECT user_id, mark_time FROM ' . TOPICS_TRACK_TABLE . '
 			WHERE topic_id = ' . (int) $post['topic_id'] . '
 				AND ' . $this->db->sql_in_set('user_id', array_keys($notify_users));
 		$result = $this->db->sql_query($sql);

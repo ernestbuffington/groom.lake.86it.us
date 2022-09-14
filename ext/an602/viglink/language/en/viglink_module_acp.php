@@ -3,7 +3,7 @@
  *
  * VigLink extension for the AN602 CMS Software package.
  *
- * @copyright (c) 2014 PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) 2014 AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
@@ -11,7 +11,7 @@
 /**
  * DO NOT CHANGE
  */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -46,7 +46,7 @@ $lang = array_merge($lang, array(
 	'ACP_VIGLINK_ENABLE_EXPLAIN'	=> 'Enables use of VigLink services.',
 	'ACP_VIGLINK_EARNINGS'			=> 'Claim your own earnings (optional)',
 	'ACP_VIGLINK_EARNINGS_EXPLAIN'	=> 'You can claim your own earnings by signing up for a VigLink Convert account.',
-	'ACP_VIGLINK_DISABLED_AN602'	=> 'VigLink services have been disabled by AN602.',
+	'ACP_VIGLINK_DISABLED_PHPBB'	=> 'VigLink services have been disabled by AN602.',
 	'ACP_VIGLINK_CLAIM'				=> 'Claim your earnings',
 	'ACP_VIGLINK_CLAIM_EXPLAIN'		=> 'You can claim your forum’s earnings from VigLink monetised links, instead of donating the earnings to the AN602 project. To manage your account settings, sign up for a “VigLink Convert” account by clicking on “Convert account”.',
 	'ACP_VIGLINK_CONVERT_ACCOUNT'	=> 'Convert account',

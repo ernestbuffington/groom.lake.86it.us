@@ -1,4 +1,4 @@
-/* global an602, plupload, attachInline */
+/* global phpbb, plupload, attachInline */
 
 plupload.addI18n(an602.plupload.i18n);
 an602.plupload.ids = [];
@@ -128,7 +128,7 @@ an602.plupload.setData = function(data) {
 };
 
 /**
- * Update the attachment data in the HTML and the an602 & an602.plupload objects.
+ * Update the attachment data in the HTML and the phpbb & an602.plupload objects.
  *
  * @param {Array} data			Array containing the new data to use.
  * @param {string} action		The action that required the update. Used to update the inline attachment bbcodes.

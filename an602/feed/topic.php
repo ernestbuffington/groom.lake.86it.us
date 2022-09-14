@@ -3,7 +3,7 @@
  *
  * This file is part of the AN602 CMS Software package.
  *
- * @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+ * @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  * For full copyright and license information, please see
@@ -48,8 +48,8 @@ class topic extends post_base
 	public function open()
 	{
 		$sql = 'SELECT f.forum_options, f.forum_password, t.topic_id, t.forum_id, t.topic_visibility, t.topic_title, t.topic_time, t.topic_views, t.topic_posts_approved, t.topic_type
-			FROM ' . AN602_TOPICS_TABLE . ' t
-			LEFT JOIN ' . AN602_FORUMS_TABLE . ' f
+			FROM ' . TOPICS_TABLE . ' t
+			LEFT JOIN ' . FORUMS_TABLE . ' f
 				ON (f.forum_id = t.forum_id)
 			WHERE t.topic_id = ' . $this->topic_id;
 		$result = $this->db->sql_query($sql);
@@ -132,8 +132,8 @@ class topic extends post_base
 			'SELECT'	=>	'p.post_id, p.post_time, p.post_edit_time, p.post_visibility, p.post_subject, p.post_text, p.bbcode_bitfield, p.bbcode_uid, p.enable_bbcode, p.enable_smilies, p.enable_magic_url, p.post_attachment, ' .
 				'u.username, u.user_id',
 			'FROM'		=> array(
-				AN602_POSTS_TABLE		=> 'p',
-				AN602_USERS_TABLE		=> 'u',
+				POSTS_TABLE		=> 'p',
+				USERS_TABLE		=> 'u',
 			),
 			'WHERE'		=> 'p.topic_id = ' . $this->topic_id . '
 								AND ' . $this->content_visibility->get_visibility_sql('post', $this->forum_id, 'p.') . '

@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -232,7 +232,7 @@ class release_3_0_6_rc1 extends \an602\db\migration\migration
 	public function set_user_options_default()
 	{
 		// 229376 is the added value to enable all three signature options
-		$sql = 'UPDATE ' . AN602_USERS_TABLE . ' SET user_options = user_options + 229376';
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_options = user_options + 229376';
 		$this->sql_query($sql);
 	}
 
@@ -240,7 +240,7 @@ class release_3_0_6_rc1 extends \an602\db\migration\migration
 	{
 		// Add newly_registered group... but check if it already exists (we always supported running the updater on any schema)
 		$sql = 'SELECT group_id
-			FROM ' . AN602_GROUPS_TABLE . "
+			FROM ' . GROUPS_TABLE . "
 			WHERE group_name = 'NEWLY_REGISTERED'";
 		$result = $this->db->sql_query($sql);
 		$group_id = (int) $this->db->sql_fetchfield('group_id');
@@ -248,7 +248,7 @@ class release_3_0_6_rc1 extends \an602\db\migration\migration
 
 		if (!$group_id)
 		{
-			$sql = 'INSERT INTO ' .  AN602_GROUPS_TABLE . " (group_name, group_type, group_founder_manage, group_colour, group_legend, group_avatar, group_desc, group_desc_uid, group_max_recipients) VALUES ('NEWLY_REGISTERED', 3, 0, '', 0, '', '', '', 5)";
+			$sql = 'INSERT INTO ' .  GROUPS_TABLE . " (group_name, group_type, group_founder_manage, group_colour, group_legend, group_avatar, group_desc, group_desc_uid, group_max_recipients) VALUES ('NEWLY_REGISTERED', 3, 0, '', 0, '', '', '', 5)";
 			$this->sql_query($sql);
 
 			$group_id = $this->db->sql_nextid();
@@ -256,7 +256,7 @@ class release_3_0_6_rc1 extends \an602\db\migration\migration
 
 		// Insert new user role... at the end of the chain
 		$sql = 'SELECT role_id
-			FROM ' . AN602_ACL_ROLES_TABLE . "
+			FROM ' . ACL_ROLES_TABLE . "
 			WHERE role_name = 'ROLE_USER_NEW_MEMBER'
 				AND role_type = 'u_'";
 		$result = $this->db->sql_query($sql);
@@ -266,7 +266,7 @@ class release_3_0_6_rc1 extends \an602\db\migration\migration
 		if (!$u_role)
 		{
 			$sql = 'SELECT MAX(role_order) as max_order_id
-				FROM ' . AN602_ACL_ROLES_TABLE . "
+				FROM ' . ACL_ROLES_TABLE . "
 				WHERE role_type = 'u_'";
 			$result = $this->db->sql_query($sql);
 			$next_order_id = (int) $this->db->sql_fetchfield('max_order_id');
@@ -274,23 +274,23 @@ class release_3_0_6_rc1 extends \an602\db\migration\migration
 
 			$next_order_id++;
 
-			$sql = 'INSERT INTO ' . AN602_ACL_ROLES_TABLE . " (role_name, role_description, role_type, role_order) VALUES ('ROLE_USER_NEW_MEMBER', 'ROLE_DESCRIPTION_USER_NEW_MEMBER', 'u_', $next_order_id)";
+			$sql = 'INSERT INTO ' . ACL_ROLES_TABLE . " (role_name, role_description, role_type, role_order) VALUES ('ROLE_USER_NEW_MEMBER', 'ROLE_DESCRIPTION_USER_NEW_MEMBER', 'u_', $next_order_id)";
 			$this->sql_query($sql);
 			$u_role = $this->db->sql_nextid();
 
 			// Now add the correct data to the roles...
 			// The standard role says that new users are not able to send a PM, Mass PM, are not able to PM groups
-			$sql = 'INSERT INTO ' . AN602_ACL_ROLES_DATA_TABLE . " (role_id, auth_option_id, auth_setting) SELECT $u_role, auth_option_id, 0 FROM " . AN602_ACL_OPTIONS_TABLE . " WHERE auth_option LIKE 'u_%' AND auth_option IN ('u_sendpm', 'u_masspm', 'u_masspm_group')";
+			$sql = 'INSERT INTO ' . ACL_ROLES_DATA_TABLE . " (role_id, auth_option_id, auth_setting) SELECT $u_role, auth_option_id, 0 FROM " . ACL_OPTIONS_TABLE . " WHERE auth_option LIKE 'u_%' AND auth_option IN ('u_sendpm', 'u_masspm', 'u_masspm_group')";
 			$this->sql_query($sql);
 
 			// Add user role to group
-			$sql = 'INSERT INTO ' . AN602_ACL_AN602_GROUPS_TABLE . " (group_id, forum_id, auth_option_id, auth_role_id, auth_setting) VALUES ($group_id, 0, 0, $u_role, 0)";
+			$sql = 'INSERT INTO ' . ACL_GROUPS_TABLE . " (group_id, forum_id, auth_option_id, auth_role_id, auth_setting) VALUES ($group_id, 0, 0, $u_role, 0)";
 			$this->sql_query($sql);
 		}
 
 		// Insert new forum role
 		$sql = 'SELECT role_id
-			FROM ' . AN602_ACL_ROLES_TABLE . "
+			FROM ' . ACL_ROLES_TABLE . "
 			WHERE role_name = 'ROLE_FORUM_NEW_MEMBER'
 				AND role_type = 'f_'";
 		$result = $this->db->sql_query($sql);
@@ -300,7 +300,7 @@ class release_3_0_6_rc1 extends \an602\db\migration\migration
 		if (!$f_role)
 		{
 			$sql = 'SELECT MAX(role_order) as max_order_id
-				FROM ' . AN602_ACL_ROLES_TABLE . "
+				FROM ' . ACL_ROLES_TABLE . "
 				WHERE role_type = 'f_'";
 			$result = $this->db->sql_query($sql);
 			$next_order_id = (int) $this->db->sql_fetchfield('max_order_id');
@@ -308,17 +308,17 @@ class release_3_0_6_rc1 extends \an602\db\migration\migration
 
 			$next_order_id++;
 
-			$sql = 'INSERT INTO ' . AN602_ACL_ROLES_TABLE . " (role_name, role_description, role_type, role_order) VALUES  ('ROLE_FORUM_NEW_MEMBER', 'ROLE_DESCRIPTION_FORUM_NEW_MEMBER', 'f_', $next_order_id)";
+			$sql = 'INSERT INTO ' . ACL_ROLES_TABLE . " (role_name, role_description, role_type, role_order) VALUES  ('ROLE_FORUM_NEW_MEMBER', 'ROLE_DESCRIPTION_FORUM_NEW_MEMBER', 'f_', $next_order_id)";
 			$this->sql_query($sql);
 			$f_role = $this->db->sql_nextid();
 
-			$sql = 'INSERT INTO ' . AN602_ACL_ROLES_DATA_TABLE . " (role_id, auth_option_id, auth_setting) SELECT $f_role, auth_option_id, 0 FROM " . AN602_ACL_OPTIONS_TABLE . " WHERE auth_option LIKE 'f_%' AND auth_option IN ('f_noapprove')";
+			$sql = 'INSERT INTO ' . ACL_ROLES_DATA_TABLE . " (role_id, auth_option_id, auth_setting) SELECT $f_role, auth_option_id, 0 FROM " . ACL_OPTIONS_TABLE . " WHERE auth_option LIKE 'f_%' AND auth_option IN ('f_noapprove')";
 			$this->sql_query($sql);
 		}
 
 		// Set every members user_new column to 0 (old users) only if there is no one yet (this makes sure we do not execute this more than once)
 		$sql = 'SELECT 1
-			FROM ' . AN602_USERS_TABLE . '
+			FROM ' . USERS_TABLE . '
 			WHERE user_new = 0';
 		$result = $this->db->sql_query_limit($sql, 1);
 		$row = $this->db->sql_fetchrow($result);
@@ -326,14 +326,14 @@ class release_3_0_6_rc1 extends \an602\db\migration\migration
 
 		if (!$row)
 		{
-			$sql = 'UPDATE ' . AN602_USERS_TABLE . ' SET user_new = 0';
+			$sql = 'UPDATE ' . USERS_TABLE . ' SET user_new = 0';
 			$this->sql_query($sql);
 		}
 
 		// To mimick the old "feature" we will assign the forum role to every forum, regardless of the setting (this makes sure there are no "this does not work!!!! YUO!!!" posts...
 		// Check if the role is already assigned...
 		$sql = 'SELECT forum_id
-			FROM ' . AN602_ACL_AN602_GROUPS_TABLE . '
+			FROM ' . ACL_GROUPS_TABLE . '
 			WHERE group_id = ' . $group_id . '
 				AND auth_role_id = ' . $f_role;
 		$result = $this->db->sql_query($sql);
@@ -345,19 +345,19 @@ class release_3_0_6_rc1 extends \an602\db\migration\migration
 		{
 			// Get postable forums
 			$sql = 'SELECT forum_id
-				FROM ' . AN602_FORUMS_TABLE . '
+				FROM ' . FORUMS_TABLE . '
 				WHERE forum_type != ' . FORUM_LINK;
 			$result = $this->db->sql_query($sql);
 
 			while ($row = $this->db->sql_fetchrow($result))
 			{
-				$this->sql_query('INSERT INTO ' . AN602_ACL_AN602_GROUPS_TABLE . ' (group_id, forum_id, auth_option_id, auth_role_id, auth_setting) VALUES (' . $group_id . ', ' . (int) $row['forum_id'] . ', 0, ' . $f_role . ', 0)');
+				$this->sql_query('INSERT INTO ' . ACL_GROUPS_TABLE . ' (group_id, forum_id, auth_option_id, auth_role_id, auth_setting) VALUES (' . $group_id . ', ' . (int) $row['forum_id'] . ', 0, ' . $f_role . ', 0)');
 			}
 			$this->db->sql_freeresult($result);
 		}
 
 		// Clear permissions...
-		include_once($this->an602_root_path . 'includes/an602_acp/auth.' . $this->php_ext);
+		include_once($this->an602_root_path . 'includes/acp/auth.' . $this->php_ext);
 		$auth_admin = new \auth_admin();
 		$auth_admin->acl_clear_prefetch();
 	}

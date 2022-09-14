@@ -1,6 +1,6 @@
 services:
     installer.install_database.create_schema_file:
-        class: phpbb\install\module\install_database\task\create_schema_file
+        class: an602\install\module\install_database\task\create_schema_file
         arguments:
             - '@installer.helper.config'
             - '@installer.helper.database'
@@ -11,7 +11,7 @@ services:
             - { name: install_database_install, order: 10 }
 
     installer.install_database.set_up_database:
-        class: phpbb\install\module\install_database\task\set_up_database
+        class: an602\install\module\install_database\task\set_up_database
         arguments:
             - '@installer.helper.config'
             - '@installer.helper.database'
@@ -22,7 +22,7 @@ services:
             - { name: install_database_install, order: 20 }
 
     installer.install_database.add_tables:
-        class: phpbb\install\module\install_database\task\add_tables
+        class: an602\install\module\install_database\task\add_tables
         arguments:
             - '@installer.helper.config'
             - '@installer.helper.database'
@@ -32,7 +32,7 @@ services:
             - { name: install_database_install, order: 30 }
 
     installer.install_database.add_default_data:
-        class: phpbb\install\module\install_database\task\add_default_data
+        class: an602\install\module\install_database\task\add_default_data
         arguments:
             - '@installer.helper.database'
             - '@installer.helper.config'
@@ -44,7 +44,7 @@ services:
             - { name: install_database_install, order: 40 }
 
     installer.install_database.add_config_settings:
-        class: phpbb\install\module\install_database\task\add_config_settings
+        class: an602\install\module\install_database\task\add_config_settings
         arguments:
             - '@filesystem'
             - '@installer.helper.config'
@@ -56,14 +56,14 @@ services:
             - { name: install_database_install, order: 50 }
 
     installer.module.install_database_collection:
-        class: phpbb\di\ordered_service_collection
+        class: an602\di\ordered_service_collection
         arguments:
             - '@service_container'
         tags:
             - { name: service_collection, tag: install_database_install, class_name_aware: true }
 
     installer.module.database_install:
-        class: phpbb\install\module\install_database\module
+        class: an602\install\module\install_database\module
         parent: installer.module_base
         arguments:
             - '@installer.module.install_database_collection'

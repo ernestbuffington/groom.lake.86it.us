@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -133,7 +133,7 @@ class fulltext_native extends \an602\search\base
 		*/
 		if (!function_exists('utf8_decode_ncr'))
 		{
-			include($this->an602_root_path . 'includes/an602_utf/utf_tools.' . $this->php_ext);
+			include($this->an602_root_path . 'includes/utf/utf_tools.' . $this->php_ext);
 		}
 
 		$error = false;
@@ -347,7 +347,7 @@ class fulltext_native extends \an602\search\base
 		if (count($exact_words))
 		{
 			$sql = 'SELECT word_id, word_text, word_common
-				FROM ' . AN602_SEARCH_WORDLIST_TABLE . '
+				FROM ' . SEARCH_WORDLIST_TABLE . '
 				WHERE ' . $this->db->sql_in_set('word_text', $exact_words) . '
 				ORDER BY word_count ASC';
 			$result = $this->db->sql_query($sql);
@@ -636,11 +636,11 @@ class fulltext_native extends \an602\search\base
 		$sql_array = array(
 			'SELECT'	=> ($type == 'posts') ? 'DISTINCT p.post_id' : 'DISTINCT p.topic_id',
 			'FROM'		=> array(
-				AN602_SEARCH_WORDMATCH_TABLE	=> array(),
-				AN602_SEARCH_WORDLIST_TABLE	=> array(),
+				SEARCH_WORDMATCH_TABLE	=> array(),
+				SEARCH_WORDLIST_TABLE	=> array(),
 			),
 			'LEFT_JOIN' => array(array(
-				'FROM'	=> array(AN602_POSTS_TABLE => 'p'),
+				'FROM'	=> array(POSTS_TABLE => 'p'),
 				'ON'	=> 'm0.post_id = p.post_id',
 			)),
 		);
@@ -689,7 +689,7 @@ class fulltext_native extends \an602\search\base
 					if (is_string($id))
 					{
 						$sql_array['LEFT_JOIN'][] = array(
-							'FROM'	=> array(AN602_SEARCH_WORDLIST_TABLE => 'w' . $w_num),
+							'FROM'	=> array(SEARCH_WORDLIST_TABLE => 'w' . $w_num),
 							'ON'	=> "w$w_num.word_text LIKE $id"
 						);
 						$word_ids[] = "w$w_num.word_id";
@@ -709,7 +709,7 @@ class fulltext_native extends \an602\search\base
 			}
 			else if (is_string($subquery))
 			{
-				$sql_array['FROM'][AN602_SEARCH_WORDLIST_TABLE][] = 'w' . $w_num;
+				$sql_array['FROM'][SEARCH_WORDLIST_TABLE][] = 'w' . $w_num;
 
 				$sql_where[] = "w$w_num.word_text LIKE $subquery";
 				$sql_where[] = "m$m_num.word_id = w$w_num.word_id";
@@ -722,7 +722,7 @@ class fulltext_native extends \an602\search\base
 				$sql_where[] = "m$m_num.word_id = $subquery";
 			}
 
-			$sql_array['FROM'][AN602_SEARCH_WORDMATCH_TABLE][] = 'm' . $m_num;
+			$sql_array['FROM'][SEARCH_WORDMATCH_TABLE][] = 'm' . $m_num;
 
 			if ($title_match)
 			{
@@ -741,7 +741,7 @@ class fulltext_native extends \an602\search\base
 			if (is_string($subquery))
 			{
 				$sql_array['LEFT_JOIN'][] = array(
-					'FROM'	=> array(AN602_SEARCH_WORDLIST_TABLE => 'w' . $w_num),
+					'FROM'	=> array(SEARCH_WORDLIST_TABLE => 'w' . $w_num),
 					'ON'	=> "w$w_num.word_text LIKE $subquery"
 				);
 
@@ -755,7 +755,7 @@ class fulltext_native extends \an602\search\base
 		if (count($this->must_not_contain_ids))
 		{
 			$sql_array['LEFT_JOIN'][] = array(
-				'FROM'	=> array(AN602_SEARCH_WORDMATCH_TABLE => 'm' . $m_num),
+				'FROM'	=> array(SEARCH_WORDMATCH_TABLE => 'm' . $m_num),
 				'ON'	=> $this->db->sql_in_set("m$m_num.word_id", $this->must_not_contain_ids) . (($title_match) ? " AND m$m_num.$title_match" : '') . " AND m$m_num.post_id = m0.post_id"
 			);
 
@@ -771,7 +771,7 @@ class fulltext_native extends \an602\search\base
 				if (is_string($id))
 				{
 					$sql_array['LEFT_JOIN'][] = array(
-						'FROM'	=> array(AN602_SEARCH_WORDLIST_TABLE => 'w' . $w_num),
+						'FROM'	=> array(SEARCH_WORDLIST_TABLE => 'w' . $w_num),
 						'ON'	=> "w$w_num.word_text LIKE $id"
 					);
 					$id = "w$w_num.word_id";
@@ -781,7 +781,7 @@ class fulltext_native extends \an602\search\base
 				}
 
 				$sql_array['LEFT_JOIN'][] = array(
-					'FROM'	=> array(AN602_SEARCH_WORDMATCH_TABLE => 'm' . $m_num),
+					'FROM'	=> array(SEARCH_WORDMATCH_TABLE => 'm' . $m_num),
 					'ON'	=> "m$m_num.word_id = $id AND m$m_num.post_id = m0.post_id" . (($title_match) ? " AND m$m_num.$title_match" : '')
 				);
 				$is_null_joins[] = "m$m_num.word_id IS NULL";
@@ -811,7 +811,7 @@ class fulltext_native extends \an602\search\base
 		* @var	int		total_results			The previous result count for the format of the query
 		*										Set to 0 to force a re-count
 		* @var	array	sql_array				The data on how to search in the DB at this point
-		* @var	bool	left_join_topics		Whether or not AN602_TOPICS_TABLE should be CROSS JOIN'ED
+		* @var	bool	left_join_topics		Whether or not TOPICS_TABLE should be CROSS JOIN'ED
 		* @var	array	author_ary				Array of user_id containing the users to filter the results to
 		* @var	string	author_name				An extra username to search on (!empty(author_ary) must be true, to be relevant)
 		* @var	array	ex_fid_ary				Which forums not to search on
@@ -900,7 +900,7 @@ class fulltext_native extends \an602\search\base
 			if ($left_join_topics)
 			{
 				$sql_array_count['LEFT_JOIN'][] = array(
-					'FROM'	=> array(AN602_TOPICS_TABLE => 't'),
+					'FROM'	=> array(TOPICS_TABLE => 't'),
 					'ON'	=> 'p.topic_id = t.topic_id'
 				);
 			}
@@ -943,7 +943,7 @@ class fulltext_native extends \an602\search\base
 		switch ($sql_sort[0])
 		{
 			case 'u':
-				$sql_array['FROM'][AN602_USERS_TABLE] = 'u';
+				$sql_array['FROM'][USERS_TABLE] = 'u';
 				$sql_where[] = 'u.user_id = p.poster_id ';
 			break;
 
@@ -952,7 +952,7 @@ class fulltext_native extends \an602\search\base
 			break;
 
 			case 'f':
-				$sql_array['FROM'][AN602_FORUMS_TABLE] = 'f';
+				$sql_array['FROM'][FORUMS_TABLE] = 'f';
 				$sql_where[] = 'f.forum_id = p.forum_id';
 			break;
 		}
@@ -960,7 +960,7 @@ class fulltext_native extends \an602\search\base
 		if ($left_join_topics)
 		{
 			$sql_array['LEFT_JOIN'][] = array(
-				'FROM'	=> array(AN602_TOPICS_TABLE => 't'),
+				'FROM'	=> array(TOPICS_TABLE => 't'),
 				'ON'	=> 'p.topic_id = t.topic_id'
 			);
 		}
@@ -1121,17 +1121,17 @@ class fulltext_native extends \an602\search\base
 		switch ($sql_sort[0])
 		{
 			case 'u':
-				$sql_sort_table	= AN602_USERS_TABLE . ' u, ';
+				$sql_sort_table	= USERS_TABLE . ' u, ';
 				$sql_sort_join	= ' AND u.user_id = p.poster_id ';
 			break;
 
 			case 't':
-				$sql_sort_table	= ($type == 'posts' && !$firstpost_only) ? AN602_TOPICS_TABLE . ' t, ' : '';
+				$sql_sort_table	= ($type == 'posts' && !$firstpost_only) ? TOPICS_TABLE . ' t, ' : '';
 				$sql_sort_join	= ($type == 'posts' && !$firstpost_only) ? ' AND t.topic_id = p.topic_id ' : '';
 			break;
 
 			case 'f':
-				$sql_sort_table	= AN602_FORUMS_TABLE . ' f, ';
+				$sql_sort_table	= FORUMS_TABLE . ' f, ';
 				$sql_sort_join	= ' AND f.forum_id = p.forum_id ';
 			break;
 		}
@@ -1200,7 +1200,7 @@ class fulltext_native extends \an602\search\base
 					if ($type == 'posts')
 					{
 						$sql = 'SELECT COUNT(p.post_id) as total_results
-							FROM ' . AN602_POSTS_TABLE . ' p' . (($firstpost_only) ? ', ' . AN602_TOPICS_TABLE . ' t ' : ' ') . "
+							FROM ' . POSTS_TABLE . ' p' . (($firstpost_only) ? ', ' . TOPICS_TABLE . ' t ' : ' ') . "
 							WHERE $sql_author
 								$sql_topic_id
 								$sql_firstpost
@@ -1220,7 +1220,7 @@ class fulltext_native extends \an602\search\base
 							$sql = 'SELECT COUNT(DISTINCT t.topic_id) as total_results';
 						}
 
-						$sql .= ' FROM ' . AN602_TOPICS_TABLE . ' t, ' . AN602_POSTS_TABLE . " p
+						$sql .= ' FROM ' . TOPICS_TABLE . ' t, ' . POSTS_TABLE . " p
 							WHERE $sql_author
 								$sql_topic_id
 								$sql_firstpost
@@ -1246,7 +1246,7 @@ class fulltext_native extends \an602\search\base
 		if ($type == 'posts')
 		{
 			$sql = "SELECT $select
-				FROM " . $sql_sort_table . AN602_POSTS_TABLE . ' p' . (($firstpost_only) ? ', ' . AN602_TOPICS_TABLE . ' t' : '') . "
+				FROM " . $sql_sort_table . POSTS_TABLE . ' p' . (($firstpost_only) ? ', ' . TOPICS_TABLE . ' t' : '') . "
 				WHERE $sql_author
 					$sql_topic_id
 					$sql_firstpost
@@ -1260,7 +1260,7 @@ class fulltext_native extends \an602\search\base
 		else
 		{
 			$sql = "SELECT $select
-				FROM " . $sql_sort_table . AN602_TOPICS_TABLE . ' t, ' . AN602_POSTS_TABLE . " p
+				FROM " . $sql_sort_table . TOPICS_TABLE . ' t, ' . POSTS_TABLE . " p
 				WHERE $sql_author
 					$sql_topic_id
 					$sql_firstpost
@@ -1429,7 +1429,7 @@ class fulltext_native extends \an602\search\base
 			$words['del']['title'] = array();
 
 			$sql = 'SELECT w.word_id, w.word_text, m.title_match
-				FROM ' . AN602_SEARCH_WORDLIST_TABLE . ' w, ' . AN602_SEARCH_WORDMATCH_TABLE . " m
+				FROM ' . SEARCH_WORDLIST_TABLE . ' w, ' . SEARCH_WORDMATCH_TABLE . " m
 				WHERE m.post_id = $post_id
 					AND w.word_id = m.word_id";
 			$result = $this->db->sql_query($sql);
@@ -1498,7 +1498,7 @@ class fulltext_native extends \an602\search\base
 		if (count($unique_add_words))
 		{
 			$sql = 'SELECT word_id, word_text
-				FROM ' . AN602_SEARCH_WORDLIST_TABLE . '
+				FROM ' . SEARCH_WORDLIST_TABLE . '
 				WHERE ' . $this->db->sql_in_set('word_text', $unique_add_words);
 			$result = $this->db->sql_query($sql);
 
@@ -1520,7 +1520,7 @@ class fulltext_native extends \an602\search\base
 					$sql_ary[] = array('word_text' => (string) $word, 'word_count' => 0);
 				}
 				$this->db->sql_return_on_error(true);
-				$this->db->sql_multi_insert(AN602_SEARCH_WORDLIST_TABLE, $sql_ary);
+				$this->db->sql_multi_insert(SEARCH_WORDLIST_TABLE, $sql_ary);
 				$this->db->sql_return_on_error(false);
 			}
 			unset($new_words, $sql_ary);
@@ -1543,13 +1543,13 @@ class fulltext_native extends \an602\search\base
 					$sql_in[] = $cur_words[$word_in][$word];
 				}
 
-				$sql = 'DELETE FROM ' . AN602_SEARCH_WORDMATCH_TABLE . '
+				$sql = 'DELETE FROM ' . SEARCH_WORDMATCH_TABLE . '
 					WHERE ' . $this->db->sql_in_set('word_id', $sql_in) . '
 						AND post_id = ' . intval($post_id) . "
 						AND title_match = $title_match";
 				$this->db->sql_query($sql);
 
-				$sql = 'UPDATE ' . AN602_SEARCH_WORDLIST_TABLE . '
+				$sql = 'UPDATE ' . SEARCH_WORDLIST_TABLE . '
 					SET word_count = word_count - 1
 					WHERE ' . $this->db->sql_in_set('word_id', $sql_in) . '
 						AND word_count > 0';
@@ -1566,13 +1566,13 @@ class fulltext_native extends \an602\search\base
 
 			if (count($word_ary))
 			{
-				$sql = 'INSERT INTO ' . AN602_SEARCH_WORDMATCH_TABLE . ' (post_id, word_id, title_match)
+				$sql = 'INSERT INTO ' . SEARCH_WORDMATCH_TABLE . ' (post_id, word_id, title_match)
 					SELECT ' . (int) $post_id . ', word_id, ' . (int) $title_match . '
-					FROM ' . AN602_SEARCH_WORDLIST_TABLE . '
+					FROM ' . SEARCH_WORDLIST_TABLE . '
 					WHERE ' . $this->db->sql_in_set('word_text', $word_ary);
 				$this->db->sql_query($sql);
 
-				$sql = 'UPDATE ' . AN602_SEARCH_WORDLIST_TABLE . '
+				$sql = 'UPDATE ' . SEARCH_WORDLIST_TABLE . '
 					SET word_count = word_count + 1
 					WHERE ' . $this->db->sql_in_set('word_text', $word_ary);
 				$this->db->sql_query($sql);
@@ -1598,7 +1598,7 @@ class fulltext_native extends \an602\search\base
 		if (count($post_ids))
 		{
 			$sql = 'SELECT w.word_id, w.word_text, m.title_match
-				FROM ' . AN602_SEARCH_WORDMATCH_TABLE . ' m, ' . AN602_SEARCH_WORDLIST_TABLE . ' w
+				FROM ' . SEARCH_WORDMATCH_TABLE . ' m, ' . SEARCH_WORDLIST_TABLE . ' w
 				WHERE ' . $this->db->sql_in_set('m.post_id', $post_ids) . '
 					AND w.word_id = m.word_id';
 			$result = $this->db->sql_query($sql);
@@ -1620,7 +1620,7 @@ class fulltext_native extends \an602\search\base
 
 			if (count($title_word_ids))
 			{
-				$sql = 'UPDATE ' . AN602_SEARCH_WORDLIST_TABLE . '
+				$sql = 'UPDATE ' . SEARCH_WORDLIST_TABLE . '
 					SET word_count = word_count - 1
 					WHERE ' . $this->db->sql_in_set('word_id', $title_word_ids) . '
 						AND word_count > 0';
@@ -1629,7 +1629,7 @@ class fulltext_native extends \an602\search\base
 
 			if (count($message_word_ids))
 			{
-				$sql = 'UPDATE ' . AN602_SEARCH_WORDLIST_TABLE . '
+				$sql = 'UPDATE ' . SEARCH_WORDLIST_TABLE . '
 					SET word_count = word_count - 1
 					WHERE ' . $this->db->sql_in_set('word_id', $message_word_ids) . '
 						AND word_count > 0';
@@ -1639,7 +1639,7 @@ class fulltext_native extends \an602\search\base
 			unset($title_word_ids);
 			unset($message_word_ids);
 
-			$sql = 'DELETE FROM ' . AN602_SEARCH_WORDMATCH_TABLE . '
+			$sql = 'DELETE FROM ' . SEARCH_WORDMATCH_TABLE . '
 				WHERE ' . $this->db->sql_in_set('post_id', $post_ids);
 			$this->db->sql_query($sql);
 		}
@@ -1669,7 +1669,7 @@ class fulltext_native extends \an602\search\base
 			$common_threshold = ((double) $this->config['fulltext_native_common_thres']) / 100.0;
 			// First, get the IDs of common words
 			$sql = 'SELECT word_id, word_text
-				FROM ' . AN602_SEARCH_WORDLIST_TABLE . '
+				FROM ' . SEARCH_WORDLIST_TABLE . '
 				WHERE word_count > ' . floor($this->config['num_posts'] * $common_threshold) . '
 					OR word_common = 1';
 			$result = $this->db->sql_query($sql);
@@ -1685,7 +1685,7 @@ class fulltext_native extends \an602\search\base
 			if (count($sql_in))
 			{
 				// Flag the words
-				$sql = 'UPDATE ' . AN602_SEARCH_WORDLIST_TABLE . '
+				$sql = 'UPDATE ' . SEARCH_WORDLIST_TABLE . '
 					SET word_common = 1
 					WHERE ' . $this->db->sql_in_set('word_id', $sql_in);
 				$this->db->sql_query($sql);
@@ -1695,7 +1695,7 @@ class fulltext_native extends \an602\search\base
 				$this->config->set('search_last_gc', time(), false);
 
 				// Delete the matches
-				$sql = 'DELETE FROM ' . AN602_SEARCH_WORDMATCH_TABLE . '
+				$sql = 'DELETE FROM ' . SEARCH_WORDMATCH_TABLE . '
 					WHERE ' . $this->db->sql_in_set('word_id', $sql_in);
 				$this->db->sql_query($sql);
 			}
@@ -1721,15 +1721,15 @@ class fulltext_native extends \an602\search\base
 		switch ($this->db->get_sql_layer())
 		{
 			case 'sqlite3':
-				$sql_queries[] = 'DELETE FROM ' . AN602_SEARCH_WORDLIST_TABLE;
-				$sql_queries[] = 'DELETE FROM ' . AN602_SEARCH_WORDMATCH_TABLE;
-				$sql_queries[] = 'DELETE FROM ' . AN602_SEARCH_RESULTS_TABLE;
+				$sql_queries[] = 'DELETE FROM ' . SEARCH_WORDLIST_TABLE;
+				$sql_queries[] = 'DELETE FROM ' . SEARCH_WORDMATCH_TABLE;
+				$sql_queries[] = 'DELETE FROM ' . SEARCH_RESULTS_TABLE;
 			break;
 
 			default:
-				$sql_queries[] = 'TRUNCATE TABLE ' . AN602_SEARCH_WORDLIST_TABLE;
-				$sql_queries[] = 'TRUNCATE TABLE ' . AN602_SEARCH_WORDMATCH_TABLE;
-				$sql_queries[] = 'TRUNCATE TABLE ' . AN602_SEARCH_RESULTS_TABLE;
+				$sql_queries[] = 'TRUNCATE TABLE ' . SEARCH_WORDLIST_TABLE;
+				$sql_queries[] = 'TRUNCATE TABLE ' . SEARCH_WORDMATCH_TABLE;
+				$sql_queries[] = 'TRUNCATE TABLE ' . SEARCH_RESULTS_TABLE;
 			break;
 		}
 
@@ -1785,8 +1785,8 @@ class fulltext_native extends \an602\search\base
 
 	protected function get_stats()
 	{
-		$this->stats['total_words']		= $this->db->get_estimated_row_count(AN602_SEARCH_WORDLIST_TABLE);
-		$this->stats['total_matches']	= $this->db->get_estimated_row_count(AN602_SEARCH_WORDMATCH_TABLE);
+		$this->stats['total_words']		= $this->db->get_estimated_row_count(SEARCH_WORDLIST_TABLE);
+		$this->stats['total_matches']	= $this->db->get_estimated_row_count(SEARCH_WORDMATCH_TABLE);
 	}
 
 	/**
@@ -1997,7 +1997,7 @@ class fulltext_native extends \an602\search\base
 			if (!isset($conv_loaded[$idx]))
 			{
 				$conv_loaded[$idx] = 1;
-				$file = $this->an602_root_path . 'includes/an602_utf/data/search_indexer_' . $idx . '.' . $this->php_ext;
+				$file = $this->an602_root_path . 'includes/utf/data/search_indexer_' . $idx . '.' . $this->php_ext;
 
 				if (file_exists($file))
 				{

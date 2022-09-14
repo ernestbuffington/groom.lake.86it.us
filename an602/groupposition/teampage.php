@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -73,8 +73,8 @@ class teampage implements \an602\groupposition\groupposition_interface
 	{
 		// The join is required to ensure that the group itself exists
 		$sql = 'SELECT g.group_id, t.teampage_position
-			FROM ' . AN602_GROUPS_TABLE . ' g
-			LEFT JOIN ' . AN602_TEAMPAGE_TABLE . ' t
+			FROM ' . GROUPS_TABLE . ' g
+			LEFT JOIN ' . TEAMPAGE_TABLE . ' t
 				ON (t.group_id = g.group_id)
 			WHERE g.group_id = ' . (int) $group_id;
 		$result = $this->db->sql_query($sql);
@@ -101,8 +101,8 @@ class teampage implements \an602\groupposition\groupposition_interface
 	{
 		// The join is required to ensure that the group itself exists
 		$sql = 'SELECT *
-			FROM ' . AN602_GROUPS_TABLE . ' g
-			LEFT JOIN ' . AN602_TEAMPAGE_TABLE . ' t
+			FROM ' . GROUPS_TABLE . ' g
+			LEFT JOIN ' . TEAMPAGE_TABLE . ' t
 				ON (t.group_id = g.group_id)
 			WHERE g.group_id = ' . (int) $group_id;
 		$result = $this->db->sql_query($sql);
@@ -128,7 +128,7 @@ class teampage implements \an602\groupposition\groupposition_interface
 	public function get_teampage_value($teampage_id)
 	{
 		$sql = 'SELECT teampage_position
-			FROM ' . AN602_TEAMPAGE_TABLE . '
+			FROM ' . TEAMPAGE_TABLE . '
 			WHERE teampage_id = ' . (int) $teampage_id;
 		$result = $this->db->sql_query($sql);
 		$current_value = $this->db->sql_fetchfield('teampage_position');
@@ -153,7 +153,7 @@ class teampage implements \an602\groupposition\groupposition_interface
 	public function get_teampage_values($teampage_id)
 	{
 		$sql = 'SELECT teampage_position, teampage_parent
-			FROM ' . AN602_TEAMPAGE_TABLE . '
+			FROM ' . TEAMPAGE_TABLE . '
 			WHERE teampage_id = ' . (int) $teampage_id;
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
@@ -175,7 +175,7 @@ class teampage implements \an602\groupposition\groupposition_interface
 	public function get_group_count()
 	{
 		$sql = 'SELECT teampage_position
-			FROM ' . AN602_TEAMPAGE_TABLE . '
+			FROM ' . TEAMPAGE_TABLE . '
 			ORDER BY teampage_position DESC';
 		$result = $this->db->sql_query_limit($sql, 1);
 		$group_count = (int) $this->db->sql_fetchfield('teampage_position');
@@ -209,7 +209,7 @@ class teampage implements \an602\groupposition\groupposition_interface
 			{
 				// Check, whether the given parent is a category
 				$sql = 'SELECT teampage_id
-					FROM ' . AN602_TEAMPAGE_TABLE . '
+					FROM ' . TEAMPAGE_TABLE . '
 					WHERE group_id = 0
 						AND teampage_id = ' . (int) $parent_id;
 				$result = $this->db->sql_query_limit($sql, 1);
@@ -220,7 +220,7 @@ class teampage implements \an602\groupposition\groupposition_interface
 				{
 					// Get value of last child from this parent and add group there
 					$sql = 'SELECT teampage_position
-						FROM ' . AN602_TEAMPAGE_TABLE . '
+						FROM ' . TEAMPAGE_TABLE . '
 						WHERE teampage_parent = ' . (int) $parent_id . '
 							OR teampage_id = ' . (int) $parent_id . '
 						ORDER BY teampage_position DESC';
@@ -228,7 +228,7 @@ class teampage implements \an602\groupposition\groupposition_interface
 					$new_position = (int) $this->db->sql_fetchfield('teampage_position');
 					$this->db->sql_freeresult($result);
 
-					$sql = 'UPDATE ' . AN602_TEAMPAGE_TABLE . '
+					$sql = 'UPDATE ' . TEAMPAGE_TABLE . '
 						SET teampage_position = teampage_position + 1
 						WHERE teampage_position > ' . $new_position;
 					$this->db->sql_query($sql);
@@ -246,14 +246,14 @@ class teampage implements \an602\groupposition\groupposition_interface
 				'teampage_parent'	=> $parent_id,
 			);
 
-			$sql = 'INSERT INTO ' . AN602_TEAMPAGE_TABLE . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
+			$sql = 'INSERT INTO ' . TEAMPAGE_TABLE . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
 			$this->db->sql_query($sql);
 
-			$this->cache->destroy('sql', AN602_TEAMPAGE_TABLE);
+			$this->cache->destroy('sql', TEAMPAGE_TABLE);
 			return true;
 		}
 
-		$this->cache->destroy('sql', AN602_TEAMPAGE_TABLE);
+		$this->cache->destroy('sql', TEAMPAGE_TABLE);
 		return false;
 	}
 
@@ -279,10 +279,10 @@ class teampage implements \an602\groupposition\groupposition_interface
 			'teampage_name'		=> truncate_string($category_name, 255, 255),
 		);
 
-		$sql = 'INSERT INTO ' . AN602_TEAMPAGE_TABLE . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
+		$sql = 'INSERT INTO ' . TEAMPAGE_TABLE . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
 		$this->db->sql_query($sql);
 
-		$this->cache->destroy('sql', AN602_TEAMPAGE_TABLE);
+		$this->cache->destroy('sql', TEAMPAGE_TABLE);
 		return true;
 	}
 
@@ -299,20 +299,20 @@ class teampage implements \an602\groupposition\groupposition_interface
 
 		if ($current_value != self::GROUP_DISABLED)
 		{
-			$sql = 'UPDATE ' . AN602_TEAMPAGE_TABLE . '
+			$sql = 'UPDATE ' . TEAMPAGE_TABLE . '
 				SET teampage_position = teampage_position - 1
 				WHERE teampage_position > ' . $current_value;
 			$this->db->sql_query($sql);
 
-			$sql = 'DELETE FROM ' . AN602_TEAMPAGE_TABLE . '
+			$sql = 'DELETE FROM ' . TEAMPAGE_TABLE . '
 				WHERE group_id = ' . $group_id;
 			$this->db->sql_query($sql);
 
-			$this->cache->destroy('sql', AN602_TEAMPAGE_TABLE);
+			$this->cache->destroy('sql', TEAMPAGE_TABLE);
 			return true;
 		}
 
-		$this->cache->destroy('sql', AN602_TEAMPAGE_TABLE);
+		$this->cache->destroy('sql', TEAMPAGE_TABLE);
 		return false;
 	}
 
@@ -329,23 +329,23 @@ class teampage implements \an602\groupposition\groupposition_interface
 
 		if ($current_value != self::GROUP_DISABLED)
 		{
-			$sql = 'DELETE FROM ' . AN602_TEAMPAGE_TABLE . '
+			$sql = 'DELETE FROM ' . TEAMPAGE_TABLE . '
 				WHERE teampage_id = ' . $teampage_id . '
 					OR teampage_parent = ' . $teampage_id;
 			$this->db->sql_query($sql);
 
 			$delta = (int) $this->db->sql_affectedrows();
 
-			$sql = 'UPDATE ' . AN602_TEAMPAGE_TABLE . '
+			$sql = 'UPDATE ' . TEAMPAGE_TABLE . '
 				SET teampage_position = teampage_position - ' . $delta . '
 				WHERE teampage_position > ' . $current_value;
 			$this->db->sql_query($sql);
 
-			$this->cache->destroy('sql', AN602_TEAMPAGE_TABLE);
+			$this->cache->destroy('sql', TEAMPAGE_TABLE);
 			return true;
 		}
 
-		$this->cache->destroy('sql', AN602_TEAMPAGE_TABLE);
+		$this->cache->destroy('sql', TEAMPAGE_TABLE);
 		return false;
 	}
 
@@ -415,7 +415,7 @@ class teampage implements \an602\groupposition\groupposition_interface
 			}
 
 			$sql = 'SELECT teampage_position
-				FROM ' . AN602_TEAMPAGE_TABLE . '
+				FROM ' . TEAMPAGE_TABLE . '
 				WHERE teampage_parent = ' . (int) $data['teampage_parent'] . '
 					AND teampage_position' . (($move_up) ? ' < ' : ' > ') . $current_value . '
 				ORDER BY teampage_position' . (($move_up) ? ' DESC' : ' ASC');
@@ -443,7 +443,7 @@ class teampage implements \an602\groupposition\groupposition_interface
 			{
 				// First we move all items between our current value and the target value up/down 1,
 				// so we have a gap for our item to move.
-				$sql = 'UPDATE ' . AN602_TEAMPAGE_TABLE . '
+				$sql = 'UPDATE ' . TEAMPAGE_TABLE . '
 					SET teampage_position = teampage_position' . (($move_up) ? ' + 1' : ' - 1') . '
 					WHERE teampage_position' . (($move_up) ? ' >= ' : ' <= ') . ($current_value - $delta) . '
 						AND teampage_position' . (($move_up) ? ' < ' : ' > ') . $current_value;
@@ -451,13 +451,13 @@ class teampage implements \an602\groupposition\groupposition_interface
 
 				// And now finally, when we moved some other items and built a gap,
 				// we can move the desired item to it.
-				$sql = 'UPDATE ' . AN602_TEAMPAGE_TABLE . '
+				$sql = 'UPDATE ' . TEAMPAGE_TABLE . '
 					SET teampage_position = teampage_position ' . (($move_up) ? ' - ' : ' + ') . abs($delta) . '
 					WHERE group_id = ' . (int) $group_id;
 				$this->db->sql_query($sql);
 
 				$this->db->sql_transaction('commit');
-				$this->cache->destroy('sql', AN602_TEAMPAGE_TABLE);
+				$this->cache->destroy('sql', TEAMPAGE_TABLE);
 
 				return true;
 			}
@@ -465,7 +465,7 @@ class teampage implements \an602\groupposition\groupposition_interface
 			$this->db->sql_transaction('commit');
 		}
 
-		$this->cache->destroy('sql', AN602_TEAMPAGE_TABLE);
+		$this->cache->destroy('sql', TEAMPAGE_TABLE);
 		return false;
 	}
 
@@ -503,7 +503,7 @@ class teampage implements \an602\groupposition\groupposition_interface
 			}
 
 			$sql = 'SELECT teampage_id, teampage_position
-				FROM ' . AN602_TEAMPAGE_TABLE . '
+				FROM ' . TEAMPAGE_TABLE . '
 				WHERE teampage_parent = ' . (int) $data['teampage_parent'] . '
 					AND teampage_position' . (($move_up) ? ' < ' : ' > ') . $current_value . '
 				ORDER BY teampage_position' . (($move_up) ? ' DESC' : ' ASC');
@@ -532,7 +532,7 @@ class teampage implements \an602\groupposition\groupposition_interface
 			if ($delta)
 			{
 				$sql = 'SELECT COUNT(teampage_id) as num_items
-					FROM ' . AN602_TEAMPAGE_TABLE . '
+					FROM ' . TEAMPAGE_TABLE . '
 					WHERE teampage_id = ' . (int) $teampage_id . '
 						OR teampage_parent = ' . (int) $teampage_id;
 				$result = $this->db->sql_query($sql);
@@ -541,7 +541,7 @@ class teampage implements \an602\groupposition\groupposition_interface
 
 				// First we move all items between our current value and the target value up/down 1,
 				// so we have a gap for our item to move.
-				$sql = 'UPDATE ' . AN602_TEAMPAGE_TABLE . '
+				$sql = 'UPDATE ' . TEAMPAGE_TABLE . '
 					SET teampage_position = teampage_position' . (($move_up) ? ' + ' : ' - ') . $num_items . '
 					WHERE teampage_position' . (($move_up) ? ' >= ' : ' <= ') . ($current_value - $delta) . '
 						AND teampage_position' . (($move_up) ? ' < ' : ' > ') . $current_value . '
@@ -553,14 +553,14 @@ class teampage implements \an602\groupposition\groupposition_interface
 
 				// And now finally, when we moved some other items and built a gap,
 				// we can move the desired item to it.
-				$sql = 'UPDATE ' . AN602_TEAMPAGE_TABLE . '
+				$sql = 'UPDATE ' . TEAMPAGE_TABLE . '
 					SET teampage_position = teampage_position ' . (($move_up) ? ' - ' : ' + ') . $delta . '
 					WHERE teampage_id = ' . (int) $teampage_id . '
 						OR teampage_parent = ' . (int) $teampage_id;
 				$this->db->sql_query($sql);
 
 				$this->db->sql_transaction('commit');
-				$this->cache->destroy('sql', AN602_TEAMPAGE_TABLE);
+				$this->cache->destroy('sql', TEAMPAGE_TABLE);
 
 				return true;
 			}
@@ -568,7 +568,7 @@ class teampage implements \an602\groupposition\groupposition_interface
 			$this->db->sql_transaction('commit');
 		}
 
-		$this->cache->destroy('sql', AN602_TEAMPAGE_TABLE);
+		$this->cache->destroy('sql', TEAMPAGE_TABLE);
 		return false;
 	}
 

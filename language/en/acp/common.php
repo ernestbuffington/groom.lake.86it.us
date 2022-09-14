@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -108,7 +108,7 @@ $lang = array_merge($lang, array(
 	'ACP_GROUPS_PERMISSIONS'		=> 'Group permissions',
 	'ACP_GROUPS_POSITION'			=> 'Manage group positions',
 
-	'ACP_HELP_AN602'			=> 'Help support AN602',
+	'ACP_HELP_PHPBB'			=> 'Help support AN602',
 
 	'ACP_ICONS'					=> 'Topic icons',
 	'ACP_ICONS_SMILIES'			=> 'Topic icons/smilies',
@@ -226,7 +226,7 @@ $lang = array_merge($lang, array(
 
 	'BACK'					=> 'Back',
 
-	'CONTAINER_EXCEPTION' => 'AN602 encountered an error building the container due to an installed extension. For this reason, all extensions have been temporarily disabled. Please try purging your forum cache. All extensions will automatically be re-enabled once the container error is resolved. If this error continues, please visit <a href="https://groom.lake.86it.us/support">AN602.com</a> for support.',
+	'CONTAINER_EXCEPTION' => 'AN602 encountered an error building the container due to an installed extension. For this reason, all extensions have been temporarily disabled. Please try purging your forum cache. All extensions will automatically be re-enabled once the container error is resolved. If this error continues, please visit <a href="https://www.groom.lake.86it.us/support">AN602.com</a> for support.',
 	'EXCEPTION' => 'Exception',
 
 	'COLOUR_SWATCH'			=> 'Web-safe colour swatch',
@@ -330,7 +330,7 @@ $lang = array_merge($lang, array(
 
 // PHP info
 $lang = array_merge($lang, array(
-	'ACP_PHP_INFO_EXPLAIN'	=> 'This page lists information on the version of PHP installed on this server. It includes details of loaded modules, available variables and default settings. This information may be useful when diagnosing problems. Please be aware that some hosting companies will limit what information is displayed here for security reasons. You are advised to not give out any details on this page except when asked by <a href="https://groom.lake.86it.us/about/team/">official team members</a> on the support forums.',
+	'ACP_PHP_INFO_EXPLAIN'	=> 'This page lists information on the version of PHP installed on this server. It includes details of loaded modules, available variables and default settings. This information may be useful when diagnosing problems. Please be aware that some hosting companies will limit what information is displayed here for security reasons. You are advised to not give out any details on this page except when asked by <a href="https://www.groom.lake.86it.us/about/team/">official team members</a> on the support forums.',
 
 	'NO_PHPINFO_AVAILABLE'	=> 'Information about your PHP configuration is unable to be determined. Phpinfo() has been disabled for security reasons.',
 ));
@@ -449,7 +449,7 @@ $lang = array_merge($lang, array(
 	'VIEW_ADMIN_LOG'				=> 'View administrator log',
 	'VIEW_INACTIVE_USERS'			=> 'View inactive users',
 
-	'WELCOME_AN602'			=> 'Welcome to AN602',
+	'WELCOME_PHPBB'			=> 'Welcome to AN602',
 	'WRITABLE_CONFIG'		=> 'Your config file (config.php) is currently world-writable. We strongly encourage you to change the permissions to 640 or at least to 644 (for example: <a href="http://en.wikipedia.org/wiki/Chmod" rel="external">chmod</a> 640 config.php).',
 ));
 
@@ -494,31 +494,31 @@ $lang = array_merge($lang, array(
 
 // Log Entries
 $lang = array_merge($lang, array(
-	'LOG_AN602_ACL_ADD_USER_GLOBAL_U_'		=> '<strong>Added or edited users’ user permissions</strong><br />» %s',
-	'LOG_AN602_ACL_ADD_GROUP_GLOBAL_U_'		=> '<strong>Added or edited groups’ user permissions</strong><br />» %s',
-	'LOG_AN602_ACL_ADD_USER_GLOBAL_M_'		=> '<strong>Added or edited users’ global moderator permissions</strong><br />» %s',
-	'LOG_AN602_ACL_ADD_GROUP_GLOBAL_M_'		=> '<strong>Added or edited groups’ global moderator permissions</strong><br />» %s',
-	'LOG_AN602_ACL_ADD_USER_GLOBAL_A_'		=> '<strong>Added or edited users’ administrator permissions</strong><br />» %s',
-	'LOG_AN602_ACL_ADD_GROUP_GLOBAL_A_'		=> '<strong>Added or edited groups’ administrator permissions</strong><br />» %s',
+	'LOG_ACL_ADD_USER_GLOBAL_U_'		=> '<strong>Added or edited users’ user permissions</strong><br />» %s',
+	'LOG_ACL_ADD_GROUP_GLOBAL_U_'		=> '<strong>Added or edited groups’ user permissions</strong><br />» %s',
+	'LOG_ACL_ADD_USER_GLOBAL_M_'		=> '<strong>Added or edited users’ global moderator permissions</strong><br />» %s',
+	'LOG_ACL_ADD_GROUP_GLOBAL_M_'		=> '<strong>Added or edited groups’ global moderator permissions</strong><br />» %s',
+	'LOG_ACL_ADD_USER_GLOBAL_A_'		=> '<strong>Added or edited users’ administrator permissions</strong><br />» %s',
+	'LOG_ACL_ADD_GROUP_GLOBAL_A_'		=> '<strong>Added or edited groups’ administrator permissions</strong><br />» %s',
 
-	'LOG_AN602_ACL_ADD_ADMIN_GLOBAL_A_'		=> '<strong>Added or edited Administrators</strong><br />» %s',
-	'LOG_AN602_ACL_ADD_MOD_GLOBAL_M_'			=> '<strong>Added or edited Global Moderators</strong><br />» %s',
+	'LOG_ACL_ADD_ADMIN_GLOBAL_A_'		=> '<strong>Added or edited Administrators</strong><br />» %s',
+	'LOG_ACL_ADD_MOD_GLOBAL_M_'			=> '<strong>Added or edited Global Moderators</strong><br />» %s',
 
-	'LOG_AN602_ACL_ADD_USER_LOCAL_F_'			=> '<strong>Added or edited users’ forum access</strong> to %1$s<br />» %2$s',
-	'LOG_AN602_ACL_ADD_USER_LOCAL_M_'			=> '<strong>Added or edited users’ forum moderator access</strong> to %1$s<br />» %2$s',
-	'LOG_AN602_ACL_ADD_GROUP_LOCAL_F_'		=> '<strong>Added or edited groups’ forum access</strong> to %1$s<br />» %2$s',
-	'LOG_AN602_ACL_ADD_GROUP_LOCAL_M_'		=> '<strong>Added or edited groups’ forum moderator access</strong> to %1$s<br />» %2$s',
+	'LOG_ACL_ADD_USER_LOCAL_F_'			=> '<strong>Added or edited users’ forum access</strong> to %1$s<br />» %2$s',
+	'LOG_ACL_ADD_USER_LOCAL_M_'			=> '<strong>Added or edited users’ forum moderator access</strong> to %1$s<br />» %2$s',
+	'LOG_ACL_ADD_GROUP_LOCAL_F_'		=> '<strong>Added or edited groups’ forum access</strong> to %1$s<br />» %2$s',
+	'LOG_ACL_ADD_GROUP_LOCAL_M_'		=> '<strong>Added or edited groups’ forum moderator access</strong> to %1$s<br />» %2$s',
 
-	'LOG_AN602_ACL_ADD_MOD_LOCAL_M_'			=> '<strong>Added or edited Moderators</strong> for %1$s<br />» %2$s',
-	'LOG_AN602_ACL_ADD_FORUM_LOCAL_F_'		=> '<strong>Added or edited forum permissions</strong> for %1$s<br />» %2$s',
+	'LOG_ACL_ADD_MOD_LOCAL_M_'			=> '<strong>Added or edited Moderators</strong> for %1$s<br />» %2$s',
+	'LOG_ACL_ADD_FORUM_LOCAL_F_'		=> '<strong>Added or edited forum permissions</strong> for %1$s<br />» %2$s',
 
-	'LOG_AN602_ACL_DEL_ADMIN_GLOBAL_A_'		=> '<strong>Removed Administrators</strong><br />» %s',
-	'LOG_AN602_ACL_DEL_MOD_GLOBAL_M_'			=> '<strong>Removed Global Moderators</strong><br />» %s',
-	'LOG_AN602_ACL_DEL_MOD_LOCAL_M_'			=> '<strong>Removed Moderators</strong> from %1$s<br />» %2$s',
-	'LOG_AN602_ACL_DEL_FORUM_LOCAL_F_'		=> '<strong>Removed User/Group forum permissions</strong> from %1$s<br />» %2$s',
+	'LOG_ACL_DEL_ADMIN_GLOBAL_A_'		=> '<strong>Removed Administrators</strong><br />» %s',
+	'LOG_ACL_DEL_MOD_GLOBAL_M_'			=> '<strong>Removed Global Moderators</strong><br />» %s',
+	'LOG_ACL_DEL_MOD_LOCAL_M_'			=> '<strong>Removed Moderators</strong> from %1$s<br />» %2$s',
+	'LOG_ACL_DEL_FORUM_LOCAL_F_'		=> '<strong>Removed User/Group forum permissions</strong> from %1$s<br />» %2$s',
 
-	'LOG_AN602_ACL_TRANSFER_PERMISSIONS'		=> '<strong>Permissions transferred from</strong><br />» %s',
-	'LOG_AN602_ACL_RESTORE_PERMISSIONS'		=> '<strong>Own permissions restored after using permissions from</strong><br />» %s',
+	'LOG_ACL_TRANSFER_PERMISSIONS'		=> '<strong>Permissions transferred from</strong><br />» %s',
+	'LOG_ACL_RESTORE_PERMISSIONS'		=> '<strong>Own permissions restored after using permissions from</strong><br />» %s',
 
 	'LOG_ADMIN_AUTH_FAIL'		=> '<strong>Failed administration login attempt</strong>',
 	'LOG_ADMIN_AUTH_SUCCESS'	=> '<strong>Successful administration login</strong>',
@@ -768,7 +768,7 @@ $lang = array_merge($lang, array(
 	'LOG_THEME_REFRESHED'		=> '<strong>Refreshed theme</strong><br />» %s',
 
 	'LOG_UPDATE_DATABASE'	=> '<strong>Updated Database from version %1$s to version %2$s</strong>',
-	'LOG_UPDATE_AN602'		=> '<strong>Updated AN602 from version %1$s to version %2$s</strong>',
+	'LOG_UPDATE_PHPBB'		=> '<strong>Updated AN602 from version %1$s to version %2$s</strong>',
 
 	'LOG_USER_ACTIVE'		=> '<strong>User activated</strong><br />» %s',
 	'LOG_USER_BAN_USER'		=> '<strong>Banned User via user management</strong> for reason “<em>%1$s</em>”<br />» %2$s',

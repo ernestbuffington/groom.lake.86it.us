@@ -3,7 +3,7 @@
 *
 * This file is part of the AN602 CMS Software package.
 *
-* @copyright (c) PHP-AN602 <https://groom.lake.86it.us>
+* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -44,7 +44,7 @@ class m_pm_report extends \an602\db\migration\migration
 
 	public function update_module_auth()
 	{
-		$sql = 'UPDATE ' . AN602_MODULES_TABLE . "
+		$sql = 'UPDATE ' . MODULES_TABLE . "
 			SET module_auth = 'acl_m_pm_report'
 			WHERE module_class = 'mcp'
 				AND module_basename = 'mcp_pm_reports'
@@ -54,7 +54,7 @@ class m_pm_report extends \an602\db\migration\migration
 
 	public function revert_module_auth()
 	{
-		$sql = 'UPDATE ' . AN602_MODULES_TABLE . "
+		$sql = 'UPDATE ' . MODULES_TABLE . "
 			SET module_auth = 'aclf_m_report'
 			WHERE module_class = 'mcp'
 				AND module_basename = 'mcp_pm_reports'
