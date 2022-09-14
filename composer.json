@@ -23,7 +23,7 @@
 		"post-update-cmd": "echo 'You MUST manually modify the clean-vendor-dir target in build/build.xml when adding or upgrading dependencies.'"
 	},
 	"replace": {
-		"an602/an602-core": "self.version"
+		"ernestbuffington/an602-core": "self.version"
 	},
 	"require": {
 		"php": "^7.1.3",
