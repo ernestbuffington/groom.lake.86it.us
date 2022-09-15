@@ -663,7 +663,7 @@ class container_builder
 	 */
 	protected function get_environment()
 	{
-		return $this->environment ?: PHPBB_ENVIRONMENT;
+		return $this->environment ?: AN602_ENVIRONMENT;
 	}
 
 	private function register_ext_compiler_pass()

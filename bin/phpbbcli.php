@@ -33,9 +33,9 @@ $an602_class_loader->register();
 $an602_config_php_file = new \an602\config_php_file($an602_root_path, $phpEx);
 extract($an602_config_php_file->get_all());
 
-if (!defined('PHPBB_ENVIRONMENT'))
+if (!defined('AN602_ENVIRONMENT'))
 {
-	@define('PHPBB_ENVIRONMENT', 'production');
+	@define('AN602_ENVIRONMENT', 'production');
 }
 
 require($an602_root_path . 'includes/constants.' . $phpEx);

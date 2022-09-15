@@ -11,6 +11,6 @@ $table_prefix = 'an602_';
 $an602_adm_relative_path = 'admin/';
 $acm_type = 'an602\\cache\\driver\\file';
 
-@define('PHPBB_INSTALLED', true);
-@define('PHPBB_ENVIRONMENT', 'production');
+@define('AN602_INSTALLED', true);
+@define('AN602_ENVIRONMENT', 'production');
 // @define('DEBUG_CONTAINER', true);

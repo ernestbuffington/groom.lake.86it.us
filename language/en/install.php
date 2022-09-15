@@ -82,8 +82,8 @@ $lang = array_merge($lang, array(
 
 	'ACP_LINK'	=> 'Take me to <a href="%1$s">the ACP</a>',
 
-	'INSTALL_PHPBB_INSTALLED'		=> 'AN602 is already installed.',
-	'INSTALL_PHPBB_NOT_INSTALLED'	=> 'AN602 is not installed yet.',
+	'INSTALL_AN602_INSTALLED'		=> 'AN602 is already installed.',
+	'INSTALL_AN602_NOT_INSTALLED'	=> 'AN602 is not installed yet.',
 ));
 
 // Requirements translation

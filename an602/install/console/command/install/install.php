@@ -109,7 +109,7 @@ class install extends \an602\console\command\command
 
 		if ($this->install_helper->is_an602_installed())
 		{
-			$iohandler->add_error_message('INSTALL_PHPBB_INSTALLED');
+			$iohandler->add_error_message('INSTALL_AN602_INSTALLED');
 
 			return 1;
 		}
