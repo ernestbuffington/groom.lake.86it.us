@@ -33,7 +33,7 @@
 <!-- IF L_EXPLAIN --><p>{L_EXPLAIN}</p><!-- ENDIF -->
 
 <fieldset class="quick">
-	<span class="small"><a href="https://www.groom.lake.86it.us/go/customise/styles/3.3" target="_blank">{L_BROWSE_STYLES_DATABASE}</a></span>
+	<span class="small"><a href="https://www.phpbb.com/go/customise/styles/3.3" target="_blank">{L_BROWSE_STYLES_DATABASE}</a></span>
 </fieldset>
 
 <form id="acp_styles" method="post" action="{U_ACTION}">
@@ -97,7 +97,7 @@
 	<tr>
 		<th>{L_STYLE_NAME}</th>
 		<th style="width: 10%; white-space: nowrap; text-align: center;">{{ lang('STYLE_VERSION') }}</th>
-		<th style="width: 10%; white-space: nowrap; text-align: center;">{L_STYLE_AN602_VERSION}</th>
+		<th style="width: 10%; white-space: nowrap; text-align: center;">{L_STYLE_PHPBB_VERSION}</th>
 		<!-- IF not STYLES_LIST_HIDE_COUNT --><th style="width: 10%; white-space: nowrap; text-align: center;">{L_STYLE_USED_BY}</th><!-- ENDIF -->
 		<th style="width: 25%; white-space: nowrap; text-align: center;">{L_ACTIONS}</th>
 		{STYLES_LIST_EXTRA}
@@ -132,7 +132,7 @@
 			<!-- ENDIF -->
 		</td>
 		<td class="{$ROW_CLASS} users">{{ styles_list.STYLE_VERSION }}</td>
-		<td class="{$ROW_CLASS} users">{styles_list.STYLE_AN602_VERSION}</td>
+		<td class="{$ROW_CLASS} users">{styles_list.STYLE_PHPBB_VERSION}</td>
 		<!-- IF not STYLES_LIST_HIDE_COUNT -->
 			<td class="{$ROW_CLASS} users">{styles_list.USERS}</td>
 		<!-- ENDIF -->

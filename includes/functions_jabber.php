@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -44,7 +44,7 @@ class jabber
 	var $verify_peer;
 	var $verify_peer_name;
 	var $allow_self_signed;
-	var $resource = 'functions_jabber.an602.php';
+	var $resource = 'functions_jabber.phpbb.php';
 
 	var $enable_logging;
 	var $log_array;

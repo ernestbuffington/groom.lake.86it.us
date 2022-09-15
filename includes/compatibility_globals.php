@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -13,7 +13,7 @@
 
 /**
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -35,58 +35,58 @@ define('ATTACHMENT_CATEGORY_FLASH', 5); // Flash/SWF files - @deprecated 3.3
  */
 function register_compatibility_globals()
 {
-	global $an602_container;
+	global $phpbb_container;
 
-	global $cache, $an602_dispatcher, $request, $user, $auth, $db, $config, $language, $an602_log;
-	global $symfony_request, $an602_filesystem, $an602_path_helper, $an602_extension_manager, $template;
+	global $cache, $phpbb_dispatcher, $request, $user, $auth, $db, $config, $language, $phpbb_log;
+	global $symfony_request, $phpbb_filesystem, $phpbb_path_helper, $phpbb_extension_manager, $template;
 
 	// set up caching
-	/* @var $cache \an602\cache\service */
-	$cache = $an602_container->get('cache');
+	/* @var $cache \phpbb\cache\service */
+	$cache = $phpbb_container->get('cache');
 
 	// Instantiate some basic classes
-	/* @var $an602_dispatcher \an602\event\dispatcher */
-	$an602_dispatcher = $an602_container->get('dispatcher');
+	/* @var $phpbb_dispatcher \phpbb\event\dispatcher */
+	$phpbb_dispatcher = $phpbb_container->get('dispatcher');
 
-	/* @var $request \an602\request\request_interface */
-	$request = $an602_container->get('request');
+	/* @var $request \phpbb\request\request_interface */
+	$request = $phpbb_container->get('request');
 	// Inject request instance, so only this instance is used with request_var
 	request_var('', 0, false, false, $request);
 
-	/* @var $user \an602\user */
-	$user = $an602_container->get('user');
+	/* @var $user \phpbb\user */
+	$user = $phpbb_container->get('user');
 
-	/* @var \an602\language\language $language */
-	$language = $an602_container->get('language');
+	/* @var \phpbb\language\language $language */
+	$language = $phpbb_container->get('language');
 
-	/* @var $auth \an602\auth\auth */
-	$auth = $an602_container->get('auth');
+	/* @var $auth \phpbb\auth\auth */
+	$auth = $phpbb_container->get('auth');
 
-	/* @var $db \an602\db\driver\driver_interface */
-	$db = $an602_container->get('dbal.conn');
+	/* @var $db \phpbb\db\driver\driver_interface */
+	$db = $phpbb_container->get('dbal.conn');
 
 	// Grab global variables, re-cache if necessary
-	/* @var $config an602\config\db */
-	$config = $an602_container->get('config');
+	/* @var $config phpbb\config\db */
+	$config = $phpbb_container->get('config');
 	set_config('', '', false, $config);
 	set_config_count('', 0, false, $config);
 
-	/* @var $an602_log \an602\log\log_interface */
-	$an602_log = $an602_container->get('log');
+	/* @var $phpbb_log \phpbb\log\log_interface */
+	$phpbb_log = $phpbb_container->get('log');
 
-	/* @var $symfony_request \an602\symfony_request */
-	$symfony_request = $an602_container->get('symfony_request');
+	/* @var $symfony_request \phpbb\symfony_request */
+	$symfony_request = $phpbb_container->get('symfony_request');
 
-	/* @var $an602_filesystem \an602\filesystem\filesystem_interface */
-	$an602_filesystem = $an602_container->get('filesystem');
+	/* @var $phpbb_filesystem \phpbb\filesystem\filesystem_interface */
+	$phpbb_filesystem = $phpbb_container->get('filesystem');
 
-	/* @var $an602_path_helper \an602\path_helper */
-	$an602_path_helper = $an602_container->get('path_helper');
+	/* @var $phpbb_path_helper \phpbb\path_helper */
+	$phpbb_path_helper = $phpbb_container->get('path_helper');
 
 	// load extensions
-	/* @var $an602_extension_manager \an602\extension\manager */
-	$an602_extension_manager = $an602_container->get('ext.manager');
+	/* @var $phpbb_extension_manager \phpbb\extension\manager */
+	$phpbb_extension_manager = $phpbb_container->get('ext.manager');
 
-	/* @var $template \an602\template\template */
-	$template = $an602_container->get('template');
+	/* @var $template \phpbb\template\template */
+	$template = $phpbb_container->get('template');
 }

@@ -1,6 +1,6 @@
 services:
     notification_manager:
-        class: an602\notification\manager
+        class: phpbb\notification\manager
         arguments:
             - '@notification.type_collection'
             - '@notification.method_collection'
@@ -17,7 +17,7 @@ services:
 # ----- Notification's types -----
 # Service MUST NOT be shared for all the plugins to work.
     notification.type_collection:
-        class: an602\di\service_collection
+        class: phpbb\di\service_collection
         arguments:
             - '@service_container'
         tags:
@@ -35,7 +35,7 @@ services:
             - '%tables.user_notifications%'
 
     notification.type.admin_activate_user:
-        class: an602\notification\type\admin_activate_user
+        class: phpbb\notification\type\admin_activate_user
         shared: false
         parent: notification.type.base
         calls:
@@ -45,42 +45,42 @@ services:
             - { name: notification.type }
 
     notification.type.approve_post:
-        class: an602\notification\type\approve_post
+        class: phpbb\notification\type\approve_post
         shared: false
         parent: notification.type.post
         tags:
             - { name: notification.type }
 
     notification.type.approve_topic:
-        class: an602\notification\type\approve_topic
+        class: phpbb\notification\type\approve_topic
         shared: false
         parent: notification.type.topic
         tags:
             - { name: notification.type }
 
     notification.type.bookmark:
-        class: an602\notification\type\bookmark
+        class: phpbb\notification\type\bookmark
         shared: false
         parent: notification.type.post
         tags:
             - { name: notification.type }
 
     notification.type.disapprove_post:
-        class: an602\notification\type\disapprove_post
+        class: phpbb\notification\type\disapprove_post
         shared: false
         parent: notification.type.post
         tags:
             - { name: notification.type }
 
     notification.type.disapprove_topic:
-        class: an602\notification\type\disapprove_topic
+        class: phpbb\notification\type\disapprove_topic
         shared: false
         parent: notification.type.topic
         tags:
             - { name: notification.type }
 
     notification.type.group_request:
-        class: an602\notification\type\group_request
+        class: phpbb\notification\type\group_request
         shared: false
         parent: notification.type.base
         calls:
@@ -89,14 +89,14 @@ services:
             - { name: notification.type }
 
     notification.type.group_request_approved:
-        class: an602\notification\type\group_request_approved
+        class: phpbb\notification\type\group_request_approved
         shared: false
         parent: notification.type.base
         tags:
             - { name: notification.type }
 
     notification.type.pm:
-        class: an602\notification\type\pm
+        class: phpbb\notification\type\pm
         shared: false
         parent: notification.type.base
         calls:
@@ -106,7 +106,7 @@ services:
             - { name: notification.type }
 
     notification.type.post:
-        class: an602\notification\type\post
+        class: phpbb\notification\type\post
         shared: false
         parent: notification.type.base
         calls:
@@ -116,14 +116,14 @@ services:
             - { name: notification.type }
 
     notification.type.post_in_queue:
-        class: an602\notification\type\post_in_queue
+        class: phpbb\notification\type\post_in_queue
         shared: false
         parent: notification.type.post
         tags:
             - { name: notification.type }
 
     notification.type.quote:
-        class: an602\notification\type\quote
+        class: phpbb\notification\type\quote
         shared: false
         parent: notification.type.post
         calls:
@@ -132,35 +132,35 @@ services:
             - { name: notification.type }
 
     notification.type.report_pm:
-        class: an602\notification\type\report_pm
+        class: phpbb\notification\type\report_pm
         shared: false
         parent: notification.type.pm
         tags:
             - { name: notification.type }
 
     notification.type.report_pm_closed:
-        class: an602\notification\type\report_pm_closed
+        class: phpbb\notification\type\report_pm_closed
         shared: false
         parent: notification.type.pm
         tags:
             - { name: notification.type }
 
     notification.type.report_post:
-        class: an602\notification\type\report_post
+        class: phpbb\notification\type\report_post
         shared: false
         parent: notification.type.post
         tags:
             - { name: notification.type }
 
     notification.type.report_post_closed:
-        class: an602\notification\type\report_post_closed
+        class: phpbb\notification\type\report_post_closed
         shared: false
         parent: notification.type.post
         tags:
             - { name: notification.type }
 
     notification.type.topic:
-        class: an602\notification\type\topic
+        class: phpbb\notification\type\topic
         shared: false
         parent: notification.type.base
         calls:
@@ -170,14 +170,14 @@ services:
             - { name: notification.type }
 
     notification.type.topic_in_queue:
-        class: an602\notification\type\topic_in_queue
+        class: phpbb\notification\type\topic_in_queue
         shared: false
         parent: notification.type.topic
         tags:
             - { name: notification.type }
 
     notification.type.forum:
-        class: an602\notification\type\forum
+        class: phpbb\notification\type\forum
         shared: false
         parent: notification.type.post
         calls:
@@ -189,14 +189,14 @@ services:
 # ----- Notification's methods -----
 # Service MUST NOT be shared for all the plugins to work.
     notification.method_collection:
-        class: an602\di\service_collection
+        class: phpbb\di\service_collection
         arguments:
             - '@service_container'
         tags:
             - { name: service_collection, tag: notification.method }
 
     notification.method.board:
-        class: an602\notification\method\board
+        class: phpbb\notification\method\board
         shared: false
         arguments:
             - '@user_loader'
@@ -210,7 +210,7 @@ services:
             - { name: notification.method }
 
     notification.method.email:
-        class: an602\notification\method\email
+        class: phpbb\notification\method\email
         shared: false
         arguments:
             - '@user_loader'
@@ -224,7 +224,7 @@ services:
             - { name: notification.method }
 
     notification.method.jabber:
-        class: an602\notification\method\jabber
+        class: phpbb\notification\method\jabber
         shared: false
         arguments:
             - '@user_loader'

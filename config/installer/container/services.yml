@@ -15,29 +15,29 @@ services:
             - '%core.cache_dir%'
 
     config:
-        class: an602\config\config
+        class: phpbb\config\config
         arguments:
             -
                 rand_seed: 'installer_seed'
                 rand_seed_last_update: 0
 
     controller.resolver:
-        class: an602\controller\resolver
+        class: phpbb\controller\resolver
         arguments:
             - '@service_container'
             - '%core.root_path%'
             - '@template'
 
     file_locator:
-        class: an602\routing\file_locator
+        class: phpbb\routing\file_locator
         arguments:
             - '@filesystem'
             - '%core.root_path%'
 
     kernel_exception_subscriber:
-        class: an602\install\event\kernel_exception_subscriber
+        class: phpbb\install\event\kernel_exception_subscriber
         arguments:
-            - '@an602.installer.controller.helper'
+            - '@phpbb.installer.controller.helper'
             - '@language'
             - '@template'
         tags:
@@ -47,7 +47,7 @@ services:
         parent: language.loader_abstract
 
     path_helper:
-        class: an602\path_helper
+        class: phpbb\path_helper
         arguments:
             - '@symfony_request'
             - '@filesystem'
@@ -56,7 +56,7 @@ services:
             - '%core.php_ext%'
 
     routing.resources_locator.default:
-        class: an602\routing\resources_locator\installer_resources_locator
+        class: phpbb\routing\resources_locator\installer_resources_locator
         arguments:
             - '@filesystem'
             - '%core.root_path%'
@@ -65,7 +65,7 @@ services:
             - { name: routing.resources_locator }
 
     template:
-        class: an602\template\twig\twig
+        class: phpbb\template\twig\twig
         arguments:
             - '@path_helper'
             - '@config'
@@ -76,7 +76,7 @@ services:
             - '@template.twig.extensions.collection'
 
     template.twig.environment:
-        class: an602\template\twig\environment
+        class: phpbb\template\twig\environment
         arguments:
             - '@config'
             - '@filesystem'
@@ -90,13 +90,13 @@ services:
             - [setLexer, ['@template.twig.lexer']]
 
     user:
-        class: an602\user
+        class: phpbb\user
         arguments:
             - '@language'
             - '%datetime.class%'
 
     console.exception_subscriber:
-        class: an602\console\exception_subscriber
+        class: phpbb\console\exception_subscriber
         arguments:
             - '@language'
             - '%debug.exceptions%'

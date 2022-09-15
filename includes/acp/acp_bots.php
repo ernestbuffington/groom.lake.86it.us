@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -25,8 +25,8 @@ class acp_bots
 
 	function main($id, $mode)
 	{
-		global $config, $db, $user, $template, $cache, $request, $an602_log;
-		global $an602_root_path, $phpEx;
+		global $config, $db, $user, $template, $cache, $request, $phpbb_log;
+		global $phpbb_root_path, $phpEx;
 
 		$action = $request->variable('action', '');
 		$submit = (isset($_POST['submit'])) ? true : false;
@@ -124,7 +124,7 @@ class acp_bots
 
 						$cache->destroy('_bots');
 
-						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_BOT_DELETE', false, array(implode(', ', $bot_name_ary)));
+						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_BOT_DELETE', false, array(implode(', ', $bot_name_ary)));
 						trigger_error($user->lang['BOT_DELETED'] . adm_back_link($this->u_action));
 					}
 					else
@@ -144,7 +144,7 @@ class acp_bots
 
 				if (!function_exists('user_update_name'))
 				{
-					include($an602_root_path . 'includes/functions_user.' . $phpEx);
+					include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 				}
 
 				$bot_row = array(
@@ -296,7 +296,7 @@ class acp_bots
 
 						$cache->destroy('_bots');
 
-						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_BOT_' . $log, false, array($bot_row['bot_name']));
+						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_BOT_' . $log, false, array($bot_row['bot_name']));
 						trigger_error($user->lang['BOT_' . $log] . adm_back_link($this->u_action));
 
 					}
@@ -359,7 +359,7 @@ class acp_bots
 
 		if ($request->is_ajax() && ($action == 'activate' || $action == 'deactivate'))
 		{
-			$json_response = new \an602\json_response;
+			$json_response = new \phpbb\json_response;
 			$json_response->send(array(
 				'text'	=> $user->lang['BOT_' . (($action == 'activate') ? 'DE' : '') . 'ACTIVATE'],
 			));

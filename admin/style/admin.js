@@ -1,5 +1,5 @@
 /**
-* AN6023 ACP functions
+* phpBB3 ACP functions
 */
 
 /**
@@ -196,7 +196,7 @@ function parse_document(container)
 			if (height <= maxHeight) {
 				responsive = false;
 				if (item.hasClass('dropdown-visible')) {
-					an602.toggleDropdown.call(item.find('a.responsive-tab-link').get(0));
+					phpbb.toggleDropdown.call(item.find('a.responsive-tab-link').get(0));
 				}
 				return;
 			}
@@ -221,7 +221,7 @@ function parse_document(container)
 			menu.find('a').click(function() { check(true); });
 		}
 
-		an602.registerDropdown(item.find('a.responsive-tab-link'), item.find('.dropdown'), {visibleClass: 'activetab', verticalDirection: 'down'});
+		phpbb.registerDropdown(item.find('a.responsive-tab-link'), item.find('.dropdown'), {visibleClass: 'activetab', verticalDirection: 'down'});
 
 		check(true);
 		$(window).resize(check);

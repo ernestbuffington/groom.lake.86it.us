@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -124,7 +124,7 @@ function update_last_username()
 */
 function user_update_name($old_name, $new_name)
 {
-	global $config, $db, $cache, $an602_dispatcher;
+	global $config, $db, $cache, $phpbb_dispatcher;
 
 	$update_ary = array(
 		FORUMS_TABLE			=> array(
@@ -168,7 +168,7 @@ function user_update_name($old_name, $new_name)
 	* @since 3.1.0-a1
 	*/
 	$vars = array('old_name', 'new_name');
-	extract($an602_dispatcher->trigger_event('core.update_username', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.update_username', compact($vars)));
 
 	// Because some tables/caches use username-specific data we need to purge this here.
 	$cache->destroy('sql', MODERATOR_CACHE_TABLE);
@@ -185,7 +185,7 @@ function user_update_name($old_name, $new_name)
 function user_add($user_row, $cp_data = false, $notifications_data = null)
 {
 	global $db, $config;
-	global $an602_dispatcher, $an602_container;
+	global $phpbb_dispatcher, $phpbb_container;
 
 	if (empty($user_row['username']) || !isset($user_row['group_id']) || !isset($user_row['user_email']) || !isset($user_row['user_type']))
 	{
@@ -288,7 +288,7 @@ function user_add($user_row, $cp_data = false, $notifications_data = null)
 	* @changed 3.1.11-RC1 Added notifications_data
 	*/
 	$vars = array('user_row', 'cp_data', 'sql_ary', 'notifications_data');
-	extract($an602_dispatcher->trigger_event('core.user_add_modify_data', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.user_add_modify_data', compact($vars)));
 
 	$sql = 'INSERT INTO ' . USERS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 	$db->sql_query($sql);
@@ -300,8 +300,8 @@ function user_add($user_row, $cp_data = false, $notifications_data = null)
 	{
 		$cp_data['user_id'] = (int) $user_id;
 
-		/* @var $cp \an602\profilefields\manager */
-		$cp = $an602_container->get('profilefields.manager');
+		/* @var $cp \phpbb\profilefields\manager */
+		$cp = $phpbb_container->get('profilefields.manager');
 		$sql = 'INSERT INTO ' . PROFILE_FIELDS_DATA_TABLE . ' ' .
 			$db->sql_build_array('INSERT', $cp->build_insert_sql_array($cp_data));
 		$db->sql_query($sql);
@@ -331,10 +331,10 @@ function user_add($user_row, $cp_data = false, $notifications_data = null)
 
 		if ($add_group_id)
 		{
-			global $an602_log;
+			global $phpbb_log;
 
 			// Because these actions only fill the log unnecessarily, we disable it
-			$an602_log->disable('admin');
+			$phpbb_log->disable('admin');
 
 			// Add user to "newly registered users" group and set to default group if admin specified so.
 			if ($config['new_member_group_default'])
@@ -347,7 +347,7 @@ function user_add($user_row, $cp_data = false, $notifications_data = null)
 				group_user_add($add_group_id, $user_id);
 			}
 
-			$an602_log->enable('admin');
+			$phpbb_log->enable('admin');
 		}
 	}
 
@@ -394,16 +394,16 @@ function user_add($user_row, $cp_data = false, $notifications_data = null)
 	* @since 3.2.2-RC1
 	*/
 	$vars = array('user_row', 'cp_data', 'sql_ary', 'notifications_data');
-	extract($an602_dispatcher->trigger_event('core.user_add_modify_notifications_data', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.user_add_modify_notifications_data', compact($vars)));
 
 	// Subscribe user to notifications if necessary
 	if (!empty($notifications_data))
 	{
-		/* @var $an602_notifications \an602\notification\manager */
-		$an602_notifications = $an602_container->get('notification_manager');
+		/* @var $phpbb_notifications \phpbb\notification\manager */
+		$phpbb_notifications = $phpbb_container->get('notification_manager');
 		foreach ($notifications_data as $subscription)
 		{
-			$an602_notifications->add_subscription($subscription['item_type'], 0, $subscription['method'], $user_id);
+			$phpbb_notifications->add_subscription($subscription['item_type'], 0, $subscription['method'], $user_id);
 		}
 	}
 
@@ -417,7 +417,7 @@ function user_add($user_row, $cp_data = false, $notifications_data = null)
 	* @since 3.1.0-b5
 	*/
 	$vars = array('user_id', 'user_row', 'cp_data');
-	extract($an602_dispatcher->trigger_event('core.user_add_after', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.user_add_after', compact($vars)));
 
 	return $user_id;
 }
@@ -432,8 +432,8 @@ function user_add($user_row, $cp_data = false, $notifications_data = null)
  */
 function user_delete($mode, $user_ids, $retain_username = true)
 {
-	global $cache, $config, $db, $user, $an602_dispatcher, $an602_container;
-	global $an602_root_path, $phpEx;
+	global $cache, $config, $db, $user, $phpbb_dispatcher, $phpbb_container;
+	global $phpbb_root_path, $phpEx;
 
 	$db->sql_transaction('begin');
 
@@ -472,7 +472,7 @@ function user_delete($mode, $user_ids, $retain_username = true)
 	 * @changed 3.2.4-RC1 Added user_rows
 	 */
 	$vars = array('mode', 'user_ids', 'retain_username', 'user_rows');
-	extract($an602_dispatcher->trigger_event('core.delete_user_before', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.delete_user_before', compact($vars)));
 
 	// Before we begin, we will remove the reports the user issued.
 	$sql = 'SELECT r.post_id, p.topic_id
@@ -536,7 +536,7 @@ function user_delete($mode, $user_ids, $retain_username = true)
 	$num_users_delta = 0;
 
 	// Get auth provider collection in case accounts might need to be unlinked
-	$provider_collection = $an602_container->get('auth.provider_collection');
+	$provider_collection = $phpbb_container->get('auth.provider_collection');
 
 	// Some things need to be done in the loop (if the query changes based
 	// on which user is currently being deleted)
@@ -664,7 +664,7 @@ function user_delete($mode, $user_ids, $retain_username = true)
 	{
 		if (!function_exists('delete_posts'))
 		{
-			include($an602_root_path . 'includes/functions_admin.' . $phpEx);
+			include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
 		}
 
 		// Delete posts, attachments, etc.
@@ -688,10 +688,10 @@ function user_delete($mode, $user_ids, $retain_username = true)
 		SESSIONS_KEYS_TABLE,
 		PRIVMSGS_FOLDER_TABLE,
 		PRIVMSGS_RULES_TABLE,
-		$an602_container->getParameter('tables.auth_provider_oauth_token_storage'),
-		$an602_container->getParameter('tables.auth_provider_oauth_states'),
-		$an602_container->getParameter('tables.auth_provider_oauth_account_assoc'),
-		$an602_container->getParameter('tables.user_notifications')
+		$phpbb_container->getParameter('tables.auth_provider_oauth_token_storage'),
+		$phpbb_container->getParameter('tables.auth_provider_oauth_states'),
+		$phpbb_container->getParameter('tables.auth_provider_oauth_account_assoc'),
+		$phpbb_container->getParameter('tables.user_notifications')
 	];
 
 	// Ignore errors on deleting from non-existent tables, e.g. when migrating
@@ -759,14 +759,14 @@ function user_delete($mode, $user_ids, $retain_username = true)
 	$db->sql_query($sql);
 
 	// Clean the private messages tables from the user
-	if (!function_exists('an602_delete_users_pms'))
+	if (!function_exists('phpbb_delete_users_pms'))
 	{
-		include($an602_root_path . 'includes/functions_privmsgs.' . $phpEx);
+		include($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
 	}
-	an602_delete_users_pms($user_ids);
+	phpbb_delete_users_pms($user_ids);
 
-	$an602_notifications = $an602_container->get('notification_manager');
-	$an602_notifications->delete_notifications('notification.type.admin_activate_user', $user_ids);
+	$phpbb_notifications = $phpbb_container->get('notification_manager');
+	$phpbb_notifications->delete_notifications('notification.type.admin_activate_user', $user_ids);
 
 	$db->sql_transaction('commit');
 
@@ -782,7 +782,7 @@ function user_delete($mode, $user_ids, $retain_username = true)
 	 * @changed 3.2.2-RC1 Added user_rows
 	 */
 	$vars = array('mode', 'user_ids', 'retain_username', 'user_rows');
-	extract($an602_dispatcher->trigger_event('core.delete_user_after', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.delete_user_after', compact($vars)));
 
 	// Reset newest user info if appropriate
 	if (in_array($config['newest_user_id'], $user_ids))
@@ -802,7 +802,7 @@ function user_delete($mode, $user_ids, $retain_username = true)
 */
 function user_active_flip($mode, $user_id_ary, $reason = INACTIVE_MANUAL)
 {
-	global $config, $db, $user, $auth, $an602_dispatcher;
+	global $config, $db, $user, $auth, $phpbb_dispatcher;
 
 	$deactivated = $activated = 0;
 	$sql_statements = array();
@@ -868,7 +868,7 @@ function user_active_flip($mode, $user_id_ary, $reason = INACTIVE_MANUAL)
 	* @since 3.1.4-RC1
 	*/
 	$vars = array('mode', 'reason', 'activated', 'deactivated', 'user_id_ary', 'sql_statements');
-	extract($an602_dispatcher->trigger_event('core.user_active_flip_before', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.user_active_flip_before', compact($vars)));
 
 	if (count($sql_statements))
 	{
@@ -896,7 +896,7 @@ function user_active_flip($mode, $user_id_ary, $reason = INACTIVE_MANUAL)
 	* @since 3.1.4-RC1
 	*/
 	$vars = array('mode', 'reason', 'activated', 'deactivated', 'user_id_ary', 'sql_statements');
-	extract($an602_dispatcher->trigger_event('core.user_active_flip_after', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.user_active_flip_after', compact($vars)));
 
 	if ($deactivated)
 	{
@@ -926,7 +926,7 @@ function user_active_flip($mode, $user_id_ary, $reason = INACTIVE_MANUAL)
 */
 function user_ban($mode, $ban, $ban_len, $ban_len_other, $ban_exclude, $ban_reason, $ban_give_reason = '')
 {
-	global $db, $user, $cache, $an602_log;
+	global $db, $user, $cache, $phpbb_log;
 
 	// Delete stale bans
 	$sql = 'DELETE FROM ' . BANLIST_TABLE . '
@@ -1316,8 +1316,8 @@ function user_ban($mode, $ban, $ban_len, $ban_len_other, $ban_exclude, $ban_reas
 		$log_entry = ($ban_exclude) ? 'LOG_BAN_EXCLUDE_' : 'LOG_BAN_';
 
 		// Add to admin log, moderator log and user notes
-		$an602_log->add('admin', $user->data['user_id'], $user->ip, $log_entry . strtoupper($mode), false, array($ban_reason, $ban_list_log));
-		$an602_log->add('mod', $user->data['user_id'], $user->ip, $log_entry . strtoupper($mode), false, array(
+		$phpbb_log->add('admin', $user->data['user_id'], $user->ip, $log_entry . strtoupper($mode), false, array($ban_reason, $ban_list_log));
+		$phpbb_log->add('mod', $user->data['user_id'], $user->ip, $log_entry . strtoupper($mode), false, array(
 			'forum_id' => 0,
 			'topic_id' => 0,
 			$ban_reason,
@@ -1327,7 +1327,7 @@ function user_ban($mode, $ban, $ban_len, $ban_len_other, $ban_exclude, $ban_reas
 		{
 			foreach ($banlist_ary as $user_id)
 			{
-				$an602_log->add('user', $user->data['user_id'], $user->ip, $log_entry . strtoupper($mode), false, array(
+				$phpbb_log->add('user', $user->data['user_id'], $user->ip, $log_entry . strtoupper($mode), false, array(
 					'reportee_id' => $user_id,
 					$ban_reason,
 					$ban_list_log
@@ -1351,7 +1351,7 @@ function user_ban($mode, $ban, $ban_len, $ban_len_other, $ban_exclude, $ban_reas
 */
 function user_unban($mode, $ban)
 {
-	global $db, $user, $cache, $an602_log, $an602_dispatcher;
+	global $db, $user, $cache, $phpbb_log, $phpbb_dispatcher;
 
 	// Delete stale bans
 	$sql = 'DELETE FROM ' . BANLIST_TABLE . '
@@ -1409,8 +1409,8 @@ function user_unban($mode, $ban)
 		$db->sql_query($sql);
 
 		// Add to moderator log, admin log and user notes
-		$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_UNBAN_' . strtoupper($mode), false, array($l_unban_list));
-		$an602_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_UNBAN_' . strtoupper($mode), false, array(
+		$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_UNBAN_' . strtoupper($mode), false, array($l_unban_list));
+		$phpbb_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_UNBAN_' . strtoupper($mode), false, array(
 			'forum_id' => 0,
 			'topic_id' => 0,
 			$l_unban_list
@@ -1419,7 +1419,7 @@ function user_unban($mode, $ban)
 		{
 			foreach ($user_ids_ary as $user_id)
 			{
-				$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_UNBAN_' . strtoupper($mode), false, array(
+				$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_UNBAN_' . strtoupper($mode), false, array(
 					'reportee_id' => $user_id,
 					$l_unban_list
 				));
@@ -1438,7 +1438,7 @@ function user_unban($mode, $ban)
 			'mode',
 			'user_ids_ary',
 		);
-		extract($an602_dispatcher->trigger_event('core.user_unban', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.user_unban', compact($vars)));
 	}
 
 	$cache->destroy('sql', BANLIST_TABLE);
@@ -1548,7 +1548,7 @@ function validate_data($data, $val_ary)
 			}
 			else
 			{
-				$function_prefix = (function_exists('an602_validate_' . $function)) ? 'an602_validate_' : 'validate_';
+				$function_prefix = (function_exists('phpbb_validate_' . $function)) ? 'phpbb_validate_' : 'validate_';
 				$result = call_user_func_array($function_prefix . $function, $validate);
 			}
 
@@ -1712,9 +1712,9 @@ function validate_language_iso_name($lang_iso)
 *							a string which will be used as the error message
 *							(with the variable name appended)
 */
-function an602_validate_timezone($timezone)
+function phpbb_validate_timezone($timezone)
 {
-	return (in_array($timezone, an602_get_timezone_identifiers($timezone))) ? false : 'TIMEZONE_INVALID';
+	return (in_array($timezone, phpbb_get_timezone_identifiers($timezone))) ? false : 'TIMEZONE_INVALID';
 }
 
 /***
@@ -1891,7 +1891,7 @@ function validate_password($password)
 *
 * @return mixed Either false if validation succeeded or a string which will be used as the error message (with the variable name appended)
 */
-function an602_validate_email($email, $config = null)
+function phpbb_validate_email($email, $config = null)
 {
 	if ($config === null)
 	{
@@ -1940,7 +1940,7 @@ function validate_user_email($email, $allowed_email = false)
 		return false;
 	}
 
-	$validate_email = an602_validate_email($email, $config);
+	$validate_email = phpbb_validate_email($email, $config);
 	if ($validate_email)
 	{
 		return $validate_email;
@@ -2181,7 +2181,7 @@ function validate_jabber($jid)
 * @return bool|string Error message if colour value is incorrect, false if it
 *			fits the hex colour code
 */
-function an602_validate_hex_colour($colour, $optional = false)
+function phpbb_validate_hex_colour($colour, $optional = false)
 {
 	if ($colour === '')
 	{
@@ -2202,7 +2202,7 @@ function an602_validate_hex_colour($colour, $optional = false)
 * @param int $style_id The style_id of a style which should be checked if activated or not.
 * @return boolean
 */
-function an602_style_is_active($style_id)
+function phpbb_style_is_active($style_id)
 {
 	global $db;
 
@@ -2222,7 +2222,7 @@ function an602_style_is_active($style_id)
 */
 function avatar_delete($mode, $row, $clean_db = false)
 {
-	global $an602_root_path, $config;
+	global $phpbb_root_path, $config;
 
 	// Check if the users avatar is actually *not* a group avatar
 	if ($mode == 'user')
@@ -2239,9 +2239,9 @@ function avatar_delete($mode, $row, $clean_db = false)
 	}
 	$filename = get_avatar_filename($row[$mode . '_avatar']);
 
-	if (file_exists($an602_root_path . $config['avatar_path'] . '/' . $filename))
+	if (file_exists($phpbb_root_path . $config['avatar_path'] . '/' . $filename))
 	{
-		@unlink($an602_root_path . $config['avatar_path'] . '/' . $filename);
+		@unlink($phpbb_root_path . $config['avatar_path'] . '/' . $filename);
 		return true;
 	}
 
@@ -2274,7 +2274,7 @@ function get_avatar_filename($avatar_entry)
 *
 * @return string
 */
-function an602_avatar_explanation_string()
+function phpbb_avatar_explanation_string()
 {
 	global $config, $user;
 
@@ -2294,10 +2294,10 @@ function an602_avatar_explanation_string()
 */
 function group_create(&$group_id, $type, $name, $desc, $group_attributes, $allow_desc_bbcode = false, $allow_desc_urls = false, $allow_desc_smilies = false)
 {
-	global $db, $user, $an602_container, $an602_log;
+	global $db, $user, $phpbb_container, $phpbb_log;
 
-	/** @var \an602\group\helper $group_helper */
-	$group_helper = $an602_container->get('group_helper');
+	/** @var \phpbb\group\helper $group_helper */
+	$group_helper = $phpbb_container->get('group_helper');
 
 	$error = array();
 
@@ -2326,14 +2326,14 @@ function group_create(&$group_id, $type, $name, $desc, $group_attributes, $allow
 
 	if (!count($error))
 	{
-		$current_legend = \an602\groupposition\legend::GROUP_DISABLED;
-		$current_teampage = \an602\groupposition\teampage::GROUP_DISABLED;
+		$current_legend = \phpbb\groupposition\legend::GROUP_DISABLED;
+		$current_teampage = \phpbb\groupposition\teampage::GROUP_DISABLED;
 
-		/* @var $legend \an602\groupposition\legend */
-		$legend = $an602_container->get('groupposition.legend');
+		/* @var $legend \phpbb\groupposition\legend */
+		$legend = $phpbb_container->get('groupposition.legend');
 
-		/* @var $teampage \an602\groupposition\teampage */
-		$teampage = $an602_container->get('groupposition.teampage');
+		/* @var $teampage \phpbb\groupposition\teampage */
+		$teampage = $phpbb_container->get('groupposition.teampage');
 
 		if ($group_id)
 		{
@@ -2342,7 +2342,7 @@ function group_create(&$group_id, $type, $name, $desc, $group_attributes, $allow
 				$current_legend = $legend->get_group_value($group_id);
 				$current_teampage = $teampage->get_group_value($group_id);
 			}
-			catch (\an602\groupposition\exception $exception)
+			catch (\phpbb\groupposition\exception $exception)
 			{
 				trigger_error($user->lang($exception->getMessage()));
 			}
@@ -2350,7 +2350,7 @@ function group_create(&$group_id, $type, $name, $desc, $group_attributes, $allow
 
 		if (!empty($group_attributes['group_legend']))
 		{
-			if (($group_id && ($current_legend == \an602\groupposition\legend::GROUP_DISABLED)) || !$group_id)
+			if (($group_id && ($current_legend == \phpbb\groupposition\legend::GROUP_DISABLED)) || !$group_id)
 			{
 				// Old group currently not in the legend or new group, add at the end.
 				$group_attributes['group_legend'] = 1 + $legend->get_group_count();
@@ -2361,22 +2361,22 @@ function group_create(&$group_id, $type, $name, $desc, $group_attributes, $allow
 				$group_attributes['group_legend'] = $current_legend;
 			}
 		}
-		else if ($group_id && ($current_legend != \an602\groupposition\legend::GROUP_DISABLED))
+		else if ($group_id && ($current_legend != \phpbb\groupposition\legend::GROUP_DISABLED))
 		{
 			// Group is removed from the legend
 			try
 			{
 				$legend->delete_group($group_id, true);
 			}
-			catch (\an602\groupposition\exception $exception)
+			catch (\phpbb\groupposition\exception $exception)
 			{
 				trigger_error($user->lang($exception->getMessage()));
 			}
-			$group_attributes['group_legend'] = \an602\groupposition\legend::GROUP_DISABLED;
+			$group_attributes['group_legend'] = \phpbb\groupposition\legend::GROUP_DISABLED;
 		}
 		else
 		{
-			$group_attributes['group_legend'] = \an602\groupposition\legend::GROUP_DISABLED;
+			$group_attributes['group_legend'] = \phpbb\groupposition\legend::GROUP_DISABLED;
 		}
 
 		// Unset the objects, we don't need them anymore.
@@ -2474,13 +2474,13 @@ function group_create(&$group_id, $type, $name, $desc, $group_attributes, $allow
 
 		// Remove the group from the teampage, only if unselected and we are editing a group,
 		// which is currently displayed.
-		if (!$group_teampage && $group_id && $current_teampage != \an602\groupposition\teampage::GROUP_DISABLED)
+		if (!$group_teampage && $group_id && $current_teampage != \phpbb\groupposition\teampage::GROUP_DISABLED)
 		{
 			try
 			{
 				$teampage->delete_group($group_id);
 			}
-			catch (\an602\groupposition\exception $exception)
+			catch (\phpbb\groupposition\exception $exception)
 			{
 				trigger_error($user->lang($exception->getMessage()));
 			}
@@ -2498,24 +2498,24 @@ function group_create(&$group_id, $type, $name, $desc, $group_attributes, $allow
 
 		try
 		{
-			if ($group_teampage && $current_teampage == \an602\groupposition\teampage::GROUP_DISABLED)
+			if ($group_teampage && $current_teampage == \phpbb\groupposition\teampage::GROUP_DISABLED)
 			{
 				$teampage->add_group($group_id);
 			}
 
 			if ($group_teampage)
 			{
-				if ($current_teampage == \an602\groupposition\teampage::GROUP_DISABLED)
+				if ($current_teampage == \phpbb\groupposition\teampage::GROUP_DISABLED)
 				{
 					$teampage->add_group($group_id);
 				}
 			}
-			else if ($group_id && ($current_teampage != \an602\groupposition\teampage::GROUP_DISABLED))
+			else if ($group_id && ($current_teampage != \phpbb\groupposition\teampage::GROUP_DISABLED))
 			{
 				$teampage->delete_group($group_id);
 			}
 		}
-		catch (\an602\groupposition\exception $exception)
+		catch (\phpbb\groupposition\exception $exception)
 		{
 			trigger_error($user->lang($exception->getMessage()));
 		}
@@ -2549,7 +2549,7 @@ function group_create(&$group_id, $type, $name, $desc, $group_attributes, $allow
 		}
 
 		$name = $group_helper->get_name($name);
-		$an602_log->add('admin', $user->data['user_id'], $user->ip, $log, false, array($name));
+		$phpbb_log->add('admin', $user->data['user_id'], $user->ip, $log, false, array($name));
 
 		group_update_listings($group_id);
 	}
@@ -2563,7 +2563,7 @@ function group_create(&$group_id, $type, $name, $desc, $group_attributes, $allow
 */
 function group_correct_avatar($group_id, $old_entry)
 {
-	global $config, $db, $an602_root_path;
+	global $config, $db, $phpbb_root_path;
 
 	$group_id		= (int) $group_id;
 	$ext 			= substr(strrchr($old_entry, '.'), 1);
@@ -2571,7 +2571,7 @@ function group_correct_avatar($group_id, $old_entry)
 	$new_filename 	= $config['avatar_salt'] . "_g$group_id.$ext";
 	$new_entry 		= 'g' . $group_id . '_' . substr(time(), -5) . ".$ext";
 
-	$avatar_path = $an602_root_path . $config['avatar_path'];
+	$avatar_path = $phpbb_root_path . $config['avatar_path'];
 	if (@rename($avatar_path . '/'. $old_filename, $avatar_path . '/' . $new_filename))
 	{
 		$sql = 'UPDATE ' . GROUPS_TABLE . '
@@ -2602,7 +2602,7 @@ function avatar_remove_db($avatar_name)
 */
 function group_delete($group_id, $group_name = false)
 {
-	global $db, $cache, $auth, $user, $an602_root_path, $phpEx, $an602_dispatcher, $an602_container, $an602_log;
+	global $db, $cache, $auth, $user, $phpbb_root_path, $phpEx, $phpbb_dispatcher, $phpbb_container, $phpbb_log;
 
 	if (!$group_name)
 	{
@@ -2646,12 +2646,12 @@ function group_delete($group_id, $group_name = false)
 	// Delete group from legend and teampage
 	try
 	{
-		/* @var $legend \an602\groupposition\legend */
-		$legend = $an602_container->get('groupposition.legend');
+		/* @var $legend \phpbb\groupposition\legend */
+		$legend = $phpbb_container->get('groupposition.legend');
 		$legend->delete_group($group_id);
 		unset($legend);
 	}
-	catch (\an602\groupposition\exception $exception)
+	catch (\phpbb\groupposition\exception $exception)
 	{
 		// The group we want to delete does not exist.
 		// No reason to worry, we just continue the deleting process.
@@ -2660,12 +2660,12 @@ function group_delete($group_id, $group_name = false)
 
 	try
 	{
-		/* @var $teampage \an602\groupposition\teampage */
-		$teampage = $an602_container->get('groupposition.teampage');
+		/* @var $teampage \phpbb\groupposition\teampage */
+		$teampage = $phpbb_container->get('groupposition.teampage');
 		$teampage->delete_group($group_id);
 		unset($teampage);
 	}
-	catch (\an602\groupposition\exception $exception)
+	catch (\phpbb\groupposition\exception $exception)
 	{
 		// The group we want to delete does not exist.
 		// No reason to worry, we just continue the deleting process.
@@ -2691,17 +2691,17 @@ function group_delete($group_id, $group_name = false)
 	* @since 3.1.0-a1
 	*/
 	$vars = array('group_id', 'group_name');
-	extract($an602_dispatcher->trigger_event('core.delete_group_after', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.delete_group_after', compact($vars)));
 
 	// Re-cache moderators
-	if (!function_exists('an602_cache_moderators'))
+	if (!function_exists('phpbb_cache_moderators'))
 	{
-		include($an602_root_path . 'includes/functions_admin.' . $phpEx);
+		include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
 	}
 
-	an602_cache_moderators($db, $cache, $auth);
+	phpbb_cache_moderators($db, $cache, $auth);
 
-	$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_GROUP_DELETE', false, array($group_name));
+	$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_GROUP_DELETE', false, array($group_name));
 
 	// Return false - no error
 	return false;
@@ -2714,7 +2714,7 @@ function group_delete($group_id, $group_name = false)
 */
 function group_user_add($group_id, $user_id_ary = false, $username_ary = false, $group_name = false, $default = false, $leader = 0, $pending = 0, $group_attributes = false)
 {
-	global $db, $auth, $user, $an602_container, $an602_log, $an602_dispatcher;
+	global $db, $auth, $user, $phpbb_container, $phpbb_log, $phpbb_dispatcher;
 
 	// We need both username and user_id info
 	$result = user_get_id_name($user_id_ary, $username_ary);
@@ -2816,7 +2816,7 @@ function group_user_add($group_id, $user_id_ary = false, $username_ary = false, 
 		'username_ary',
 		'pending',
 	);
-	extract($an602_dispatcher->trigger_event('core.group_add_user_after', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.group_add_user_after', compact($vars)));
 
 	if (!$group_name)
 	{
@@ -2825,18 +2825,18 @@ function group_user_add($group_id, $user_id_ary = false, $username_ary = false, 
 
 	$log = ($leader) ? 'LOG_MODS_ADDED' : (($pending) ? 'LOG_USERS_PENDING' : 'LOG_USERS_ADDED');
 
-	$an602_log->add('admin', $user->data['user_id'], $user->ip, $log, false, array($group_name, implode(', ', $username_ary)));
+	$phpbb_log->add('admin', $user->data['user_id'], $user->ip, $log, false, array($group_name, implode(', ', $username_ary)));
 
 	group_update_listings($group_id);
 
 	if ($pending)
 	{
-		/* @var $an602_notifications \an602\notification\manager */
-		$an602_notifications = $an602_container->get('notification_manager');
+		/* @var $phpbb_notifications \phpbb\notification\manager */
+		$phpbb_notifications = $phpbb_container->get('notification_manager');
 
 		foreach ($add_id_ary as $user_id)
 		{
-			$an602_notifications->add_notifications('notification.type.group_request', array(
+			$phpbb_notifications->add_notifications('notification.type.group_request', array(
 				'group_id'		=> $group_id,
 				'user_id'		=> $user_id,
 				'group_name'	=> $group_name,
@@ -2857,7 +2857,7 @@ function group_user_add($group_id, $user_id_ary = false, $username_ary = false, 
 */
 function group_user_del($group_id, $user_id_ary = false, $username_ary = false, $group_name = false, $log_action = true)
 {
-	global $db, $auth, $config, $user, $an602_dispatcher, $an602_container, $an602_log;
+	global $db, $auth, $config, $user, $phpbb_dispatcher, $phpbb_container, $phpbb_log;
 
 	if ($config['coppa_enable'])
 	{
@@ -2967,7 +2967,7 @@ function group_user_del($group_id, $user_id_ary = false, $username_ary = false, 
 	* @since 3.1.0-a1
 	*/
 	$vars = array('group_id', 'group_name', 'user_id_ary', 'username_ary');
-	extract($an602_dispatcher->trigger_event('core.group_delete_user_before', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.group_delete_user_before', compact($vars)));
 
 	$sql = 'DELETE FROM ' . USER_GROUP_TABLE . "
 		WHERE group_id = $group_id
@@ -2988,7 +2988,7 @@ function group_user_del($group_id, $user_id_ary = false, $username_ary = false, 
 	* @since 3.1.7-RC1
 	*/
 	$vars = array('group_id', 'group_name', 'user_id_ary', 'username_ary');
-	extract($an602_dispatcher->trigger_event('core.group_delete_user_after', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.group_delete_user_after', compact($vars)));
 
 	if ($log_action)
 	{
@@ -3001,16 +3001,16 @@ function group_user_del($group_id, $user_id_ary = false, $username_ary = false, 
 
 		if ($group_name)
 		{
-			$an602_log->add('admin', $user->data['user_id'], $user->ip, $log, false, array($group_name, implode(', ', $username_ary)));
+			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, $log, false, array($group_name, implode(', ', $username_ary)));
 		}
 	}
 
 	group_update_listings($group_id);
 
-	/* @var $an602_notifications \an602\notification\manager */
-	$an602_notifications = $an602_container->get('notification_manager');
+	/* @var $phpbb_notifications \phpbb\notification\manager */
+	$phpbb_notifications = $phpbb_container->get('notification_manager');
 
-	$an602_notifications->delete_notifications('notification.type.group_request', $user_id_ary, $group_id);
+	$phpbb_notifications->delete_notifications('notification.type.group_request', $user_id_ary, $group_id);
 
 	// Return false - no error
 	return false;
@@ -3101,7 +3101,7 @@ function remove_default_rank($group_id, $user_ids)
 */
 function group_user_attributes($action, $group_id, $user_id_ary = false, $username_ary = false, $group_name = false, $group_attributes = false)
 {
-	global $db, $auth, $user, $an602_container, $an602_log, $an602_dispatcher;
+	global $db, $auth, $user, $phpbb_container, $phpbb_log, $phpbb_dispatcher;
 
 	// We need both username and user_id info
 	$result = user_get_id_name($user_id_ary, $username_ary);
@@ -3172,15 +3172,15 @@ function group_user_attributes($action, $group_id, $user_id_ary = false, $userna
 					AND " . $db->sql_in_set('user_id', $user_id_ary);
 			$db->sql_query($sql);
 
-			/* @var $an602_notifications \an602\notification\manager */
-			$an602_notifications = $an602_container->get('notification_manager');
+			/* @var $phpbb_notifications \phpbb\notification\manager */
+			$phpbb_notifications = $phpbb_container->get('notification_manager');
 
-			$an602_notifications->add_notifications('notification.type.group_request_approved', array(
+			$phpbb_notifications->add_notifications('notification.type.group_request_approved', array(
 				'user_ids'		=> $user_id_ary,
 				'group_id'		=> $group_id,
 				'group_name'	=> $group_name,
 			));
-			$an602_notifications->delete_notifications('notification.type.group_request', $user_id_ary, $group_id);
+			$phpbb_notifications->delete_notifications('notification.type.group_request', $user_id_ary, $group_id);
 
 			$log = 'LOG_USERS_APPROVED';
 		break;
@@ -3253,12 +3253,12 @@ function group_user_attributes($action, $group_id, $user_id_ary = false, $userna
 		'group_attributes',
 		'action',
 	);
-	extract($an602_dispatcher->trigger_event('core.user_set_group_attributes', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.user_set_group_attributes', compact($vars)));
 
 	// Clear permissions cache of relevant users
 	$auth->acl_clear_prefetch($user_id_ary);
 
-	$an602_log->add('admin', $user->data['user_id'], $user->ip, $log, false, array($group_name, implode(', ', $username_ary)));
+	$phpbb_log->add('admin', $user->data['user_id'], $user->ip, $log, false, array($group_name, implode(', ', $username_ary)));
 
 	group_update_listings($group_id);
 
@@ -3318,7 +3318,7 @@ function group_validate_groupname($group_id, $group_name)
 */
 function group_set_user_default($group_id, $user_id_ary, $group_attributes = false, $update_listing = false)
 {
-	global $config, $an602_container, $db, $an602_dispatcher;
+	global $config, $phpbb_container, $db, $phpbb_dispatcher;
 
 	if (empty($user_id_ary))
 	{
@@ -3451,7 +3451,7 @@ function group_set_user_default($group_id, $user_id_ary, $group_attributes = fal
 	* @since 3.1.0-a1
 	*/
 	$vars = array('group_id', 'user_id_ary', 'group_attributes', 'update_listing', 'sql_ary');
-	extract($an602_dispatcher->trigger_event('core.user_set_default_group', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.user_set_default_group', compact($vars)));
 
 	if ($update_listing)
 	{
@@ -3459,7 +3459,7 @@ function group_set_user_default($group_id, $user_id_ary, $group_attributes = fal
 	}
 
 	// Because some tables/caches use usercolour-specific data we need to purge this here.
-	$an602_container->get('cache.driver')->destroy('sql', MODERATOR_CACHE_TABLE);
+	$phpbb_container->get('cache.driver')->destroy('sql', MODERATOR_CACHE_TABLE);
 }
 
 /**
@@ -3467,7 +3467,7 @@ function group_set_user_default($group_id, $user_id_ary, $group_attributes = fal
 */
 function get_group_name($group_id)
 {
-	global $db, $an602_container;
+	global $db, $phpbb_container;
 
 	$sql = 'SELECT group_name, group_type
 		FROM ' . GROUPS_TABLE . '
@@ -3481,8 +3481,8 @@ function get_group_name($group_id)
 		return '';
 	}
 
-	/** @var \an602\group\helper $group_helper */
-	$group_helper = $an602_container->get('group_helper');
+	/** @var \phpbb\group\helper $group_helper */
+	$group_helper = $phpbb_container->get('group_helper');
 
 	return $group_helper->get_name($row['group_name']);
 }
@@ -3603,22 +3603,22 @@ function group_update_listings($group_id)
 
 	if ($mod_permissions)
 	{
-		if (!function_exists('an602_cache_moderators'))
+		if (!function_exists('phpbb_cache_moderators'))
 		{
-			global $an602_root_path, $phpEx;
-			include($an602_root_path . 'includes/functions_admin.' . $phpEx);
+			global $phpbb_root_path, $phpEx;
+			include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
 		}
-		an602_cache_moderators($db, $cache, $auth);
+		phpbb_cache_moderators($db, $cache, $auth);
 	}
 
 	if ($mod_permissions || $admin_permissions)
 	{
-		if (!function_exists('an602_update_foes'))
+		if (!function_exists('phpbb_update_foes'))
 		{
-			global $an602_root_path, $phpEx;
-			include($an602_root_path . 'includes/functions_admin.' . $phpEx);
+			global $phpbb_root_path, $phpEx;
+			include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
 		}
-		an602_update_foes($db, $auth, array($group_id));
+		phpbb_update_foes($db, $auth, array($group_id));
 	}
 }
 
@@ -3701,7 +3701,7 @@ function remove_newly_registered($user_id, $user_data = false)
 * 						Int Unix timestamp to get users banned until that time
 * @return array	Array of banned users' ids if any, empty array otherwise
 */
-function an602_get_banned_user_ids($user_ids = array(), $ban_end = true)
+function phpbb_get_banned_user_ids($user_ids = array(), $ban_end = true)
 {
 	global $db;
 
@@ -3747,7 +3747,7 @@ function an602_get_banned_user_ids($user_ids = array(), $ban_end = true)
 /**
 * Function for assigning a template var if the zebra module got included
 */
-function an602_module_zebra($mode, &$module_row)
+function phpbb_module_zebra($mode, &$module_row)
 {
 	global $template;
 

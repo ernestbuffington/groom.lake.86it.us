@@ -1,7 +1,7 @@
 services:
 # ----- Report controller -----
-    an602.report.controller:
-        class: an602\report\controller\report
+    phpbb.report.controller:
+        class: phpbb\report\controller\report
         arguments:
             - '@config'
             - '@user'
@@ -9,20 +9,20 @@ services:
             - '@controller.helper'
             - '@request'
             - '@captcha.factory'
-            - '@an602.report.handler_factory'
-            - '@an602.report.report_reason_list_provider'
+            - '@phpbb.report.handler_factory'
+            - '@phpbb.report.report_reason_list_provider'
             - '%core.root_path%'
             - '%core.php_ext%'
 
 # ----- Report handler factory -----
-    an602.report.handler_factory:
-        class: an602\report\handler_factory
+    phpbb.report.handler_factory:
+        class: phpbb\report\handler_factory
         arguments:
             - '@service_container'
 
 # ----- Report UI provider -----
-    an602.report.report_reason_list_provider:
-        class: an602\report\report_reason_list_provider
+    phpbb.report.report_reason_list_provider:
+        class: phpbb\report\report_reason_list_provider
         arguments:
             - '@dbal.conn.driver'
             - '@template'
@@ -30,8 +30,8 @@ services:
 
 # ----- Report handlers -----
 # Service MUST NOT be shared for all the handlers to work correctly.
-    an602.report.handlers.report_handler_pm:
-        class: an602\report\report_handler_pm
+    phpbb.report.handlers.report_handler_pm:
+        class: phpbb\report\report_handler_pm
         shared: false
         arguments:
             - '@dbal.conn.driver'
@@ -41,8 +41,8 @@ services:
             - '@user'
             - '@notification_manager'
 
-    an602.report.handlers.report_handler_post:
-        class: an602\report\report_handler_post
+    phpbb.report.handlers.report_handler_post:
+        class: phpbb\report\report_handler_post
         shared: false
         arguments:
             - '@dbal.conn.driver'

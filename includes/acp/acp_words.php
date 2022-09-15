@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -28,7 +28,7 @@ class acp_words
 
 	function main($id, $mode)
 	{
-		global $db, $user, $template, $cache, $an602_log, $request, $an602_container;
+		global $db, $user, $template, $cache, $phpbb_log, $request, $phpbb_container;
 
 		$user->add_lang('acp/posting');
 
@@ -114,11 +114,11 @@ class acp_words
 				}
 
 				$cache->destroy('_word_censors');
-				$an602_container->get('text_formatter.cache')->invalidate();
+				$phpbb_container->get('text_formatter.cache')->invalidate();
 
 				$log_action = ($word_id) ? 'LOG_WORD_EDIT' : 'LOG_WORD_ADD';
 
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, $log_action, false, array($word));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, $log_action, false, array($word));
 
 				$message = ($word_id) ? $user->lang['WORD_UPDATED'] : $user->lang['WORD_ADDED'];
 				trigger_error($message . adm_back_link($this->u_action));
@@ -148,9 +148,9 @@ class acp_words
 					$db->sql_query($sql);
 
 					$cache->destroy('_word_censors');
-					$an602_container->get('text_formatter.cache')->invalidate();
+					$phpbb_container->get('text_formatter.cache')->invalidate();
 
-					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_WORD_DELETE', false, array($deleted_word));
+					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_WORD_DELETE', false, array($deleted_word));
 
 					trigger_error($user->lang['WORD_REMOVED'] . adm_back_link($this->u_action));
 				}

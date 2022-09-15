@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -26,8 +26,8 @@ class acp_forums
 
 	function main($id, $mode)
 	{
-		global $db, $user, $auth, $template, $cache, $request, $an602_dispatcher;
-		global $an602_admin_path, $an602_root_path, $phpEx, $an602_log;
+		global $db, $user, $auth, $template, $cache, $request, $phpbb_dispatcher;
+		global $phpbb_admin_path, $phpbb_root_path, $phpEx, $phpbb_log;
 
 		$user->add_lang('acp/forums');
 		$this->tpl_name = 'acp_forums';
@@ -163,7 +163,7 @@ class acp_forums
 					* @since 3.1.0-a1
 					*/
 					$vars = array('action', 'forum_data');
-					extract($an602_dispatcher->trigger_event('core.acp_manage_forums_request_data', compact($vars)));
+					extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_request_data', compact($vars)));
 
 					// On add, add empty forum_options... else do not consider it (not updating it)
 					if ($action == 'add')
@@ -210,7 +210,7 @@ class acp_forums
 							($action != 'edit' || empty($forum_id) || ($auth->acl_get('a_fauth') && $auth->acl_get('a_authusers') && $auth->acl_get('a_authgroups') && $auth->acl_get('a_mauth'))))
 						{
 							copy_forum_permissions($forum_perm_from, $forum_data['forum_id'], ($action == 'edit') ? true : false);
-							an602_cache_moderators($db, $cache, $auth);
+							phpbb_cache_moderators($db, $cache, $auth);
 							$copied_permissions = true;
 						}
 /* Commented out because of questionable UI workflow - re-visit for 3.0.7
@@ -229,9 +229,9 @@ class acp_forums
 						// redirect directly to permission settings screen if authed
 						if ($action == 'add' && !$copied_permissions && $auth->acl_get('a_fauth'))
 						{
-							$message .= '<br /><br />' . sprintf($user->lang['REDIRECT_ACL'], '<a href="' . append_sid("{$an602_admin_path}index.$phpEx", 'i=permissions' . $acl_url) . '">', '</a>');
+							$message .= '<br /><br />' . sprintf($user->lang['REDIRECT_ACL'], '<a href="' . append_sid("{$phpbb_admin_path}index.$phpEx", 'i=permissions' . $acl_url) . '">', '</a>');
 
-							meta_refresh(4, append_sid("{$an602_admin_path}index.$phpEx", 'i=permissions' . $acl_url));
+							meta_refresh(4, append_sid("{$phpbb_admin_path}index.$phpEx", 'i=permissions' . $acl_url));
 						}
 
 						trigger_error($message . adm_back_link($this->u_action . '&amp;parent_id=' . $this->parent_id));
@@ -267,13 +267,13 @@ class acp_forums
 
 				if ($move_forum_name !== false)
 				{
-					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_' . strtoupper($action), false, array($row['forum_name'], $move_forum_name));
+					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_' . strtoupper($action), false, array($row['forum_name'], $move_forum_name));
 					$cache->destroy('sql', FORUMS_TABLE);
 				}
 
 				if ($request->is_ajax())
 				{
-					$json_response = new \an602\json_response;
+					$json_response = new \phpbb\json_response;
 					$json_response->send(array('success' => ($move_forum_name !== false)));
 				}
 
@@ -378,7 +378,7 @@ class acp_forums
 
 				sync('forum', 'forum_id', $forum_id, false, true);
 
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_SYNC', false, array($row['forum_name']));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_SYNC', false, array($row['forum_name']));
 
 				$cache->destroy('sql', FORUMS_TABLE);
 
@@ -491,7 +491,7 @@ class acp_forums
 				* @since 3.1.0-a1
 				*/
 				$vars = array('action', 'update', 'forum_id', 'row', 'forum_data', 'parents_list');
-				extract($an602_dispatcher->trigger_event('core.acp_manage_forums_initialise_data', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_initialise_data', compact($vars)));
 
 				$forum_rules_data = array(
 					'text'			=> $forum_data['forum_rules'],
@@ -639,7 +639,7 @@ class acp_forums
 					'FORUM_NAME'				=> $forum_data['forum_name'],
 					'FORUM_DATA_LINK'			=> $forum_data['forum_link'],
 					'FORUM_IMAGE'				=> $forum_data['forum_image'],
-					'FORUM_IMAGE_SRC'			=> ($forum_data['forum_image']) ? $an602_root_path . $forum_data['forum_image'] : '',
+					'FORUM_IMAGE_SRC'			=> ($forum_data['forum_image']) ? $phpbb_root_path . $forum_data['forum_image'] : '',
 					'FORUM_POST'				=> FORUM_POST,
 					'FORUM_LINK'				=> FORUM_LINK,
 					'FORUM_CAT'					=> FORUM_CAT,
@@ -722,7 +722,7 @@ class acp_forums
 					'errors',
 					'template_data',
 				);
-				extract($an602_dispatcher->trigger_event('core.acp_manage_forums_display_form', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_display_form', compact($vars)));
 
 				$template->assign_vars($template_data);
 
@@ -789,7 +789,7 @@ class acp_forums
 				if (!empty($forum_perm_from) && $forum_perm_from != $forum_id)
 				{
 					copy_forum_permissions($forum_perm_from, $forum_id, true);
-					an602_cache_moderators($db, $cache, $auth);
+					phpbb_cache_moderators($db, $cache, $auth);
 					$auth->acl_clear_prefetch();
 					$cache->destroy('sql', FORUMS_TABLE);
 
@@ -800,7 +800,7 @@ class acp_forums
 					// Redirect to permissions
 					if ($auth->acl_get('a_fauth'))
 					{
-						$message .= '<br /><br />' . sprintf($user->lang['REDIRECT_ACL'], '<a href="' . append_sid("{$an602_admin_path}index.$phpEx", 'i=permissions' . $acl_url) . '">', '</a>');
+						$message .= '<br /><br />' . sprintf($user->lang['REDIRECT_ACL'], '<a href="' . append_sid("{$phpbb_admin_path}index.$phpEx", 'i=permissions' . $acl_url) . '">', '</a>');
 					}
 
 					trigger_error($message . adm_back_link($this->u_action . '&amp;parent_id=' . $this->parent_id));
@@ -861,7 +861,7 @@ class acp_forums
 		* @since 3.1.10-RC1
 		*/
 		$vars = array('rowset');
-		extract($an602_dispatcher->trigger_event('core.acp_manage_forums_modify_forum_list', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_modify_forum_list', compact($vars)));
 
 		if (!empty($rowset))
 		{
@@ -891,8 +891,8 @@ class acp_forums
 
 				$template->assign_block_vars('forums', array(
 					'FOLDER_IMAGE'		=> $folder_image,
-					'FORUM_IMAGE'		=> ($row['forum_image']) ? '<img src="' . $an602_root_path . $row['forum_image'] . '" alt="" />' : '',
-					'FORUM_IMAGE_SRC'	=> ($row['forum_image']) ? $an602_root_path . $row['forum_image'] : '',
+					'FORUM_IMAGE'		=> ($row['forum_image']) ? '<img src="' . $phpbb_root_path . $row['forum_image'] . '" alt="" />' : '',
+					'FORUM_IMAGE_SRC'	=> ($row['forum_image']) ? $phpbb_root_path . $row['forum_image'] : '',
 					'FORUM_NAME'		=> $row['forum_name'],
 					'FORUM_DESCRIPTION'	=> generate_text_for_display($row['forum_desc'], $row['forum_desc_uid'], $row['forum_desc_bitfield'], $row['forum_desc_options']),
 					'FORUM_TOPICS'		=> $row['forum_topics_approved'],
@@ -965,7 +965,7 @@ class acp_forums
 	*/
 	function update_forum_data(&$forum_data_ary)
 	{
-		global $db, $user, $cache, $an602_root_path, $an602_container, $an602_dispatcher, $an602_log, $request;
+		global $db, $user, $cache, $phpbb_root_path, $phpbb_container, $phpbb_dispatcher, $phpbb_log, $request;
 
 		$errors = array();
 
@@ -980,7 +980,7 @@ class acp_forums
 		* @since 3.1.0-a1
 		*/
 		$vars = array('forum_data', 'errors');
-		extract($an602_dispatcher->trigger_event('core.acp_manage_forums_validate_data', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_validate_data', compact($vars)));
 		$forum_data_ary = $forum_data;
 		unset($forum_data);
 
@@ -1035,7 +1035,7 @@ class acp_forums
 			array('lang' => 'FORUM_TOPICS_PAGE', 'value' => $forum_data_ary['forum_topics_per_page'], 'column_type' => 'USINT:0'),
 		);
 
-		if (!empty($forum_data_ary['forum_image']) && !file_exists($an602_root_path . $forum_data_ary['forum_image']))
+		if (!empty($forum_data_ary['forum_image']) && !file_exists($phpbb_root_path . $forum_data_ary['forum_image']))
 		{
 			$errors[] = $user->lang['FORUM_IMAGE_NO_EXIST'];
 		}
@@ -1090,8 +1090,8 @@ class acp_forums
 		else
 		{
 			// Instantiate passwords manager
-			/* @var $passwords_manager \an602\passwords\manager */
-			$passwords_manager = $an602_container->get('passwords.manager');
+			/* @var $passwords_manager \phpbb\passwords\manager */
+			$passwords_manager = $phpbb_container->get('passwords.manager');
 
 			$forum_data_sql['forum_password'] = $passwords_manager->hash($forum_data_sql['forum_password']);
 		}
@@ -1109,7 +1109,7 @@ class acp_forums
 		* @since 3.1.0-a1
 		*/
 		$vars = array('forum_data', 'forum_data_sql');
-		extract($an602_dispatcher->trigger_event('core.acp_manage_forums_update_data_before', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_update_data_before', compact($vars)));
 		$forum_data_ary = $forum_data;
 		unset($forum_data);
 
@@ -1170,7 +1170,7 @@ class acp_forums
 
 			$forum_data_ary['forum_id'] = $db->sql_nextid();
 
-			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_ADD', false, array($forum_data_ary['forum_name']));
+			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_ADD', false, array($forum_data_ary['forum_name']));
 		}
 		else
 		{
@@ -1385,7 +1385,7 @@ class acp_forums
 			// Add it back
 			$forum_data_ary['forum_id'] = $forum_id;
 
-			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_EDIT', false, array($forum_data_ary['forum_name']));
+			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_EDIT', false, array($forum_data_ary['forum_name']));
 		}
 
 		$forum_data = $forum_data_ary;
@@ -1403,7 +1403,7 @@ class acp_forums
 		* @since 3.1.0-a1
 		*/
 		$vars = array('forum_data', 'forum_data_sql', 'is_new_forum', 'errors');
-		extract($an602_dispatcher->trigger_event('core.acp_manage_forums_update_data_after', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_update_data_after', compact($vars)));
 		$forum_data_ary = $forum_data;
 		unset($forum_data);
 
@@ -1415,7 +1415,7 @@ class acp_forums
 	*/
 	function move_forum($from_id, $to_id)
 	{
-		global $db, $user, $an602_dispatcher;
+		global $db, $user, $phpbb_dispatcher;
 
 		$errors = array();
 
@@ -1443,7 +1443,7 @@ class acp_forums
 		* @since 3.1.0-a1
 		*/
 		$vars = array('from_id', 'to_id', 'errors');
-		extract($an602_dispatcher->trigger_event('core.acp_manage_forums_move_children', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_move_children', compact($vars)));
 
 		// Return if there were errors
 		if (!empty($errors))
@@ -1534,7 +1534,7 @@ class acp_forums
 	*/
 	function move_forum_content($from_id, $to_id, $sync = true)
 	{
-		global $db, $an602_dispatcher;
+		global $db, $phpbb_dispatcher;
 
 		$errors = array();
 
@@ -1551,7 +1551,7 @@ class acp_forums
 		* @since 3.1.0-a1
 		*/
 		$vars = array('from_id', 'to_id', 'sync', 'errors');
-		extract($an602_dispatcher->trigger_event('core.acp_manage_forums_move_content', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_move_content', compact($vars)));
 
 		// Return if there were errors
 		if (!empty($errors))
@@ -1569,7 +1569,7 @@ class acp_forums
 		 * @since 3.2.4-RC1
 		 */
 		$vars = array('table_ary');
-		extract($an602_dispatcher->trigger_event('core.acp_manage_forums_move_content_sql_before', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_move_content_sql_before', compact($vars)));
 
 		foreach ($table_ary as $table)
 		{
@@ -1600,7 +1600,7 @@ class acp_forums
 		 * @since 3.2.9-RC1
 		 */
 		$vars = array('from_id', 'to_id', 'sync');
-		extract($an602_dispatcher->trigger_event('core.acp_manage_forums_move_content_after', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.acp_manage_forums_move_content_after', compact($vars)));
 
 		if ($sync)
 		{
@@ -1617,7 +1617,7 @@ class acp_forums
 	*/
 	function delete_forum($forum_id, $action_posts = 'delete', $action_subforums = 'delete', $posts_to_id = 0, $subforums_to_id = 0)
 	{
-		global $db, $user, $cache, $an602_log;
+		global $db, $user, $cache, $phpbb_log;
 
 		$forum_data = $this->get_forum_info($forum_id);
 
@@ -1814,39 +1814,39 @@ class acp_forums
 		switch ($log_action)
 		{
 			case 'MOVE_POSTS_MOVE_FORUMS':
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_MOVE_POSTS_MOVE_FORUMS', false, array($posts_to_name, $subforums_to_name, $forum_data['forum_name']));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_MOVE_POSTS_MOVE_FORUMS', false, array($posts_to_name, $subforums_to_name, $forum_data['forum_name']));
 			break;
 
 			case 'MOVE_POSTS_FORUMS':
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_MOVE_POSTS_FORUMS', false, array($posts_to_name, $forum_data['forum_name']));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_MOVE_POSTS_FORUMS', false, array($posts_to_name, $forum_data['forum_name']));
 			break;
 
 			case 'POSTS_MOVE_FORUMS':
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_POSTS_MOVE_FORUMS', false, array($subforums_to_name, $forum_data['forum_name']));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_POSTS_MOVE_FORUMS', false, array($subforums_to_name, $forum_data['forum_name']));
 			break;
 
 			case '_MOVE_FORUMS':
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_MOVE_FORUMS', false, array($subforums_to_name, $forum_data['forum_name']));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_MOVE_FORUMS', false, array($subforums_to_name, $forum_data['forum_name']));
 			break;
 
 			case 'MOVE_POSTS_':
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_MOVE_POSTS', false, array($posts_to_name, $forum_data['forum_name']));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_MOVE_POSTS', false, array($posts_to_name, $forum_data['forum_name']));
 			break;
 
 			case 'POSTS_FORUMS':
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_POSTS_FORUMS', false, array($forum_data['forum_name']));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_POSTS_FORUMS', false, array($forum_data['forum_name']));
 			break;
 
 			case '_FORUMS':
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_FORUMS', false, array($forum_data['forum_name']));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_FORUMS', false, array($forum_data['forum_name']));
 			break;
 
 			case 'POSTS_':
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_POSTS', false, array($forum_data['forum_name']));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_POSTS', false, array($forum_data['forum_name']));
 			break;
 
 			default:
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_FORUM', false, array($forum_data['forum_name']));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_DEL_FORUM', false, array($forum_data['forum_name']));
 			break;
 		}
 
@@ -1858,9 +1858,9 @@ class acp_forums
 	*/
 	function delete_forum_content($forum_id)
 	{
-		global $db, $config, $an602_root_path, $phpEx, $an602_container, $an602_dispatcher;
+		global $db, $config, $phpbb_root_path, $phpEx, $phpbb_container, $phpbb_dispatcher;
 
-		include_once($an602_root_path . 'includes/functions_posting.' . $phpEx);
+		include_once($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 
 		$db->sql_transaction('begin');
 
@@ -1879,8 +1879,8 @@ class acp_forums
 		}
 		$db->sql_freeresult($result);
 
-		/** @var \an602\attachment\manager $attachment_manager */
-		$attachment_manager = $an602_container->get('attachment.manager');
+		/** @var \phpbb\attachment\manager $attachment_manager */
+		$attachment_manager = $phpbb_container->get('attachment.manager');
 		$attachment_manager->delete('topic', $topic_ids, false);
 		unset($attachment_manager);
 
@@ -2008,7 +2008,7 @@ class acp_forums
 				'topic_ids',
 				'post_counts',
 		);
-		extract($an602_dispatcher->trigger_event('core.delete_forum_content_before_query', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.delete_forum_content_before_query', compact($vars)));
 
 		foreach ($table_ary as $table)
 		{
@@ -2190,17 +2190,17 @@ class acp_forums
 	*/
 	function copy_permission_page($forum_data)
 	{
-		global $phpEx, $an602_admin_path, $template, $user;
+		global $phpEx, $phpbb_admin_path, $template, $user;
 
 		$acl_url = '&amp;mode=setting_forum_local&amp;forum_id[]=' . $forum_data['forum_id'];
 		$action = append_sid($this->u_action . "&amp;parent_id={$this->parent_id}&amp;f={$forum_data['forum_id']}&amp;action=copy_perm");
 
-		$l_acl = sprintf($user->lang['COPY_TO_ACL'], '<a href="' . append_sid("{$an602_admin_path}index.$phpEx", 'i=permissions' . $acl_url) . '">', '</a>');
+		$l_acl = sprintf($user->lang['COPY_TO_ACL'], '<a href="' . append_sid("{$phpbb_admin_path}index.$phpEx", 'i=permissions' . $acl_url) . '">', '</a>');
 
 		$this->tpl_name = 'acp_forums_copy_perm';
 
 		$template->assign_vars(array(
-			'U_ACL'				=> append_sid("{$an602_admin_path}index.$phpEx", 'i=permissions' . $acl_url),
+			'U_ACL'				=> append_sid("{$phpbb_admin_path}index.$phpEx", 'i=permissions' . $acl_url),
 			'L_ACL_LINK'		=> $l_acl,
 			'L_BACK_LINK'		=> adm_back_link($this->u_action . '&amp;parent_id=' . $this->parent_id),
 			'S_COPY_ACTION'		=> $action,

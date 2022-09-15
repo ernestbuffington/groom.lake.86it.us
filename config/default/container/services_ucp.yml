@@ -1,6 +1,6 @@
 services:
-    an602.ucp.controller.reset_password:
-        class: an602\ucp\controller\reset_password
+    phpbb.ucp.controller.reset_password:
+        class: phpbb\ucp\controller\reset_password
         arguments:
             - '@config'
             - '@dbal.conn'

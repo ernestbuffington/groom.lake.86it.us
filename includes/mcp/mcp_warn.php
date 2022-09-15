@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -77,12 +77,12 @@ class mcp_warn
 	*/
 	function mcp_warn_front_view()
 	{
-		global $phpEx, $an602_root_path;
+		global $phpEx, $phpbb_root_path;
 		global $template, $db, $user;
 
 		$template->assign_vars(array(
-			'U_FIND_USERNAME'	=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=mcp&amp;field=username&amp;select_single=true'),
-			'U_POST_ACTION'		=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=warn&amp;mode=warn_user'),
+			'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=mcp&amp;field=username&amp;select_single=true'),
+			'U_POST_ACTION'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=warn&amp;mode=warn_user'),
 		));
 
 		// Obtain a list of the 5 naughtiest users....
@@ -95,7 +95,7 @@ class mcp_warn
 		foreach ($highest as $row)
 		{
 			$template->assign_block_vars('highest', array(
-				'U_NOTES'		=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes&amp;u=' . $row['user_id']),
+				'U_NOTES'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes&amp;u=' . $row['user_id']),
 
 				'USERNAME_FULL'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
 
@@ -114,7 +114,7 @@ class mcp_warn
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$template->assign_block_vars('latest', array(
-				'U_NOTES'		=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes&amp;u=' . $row['user_id']),
+				'U_NOTES'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes&amp;u=' . $row['user_id']),
 
 				'USERNAME_FULL'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
 
@@ -130,11 +130,11 @@ class mcp_warn
 	*/
 	function mcp_warn_list_view($action)
 	{
-		global $phpEx, $an602_root_path, $config, $an602_container;
+		global $phpEx, $phpbb_root_path, $config, $phpbb_container;
 		global $template, $user, $auth, $request;
 
-		/* @var $pagination \an602\pagination */
-		$pagination = $an602_container->get('pagination');
+		/* @var $pagination \phpbb\pagination */
+		$pagination = $phpbb_container->get('pagination');
 		$user->add_lang('memberlist');
 
 		$start	= $request->variable('start', 0);
@@ -161,7 +161,7 @@ class mcp_warn
 		foreach ($users as $row)
 		{
 			$template->assign_block_vars('user', array(
-				'U_NOTES'		=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes&amp;u=' . $row['user_id']),
+				'U_NOTES'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes&amp;u=' . $row['user_id']),
 
 				'USERNAME_FULL'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
 
@@ -170,7 +170,7 @@ class mcp_warn
 			));
 		}
 
-		$base_url = append_sid("{$an602_root_path}mcp.$phpEx", "i=warn&amp;mode=list&amp;st=$st&amp;sk=$sk&amp;sd=$sd");
+		$base_url = append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=list&amp;st=$st&amp;sk=$sk&amp;sd=$sd");
 		$pagination->generate_template_pagination($base_url, 'pagination', 'start', $user_count, $config['topics_per_page'], $start);
 
 		$template->assign_vars(array(
@@ -189,8 +189,8 @@ class mcp_warn
 	*/
 	function mcp_warn_post_view($action)
 	{
-		global $phpEx, $an602_root_path, $config, $request;
-		global $template, $db, $user, $an602_dispatcher;
+		global $phpEx, $phpbb_root_path, $config, $request;
+		global $template, $db, $user, $phpbb_dispatcher;
 
 		$post_id = $request->variable('p', 0);
 		$forum_id = $request->variable('f', 0);
@@ -247,7 +247,7 @@ class mcp_warn
 		// Check if can send a notification
 		if ($config['allow_privmsg'])
 		{
-			$auth2 = new \an602\auth\auth();
+			$auth2 = new \phpbb\auth\auth();
 			$auth2->acl($user_row);
 			$s_can_notify = ($auth2->acl_get('u_readpm')) ? true : false;
 			unset($auth2);
@@ -287,7 +287,7 @@ class mcp_warn
 						'post_id',
 						's_mcp_warn_post',
 				);
-				extract($an602_dispatcher->trigger_event('core.mcp_warn_post_before', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.mcp_warn_post_before', compact($vars)));
 
 				if ($s_mcp_warn_post)
 				{
@@ -312,7 +312,7 @@ class mcp_warn
 							'post_id',
 							'message',
 					);
-					extract($an602_dispatcher->trigger_event('core.mcp_warn_post_after', compact($vars)));
+					extract($phpbb_dispatcher->trigger_event('core.mcp_warn_post_after', compact($vars)));
 				}
 			}
 			else
@@ -322,7 +322,7 @@ class mcp_warn
 
 			if (!empty($message))
 			{
-				$redirect = append_sid("{$an602_root_path}mcp.$phpEx", "i=notes&amp;mode=user_notes&amp;u=$user_id");
+				$redirect = append_sid("{$phpbb_root_path}mcp.$phpEx", "i=notes&amp;mode=user_notes&amp;u=$user_id");
 				meta_refresh(2, $redirect);
 				trigger_error($message . '<br /><br />' . sprintf($user->lang['RETURN_PAGE'], '<a href="' . $redirect . '">', '</a>'));
 			}
@@ -336,13 +336,13 @@ class mcp_warn
 		$message = generate_text_for_display($user_row['post_text'], $user_row['bbcode_uid'], $user_row['bbcode_bitfield'], $parse_flags, true);
 
 		// Generate the appropriate user information for the user we are looking at
-		if (!function_exists('an602_get_user_rank'))
+		if (!function_exists('phpbb_get_user_rank'))
 		{
-			include($an602_root_path . 'includes/functions_display.' . $phpEx);
+			include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 		}
 
-		$user_rank_data = an602_get_user_rank($user_row, $user_row['user_posts']);
-		$avatar_img = an602_get_user_avatar($user_row);
+		$user_rank_data = phpbb_get_user_rank($user_row, $user_row['user_posts']);
+		$avatar_img = phpbb_get_user_avatar($user_row);
 
 		$template->assign_vars(array(
 			'U_POST_ACTION'		=> $this->u_action,
@@ -369,8 +369,8 @@ class mcp_warn
 	*/
 	function mcp_warn_user_view($action)
 	{
-		global $phpEx, $an602_root_path, $config, $request;
-		global $template, $db, $user, $an602_dispatcher;
+		global $phpEx, $phpbb_root_path, $config, $request;
+		global $template, $db, $user, $phpbb_dispatcher;
 
 		$user_id = $request->variable('u', 0);
 		$username = $request->variable('username', '', true);
@@ -408,7 +408,7 @@ class mcp_warn
 		// Check if can send a notification
 		if ($config['allow_privmsg'])
 		{
-			$auth2 = new \an602\auth\auth();
+			$auth2 = new \phpbb\auth\auth();
 			$auth2->acl($user_row);
 			$s_can_notify = ($auth2->acl_get('u_readpm')) ? true : false;
 			unset($auth2);
@@ -446,7 +446,7 @@ class mcp_warn
 						'notify',
 						's_mcp_warn_user',
 				);
-				extract($an602_dispatcher->trigger_event('core.mcp_warn_user_before', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.mcp_warn_user_before', compact($vars)));
 
 				if ($s_mcp_warn_user)
 				{
@@ -469,7 +469,7 @@ class mcp_warn
 							'notify',
 							'message',
 					);
-					extract($an602_dispatcher->trigger_event('core.mcp_warn_user_after', compact($vars)));
+					extract($phpbb_dispatcher->trigger_event('core.mcp_warn_user_after', compact($vars)));
 				}
 			}
 			else
@@ -479,19 +479,19 @@ class mcp_warn
 
 			if (!empty($message))
 			{
-				$redirect = append_sid("{$an602_root_path}mcp.$phpEx", "i=notes&amp;mode=user_notes&amp;u=$user_id");
+				$redirect = append_sid("{$phpbb_root_path}mcp.$phpEx", "i=notes&amp;mode=user_notes&amp;u=$user_id");
 				meta_refresh(2, $redirect);
 				trigger_error($message . '<br /><br />' . sprintf($user->lang['RETURN_PAGE'], '<a href="' . $redirect . '">', '</a>'));
 			}
 		}
 
 		// Generate the appropriate user information for the user we are looking at
-		if (!function_exists('an602_get_user_rank'))
+		if (!function_exists('phpbb_get_user_rank'))
 		{
-			include($an602_root_path . 'includes/functions_display.' . $phpEx);
+			include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 		}
-		$user_rank_data = an602_get_user_rank($user_row, $user_row['user_posts']);
-		$avatar_img = an602_get_user_avatar($user_row);
+		$user_rank_data = phpbb_get_user_rank($user_row, $user_row['user_posts']);
+		$avatar_img = phpbb_get_user_avatar($user_row);
 
 		// OK, they didn't submit a warning so lets build the page for them to do so
 		$template->assign_vars(array(
@@ -522,21 +522,21 @@ class mcp_warn
 */
 function add_warning($user_row, $warning, $send_pm = true, $post_id = 0)
 {
-	global $phpEx, $an602_root_path, $config, $an602_log;
+	global $phpEx, $phpbb_root_path, $config, $phpbb_log;
 	global $db, $user;
 
 	if ($send_pm)
 	{
-		include_once($an602_root_path . 'includes/functions_privmsgs.' . $phpEx);
-		include_once($an602_root_path . 'includes/message_parser.' . $phpEx);
+		include_once($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
+		include_once($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 
 		// Attempt to translate warning to language of user being warned if user's language differs from issuer's language
 		if ($user_row['user_lang'] != $user->lang_name)
 		{
 			$lang = array();
 
-			$user_row['user_lang'] = (file_exists($an602_root_path . 'language/' . basename($user_row['user_lang']) . "/mcp." . $phpEx)) ? $user_row['user_lang'] : $config['default_lang'];
-			include($an602_root_path . 'language/' . basename($user_row['user_lang']) . "/mcp." . $phpEx);
+			$user_row['user_lang'] = (file_exists($phpbb_root_path . 'language/' . basename($user_row['user_lang']) . "/mcp." . $phpEx)) ? $user_row['user_lang'] : $config['default_lang'];
+			include($phpbb_root_path . 'language/' . basename($user_row['user_lang']) . "/mcp." . $phpEx);
 
 			$warn_pm_subject = $lang['WARNING_PM_SUBJECT'];
 			$warn_pm_body = sprintf($lang['WARNING_PM_BODY'], $warning);
@@ -572,9 +572,9 @@ function add_warning($user_row, $warning, $send_pm = true, $post_id = 0)
 		submit_pm('post', $warn_pm_subject, $pm_data, false);
 	}
 
-	$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_WARNING', false, [$user_row['username']]);
+	$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_WARNING', false, [$user_row['username']]);
 
-	$log_id = $an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_WARNING_BODY', false, [
+	$log_id = $phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_WARNING_BODY', false, [
 		'reportee_id' => $user_row['user_id'],
 		utf8_encode_ucr($warning)
 	]);
@@ -602,7 +602,7 @@ function add_warning($user_row, $warning, $send_pm = true, $post_id = 0)
 	$row = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
 
-	$an602_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_USER_WARNING', false, array(
+	$phpbb_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_USER_WARNING', false, array(
 		'forum_id' => $row['forum_id'],
 		'topic_id' => $row['topic_id'],
 		'post_id'  => $post_id,

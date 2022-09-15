@@ -1,6 +1,6 @@
 services:
     module.manager:
-        class: an602\module\module_manager
+        class: phpbb\module\module_manager
         arguments:
             - '@cache.driver'
             - '@dbal.conn'

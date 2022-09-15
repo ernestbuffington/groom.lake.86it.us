@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -25,13 +25,13 @@ class acp_captcha
 
 	function main($id, $mode)
 	{
-		global $user, $template, $an602_log, $request;
-		global $config, $an602_container;
+		global $user, $template, $phpbb_log, $request;
+		global $config, $phpbb_container;
 
 		$user->add_lang('acp/board');
 
-		/* @var $factory \an602\captcha\factory */
-		$factory = $an602_container->get('captcha.factory');
+		/* @var $factory \phpbb\captcha\factory */
+		$factory = $phpbb_container->get('captcha.factory');
 		$captchas = $factory->get_captcha_types();
 
 		$selected = $request->variable('select_captcha', $config['captcha_plugin']);
@@ -130,7 +130,7 @@ class acp_captcha
 						$new_captcha = $factory->get_instance($config['captcha_plugin']);
 						$new_captcha->install();
 
-						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_CONFIG_VISUAL');
+						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_CONFIG_VISUAL');
 					}
 					else
 					{
@@ -178,9 +178,9 @@ class acp_captcha
 	*/
 	function deliver_demo($selected)
 	{
-		global $an602_container;
+		global $phpbb_container;
 
-		$captcha = $an602_container->get('captcha.factory')->get_instance($selected);
+		$captcha = $phpbb_container->get('captcha.factory')->get_instance($selected);
 		$captcha->init(CONFIRM_REG);
 		$captcha->execute_demo();
 

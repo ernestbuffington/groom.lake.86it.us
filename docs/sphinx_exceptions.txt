@@ -1,4 +1,4 @@
-# Sample tokenised exception file for AN602 using Sphinx search engine
+# Sample tokenised exception file for phpBB using Sphinx search engine
 #
 # Exceptions allow one or more tokens to be mapped to a single keyword. 
 # Exceptions are defined BEFORE tokenisation and are therefore case sensitive and accept characters that would normally be excluded such as punctuation.

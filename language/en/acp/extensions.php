@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -11,7 +11,7 @@
 *
 */
 
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -38,9 +38,9 @@ $lang = array_merge($lang, array(
 	'EXTENSION'					=> 'Extension',
 	'EXTENSIONS'				=> 'Extensions',
 	'EXTENSIONS_ADMIN'			=> 'Extensions Manager',
-	'EXTENSIONS_EXPLAIN'		=> 'The Extensions Manager is a tool in your AN602 Board which allows you to manage all of your extensions statuses and view information about them.',
+	'EXTENSIONS_EXPLAIN'		=> 'The Extensions Manager is a tool in your phpBB Board which allows you to manage all of your extensions statuses and view information about them.',
 	'EXTENSION_INVALID_LIST'	=> 'The “%s” extension is not valid.<br />%s<br /><br />',
-	'EXTENSION_NOT_AVAILABLE'	=> 'The selected extension is not available for this board, please verify your AN602 and PHP versions are allowed (see the details page).',
+	'EXTENSION_NOT_AVAILABLE'	=> 'The selected extension is not available for this board, please verify your phpBB and PHP versions are allowed (see the details page).',
 	'EXTENSION_DIR_INVALID'		=> 'The selected extension has an invalid directory structure and cannot be enabled.',
 	'EXTENSION_NOT_ENABLEABLE'	=> 'The selected extension cannot be enabled, please verify the extension’s requirements.',
 	'EXTENSION_NOT_INSTALLED'	=> 'The extension %s is not available. Please check that you have installed it correctly.',
@@ -71,8 +71,8 @@ $lang = array_merge($lang, array(
 	'EXTENSION_OPTIONS'			=> 'Options',
 	'EXTENSION_INSTALL_HEADLINE'=> 'Installing an extension',
 	'EXTENSION_INSTALL_EXPLAIN'	=> '<ol>
-			<li>Download an extension from AN602’s extensions database</li>
-			<li>Unzip the extension and upload it to the <samp>ext/</samp> directory of your AN602 board</li>
+			<li>Download an extension from phpBB’s extensions database</li>
+			<li>Unzip the extension and upload it to the <samp>ext/</samp> directory of your phpBB board</li>
 			<li>Enable the extension, here in the Extensions manager</li>
 		</ol>',
 	'EXTENSION_UPDATE_HEADLINE'	=> 'Updating an extension',
@@ -108,7 +108,7 @@ $lang = array_merge($lang, array(
 	'LICENSE'				=> 'Licence',
 
 	'REQUIREMENTS'			=> 'Requirements',
-	'AN602_VERSION'			=> 'AN602 Version',
+	'PHPBB_VERSION'			=> 'phpBB Version',
 	'PHP_VERSION'			=> 'PHP Version',
 	'AUTHOR_INFORMATION'	=> 'Author Information',
 	'AUTHOR_NAME'			=> 'Name',

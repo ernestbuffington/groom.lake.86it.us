@@ -1,20 +1,20 @@
 services:
     console.exception_subscriber:
-        class: an602\console\exception_subscriber
+        class: phpbb\console\exception_subscriber
         arguments:
             - '@language'
         tags:
             - { name: kernel.event_subscriber }
 
     console.command_collection:
-        class: an602\di\service_collection
+        class: phpbb\di\service_collection
         arguments:
             - '@service_container'
         tags:
             - { name: service_collection, tag: console.command }
 
     console.command.cache.purge:
-        class: an602\console\command\cache\purge
+        class: phpbb\console\command\cache\purge
         arguments:
             - '@user'
             - '@cache.driver'
@@ -26,7 +26,7 @@ services:
             - { name: console.command }
 
     console.command.config.delete:
-        class: an602\console\command\config\delete
+        class: phpbb\console\command\config\delete
         arguments:
             - '@user'
             - '@config'
@@ -34,7 +34,7 @@ services:
             - { name: console.command }
 
     console.command.config.increment:
-        class: an602\console\command\config\increment
+        class: phpbb\console\command\config\increment
         arguments:
             - '@user'
             - '@config'
@@ -42,7 +42,7 @@ services:
             - { name: console.command }
 
     console.command.config.get:
-        class: an602\console\command\config\get
+        class: phpbb\console\command\config\get
         arguments:
             - '@user'
             - '@config'
@@ -50,7 +50,7 @@ services:
             - { name: console.command }
 
     console.command.config.set:
-        class: an602\console\command\config\set
+        class: phpbb\console\command\config\set
         arguments:
             - '@user'
             - '@config'
@@ -58,7 +58,7 @@ services:
             - { name: console.command }
 
     console.command.config.set_atomic:
-        class: an602\console\command\config\set_atomic
+        class: phpbb\console\command\config\set_atomic
         arguments:
             - '@user'
             - '@config'
@@ -66,7 +66,7 @@ services:
             - { name: console.command }
 
     console.command.cron.list:
-        class: an602\console\command\cron\cron_list
+        class: phpbb\console\command\cron\cron_list
         arguments:
             - '@user'
             - '@cron.manager'
@@ -74,7 +74,7 @@ services:
             - { name: console.command }
 
     console.command.cron.run:
-        class: an602\console\command\cron\run
+        class: phpbb\console\command\cron\run
         arguments:
             - '@user'
             - '@cron.manager'
@@ -83,7 +83,7 @@ services:
             - { name: console.command }
 
     console.command.db.list:
-        class: an602\console\command\db\list_command
+        class: phpbb\console\command\db\list_command
         arguments:
             - '@user'
             - '@migrator'
@@ -94,7 +94,7 @@ services:
             - { name: console.command }
 
     console.command.db.migrate:
-        class: an602\console\command\db\migrate
+        class: phpbb\console\command\db\migrate
         arguments:
             - '@user'
             - '@language'
@@ -109,13 +109,13 @@ services:
             - { name: console.command }
 
     console.command.db.revert:
-        class: an602\console\command\db\revert
+        class: phpbb\console\command\db\revert
         parent: console.command.db.migrate
         tags:
             - { name: console.command }
 
     console.command.dev.migration_tips:
-        class: an602\console\command\dev\migration_tips
+        class: phpbb\console\command\dev\migration_tips
         arguments:
             - '@user'
             - '@ext.manager'
@@ -123,7 +123,7 @@ services:
             - { name: console.command }
 
     console.command.extension.disable:
-        class: an602\console\command\extension\disable
+        class: phpbb\console\command\extension\disable
         arguments:
             - '@user'
             - '@ext.manager'
@@ -133,7 +133,7 @@ services:
             - { name: console.command }
 
     console.command.extension.enable:
-        class: an602\console\command\extension\enable
+        class: phpbb\console\command\extension\enable
         arguments:
             - '@user'
             - '@ext.manager'
@@ -143,7 +143,7 @@ services:
             - { name: console.command }
 
     console.command.extension.purge:
-        class: an602\console\command\extension\purge
+        class: phpbb\console\command\extension\purge
         arguments:
             - '@user'
             - '@ext.manager'
@@ -153,7 +153,7 @@ services:
             - { name: console.command }
 
     console.command.extension.show:
-        class: an602\console\command\extension\show
+        class: phpbb\console\command\extension\show
         arguments:
             - '@user'
             - '@ext.manager'
@@ -163,7 +163,7 @@ services:
             - { name: console.command }
 
     console.command.fixup.update_hashes:
-        class: an602\console\command\fixup\update_hashes
+        class: phpbb\console\command\fixup\update_hashes
         arguments:
             - '@config'
             - '@user'
@@ -175,7 +175,7 @@ services:
             - { name: console.command }
 
     console.command.fixup.fix_left_right_ids:
-        class: an602\console\command\fixup\fix_left_right_ids
+        class: phpbb\console\command\fixup\fix_left_right_ids
         arguments:
             - '@user'
             - '@dbal.conn'
@@ -184,7 +184,7 @@ services:
             - { name: console.command }
 
     console.command.reparser.list:
-        class: an602\console\command\reparser\list_all
+        class: phpbb\console\command\reparser\list_all
         arguments:
             - '@user'
             - '@text_reparser_collection'
@@ -192,7 +192,7 @@ services:
             - { name: console.command }
 
     console.command.reparser.reparse:
-        class: an602\console\command\reparser\reparse
+        class: phpbb\console\command\reparser\reparse
         arguments:
             - '@user'
             - '@text_reparser.lock'
@@ -202,7 +202,7 @@ services:
             - { name: console.command }
 
     console.command.thumbnail.delete:
-        class: an602\console\command\thumbnail\delete
+        class: phpbb\console\command\thumbnail\delete
         arguments:
             - '@config'
             - '@user'
@@ -212,7 +212,7 @@ services:
             - { name: console.command }
 
     console.command.thumbnail.generate:
-        class: an602\console\command\thumbnail\generate
+        class: phpbb\console\command\thumbnail\generate
         arguments:
             - '@config'
             - '@user'
@@ -224,14 +224,14 @@ services:
             - { name: console.command }
 
     console.command.thumbnail.recreate:
-        class: an602\console\command\thumbnail\recreate
+        class: phpbb\console\command\thumbnail\recreate
         arguments:
             - '@user'
         tags:
             - { name: console.command }
 
     console.command.update.check:
-        class: an602\console\command\update\check
+        class: phpbb\console\command\update\check
         arguments:
             - '@user'
             - '@config'
@@ -241,7 +241,7 @@ services:
             - { name: console.command }
 
     console.command.user.activate:
-        class: an602\console\command\user\activate
+        class: phpbb\console\command\user\activate
         arguments:
             - '@user'
             - '@dbal.conn'
@@ -256,7 +256,7 @@ services:
             - { name: console.command }
 
     console.command.user.add:
-        class: an602\console\command\user\add
+        class: phpbb\console\command\user\add
         arguments:
             - '@user'
             - '@dbal.conn'
@@ -269,7 +269,7 @@ services:
             - { name: console.command }
 
     console.command.user.delete:
-        class: an602\console\command\user\delete
+        class: phpbb\console\command\user\delete
         arguments:
             - '@user'
             - '@dbal.conn'
@@ -282,7 +282,7 @@ services:
             - { name: console.command }
 
     console.command.user.reclean:
-        class: an602\console\command\user\reclean
+        class: phpbb\console\command\user\reclean
         arguments:
             - '@user'
             - '@dbal.conn'

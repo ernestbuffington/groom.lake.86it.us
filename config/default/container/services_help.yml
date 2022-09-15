@@ -1,26 +1,26 @@
 services:
-    an602.help.manager:
-        class: an602\help\manager
+    phpbb.help.manager:
+        class: phpbb\help\manager
         arguments:
             - '@dispatcher'
             - '@language'
             - '@template'
 
-    an602.help.controller.bbcode:
-        class: an602\help\controller\bbcode
+    phpbb.help.controller.bbcode:
+        class: phpbb\help\controller\bbcode
         arguments:
             - '@controller.helper'
-            - '@an602.help.manager'
+            - '@phpbb.help.manager'
             - '@template'
             - '@language'
             - '%core.root_path%'
             - '%core.php_ext%'
 
-    an602.help.controller.faq:
-        class: an602\help\controller\faq
+    phpbb.help.controller.faq:
+        class: phpbb\help\controller\faq
         arguments:
             - '@controller.helper'
-            - '@an602.help.manager'
+            - '@phpbb.help.manager'
             - '@template'
             - '@language'
             - '%core.root_path%'

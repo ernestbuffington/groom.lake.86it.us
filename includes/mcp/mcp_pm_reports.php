@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -36,13 +36,13 @@ class mcp_pm_reports
 	function main($id, $mode)
 	{
 		global $auth, $db, $user, $template, $request;
-		global $config, $an602_root_path, $phpEx, $action, $an602_container;
+		global $config, $phpbb_root_path, $phpEx, $action, $phpbb_container;
 
-		include_once($an602_root_path . 'includes/functions_posting.' . $phpEx);
-		include_once($an602_root_path . 'includes/functions_privmsgs.' . $phpEx);
+		include_once($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+		include_once($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
 
-		/* @var $pagination \an602\pagination */
-		$pagination = $an602_container->get('pagination');
+		/* @var $pagination \phpbb\pagination */
+		$pagination = $phpbb_container->get('pagination');
 		$start = $request->variable('start', 0);
 
 		$this->page_title = 'MCP_PM_REPORTS';
@@ -51,7 +51,7 @@ class mcp_pm_reports
 		{
 			case 'close':
 			case 'delete':
-				include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+				include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
 
 				$report_id_list = $request->variable('report_id_list', array(0));
 
@@ -62,7 +62,7 @@ class mcp_pm_reports
 
 				if (!function_exists('close_report'))
 				{
-					include($an602_root_path . 'includes/mcp/mcp_reports.' . $phpEx);
+					include($phpbb_root_path . 'includes/mcp/mcp_reports.' . $phpEx);
 				}
 
 				close_report($report_id_list, $mode, $action, true);
@@ -94,15 +94,15 @@ class mcp_pm_reports
 					trigger_error('NO_REPORT');
 				}
 
-				/* @var $an602_notifications \an602\notification\manager */
-				$an602_notifications = $an602_container->get('notification_manager');
+				/* @var $phpbb_notifications \phpbb\notification\manager */
+				$phpbb_notifications = $phpbb_container->get('notification_manager');
 
-				$an602_notifications->mark_notifications_by_parent('report_pm', $report_id, $user->data['user_id']);
+				$phpbb_notifications->mark_notifications_by_parent('report_pm', $report_id, $user->data['user_id']);
 
 				$pm_id = $report['pm_id'];
 				$report_id = $report['report_id'];
 
-				$pm_info = an602_get_pm_data(array($pm_id));
+				$pm_info = phpbb_get_pm_data(array($pm_id));
 
 				if (!count($pm_info))
 				{
@@ -164,22 +164,22 @@ class mcp_pm_reports
 				$template->assign_vars(array(
 					'S_MCP_REPORT'			=> true,
 					'S_PM'					=> true,
-					'S_CLOSE_ACTION'		=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=pm_reports&amp;mode=pm_report_details&amp;r=' . $report_id),
+					'S_CLOSE_ACTION'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=pm_reports&amp;mode=pm_report_details&amp;r=' . $report_id),
 					'S_CAN_VIEWIP'			=> $auth->acl_getf_global('m_info'),
 					'S_POST_REPORTED'		=> $pm_info['message_reported'],
 					'S_REPORT_CLOSED'		=> $report['report_closed'],
 					'S_USER_NOTES'			=> true,
 
-					'U_MCP_REPORT'				=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=pm_reports&amp;mode=pm_report_details&amp;r=' . $report_id),
-					'U_MCP_REPORTER_NOTES'		=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes&amp;u=' . $report['user_id']),
-					'U_MCP_USER_NOTES'			=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes&amp;u=' . $pm_info['author_id']),
-					'U_MCP_WARN_REPORTER'		=> ($auth->acl_get('m_warn')) ? append_sid("{$an602_root_path}mcp.$phpEx", 'i=warn&amp;mode=warn_user&amp;u=' . $report['user_id']) : '',
-					'U_MCP_WARN_USER'			=> ($auth->acl_get('m_warn')) ? append_sid("{$an602_root_path}mcp.$phpEx", 'i=warn&amp;mode=warn_user&amp;u=' . $pm_info['author_id']) : '',
+					'U_MCP_REPORT'				=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=pm_reports&amp;mode=pm_report_details&amp;r=' . $report_id),
+					'U_MCP_REPORTER_NOTES'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes&amp;u=' . $report['user_id']),
+					'U_MCP_USER_NOTES'			=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes&amp;u=' . $pm_info['author_id']),
+					'U_MCP_WARN_REPORTER'		=> ($auth->acl_get('m_warn')) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=warn&amp;mode=warn_user&amp;u=' . $report['user_id']) : '',
+					'U_MCP_WARN_USER'			=> ($auth->acl_get('m_warn')) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=warn&amp;mode=warn_user&amp;u=' . $pm_info['author_id']) : '',
 
 					'EDIT_IMG'				=> $user->img('icon_post_edit', $user->lang['EDIT_POST']),
 					'MINI_POST_IMG'			=> $user->img('icon_post_target', 'POST'),
 
-					'RETURN_REPORTS'			=> sprintf($user->lang['RETURN_REPORTS'], '<a href="' . append_sid("{$an602_root_path}mcp.$phpEx", 'i=pm_reports' . (($pm_info['message_reported']) ? '&amp;mode=pm_reports' : '&amp;mode=pm_reports_closed') . '&amp;start=' . $start) . '">', '</a>'),
+					'RETURN_REPORTS'			=> sprintf($user->lang['RETURN_REPORTS'], '<a href="' . append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=pm_reports' . (($pm_info['message_reported']) ? '&amp;mode=pm_reports' : '&amp;mode=pm_reports_closed') . '&amp;start=' . $start) . '">', '</a>'),
 					'REPORTED_IMG'				=> $user->img('icon_topic_reported', $user->lang['POST_REPORTED']),
 					'REPORT_DATE'				=> $user->format_date($report['report_time']),
 					'REPORT_ID'					=> $report_id,
@@ -218,7 +218,7 @@ class mcp_pm_reports
 				$sort_days = $total = 0;
 				$sort_key = $sort_dir = '';
 				$sort_by_sql = $sort_order_sql = array();
-				an602_mcp_sorting($mode, $sort_days, $sort_key, $sort_dir, $sort_by_sql, $sort_order_sql, $total);
+				phpbb_mcp_sorting($mode, $sort_days, $sort_key, $sort_dir, $sort_by_sql, $sort_order_sql, $total);
 
 				$limit_time_sql = ($sort_days) ? 'AND r.report_time >= ' . (time() - ($sort_days * 86400)) : '';
 
@@ -278,7 +278,7 @@ class mcp_pm_reports
 						{
 							$row = $pm_by_id[$message_id];
 							$template->assign_block_vars('postrow', array(
-								'U_VIEW_DETAILS'			=> append_sid("{$an602_root_path}mcp.$phpEx", "i=pm_reports&amp;mode=pm_report_details&amp;r={$row['report_id']}"),
+								'U_VIEW_DETAILS'			=> append_sid("{$phpbb_root_path}mcp.$phpEx", "i=pm_reports&amp;mode=pm_report_details&amp;r={$row['report_id']}"),
 
 								'PM_AUTHOR_FULL'		=> get_username_string('full', $row['author_id'], $row['username'], $row['user_colour']),
 								'PM_AUTHOR_COLOUR'		=> get_username_string('colour', $row['author_id'], $row['username'], $row['user_colour']),

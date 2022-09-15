@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -36,7 +36,7 @@ class mcp_logs
 	function main($id, $mode)
 	{
 		global $auth, $db, $user, $template, $request;
-		global $config, $an602_container, $an602_log;
+		global $config, $phpbb_container, $phpbb_log;
 
 		$user->add_lang('acp/common');
 		$this->p_master->add_mod_info('acp');
@@ -66,8 +66,8 @@ class mcp_logs
 		$this->tpl_name = 'mcp_logs';
 		$this->page_title = 'MCP_LOGS';
 
-		/* @var $pagination \an602\pagination */
-		$pagination = $an602_container->get('pagination');
+		/* @var $pagination \phpbb\pagination */
+		$pagination = $phpbb_container->get('pagination');
 
 		$forum_list = array_values(array_intersect(get_forum_list('f_read'), get_forum_list('m_')));
 		$forum_list[] = 0;
@@ -123,7 +123,7 @@ class mcp_logs
 						'log_id'	=> array('IN' => $marked),
 					);
 
-					$an602_log->delete('mod', $conditions);
+					$phpbb_log->delete('mod', $conditions);
 				}
 				else if ($deleteall)
 				{
@@ -144,7 +144,7 @@ class mcp_logs
 						$conditions['topic_id'] = $topic_id;
 					}
 
-					$an602_log->delete('mod', $conditions);
+					$phpbb_log->delete('mod', $conditions);
 				}
 			}
 			else

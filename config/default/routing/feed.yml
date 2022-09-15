@@ -1,35 +1,35 @@
-an602_feed_forums:
+phpbb_feed_forums:
     path: /forums
-    defaults: { _controller: an602.feed.controller:forums }
+    defaults: { _controller: phpbb.feed.controller:forums }
 
-an602_feed_news:
+phpbb_feed_news:
     path: /news
-    defaults: { _controller: an602.feed.controller:news }
+    defaults: { _controller: phpbb.feed.controller:news }
 
-an602_feed_topics:
+phpbb_feed_topics:
     path: /topics
-    defaults: { _controller: an602.feed.controller:topics }
+    defaults: { _controller: phpbb.feed.controller:topics }
 
-an602_feed_topics_active:
+phpbb_feed_topics_active:
     path: /topics_active
-    defaults: { _controller: an602.feed.controller:topics_active }
+    defaults: { _controller: phpbb.feed.controller:topics_active }
 
-an602_feed_topics_new:
+phpbb_feed_topics_new:
     path: /topics_new
-    defaults: { _controller: an602.feed.controller:topics_new }
+    defaults: { _controller: phpbb.feed.controller:topics_new }
 
-an602_feed_forum:
+phpbb_feed_forum:
     path: /forum/{forum_id}
-    defaults: { _controller: an602.feed.controller:forum }
+    defaults: { _controller: phpbb.feed.controller:forum }
     requirements:
         forum_id: \d+
 
-an602_feed_topic:
+phpbb_feed_topic:
     path: /topic/{topic_id}
-    defaults: { _controller: an602.feed.controller:topic }
+    defaults: { _controller: phpbb.feed.controller:topic }
     requirements:
         topic_id: \d+
 
-an602_feed_overall:
+phpbb_feed_overall:
     path: /{mode}
-    defaults: { _controller: an602.feed.controller:overall }
+    defaults: { _controller: phpbb.feed.controller:overall }

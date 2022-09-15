@@ -1,6 +1,6 @@
 services:
     dbal.conn:
-        class: an602\db\driver\factory
+        class: phpbb\db\driver\factory
         arguments:
             - '@service_container'
 
@@ -9,29 +9,29 @@ services:
 
 # ----- DB Tools -----
     dbal.tools.factory:
-        class: an602\db\tools\factory
+        class: phpbb\db\tools\factory
 
     dbal.tools:
-        class: an602\db\tools\tools_interface
+        class: phpbb\db\tools\tools_interface
         factory: ['@dbal.tools.factory', get]
         arguments:
             - '@dbal.conn.driver'
 
 # ----- DB Extractor -----
     dbal.extractor.factory:
-        class: an602\db\extractor\factory
+        class: phpbb\db\extractor\factory
         arguments:
             - '@dbal.conn.driver'
             - '@service_container'
 
     dbal.extractor:
-        class: an602\db\extractor\extractor_interface
+        class: phpbb\db\extractor\extractor_interface
         factory: ['@dbal.extractor.factory', get]
 
 # ----- DB Extractors for different drivers -----
 # Service MUST NOT be shared for all the handlers to work correctly.
     dbal.extractor.extractors.mssql_extractor:
-        class: an602\db\extractor\mssql_extractor
+        class: phpbb\db\extractor\mssql_extractor
         shared: false
         arguments:
             - '%core.root_path%'
@@ -39,7 +39,7 @@ services:
             - '@dbal.conn.driver'
 
     dbal.extractor.extractors.mysql_extractor:
-        class: an602\db\extractor\mysql_extractor
+        class: phpbb\db\extractor\mysql_extractor
         shared: false
         arguments:
             - '%core.root_path%'
@@ -47,7 +47,7 @@ services:
             - '@dbal.conn.driver'
 
     dbal.extractor.extractors.oracle_extractor:
-        class: an602\db\extractor\oracle_extractor
+        class: phpbb\db\extractor\oracle_extractor
         shared: false
         arguments:
             - '%core.root_path%'
@@ -55,7 +55,7 @@ services:
             - '@dbal.conn.driver'
 
     dbal.extractor.extractors.postgres_extractor:
-        class: an602\db\extractor\postgres_extractor
+        class: phpbb\db\extractor\postgres_extractor
         shared: false
         arguments:
             - '%core.root_path%'
@@ -63,7 +63,7 @@ services:
             - '@dbal.conn.driver'
 
     dbal.extractor.extractors.sqlite3_extractor:
-        class: an602\db\extractor\sqlite3_extractor
+        class: phpbb\db\extractor\sqlite3_extractor
         shared: false
         arguments:
             - '%core.root_path%'

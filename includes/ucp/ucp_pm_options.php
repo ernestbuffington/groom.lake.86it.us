@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -24,9 +24,9 @@ if (!defined('IN_AN602'))
 */
 function message_options($id, $mode, $global_privmsgs_rules, $global_rule_conditions)
 {
-	global $an602_root_path, $phpEx, $user, $template, $config, $db, $request;
+	global $phpbb_root_path, $phpEx, $user, $template, $config, $db, $request;
 
-	$redirect_url = append_sid("{$an602_root_path}ucp.$phpEx", "i=pm&amp;mode=options");
+	$redirect_url = append_sid("{$phpbb_root_path}ucp.$phpEx", "i=pm&amp;mode=options");
 
 	add_form_key('ucp_pm_options');
 	// Change "full folder" setting - what to do if folder is full
@@ -272,7 +272,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 
 			$db->sql_query($sql);
 
-			$meta_info = append_sid("{$an602_root_path}ucp.$phpEx", "i=pm&amp;mode=$mode");
+			$meta_info = append_sid("{$phpbb_root_path}ucp.$phpEx", "i=pm&amp;mode=$mode");
 			$message = $user->lang['FOLDER_REMOVED'];
 
 			meta_refresh(3, $meta_info);
@@ -375,7 +375,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 
 		if (!$delete_id)
 		{
-			redirect(append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;mode=' . $mode));
+			redirect(append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;mode=' . $mode));
 		}
 
 		// Do we need to confirm?
@@ -386,7 +386,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 					AND rule_id = $delete_id";
 			$db->sql_query($sql);
 
-			$meta_info = append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;mode=' . $mode);
+			$meta_info = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;mode=' . $mode);
 			$message = $user->lang['RULE_DELETED'];
 
 			// Reset user_message_rules if no more assigned
@@ -500,7 +500,7 @@ function message_options($id, $mode, $global_privmsgs_rules, $global_rule_condit
 
 		'DEFAULT_ACTION'		=> ($config['full_folder_action'] == 1) ? $user->lang['DELETE_OLDEST_MESSAGES'] : $user->lang['HOLD_NEW_MESSAGES'],
 
-		'U_FIND_USERNAME'		=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=ucp&amp;field=rule_string&amp;select_single=true'),
+		'U_FIND_USERNAME'		=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=ucp&amp;field=rule_string&amp;select_single=true'),
 	));
 
 	$rule_lang = $action_lang = $check_lang = array();
@@ -699,10 +699,10 @@ function define_rule_option($hardcoded, $rule_option, $rule_lang, $check_ary)
 */
 function define_cond_option($hardcoded, $cond_option, $rule_option, $global_rule_conditions)
 {
-	global $db, $template, $auth, $user, $request, $an602_container;
+	global $db, $template, $auth, $user, $request, $phpbb_container;
 
-	/** @var \an602\group\helper $group_helper */
-	$group_helper = $an602_container->get('group_helper');
+	/** @var \phpbb\group\helper $group_helper */
+	$group_helper = $phpbb_container->get('group_helper');
 
 	$template->assign_vars(array(
 		'S_COND_DEFINED'	=> true,

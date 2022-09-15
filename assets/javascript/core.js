@@ -1,7 +1,7 @@
 /* global bbfontstyle */
 
 var phpbb = {};
-an602.alertTime = 100;
+phpbb.alertTime = 100;
 
 (function($) {  // Avoid conflicts with other libraries
 
@@ -20,7 +20,7 @@ var $dark = $('#darkenwrapper');
 var $loadingIndicator;
 var phpbbAlertTimer = null;
 
-an602.isTouch = (window && typeof window.ontouchstart !== 'undefined');
+phpbb.isTouch = (window && typeof window.ontouchstart !== 'undefined');
 
 // Add ajax pre-filter to prevent cross-domain script execution
 $.ajaxPrefilter(function(s) {
@@ -34,7 +34,7 @@ $.ajaxPrefilter(function(s) {
  *
  * @returns {object} Returns loadingIndicator.
  */
-an602.loadingIndicator = function() {
+phpbb.loadingIndicator = function() {
 	if (!$loadingIndicator) {
 		$loadingIndicator = $('<div />', {
 			'id': 'loading_indicator',
@@ -44,11 +44,11 @@ an602.loadingIndicator = function() {
 	}
 
 	if (!$loadingIndicator.is(':visible')) {
-		$loadingIndicator.fadeIn(an602.alertTime);
+		$loadingIndicator.fadeIn(phpbb.alertTime);
 		// Wait 60 seconds and display an error if nothing has been returned by then.
-		an602.clearLoadingTimeout();
+		phpbb.clearLoadingTimeout();
 		phpbbAlertTimer = setTimeout(function() {
-			an602.showTimeoutMessage();
+			phpbb.showTimeoutMessage();
 		}, 60000);
 	}
 
@@ -58,18 +58,18 @@ an602.loadingIndicator = function() {
 /**
  * Show timeout message
  */
-an602.showTimeoutMessage = function () {
-	var $alert = $('#an602_alert');
+phpbb.showTimeoutMessage = function () {
+	var $alert = $('#phpbb_alert');
 
 	if ($loadingIndicator.is(':visible')) {
-		an602.alert($alert.attr('data-l-err'), $alert.attr('data-l-timeout-processing-req'));
+		phpbb.alert($alert.attr('data-l-err'), $alert.attr('data-l-timeout-processing-req'));
 	}
 };
 
 /**
  * Clear loading alert timeout
 */
-an602.clearLoadingTimeout = function() {
+phpbb.clearLoadingTimeout = function() {
 	if (phpbbAlertTimer !== null) {
 		clearTimeout(phpbbAlertTimer);
 		phpbbAlertTimer = null;
@@ -82,7 +82,7 @@ an602.clearLoadingTimeout = function() {
 *
 * @param {int} delay Delay in ms until darkenwrapper's click event is triggered
 */
-an602.closeDarkenWrapper = function(delay) {
+phpbb.closeDarkenWrapper = function(delay) {
 	phpbbAlertTimer = setTimeout(function() {
 		$('#darkenwrapper').trigger('click');
 	}, delay);
@@ -98,19 +98,19 @@ an602.closeDarkenWrapper = function(delay) {
  *
  * @returns {object} Returns the div created.
  */
-an602.alert = function(title, msg) {
-	var $alert = $('#an602_alert');
+phpbb.alert = function(title, msg) {
+	var $alert = $('#phpbb_alert');
 	$alert.find('.alert_title').html(title);
 	$alert.find('.alert_text').html(msg);
 
-	$(document).on('keydown.an602.alert', function(e) {
+	$(document).on('keydown.phpbb.alert', function(e) {
 		if (e.keyCode === keymap.ENTER || e.keyCode === keymap.ESC) {
-			an602.alert.close($alert, true);
+			phpbb.alert.close($alert, true);
 			e.preventDefault();
 			e.stopPropagation();
 		}
 	});
-	an602.alert.open($alert);
+	phpbb.alert.open($alert);
 
 	return $alert;
 };
@@ -120,23 +120,23 @@ an602.alert = function(title, msg) {
 *
 * @param {jQuery} $alert jQuery object.
 */
-an602.alert.open = function($alert) {
+phpbb.alert.open = function($alert) {
 	if (!$dark.is(':visible')) {
-		$dark.fadeIn(an602.alertTime);
+		$dark.fadeIn(phpbb.alertTime);
 	}
 
 	if ($loadingIndicator && $loadingIndicator.is(':visible')) {
-		$loadingIndicator.fadeOut(an602.alertTime, function() {
+		$loadingIndicator.fadeOut(phpbb.alertTime, function() {
 			$dark.append($alert);
-			$alert.fadeIn(an602.alertTime);
+			$alert.fadeIn(phpbb.alertTime);
 		});
 	} else if ($dark.is(':visible')) {
 		$dark.append($alert);
-		$alert.fadeIn(an602.alertTime);
+		$alert.fadeIn(phpbb.alertTime);
 	} else {
 		$dark.append($alert);
 		$alert.show();
-		$dark.fadeIn(an602.alertTime);
+		$dark.fadeIn(phpbb.alertTime);
 	}
 
 	$alert.on('click', function(e) {
@@ -144,13 +144,13 @@ an602.alert.open = function($alert) {
 	});
 
 	$dark.one('click', function(e) {
-		an602.alert.close($alert, true);
+		phpbb.alert.close($alert, true);
 		e.preventDefault();
 		e.stopPropagation();
 	});
 
 	$alert.find('.alert_close').one('click', function(e) {
-		an602.alert.close($alert, true);
+		phpbb.alert.close($alert, true);
 		e.preventDefault();
 	});
 };
@@ -161,15 +161,15 @@ an602.alert.open = function($alert) {
 * @param {jQuery} $alert jQuery object.
 * @param {bool} fadedark Whether to remove dark background.
 */
-an602.alert.close = function($alert, fadedark) {
+phpbb.alert.close = function($alert, fadedark) {
 	var $fade = (fadedark) ? $dark : $alert;
 
-	$fade.fadeOut(an602.alertTime, function() {
+	$fade.fadeOut(phpbb.alertTime, function() {
 		$alert.hide();
 	});
 
 	$alert.find('.alert_close').off('click');
-	$(document).off('keydown.an602.alert');
+	$(document).off('keydown.phpbb.alert');
 };
 
 /**
@@ -185,12 +185,12 @@ an602.alert.close = function($alert, fadedark) {
  *
  * @returns {object} Returns the div created.
  */
-an602.confirm = function(msg, callback, fadedark) {
-	var $confirmDiv = $('#an602_confirm');
+phpbb.confirm = function(msg, callback, fadedark) {
+	var $confirmDiv = $('#phpbb_confirm');
 	$confirmDiv.find('.alert_text').html(msg);
 	fadedark = typeof fadedark !== 'undefined' ? fadedark : true;
 
-	$(document).on('keydown.an602.alert', function(e) {
+	$(document).on('keydown.phpbb.alert', function(e) {
 		if (e.keyCode === keymap.ENTER || e.keyCode === keymap.ESC) {
 			var name = (e.keyCode === keymap.ENTER) ? 'confirm' : 'cancel';
 
@@ -200,18 +200,18 @@ an602.confirm = function(msg, callback, fadedark) {
 		}
 	});
 
-	$confirmDiv.find('input[type="button"]').one('click.an602.confirmbox', function(e) {
+	$confirmDiv.find('input[type="button"]').one('click.phpbb.confirmbox', function(e) {
 		var confirmed = this.name === 'confirm';
 
 		callback(confirmed);
-		$confirmDiv.find('input[type="button"]').off('click.an602.confirmbox');
-		an602.alert.close($confirmDiv, fadedark || !confirmed);
+		$confirmDiv.find('input[type="button"]').off('click.phpbb.confirmbox');
+		phpbb.alert.close($confirmDiv, fadedark || !confirmed);
 
 		e.preventDefault();
 		e.stopPropagation();
 	});
 
-	an602.alert.open($confirmDiv);
+	phpbb.alert.open($confirmDiv);
 
 	return $confirmDiv;
 };
@@ -222,7 +222,7 @@ an602.confirm = function(msg, callback, fadedark) {
  * @argument {string} string The querystring to parse.
  * @returns {object} The object created.
  */
-an602.parseQuerystring = function(string) {
+phpbb.parseQuerystring = function(string) {
 	var params = {}, i, split;
 
 	string = string.split('&');
@@ -242,12 +242,12 @@ an602.parseQuerystring = function(string) {
  * and forms with the data-ajax attribute set, and will call the necessary
  * callback.
  *
- * For more info, view the following page on the AN602 wiki:
- * http://wiki.groom.lake.86it.us/JavaScript_Function.an602.ajaxify
+ * For more info, view the following page on the phpBB wiki:
+ * http://wiki.phpbb.com/JavaScript_Function.phpbb.ajaxify
  *
  * @param {object} options Options.
  */
-an602.ajaxify = function(options) {
+phpbb.ajaxify = function(options) {
 	var $elements = $(options.selector),
 		refresh = options.refresh,
 		callback = options.callback,
@@ -278,7 +278,7 @@ an602.ajaxify = function(options) {
 			if (typeof console !== 'undefined' && console.log) {
 				console.log('AJAX error. status: ' + textStatus + ', message: ' + errorThrown);
 			}
-			an602.clearLoadingTimeout();
+			phpbb.clearLoadingTimeout();
 			var responseText, errorText = false;
 			try {
 				responseText = JSON.parse(jqXHR.responseText);
@@ -294,7 +294,7 @@ an602.ajaxify = function(options) {
 					errorText = $dark.attr('data-ajax-error-text');
 				}
 			}
-			an602.alert($dark.attr('data-ajax-error-title'), errorText);
+			phpbb.alert($dark.attr('data-ajax-error-title'), errorText);
 		}
 
 		/**
@@ -310,24 +310,24 @@ an602.ajaxify = function(options) {
 		function returnHandler(res) {
 			var alert;
 
-			an602.clearLoadingTimeout();
+			phpbb.clearLoadingTimeout();
 
 			// Is a confirmation required?
 			if (typeof res.S_CONFIRM_ACTION === 'undefined') {
 				// If a confirmation is not required, display an alert and call the
 				// callbacks.
 				if (typeof res.MESSAGE_TITLE !== 'undefined') {
-					alert = an602.alert(res.MESSAGE_TITLE, res.MESSAGE_TEXT);
+					alert = phpbb.alert(res.MESSAGE_TITLE, res.MESSAGE_TEXT);
 				} else {
-					$dark.fadeOut(an602.alertTime);
+					$dark.fadeOut(phpbb.alertTime);
 
 					if ($loadingIndicator) {
-						$loadingIndicator.fadeOut(an602.alertTime);
+						$loadingIndicator.fadeOut(phpbb.alertTime);
 					}
 				}
 
-				if (typeof an602.ajaxCallbacks[callback] === 'function') {
-					an602.ajaxCallbacks[callback].call(that, res);
+				if (typeof phpbb.ajaxCallbacks[callback] === 'function') {
+					phpbb.ajaxCallbacks[callback].call(that, res);
 				}
 
 				// If the server says to refresh the page, check whether the page should
@@ -346,7 +346,7 @@ an602.ajaxify = function(options) {
 
 						// Hide the alert even if we refresh the page, in case the user
 						// presses the back button.
-						$dark.fadeOut(an602.alertTime, function() {
+						$dark.fadeOut(phpbb.alertTime, function() {
 							if (typeof alert !== 'undefined') {
 								alert.hide();
 							}
@@ -355,17 +355,17 @@ an602.ajaxify = function(options) {
 				}
 			} else {
 				// If confirmation is required, display a dialog to the user.
-				an602.confirm(res.MESSAGE_BODY, function(del) {
+				phpbb.confirm(res.MESSAGE_BODY, function(del) {
 					if (!del) {
 						return;
 					}
 
-					an602.loadingIndicator();
+					phpbb.loadingIndicator();
 					data =  $('<form>' + res.S_HIDDEN_FIELDS + '</form>').serialize();
 					$.ajax({
 						url: res.S_CONFIRM_ACTION,
 						type: 'POST',
-						data: data + '&confirm=' + res.YES_VALUE + '&' + $('form', '#an602_confirm').serialize(),
+						data: data + '&confirm=' + res.YES_VALUE + '&' + $('form', '#phpbb_confirm').serialize(),
 						success: returnHandler,
 						error: errorHandler
 					});
@@ -404,7 +404,7 @@ an602.ajaxify = function(options) {
 		var sendRequest = function() {
 			var dataOverlay = $this.attr('data-overlay');
 			if (overlay && (typeof dataOverlay === 'undefined' || dataOverlay === 'true')) {
-				an602.loadingIndicator();
+				phpbb.loadingIndicator();
 			}
 
 			var request = $.ajax({
@@ -418,7 +418,7 @@ an602.ajaxify = function(options) {
 
 			request.always(function() {
 				if ($loadingIndicator && $loadingIndicator.is(':visible')) {
-					$loadingIndicator.fadeOut(an602.alertTime);
+					$loadingIndicator.fadeOut(phpbb.alertTime);
 				}
 			});
 		};
@@ -447,7 +447,7 @@ an602.ajaxify = function(options) {
 	return this;
 };
 
-an602.search = {
+phpbb.search = {
 	cache: {
 		data: []
 	},
@@ -461,7 +461,7 @@ an602.search = {
  * @param {string} id Search ID.
  * @returns {bool|object} Cached data object. Returns false if no data exists.
  */
-an602.search.cache.get = function(id) {
+phpbb.search.cache.get = function(id) {
 	if (this.data[id]) {
 		return this.data[id];
 	}
@@ -475,7 +475,7 @@ an602.search.cache.get = function(id) {
  * @param {string} key		Data key.
  * @param {string} value	Data value.
  */
-an602.search.cache.set = function(id, key, value) {
+phpbb.search.cache.set = function(id, key, value) {
 	if (!this.data[id]) {
 		this.data[id] = { results: [] };
 	}
@@ -489,7 +489,7 @@ an602.search.cache.set = function(id, key, value) {
  * @param {string} keyword	Keyword.
  * @param {Array} results	Search results.
  */
-an602.search.cache.setResults = function(id, keyword, results) {
+phpbb.search.cache.setResults = function(id, keyword, results) {
 	this.data[id].results[keyword] = results;
 };
 
@@ -499,7 +499,7 @@ an602.search.cache.setResults = function(id, keyword, results) {
  * @param {string} keyword Search keyword to clean.
  * @returns {string} Cleaned string.
  */
-an602.search.cleanKeyword = function(keyword) {
+phpbb.search.cleanKeyword = function(keyword) {
 	return $.trim(keyword).toLowerCase();
 };
 
@@ -513,12 +513,12 @@ an602.search.cleanKeyword = function(keyword) {
  *
  * @returns string Clean string.
  */
-an602.search.getKeyword = function($input, keyword, multiline) {
+phpbb.search.getKeyword = function($input, keyword, multiline) {
 	if (multiline) {
-		var line = an602.search.getKeywordLine($input);
+		var line = phpbb.search.getKeywordLine($input);
 		keyword = keyword.split('\n').splice(line, 1);
 	}
-	return an602.search.cleanKeyword(keyword);
+	return phpbb.search.cleanKeyword(keyword);
 };
 
 /**
@@ -528,7 +528,7 @@ an602.search.getKeyword = function($input, keyword, multiline) {
  * @param {jQuery} $textarea Search textarea.
  * @returns {int} The line number.
  */
-an602.search.getKeywordLine = function ($textarea) {
+phpbb.search.getKeywordLine = function ($textarea) {
 	var selectionStart = $textarea.get(0).selectionStart;
 	return $textarea.val().substr(0, selectionStart).split('\n').length - 1;
 };
@@ -541,9 +541,9 @@ an602.search.getKeywordLine = function ($textarea) {
  * @param {string} value	Value to set.
  * @param {bool} multiline	Whether textarea supports multiple search keywords.
  */
-an602.search.setValue = function($input, value, multiline) {
+phpbb.search.setValue = function($input, value, multiline) {
 	if (multiline) {
-		var line = an602.search.getKeywordLine($input),
+		var line = phpbb.search.getKeywordLine($input),
 			lines = $input.val().split('\n');
 		lines[line] = value;
 		value = lines.join('\n');
@@ -560,10 +560,10 @@ an602.search.setValue = function($input, value, multiline) {
  * @param {jQuery} $row			Result element.
  * @param {jQuery} $container	jQuery object for the search container.
  */
-an602.search.setValueOnClick = function($input, value, $row, $container) {
+phpbb.search.setValueOnClick = function($input, value, $row, $container) {
 	$row.click(function() {
-		an602.search.setValue($input, value.result, $input.attr('data-multiline'));
-		an602.search.closeResults($input, $container);
+		phpbb.search.setValue($input, value.result, $input.attr('data-multiline'));
+		phpbb.search.closeResults($input, $container);
 	});
 };
 
@@ -579,13 +579,13 @@ an602.search.setValueOnClick = function($input, value, $row, $container) {
  *
  * @returns {boolean} Returns false.
  */
-an602.search.filter = function(data, event, sendRequest) {
+phpbb.search.filter = function(data, event, sendRequest) {
 	var $this = $(this),
 		dataName = ($this.attr('data-name') !== undefined) ? $this.attr('data-name') : $this.attr('name'),
 		minLength = parseInt($this.attr('data-min-length'), 10),
 		searchID = $this.attr('data-results'),
-		keyword = an602.search.getKeyword($this, data[dataName], $this.attr('data-multiline')),
-		cache = an602.search.cache.get(searchID),
+		keyword = phpbb.search.getKeyword($this, data[dataName], $this.attr('data-multiline')),
+		cache = phpbb.search.cache.get(searchID),
 		key = event.keyCode || event.which,
 		proceed = true;
 	data[dataName] = keyword;
@@ -615,15 +615,15 @@ an602.search.filter = function(data, event, sendRequest) {
 						keyword: keyword,
 						results: cache.results[keyword]
 					};
-					an602.search.handleResponse(response, $this, true);
+					phpbb.search.handleResponse(response, $this, true);
 					proceed = false;
 				}
 
 				// If the previous search didn't yield results and the string only had characters added to it,
 				// then we won't bother sending a request.
 				if (keyword.indexOf(cache.lastSearch) === 0 && cache.results[cache.lastSearch].length === 0) {
-					an602.search.cache.set(searchID, 'lastSearch', keyword);
-					an602.search.cache.setResults(searchID, keyword, []);
+					phpbb.search.cache.set(searchID, 'lastSearch', keyword);
+					phpbb.search.cache.setResults(searchID, keyword, []);
 					proceed = false;
 				}
 			}
@@ -633,7 +633,7 @@ an602.search.filter = function(data, event, sendRequest) {
 			sendRequest.call(this);
 		}
 	}, 350);
-	an602.search.cache.set(searchID, 'timeout', timeout);
+	phpbb.search.cache.set(searchID, 'timeout', timeout);
 
 	return false;
 };
@@ -646,7 +646,7 @@ an602.search.filter = function(data, event, sendRequest) {
  * @param {bool} fromCache		Whether the results are from the cache.
  * @param {function} callback	Optional callback to run when assigning each search result.
  */
-an602.search.handleResponse = function(res, $input, fromCache, callback) {
+phpbb.search.handleResponse = function(res, $input, fromCache, callback) {
 	if (typeof res !== 'object') {
 		return;
 	}
@@ -676,7 +676,7 @@ an602.search.handleResponse = function(res, $input, fromCache, callback) {
  * @param {jQuery} $container	Search results container element.
  * @param {function} callback	Optional callback to run when assigning each search result.
  */
-an602.search.showResults = function(results, $input, $container, callback) {
+phpbb.search.showResults = function(results, $input, $container, callback) {
 	var $resultContainer = $('.search-results', $container);
 	this.clearResults($resultContainer);
 
@@ -707,7 +707,7 @@ an602.search.showResults = function(results, $input, $container, callback) {
 	});
 	$container.show();
 
-	an602.search.navigateResults($input, $container, $resultContainer);
+	phpbb.search.navigateResults($input, $container, $resultContainer);
 };
 
 /**
@@ -715,7 +715,7 @@ an602.search.showResults = function(results, $input, $container, callback) {
  *
  * @param {jQuery} $container		Search results container.
  */
-an602.search.clearResults = function($container) {
+phpbb.search.clearResults = function($container) {
 	$container.children(':not(.search-result-tpl)').remove();
 };
 
@@ -725,8 +725,8 @@ an602.search.clearResults = function($container) {
  * @param {jQuery} $input			Search input|textarea.
  * @param {jQuery} $container		Search results container.
  */
-an602.search.closeResults = function($input, $container) {
-	$input.off('.an602.search');
+phpbb.search.closeResults = function($input, $container) {
+	$input.off('.phpbb.search');
 	$container.hide();
 };
 
@@ -737,19 +737,19 @@ an602.search.closeResults = function($input, $container) {
  * @param {jQuery} $container		Search results container.
  * @param {jQuery} $resultContainer	Search results list container.
  */
-an602.search.navigateResults = function($input, $container, $resultContainer) {
-	// Add a namespace to the event (.an602.search),
+phpbb.search.navigateResults = function($input, $container, $resultContainer) {
+	// Add a namespace to the event (.phpbb.search),
 	// so it can be unbound specifically later on.
 	// Rebind it, to ensure the event is 'dynamic'.
-	$input.off('.an602.search');
-	$input.on('keydown.an602.search', function(event) {
+	$input.off('.phpbb.search');
+	$input.on('keydown.phpbb.search', function(event) {
 		var key = event.keyCode || event.which,
 			$active = $resultContainer.children('.active');
 
 		switch (key) {
 			// Close the results
 			case keymap.ESC:
-				an602.search.closeResults($input, $container);
+				phpbb.search.closeResults($input, $container);
 			break;
 
 			// Set the value for the selected result
@@ -757,10 +757,10 @@ an602.search.navigateResults = function($input, $container, $resultContainer) {
 				if ($active.length) {
 					var value = $active.find('.search-result > span').text();
 
-					an602.search.setValue($input, value, $input.attr('data-multiline'));
+					phpbb.search.setValue($input, value, $input.attr('data-multiline'));
 				}
 
-				an602.search.closeResults($input, $container);
+				phpbb.search.closeResults($input, $container);
 
 				// Do not submit the form
 				event.preventDefault();
@@ -807,11 +807,11 @@ $('#phpbb').click(function() {
 	var $this = $(this);
 
 	if (!$this.is('.live-search') && !$this.parents().is('.live-search')) {
-		an602.search.closeResults($('input, textarea'), $('.live-search'));
+		phpbb.search.closeResults($('input, textarea'), $('.live-search'));
 	}
 });
 
-an602.history = {};
+phpbb.history = {};
 
 /**
 * Check whether a method in the native history object is supported.
@@ -819,7 +819,7 @@ an602.history = {};
 * @param {string} fn Method name.
 * @returns {bool} Returns true if the method is supported.
 */
-an602.history.isSupported = function(fn) {
+phpbb.history.isSupported = function(fn) {
 	return !(typeof history === 'undefined' || typeof history[fn] === 'undefined');
 };
 
@@ -832,10 +832,10 @@ an602.history.isSupported = function(fn) {
 * @param {string} [title]	Optional page title.
 * @param {object} [obj]		Optional state object.
 */
-an602.history.alterUrl = function(mode, url, title, obj) {
+phpbb.history.alterUrl = function(mode, url, title, obj) {
 	var fn = mode + 'State';
 
-	if (!url || !an602.history.isSupported(fn)) {
+	if (!url || !phpbb.history.isSupported(fn)) {
 		return;
 	}
 	if (!title) {
@@ -855,8 +855,8 @@ an602.history.alterUrl = function(mode, url, title, obj) {
 * @param {string} [title]	Optional page title.
 * @param {object} [obj]		Optional state object.
 */
-an602.history.replaceUrl = function(url, title, obj) {
-	an602.history.alterUrl('replace', url, title, obj);
+phpbb.history.replaceUrl = function(url, title, obj) {
+	phpbb.history.alterUrl('replace', url, title, obj);
 };
 
 /**
@@ -866,8 +866,8 @@ an602.history.replaceUrl = function(url, title, obj) {
 * @param {string} [title]	Optional page title.
 * @param {object} [obj]		Optional state object.
 */
-an602.history.pushUrl = function(url, title, obj) {
-	an602.history.alterUrl('push', url, title, obj);
+phpbb.history.pushUrl = function(url, title, obj) {
+	phpbb.history.alterUrl('push', url, title, obj);
 };
 
 /**
@@ -876,7 +876,7 @@ an602.history.pushUrl = function(url, title, obj) {
 * @param {bool} keepSelection Shall we keep the value selected, or shall the
 * 	user be forced to repick one.
 */
-an602.timezoneSwitchDate = function(keepSelection) {
+phpbb.timezoneSwitchDate = function(keepSelection) {
 	var $timezoneCopy = $('#timezone_copy');
 	var $timezone = $('#timezone');
 	var $tzDate = $('#tz_date');
@@ -925,7 +925,7 @@ an602.timezoneSwitchDate = function(keepSelection) {
 /**
 * Display the date/time select
 */
-an602.timezoneEnableDateSelection = function() {
+phpbb.timezoneEnableDateSelection = function() {
 	$('#tz_select_date').css('display', 'block');
 };
 
@@ -934,7 +934,7 @@ an602.timezoneEnableDateSelection = function() {
 *
 * @param {bool} forceSelector Shall we select the suggestion?
 */
-an602.timezonePreselectSelect = function(forceSelector) {
+phpbb.timezonePreselectSelect = function(forceSelector) {
 
 	// The offset returned here is in minutes and negated.
 	var offset = (new Date()).getTimezoneOffset();
@@ -977,11 +977,11 @@ an602.timezonePreselectSelect = function(forceSelector) {
 			if ($('#tz_date').val() !== option.value && !forceSelector) {
 				// We do not select the option for the user, but notify him,
 				// that we would suggest a different setting.
-				an602.timezoneSwitchDate(true);
+				phpbb.timezoneSwitchDate(true);
 				$tzSelectDateSuggest.css('display', 'inline');
 			} else {
 				option.selected = true;
-				an602.timezoneSwitchDate(!forceSelector);
+				phpbb.timezoneSwitchDate(!forceSelector);
 				$tzSelectDateSuggest.css('display', 'none');
 			}
 
@@ -997,19 +997,19 @@ an602.timezonePreselectSelect = function(forceSelector) {
 	}
 };
 
-an602.ajaxCallbacks = {};
+phpbb.ajaxCallbacks = {};
 
 /**
- * Adds an AJAX callback to be used by an602.ajaxify.
+ * Adds an AJAX callback to be used by phpbb.ajaxify.
  *
- * See the an602.ajaxify comments for information on stuff like parameters.
+ * See the phpbb.ajaxify comments for information on stuff like parameters.
  *
  * @param {string} id The name of the callback.
  * @param {function} callback The callback to be called.
  */
-an602.addAjaxCallback = function(id, callback) {
+phpbb.addAjaxCallback = function(id, callback) {
 	if (typeof callback === 'function') {
-		an602.ajaxCallbacks[id] = callback;
+		phpbb.ajaxCallbacks[id] = callback;
 	}
 	return this;
 };
@@ -1017,8 +1017,8 @@ an602.addAjaxCallback = function(id, callback) {
 /**
  * This callback handles live member searches.
  */
-an602.addAjaxCallback('member_search', function(res) {
-	an602.search.handleResponse(res, $(this), false, an602.getFunctionByName('an602.search.setValueOnClick'));
+phpbb.addAjaxCallback('member_search', function(res) {
+	phpbb.search.handleResponse(res, $(this), false, phpbb.getFunctionByName('phpbb.search.setValueOnClick'));
 });
 
 /**
@@ -1026,7 +1026,7 @@ an602.addAjaxCallback('member_search', function(res) {
  * the alt-text data attribute, and replaces the text in the attribute with the
  * current text so that the process can be repeated.
  */
-an602.addAjaxCallback('alt_text', function() {
+phpbb.addAjaxCallback('alt_text', function() {
 	var $anchor,
 		updateAll = $(this).data('update-all'),
 		altText;
@@ -1055,7 +1055,7 @@ an602.addAjaxCallback('alt_text', function() {
  * Additionally it replaces the class of the link's parent
  * and changes the link itself.
  */
-an602.addAjaxCallback('toggle_link', function() {
+phpbb.addAjaxCallback('toggle_link', function() {
 	var $anchor,
 		updateAll = $(this).data('update-all') ,
 		toggleText,
@@ -1111,7 +1111,7 @@ an602.addAjaxCallback('toggle_link', function() {
 *			this points to DOM object
 *			item is a jQuery object, same as this
 */
-an602.resizeTextArea = function($items, options) {
+phpbb.resizeTextArea = function($items, options) {
 	// Configuration
 	var configuration = {
 		minWindowHeight: 500,
@@ -1122,7 +1122,7 @@ an602.resizeTextArea = function($items, options) {
 		resetCallback: function() {}
 	};
 
-	if (an602.isTouch) {
+	if (phpbb.isTouch) {
 		return;
 	}
 
@@ -1201,7 +1201,7 @@ an602.resizeTextArea = function($items, options) {
 *
 * @returns {boolean} True if cursor is in bbcode tag
 */
-an602.inBBCodeTag = function(textarea, startTags, endTags) {
+phpbb.inBBCodeTag = function(textarea, startTags, endTags) {
 	var start = textarea.selectionStart,
 		lastEnd = -1,
 		lastStart = -1,
@@ -1247,7 +1247,7 @@ an602.inBBCodeTag = function(textarea, startTags, endTags) {
 *
 * @param {object} textarea Textarea DOM object to apply editor to
 */
-an602.applyCodeEditor = function(textarea) {
+phpbb.applyCodeEditor = function(textarea) {
 	// list of allowed start and end bbcode code tags, in lower case
 	var startTags = ['[code]', '[code='],
 		startTagsEnd = ']',
@@ -1262,7 +1262,7 @@ an602.applyCodeEditor = function(textarea) {
 	}
 
 	function inTag() {
-		return an602.inBBCodeTag(textarea, startTags, endTags);
+		return phpbb.inBBCodeTag(textarea, startTags, endTags);
 	}
 
 	/**
@@ -1354,7 +1354,7 @@ an602.applyCodeEditor = function(textarea) {
  *
  * @param {HTMLElement} textarea Textarea DOM object to apply editor to
  */
-an602.showDragNDrop = function(textarea) {
+phpbb.showDragNDrop = function(textarea) {
 	if (!textarea) {
 		return;
 	}
@@ -1378,14 +1378,14 @@ an602.showDragNDrop = function(textarea) {
 * Add your own classes to strings with comma (probably you
 * will never need to do that)
 */
-an602.dropdownHandles = '.dropdown-container.dropdown-visible .dropdown-toggle';
-an602.dropdownVisibleContainers = '.dropdown-container.dropdown-visible';
+phpbb.dropdownHandles = '.dropdown-container.dropdown-visible .dropdown-toggle';
+phpbb.dropdownVisibleContainers = '.dropdown-container.dropdown-visible';
 
 /**
 * Dropdown toggle event handler
-* This handler is used by AN602.registerDropdown() and other functions
+* This handler is used by phpBB.registerDropdown() and other functions
 */
-an602.toggleDropdown = function() {
+phpbb.toggleDropdown = function() {
 	var $this = $(this),
 		options = $this.data('dropdown-options'),
 		parent = options.parent,
@@ -1394,7 +1394,7 @@ an602.toggleDropdown = function() {
 
 	if (!visible) {
 		// Hide other dropdown menus
-		$(an602.dropdownHandles).each(an602.toggleDropdown);
+		$(phpbb.dropdownHandles).each(phpbb.toggleDropdown);
 
 		// Figure out direction of dropdown
 		direction = options.direction;
@@ -1493,7 +1493,7 @@ an602.toggleDropdown = function() {
 /**
 * Toggle dropdown submenu
 */
-an602.toggleSubmenu = function(e) {
+phpbb.toggleSubmenu = function(e) {
 	$(this).siblings('.dropdown-submenu').toggle();
 	e.preventDefault();
 };
@@ -1506,7 +1506,7 @@ an602.toggleSubmenu = function(e) {
 * @param {jQuery} dropdown Dropdown menu.
 * @param {Object} options List of options. Optional.
 */
-an602.registerDropdown = function(toggle, dropdown, options) {
+phpbb.registerDropdown = function(toggle, dropdown, options) {
 	var ops = {
 			parent: toggle.parent(), // Parent item to add classes to
 			direction: 'auto', // Direction of dropdown menu. Possible values: auto, left, right
@@ -1527,8 +1527,8 @@ an602.registerDropdown = function(toggle, dropdown, options) {
 
 	toggle.data('dropdown-options', ops);
 
-	toggle.click(an602.toggleDropdown);
-	$('.dropdown-toggle-submenu', ops.parent).click(an602.toggleSubmenu);
+	toggle.click(phpbb.toggleDropdown);
+	$('.dropdown-toggle-submenu', ops.parent).click(phpbb.toggleSubmenu);
 };
 
 /**
@@ -1538,7 +1538,7 @@ an602.registerDropdown = function(toggle, dropdown, options) {
 * @param {int} width Palette cell width.
 * @param {int} height Palette cell height.
 */
-an602.colorPalette = function(dir, width, height) {
+phpbb.colorPalette = function(dir, width, height) {
 	var r, g, b,
 		numberList = new Array(6),
 		color = '',
@@ -1589,7 +1589,7 @@ an602.colorPalette = function(dir, width, height) {
 *
 * @param {jQuery} el jQuery object for the palette container.
 */
-an602.registerPalette = function(el) {
+phpbb.registerPalette = function(el) {
 	var	orientation	= el.attr('data-color-palette') || el.attr('data-orientation'), // data-orientation kept for backwards compat.
 		height		= el.attr('data-height'),
 		width		= el.attr('data-width'),
@@ -1597,7 +1597,7 @@ an602.registerPalette = function(el) {
 		bbcode		= el.attr('data-bbcode');
 
 	// Insert the palette HTML into the container.
-	el.html(an602.colorPalette(orientation, width, height));
+	el.html(phpbb.colorPalette(orientation, width, height));
 
 	// Add toggle control.
 	$('#color_palette_toggle').click(function(e) {
@@ -1627,7 +1627,7 @@ an602.registerPalette = function(el) {
 * @param {string} type Display type that should be used, e.g. inline, block or
 *			other CSS "display" types
 */
-an602.toggleDisplay = function(id, action, type) {
+phpbb.toggleDisplay = function(id, action, type) {
 	if (!type) {
 		type = 'block';
 	}
@@ -1647,7 +1647,7 @@ an602.toggleDisplay = function(id, action, type) {
 *
 * @param {jQuery} el jQuery select element object.
 */
-an602.toggleSelectSettings = function(el) {
+phpbb.toggleSelectSettings = function(el) {
 	el.children().each(function() {
 		var $this = $(this),
 			$setting = $($this.data('toggle-setting'));
@@ -1669,7 +1669,7 @@ an602.toggleSelectSettings = function(el) {
 * @param {string} functionName Function to get.
 * @returns function
 */
-an602.getFunctionByName = function (functionName) {
+phpbb.getFunctionByName = function (functionName) {
 	var namespaces = functionName.split('.'),
 		func = namespaces.pop(),
 		context = window;
@@ -1683,7 +1683,7 @@ an602.getFunctionByName = function (functionName) {
 /**
 * Register page dropdowns.
 */
-an602.registerPageDropdowns = function() {
+phpbb.registerPageDropdowns = function() {
 	var $body = $('body');
 
 	$body.find('.dropdown-container').each(function() {
@@ -1723,14 +1723,14 @@ an602.registerPageDropdowns = function() {
 			options.direction = 'right';
 		}
 
-		an602.registerDropdown($trigger, $contents, options);
+		phpbb.registerDropdown($trigger, $contents, options);
 	});
 
 	// Hide active dropdowns when click event happens outside
 	$body.click(function(e) {
 		var $parents = $(e.target).parents();
-		if (!$parents.is(an602.dropdownVisibleContainers)) {
-			$(an602.dropdownHandles).each(an602.toggleDropdown);
+		if (!$parents.is(phpbb.dropdownVisibleContainers)) {
+			$(phpbb.dropdownHandles).each(phpbb.toggleDropdown);
 		}
 	});
 };
@@ -1738,7 +1738,7 @@ an602.registerPageDropdowns = function() {
 /**
  * Handle avatars to be lazy loaded.
  */
-an602.lazyLoadAvatars = function loadAvatars() {
+phpbb.lazyLoadAvatars = function loadAvatars() {
 	$('.avatar[data-src]').each(function () {
 		var $avatar = $(this);
 
@@ -1748,7 +1748,7 @@ an602.lazyLoadAvatars = function loadAvatars() {
 	});
 };
 
-an602.recaptcha = {
+phpbb.recaptcha = {
 	button: null,
 	ready: false,
 
@@ -1757,33 +1757,33 @@ an602.recaptcha = {
 	v3: $('[data-recaptcha-v3]'),
 
 	load: function() {
-		an602.recaptcha.bindButton();
-		an602.recaptcha.bindForm();
+		phpbb.recaptcha.bindButton();
+		phpbb.recaptcha.bindForm();
 	},
 	bindButton: function() {
-		an602.recaptcha.form.find('input[type="submit"]').on('click', function() {
+		phpbb.recaptcha.form.find('input[type="submit"]').on('click', function() {
 			// Listen to all the submit buttons for the form that has reCAPTCHA protection,
 			// and store it so we can click the exact same button later on when we are ready.
-			an602.recaptcha.button = this;
+			phpbb.recaptcha.button = this;
 		});
 	},
 	bindForm: function() {
-		an602.recaptcha.form.on('submit', function(e) {
+		phpbb.recaptcha.form.on('submit', function(e) {
 			 // If ready is false, it means the user pressed a submit button.
 			 // And the form was not submitted by us, after the token was loaded.
-			if (!an602.recaptcha.ready) {
+			if (!phpbb.recaptcha.ready) {
 				 // If version 3 is used, we need to make a different execution,
 				 // including the action and the site key.
-				if (an602.recaptcha.v3.length) {
+				if (phpbb.recaptcha.v3.length) {
 					grecaptcha.execute(
-						an602.recaptcha.v3.data('recaptcha-v3'),
-						{action: an602.recaptcha.v3.val()}
+						phpbb.recaptcha.v3.data('recaptcha-v3'),
+						{action: phpbb.recaptcha.v3.val()}
 					).then(function(token) {
 						// Place the token inside the form
-						an602.recaptcha.token.val(token);
+						phpbb.recaptcha.token.val(token);
 
 						// And now we submit the form.
-						an602.recaptcha.submitForm();
+						phpbb.recaptcha.submitForm();
 					});
 				} else {
 					// Regular version 2 execution
@@ -1798,18 +1798,18 @@ an602.recaptcha = {
 	submitForm: function() {
 		// Now we are ready, so set it to true.
 		// so the 'submit' event doesn't run multiple times.
-		an602.recaptcha.ready = true;
+		phpbb.recaptcha.ready = true;
 
-		if (an602.recaptcha.button) {
+		if (phpbb.recaptcha.button) {
 			// If there was a specific button pressed initially, trigger the same button
-			an602.recaptcha.button.click();
+			phpbb.recaptcha.button.click();
 		} else {
-			if (typeof an602.recaptcha.form.submit !== 'function') {
+			if (typeof phpbb.recaptcha.form.submit !== 'function') {
 				// Rename input[name="submit"] so that we can submit the form
-				an602.recaptcha.form.submit.name = 'submit_btn';
+				phpbb.recaptcha.form.submit.name = 'submit_btn';
 			}
 
-			an602.recaptcha.form.submit();
+			phpbb.recaptcha.form.submit();
 		}
 	}
 };
@@ -1817,46 +1817,46 @@ an602.recaptcha = {
 // reCAPTCHA v2 doesn't accept callback functions nested inside objects
 // so we need to make this helper functions here
 window.phpbbRecaptchaOnLoad = function() {
-	an602.recaptcha.load();
+	phpbb.recaptcha.load();
 };
 
 window.phpbbRecaptchaOnSubmit = function() {
-	an602.recaptcha.submitForm();
+	phpbb.recaptcha.submitForm();
 };
 
-$(window).on('load', an602.lazyLoadAvatars);
+$(window).on('load', phpbb.lazyLoadAvatars);
 
 /**
 * Apply code editor to all textarea elements with data-bbcode attribute
 */
 $(function() {
 	// reCAPTCHA v3 needs to be initialized
-	if (an602.recaptcha.v3.length) {
-		an602.recaptcha.load();
+	if (phpbb.recaptcha.v3.length) {
+		phpbb.recaptcha.load();
 	}
 
 	$('textarea[data-bbcode]').each(function() {
-		an602.applyCodeEditor(this);
+		phpbb.applyCodeEditor(this);
 	});
 
-	an602.registerPageDropdowns();
+	phpbb.registerPageDropdowns();
 
 	$('[data-color-palette], [data-orientation]').each(function() {
-		an602.registerPalette($(this));
+		phpbb.registerPalette($(this));
 	});
 
 	// Update browser history URL to point to specific post in viewtopic.php
 	// when using view=unread#unread link.
-	an602.history.replaceUrl($('#unread[data-url]').data('url'));
+	phpbb.history.replaceUrl($('#unread[data-url]').data('url'));
 
 	// Hide settings that are not selected via select element.
 	$('select[data-togglable-settings]').each(function() {
 		var $this = $(this);
 
 		$this.change(function() {
-			an602.toggleSelectSettings($this);
+			phpbb.toggleSelectSettings($this);
 		});
-		an602.toggleSelectSettings($this);
+		phpbb.toggleSelectSettings($this);
 	});
 });
 

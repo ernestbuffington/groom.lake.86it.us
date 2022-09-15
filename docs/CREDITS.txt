@@ -1,9 +1,9 @@
 /**
 *
-* AN602 © Copyright AN602 Limited 2003-2021
-* https://www.groom.lake.86it.us
+* phpBB © Copyright phpBB Limited 2003-2021
+* https://www.phpbb.com
 *
-* AN602 is free software. You can redistribute it and/or modify it
+* phpBB is free software. You can redistribute it and/or modify it
 * under the terms of the GNU General Public License, version 2 (GPL-2.0)
 * as published by the Free Software Foundation.
 *
@@ -18,35 +18,35 @@
 */
 
 
-AN602 Project Manager:   Marshalrusty (Yuriy Rusko)
+phpBB Project Manager:   Marshalrusty (Yuriy Rusko)
 
-AN602 Lead Developer:    Marc (Marc Alexander)
+phpBB Lead Developer:    Marc (Marc Alexander)
 
-AN602 Developers:        CHItA (Máté Bartus)
+phpBB Developers:        CHItA (Máté Bartus)
                          Derky (Derk Ruitenbeek)
                          Hanakin (Michael Miday)
                          mrgoldy (Gijs Martens)
                          Nicofuma (Tristan Darricau)
                          rubencm (Rubén Calvo)
 
-For a list of AN602 Team members, please see:
-https://www.groom.lake.86it.us/about/team/
+For a list of phpBB Team members, please see:
+https://www.phpbb.com/about/team/
 
-For a full list of AN602 code contributors, please see:
-https://github.com/an602/an602/graphs/contributors
+For a full list of phpBB code contributors, please see:
+https://github.com/phpbb/phpbb/graphs/contributors
 
 -- Former Developers --
 
-AN602 Project Manager:   theFinn (James Atkinson)      [Founder - 04/2007]
+phpBB Project Manager:   theFinn (James Atkinson)      [Founder - 04/2007]
                          SHS` (Jonathan Stanley)
 
-AN602 Product Manager:   naderman (Nils Adermann)      [02/2016 - 02/2017]
+phpBB Product Manager:   naderman (Nils Adermann)      [02/2016 - 02/2017]
 
-AN602 Lead Developer:    naderman (Nils Adermann)      [01/2010 - 02/2016]
+phpBB Lead Developer:    naderman (Nils Adermann)      [01/2010 - 02/2016]
                          Acyd Burn (Meik Sievertsen)   [09/2005 - 01/2010]
                          psoTFX (Paul S. Owen)         [2001 - 09/2005]
 
-AN602 Developers:        A_Jelly_Doughnut (Josh Woody) [01/2010 - 11/2010]
+phpBB Developers:        A_Jelly_Doughnut (Josh Woody) [01/2010 - 11/2010]
                          Acyd Burn (Meik Sievertsen)   [02/2003 - 09/2005]
                          APTX (Marek A. Ruszczyński)   [12/2007 - 04/2011]
                          Arty (Vjacheslav Trushkin)    [02/2012 - 07/2012]
@@ -81,9 +81,9 @@ Major contributions by:  leviatan21 (Gabriel Vazquez)
 
 Visual Confirmation:   Xore (Robert Hetzler)
 
-prosilver by subBlue Design, Tom Beddard, (c) 2004 AN602 Limited
+prosilver by subBlue Design, Tom Beddard, (c) 2004 phpBB Limited
 
-AN602 contains code from the following applications:
+phpBB contains code from the following applications:
 
 LGPL licensed:
 Smarty (c) 2001, 2002 by ispi of Lincoln, Inc, http://smarty.php.net/

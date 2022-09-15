@@ -52,7 +52,7 @@ RewriteRule ^(.*)$ app.php [QSA,L]
 # mod_authz_core (which should be on 2.4 or higher only) as a best guess.
 <IfModule mod_version.c>
 	<IfVersion < 2.4>
-		<Files "config.php">
+		<Files "phpbb_config.php">
 			Order Allow,Deny
 			Deny from All
 		</Files>
@@ -62,7 +62,7 @@ RewriteRule ^(.*)$ app.php [QSA,L]
 		</Files>
 	</IfVersion>
 	<IfVersion >= 2.4>
-		<Files "config.php">
+		<Files "phpbb_config.php">
 			Require all denied
 		</Files>
 		<Files "common.php">
@@ -72,7 +72,7 @@ RewriteRule ^(.*)$ app.php [QSA,L]
 </IfModule>
 <IfModule !mod_version.c>
 	<IfModule !mod_authz_core.c>
-		<Files "config.php">
+		<Files "phpbb_config.php">
 			Order Allow,Deny
 			Deny from All
 		</Files>
@@ -82,7 +82,7 @@ RewriteRule ^(.*)$ app.php [QSA,L]
 		</Files>
 	</IfModule>
 	<IfModule mod_authz_core.c>
-		<Files "config.php">
+		<Files "phpbb_config.php">
 			Require all denied
 		</Files>
 		<Files "common.php">

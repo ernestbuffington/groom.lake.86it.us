@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -23,12 +23,12 @@ if (!defined('IN_AN602'))
 * valid external constants:
 * PHPBB_MSG_HANDLER
 * PHPBB_DB_NEW_LINK
-* AN602_ROOT_PATH
+* PHPBB_ROOT_PATH
 * PHPBB_ADMIN_PATH
 */
 
-// AN602 Version
-@define('AN602_VERSION', '3.3.8');
+// phpBB Version
+@define('PHPBB_VERSION', '3.3.8');
 
 // QA-related
 // define('PHPBB_QA', 1);
@@ -220,7 +220,7 @@ define('REFERER_VALIDATE_NONE', 0);
 define('REFERER_VALIDATE_HOST', 1);
 define('REFERER_VALIDATE_PATH', 2);
 
-// an602_chmod() permissions
+// phpbb_chmod() permissions
 @define('CHMOD_ALL', 7); // @deprecated 3.2.10
 @define('CHMOD_READ', 4); // @deprecated 3.2.10
 @define('CHMOD_WRITE', 2); // @deprecated 3.2.10

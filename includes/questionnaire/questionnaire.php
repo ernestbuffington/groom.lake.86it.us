@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -29,7 +29,7 @@ if (!defined('IN_AN602'))
 * @author		Johannes Schlueter <johannes@php.net>
 * @copyright	(c) 2007-2008 Johannes Schlueter
 */
-class an602_questionnaire_data_collector
+class phpbb_questionnaire_data_collector
 {
 	var $providers;
 	var $data = null;
@@ -92,7 +92,7 @@ class an602_questionnaire_data_collector
 /**
 * Questionnaire PHP data provider
 */
-class an602_questionnaire_php_data_provider
+class phpbb_questionnaire_php_data_provider
 {
 	function get_identifier()
 	{
@@ -132,7 +132,7 @@ class an602_questionnaire_php_data_provider
 /**
 * Questionnaire System data provider
 */
-class an602_questionnaire_system_data_provider
+class phpbb_questionnaire_system_data_provider
 {
 	function get_identifier()
 	{
@@ -208,9 +208,9 @@ class an602_questionnaire_system_data_provider
 }
 
 /**
-* Questionnaire AN602 data provider
+* Questionnaire phpBB data provider
 */
-class an602_questionnaire_an602_data_provider
+class phpbb_questionnaire_phpbb_data_provider
 {
 	var $config;
 	var $unique_id;
@@ -239,26 +239,26 @@ class an602_questionnaire_an602_data_provider
 	/**
 	* Returns a string identifier for this data provider
 	*
-	* @return	string	"AN602"
+	* @return	string	"phpBB"
 	*/
 	function get_identifier()
 	{
-		return 'AN602';
+		return 'phpBB';
 	}
 
 	/**
-	* Get data about this AN602 installation.
+	* Get data about this phpBB installation.
 	*
 	* @return	array	Relevant anonymous config options
 	*/
 	function get_data()
 	{
-		global $an602_config_php_file;
+		global $phpbb_config_php_file;
 
-		extract($an602_config_php_file->get_all());
+		extract($phpbb_config_php_file->get_all());
 		unset($dbhost, $dbport, $dbname, $dbuser, $dbpasswd); // Just a precaution
 
-		$dbms = $an602_config_php_file->convert_30_dbms_to_31($dbms);
+		$dbms = $phpbb_config_php_file->convert_30_dbms_to_31($dbms);
 
 		// Only send certain config vars
 		$config_vars = array(

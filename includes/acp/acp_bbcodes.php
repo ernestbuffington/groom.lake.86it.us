@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -25,8 +25,8 @@ class acp_bbcodes
 
 	function main($id, $mode)
 	{
-		global $db, $user, $template, $cache, $request, $an602_dispatcher, $an602_container;
-		global $an602_log;
+		global $db, $user, $template, $cache, $request, $phpbb_dispatcher, $phpbb_container;
+		global $phpbb_log;
 
 		$user->add_lang('acp/posting');
 
@@ -123,7 +123,7 @@ class acp_bbcodes
 				* @since 3.1.0-a3
 				*/
 				$vars = array('action', 'tpl_ary', 'bbcode_id', 'bbcode_tokens');
-				extract($an602_dispatcher->trigger_event('core.acp_bbcodes_edit_add', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.acp_bbcodes_edit_add', compact($vars)));
 
 				$template->assign_vars($tpl_ary);
 
@@ -170,9 +170,9 @@ class acp_bbcodes
 					'bbcode_helpline',
 					'hidden_fields',
 				);
-				extract($an602_dispatcher->trigger_event('core.acp_bbcodes_modify_create', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.acp_bbcodes_modify_create', compact($vars)));
 
-				$acp_utils   = $an602_container->get('text_formatter.acp_utils');
+				$acp_utils   = $phpbb_container->get('text_formatter.acp_utils');
 				$bbcode_info = $acp_utils->analyse_bbcode($bbcode_match, $bbcode_tpl);
 				$warn_unsafe = ($bbcode_info['status'] === $acp_utils::BBCODE_STATUS_UNSAFE);
 
@@ -290,7 +290,7 @@ class acp_bbcodes
 
 						$db->sql_query('INSERT INTO ' . BBCODES_TABLE . $db->sql_build_array('INSERT', $sql_ary));
 						$cache->destroy('sql', BBCODES_TABLE);
-						$an602_container->get('text_formatter.cache')->invalidate();
+						$phpbb_container->get('text_formatter.cache')->invalidate();
 
 						$lang = 'BBCODE_ADDED';
 						$log_action = 'LOG_BBCODE_ADD';
@@ -302,13 +302,13 @@ class acp_bbcodes
 							WHERE bbcode_id = ' . $bbcode_id;
 						$db->sql_query($sql);
 						$cache->destroy('sql', BBCODES_TABLE);
-						$an602_container->get('text_formatter.cache')->invalidate();
+						$phpbb_container->get('text_formatter.cache')->invalidate();
 
 						$lang = 'BBCODE_EDITED';
 						$log_action = 'LOG_BBCODE_EDIT';
 					}
 
-					$an602_log->add('admin', $user->data['user_id'], $user->ip, $log_action, false, array($data['bbcode_tag']));
+					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, $log_action, false, array($data['bbcode_tag']));
 
 					/**
 					* Event after a BBCode has been added or updated
@@ -324,7 +324,7 @@ class acp_bbcodes
 						'bbcode_id',
 						'sql_ary',
 					);
-					extract($an602_dispatcher->trigger_event('core.acp_bbcodes_modify_create_after', compact($vars)));
+					extract($phpbb_dispatcher->trigger_event('core.acp_bbcodes_modify_create_after', compact($vars)));
 
 					trigger_error($user->lang[$lang] . adm_back_link($this->u_action));
 				}
@@ -360,8 +360,8 @@ class acp_bbcodes
 
 						$db->sql_query('DELETE FROM ' . BBCODES_TABLE . " WHERE bbcode_id = $bbcode_id");
 						$cache->destroy('sql', BBCODES_TABLE);
-						$an602_container->get('text_formatter.cache')->invalidate();
-						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_BBCODE_DELETE', false, array($bbcode_tag));
+						$phpbb_container->get('text_formatter.cache')->invalidate();
+						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_BBCODE_DELETE', false, array($bbcode_tag));
 
 						/**
 						* Event after a BBCode has been deleted
@@ -377,11 +377,11 @@ class acp_bbcodes
 							'bbcode_id',
 							'bbcode_tag',
 						);
-						extract($an602_dispatcher->trigger_event('core.acp_bbcodes_delete_after', compact($vars)));
+						extract($phpbb_dispatcher->trigger_event('core.acp_bbcodes_delete_after', compact($vars)));
 
 						if ($request->is_ajax())
 						{
-							$json_response = new \an602\json_response;
+							$json_response = new \phpbb\json_response;
 							$json_response->send(array(
 								'MESSAGE_TITLE'	=> $user->lang['INFORMATION'],
 								'MESSAGE_TEXT'	=> $user->lang['BBCODE_DELETED'],
@@ -428,7 +428,7 @@ class acp_bbcodes
 		* @since 3.1.0-a3
 		*/
 		$vars = array('action', 'sql_ary', 'template_data', 'u_action');
-		extract($an602_dispatcher->trigger_event('core.acp_bbcodes_display_form', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.acp_bbcodes_display_form', compact($vars)));
 
 		$result = $db->sql_query($db->sql_build_query('SELECT', $sql_ary));
 
@@ -452,7 +452,7 @@ class acp_bbcodes
 			* @since 3.1.0-a3
 			*/
 			$vars = array('bbcodes_array', 'row', 'u_action');
-			extract($an602_dispatcher->trigger_event('core.acp_bbcodes_display_bbcodes', compact($vars)));
+			extract($phpbb_dispatcher->trigger_event('core.acp_bbcodes_display_bbcodes', compact($vars)));
 
 			$template->assign_block_vars('bbcodes', $bbcodes_array);
 

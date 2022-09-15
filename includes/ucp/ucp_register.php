@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -29,8 +29,8 @@ class ucp_register
 
 	function main($id, $mode)
 	{
-		global $config, $db, $user, $template, $an602_root_path, $phpEx;
-		global $request, $an602_container, $an602_dispatcher;
+		global $config, $db, $user, $template, $phpbb_root_path, $phpEx;
+		global $request, $phpbb_container, $phpbb_dispatcher;
 
 		//
 		if ($config['require_activation'] == USER_ACTIVATION_DISABLE ||
@@ -76,7 +76,7 @@ class ucp_register
 			'change_lang',
 			'user_lang',
 		);
-		extract($an602_dispatcher->trigger_event('core.ucp_register_requests_after', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.ucp_register_requests_after', compact($vars)));
 
 		add_form_key('ucp_register');
 
@@ -103,8 +103,8 @@ class ucp_register
 			}
 		}
 
-		/* @var $cp \an602\profilefields\manager */
-		$cp = $an602_container->get('profilefields.manager');
+		/* @var $cp \phpbb\profilefields\manager */
+		$cp = $phpbb_container->get('profilefields.manager');
 
 		$error = $cp_data = $cp_error = array();
 		$s_hidden_fields = array();
@@ -115,8 +115,8 @@ class ucp_register
 		if (!empty($login_link_data))
 		{
 			// Confirm that we have all necessary data
-			/* @var $provider_collection \an602\auth\provider_collection */
-			$provider_collection = $an602_container->get('auth.provider_collection');
+			/* @var $provider_collection \phpbb\auth\provider_collection */
+			$provider_collection = $phpbb_container->get('auth.provider_collection');
 			$auth_provider = $provider_collection->get_provider($request->variable('auth_provider', ''));
 
 			$result = $auth_provider->login_link_has_necessary_data($login_link_data);
@@ -173,7 +173,7 @@ class ucp_register
 
 					'S_SHOW_COPPA'		=> true,
 					'S_HIDDEN_FIELDS'	=> build_hidden_fields($s_hidden_fields),
-					'S_UCP_ACTION'		=> append_sid("{$an602_root_path}ucp.$phpEx", 'mode=register'),
+					'S_UCP_ACTION'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=register'),
 
 					'COOKIE_NAME'		=> $config['cookie_name'],
 					'COOKIE_PATH'		=> $config['cookie_path'],
@@ -188,7 +188,7 @@ class ucp_register
 					'S_SHOW_COPPA'		=> false,
 					'S_REGISTRATION'	=> true,
 					'S_HIDDEN_FIELDS'	=> build_hidden_fields($s_hidden_fields),
-					'S_UCP_ACTION'		=> append_sid("{$an602_root_path}ucp.$phpEx", 'mode=register' . $add_coppa),
+					'S_UCP_ACTION'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=register' . $add_coppa),
 
 					'COOKIE_NAME'		=> $config['cookie_name'],
 					'COOKIE_PATH'		=> $config['cookie_path'],
@@ -208,7 +208,7 @@ class ucp_register
 			* @since 3.2.2-RC1
 			*/
 			$vars = array('tpl_name', 'template_vars', 's_hidden_fields', 'lang_row');
-			extract($an602_dispatcher->trigger_event('core.ucp_register_agreement_modify_template_data', compact($vars)));
+			extract($phpbb_dispatcher->trigger_event('core.ucp_register_agreement_modify_template_data', compact($vars)));
 
 			unset($lang_row);
 
@@ -227,7 +227,7 @@ class ucp_register
 			* @since 3.1.6-RC1
 			* @deprecated 3.2.2-RC1 Replaced by core.ucp_register_agreement_modify_template_data and to be removed in 3.3.0-RC1
 			*/
-			$an602_dispatcher->dispatch('core.ucp_register_agreement');
+			$phpbb_dispatcher->dispatch('core.ucp_register_agreement');
 
 			$this->tpl_name = $tpl_name;
 			return;
@@ -236,7 +236,7 @@ class ucp_register
 		// The CAPTCHA kicks in here. We can't help that the information gets lost on language change.
 		if ($config['enable_confirm'])
 		{
-			$captcha = $an602_container->get('captcha.factory')->get_instance($config['captcha_plugin']);
+			$captcha = $phpbb_container->get('captcha.factory')->get_instance($config['captcha_plugin']);
 			$captcha->init(CONFIRM_REG);
 		}
 
@@ -262,7 +262,7 @@ class ucp_register
 		* @since 3.1.4-RC1
 		*/
 		$vars = array('submit', 'data');
-		extract($an602_dispatcher->trigger_event('core.ucp_register_data_before', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.ucp_register_data_before', compact($vars)));
 
 		// Check and initialize some variables if needed
 		if ($submit)
@@ -335,7 +335,7 @@ class ucp_register
 			* @since 3.1.4-RC1
 			*/
 			$vars = array('submit', 'data', 'cp_data', 'error');
-			extract($an602_dispatcher->trigger_event('core.ucp_register_data_after', compact($vars)));
+			extract($phpbb_dispatcher->trigger_event('core.ucp_register_data_after', compact($vars)));
 
 			if (!count($error))
 			{
@@ -377,8 +377,8 @@ class ucp_register
 				}
 
 				// Instantiate passwords manager
-				/* @var $passwords_manager \an602\passwords\manager */
-				$passwords_manager = $an602_container->get('passwords.manager');
+				/* @var $passwords_manager \phpbb\passwords\manager */
+				$passwords_manager = $phpbb_container->get('passwords.manager');
 
 				$user_row = array(
 					'username'				=> $data['username'],
@@ -414,7 +414,7 @@ class ucp_register
 				* @changed 3.2.10-RC1 Added data array
 				*/
 				$vars = array('submit', 'data', 'cp_data', 'user_row');
-				extract($an602_dispatcher->trigger_event('core.ucp_register_user_row_after', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.ucp_register_user_row_after', compact($vars)));
 
 				// Register user...
 				$user_id = user_add($user_row, $cp_data);
@@ -457,7 +457,7 @@ class ucp_register
 
 				if ($config['email_enable'])
 				{
-					include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+					include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
 
 					$messenger = new messenger(false);
 
@@ -494,7 +494,7 @@ class ucp_register
 					* @var	string		server_url	Server URL
 					* @var	int			user_id		New user ID
 					* @var	string		user_actkey	User activation key
-					* @var	messenger	messenger	AN602 Messenger
+					* @var	messenger	messenger	phpBB Messenger
 					* @since 3.2.4-RC1
 					*/
 					$vars = array(
@@ -507,16 +507,16 @@ class ucp_register
 						'user_actkey',
 						'messenger',
 					);
-					extract($an602_dispatcher->trigger_event('core.ucp_register_welcome_email_before', compact($vars)));
+					extract($phpbb_dispatcher->trigger_event('core.ucp_register_welcome_email_before', compact($vars)));
 
 					$messenger->send(NOTIFY_EMAIL);
 				}
 
 				if ($config['require_activation'] == USER_ACTIVATION_ADMIN)
 				{
-					/* @var $an602_notifications \an602\notification\manager */
-					$an602_notifications = $an602_container->get('notification_manager');
-					$an602_notifications->add_notifications('notification.type.admin_activate_user', array(
+					/* @var $phpbb_notifications \phpbb\notification\manager */
+					$phpbb_notifications = $phpbb_container->get('notification_manager');
+					$phpbb_notifications->add_notifications('notification.type.admin_activate_user', array(
 						'user_id'		=> $user_id,
 						'user_actkey'	=> $user_row['user_actkey'],
 						'user_regdate'	=> $user_row['user_regdate'],
@@ -558,9 +558,9 @@ class ucp_register
 					'user_id',
 					'user_actkey',
 				);
-				extract($an602_dispatcher->trigger_event('core.ucp_register_register_after', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.ucp_register_register_after', compact($vars)));
 
-				$message = $message . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$an602_root_path}index.$phpEx") . '">', '</a>');
+				$message = $message . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a>');
 				trigger_error($message);
 			}
 		}
@@ -601,8 +601,8 @@ class ucp_register
 			break;
 		}
 
-		/* @var $provider_collection \an602\auth\provider_collection */
-		$provider_collection = $an602_container->get('auth.provider_collection');
+		/* @var $provider_collection \phpbb\auth\provider_collection */
+		$provider_collection = $phpbb_container->get('auth.provider_collection');
 		$auth_provider = $provider_collection->get_provider();
 
 		$auth_provider_data = $auth_provider->get_login_data();
@@ -627,7 +627,7 @@ class ucp_register
 		}
 
 		// Assign template vars for timezone select
-		an602_timezone_select($template, $user, $data['tz'], true);
+		phpbb_timezone_select($template, $user, $data['tz'], true);
 
 		// Checking amount of available languages
 		$sql = 'SELECT lang_iso, lang_local_name
@@ -652,7 +652,7 @@ class ucp_register
 			'S_CONFIRM_REFRESH'	=> ($config['enable_confirm'] && $config['confirm_refresh']) ? true : false,
 			'S_REGISTRATION'	=> true,
 			'S_COPPA'			=> $coppa,
-			'S_UCP_ACTION'		=> append_sid("{$an602_root_path}ucp.$phpEx", 'mode=register'),
+			'S_UCP_ACTION'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=register'),
 
 			'COOKIE_NAME'		=> $config['cookie_name'],
 			'COOKIE_PATH'		=> $config['cookie_path'],
@@ -678,7 +678,7 @@ class ucp_register
 			's_hidden_fields',
 			'tpl_name',
 		);
-		extract($an602_dispatcher->trigger_event('core.ucp_register_modify_template_data', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.ucp_register_modify_template_data', compact($vars)));
 
 		$template_vars = array_merge($template_vars, array(
 			'ERROR'				=> (count($error)) ? implode('<br />', $error) : '',
@@ -707,7 +707,7 @@ class ucp_register
 	{
 		global $request;
 
-		$var_names = $request->variable_names(\an602\request\request_interface::POST);
+		$var_names = $request->variable_names(\phpbb\request\request_interface::POST);
 		$login_link_data = array();
 		$string_start_length = strlen('login_link_');
 
@@ -716,7 +716,7 @@ class ucp_register
 			if (strpos($var_name, 'login_link_') === 0)
 			{
 				$key_name = substr($var_name, $string_start_length);
-				$login_link_data[$key_name] = $request->variable($var_name, '', false, \an602\request\request_interface::POST);
+				$login_link_data[$key_name] = $request->variable($var_name, '', false, \phpbb\request\request_interface::POST);
 			}
 		}
 

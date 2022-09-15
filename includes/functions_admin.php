@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -65,7 +65,7 @@ function recalc_nested_sets(&$new_id, $pkey, $table, $parent_id = 0, $where = ar
 */
 function make_forum_select($select_id = false, $ignore_id = false, $ignore_acl = false, $ignore_nonpost = false, $ignore_emptycat = true, $only_acl_post = false, $return_array = false)
 {
-	global $db, $auth, $an602_dispatcher;
+	global $db, $auth, $phpbb_dispatcher;
 
 	// This query is identical to the jumpbox one
 	$sql = 'SELECT forum_id, forum_name, parent_id, forum_type, forum_flags, forum_options, left_id, right_id
@@ -93,7 +93,7 @@ function make_forum_select($select_id = false, $ignore_id = false, $ignore_acl =
 	* @since 3.1.10-RC1
 	*/
 	$vars = array('rowset');
-	extract($an602_dispatcher->trigger_event('core.make_forum_select_modify_forum_list', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.make_forum_select_modify_forum_list', compact($vars)));
 
 	// Sometimes it could happen that forums will be displayed here not be displayed within the index page
 	// This is the result of forums not displayed at index, having list permissions and a parent of a forum with no permissions.
@@ -187,10 +187,10 @@ function size_select_options($size_compare)
 */
 function group_select_options($group_id, $exclude_ids = false, $manage_founder = false)
 {
-	global $db, $config, $an602_container;
+	global $db, $config, $phpbb_container;
 
-	/** @var \an602\group\helper $group_helper */
-	$group_helper = $an602_container->get('group_helper');
+	/** @var \phpbb\group\helper $group_helper */
+	$group_helper = $phpbb_container->get('group_helper');
 
 	$exclude_sql = ($exclude_ids !== false && count($exclude_ids)) ? 'WHERE ' . $db->sql_in_set('group_id', array_map('intval', $exclude_ids), true) : '';
 	$sql_and = (!$config['coppa_enable']) ? (($exclude_sql) ? ' AND ' : ' WHERE ') . "group_name <> 'REGISTERED_COPPA'" : '';
@@ -220,7 +220,7 @@ function group_select_options($group_id, $exclude_ids = false, $manage_founder =
 */
 function get_forum_list($acl_list = 'f_list', $id_only = true, $postable_only = false, $no_cache = false)
 {
-	global $db, $auth, $an602_dispatcher;
+	global $db, $auth, $phpbb_dispatcher;
 	static $forum_rows;
 
 	if (!isset($forum_rows))
@@ -283,7 +283,7 @@ function get_forum_list($acl_list = 'f_list', $id_only = true, $postable_only = 
 	* @since 3.1.10-RC1
 	*/
 	$vars = array('rowset');
-	extract($an602_dispatcher->trigger_event('core.get_forum_list_modify_data', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.get_forum_list_modify_data', compact($vars)));
 
 	return $rowset;
 }
@@ -345,7 +345,7 @@ function get_forum_branch($forum_id, $type = 'all', $order = 'descending', $incl
 */
 function copy_forum_permissions($src_forum_id, $dest_forum_ids, $clear_dest_perms = true, $add_log = true)
 {
-	global $db, $user, $an602_log;
+	global $db, $user, $phpbb_log;
 
 	// Only one forum id specified
 	if (!is_array($dest_forum_ids))
@@ -468,7 +468,7 @@ function copy_forum_permissions($src_forum_id, $dest_forum_ids, $clear_dest_perm
 
 	if ($add_log)
 	{
-		$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_COPIED_PERMISSIONS', false, array($src_forum_name, implode(', ', $dest_forum_names)));
+		$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_FORUM_COPIED_PERMISSIONS', false, array($src_forum_name, implode(', ', $dest_forum_names)));
 	}
 
 	$db->sql_transaction('commit');
@@ -529,7 +529,7 @@ function filelist($rootdir, $dir = '', $type = 'gif|jpg|jpeg|png|svg|webp')
 */
 function move_topics($topic_ids, $forum_id, $auto_sync = true)
 {
-	global $db, $an602_dispatcher;
+	global $db, $phpbb_dispatcher;
 
 	if (empty($topic_ids))
 	{
@@ -555,7 +555,7 @@ function move_topics($topic_ids, $forum_id, $auto_sync = true)
 		'topic_ids',
 		'forum_id',
 	);
-	extract($an602_dispatcher->trigger_event('core.move_topics_before', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.move_topics_before', compact($vars)));
 
 	$sql = 'DELETE FROM ' . TOPICS_TABLE . '
 		WHERE ' . $db->sql_in_set('topic_moved_id', $topic_ids) . '
@@ -596,7 +596,7 @@ function move_topics($topic_ids, $forum_id, $auto_sync = true)
 			'forum_ids',
 			'auto_sync',
 	);
-	extract($an602_dispatcher->trigger_event('core.move_topics_before_query', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.move_topics_before_query', compact($vars)));
 
 	foreach ($table_ary as $table)
 	{
@@ -621,7 +621,7 @@ function move_topics($topic_ids, $forum_id, $auto_sync = true)
 		'forum_id',
 		'forum_ids',
 	);
-	extract($an602_dispatcher->trigger_event('core.move_topics_after', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.move_topics_after', compact($vars)));
 
 	if ($auto_sync)
 	{
@@ -635,7 +635,7 @@ function move_topics($topic_ids, $forum_id, $auto_sync = true)
 */
 function move_posts($post_ids, $topic_id, $auto_sync = true)
 {
-	global $db, $an602_dispatcher;
+	global $db, $phpbb_dispatcher;
 
 	if (!is_array($post_ids))
 	{
@@ -689,7 +689,7 @@ function move_posts($post_ids, $topic_id, $auto_sync = true)
 			'topic_ids',
 			'forum_row',
 	);
-	extract($an602_dispatcher->trigger_event('core.move_posts_before', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.move_posts_before', compact($vars)));
 
 	$sql = 'UPDATE ' . POSTS_TABLE . '
 		SET forum_id = ' . (int) $forum_row['forum_id'] . ", topic_id = $topic_id
@@ -721,7 +721,7 @@ function move_posts($post_ids, $topic_id, $auto_sync = true)
 			'topic_ids',
 			'forum_row',
 	);
-	extract($an602_dispatcher->trigger_event('core.move_posts_after', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.move_posts_after', compact($vars)));
 
 	if ($auto_sync)
 	{
@@ -752,7 +752,7 @@ function move_posts($post_ids, $topic_id, $auto_sync = true)
 			'topic_ids',
 			'forum_row',
 		);
-		extract($an602_dispatcher->trigger_event('core.move_posts_sync_after', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.move_posts_sync_after', compact($vars)));
 	}
 
 	// Update posted information
@@ -764,7 +764,7 @@ function move_posts($post_ids, $topic_id, $auto_sync = true)
 */
 function delete_topics($where_type, $where_ids, $auto_sync = true, $post_count_sync = true, $call_delete_posts = true)
 {
-	global $db, $config, $an602_container, $an602_dispatcher;
+	global $db, $config, $phpbb_container, $phpbb_dispatcher;
 
 	$approved_topics = 0;
 	$forum_ids = $topic_ids = array();
@@ -830,7 +830,7 @@ function delete_topics($where_type, $where_ids, $auto_sync = true, $post_count_s
 			'table_ary',
 			'topic_ids',
 	);
-	extract($an602_dispatcher->trigger_event('core.delete_topics_before_query', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.delete_topics_before_query', compact($vars)));
 
 	foreach ($table_ary as $table)
 	{
@@ -850,7 +850,7 @@ function delete_topics($where_type, $where_ids, $auto_sync = true, $post_count_s
 	$vars = array(
 			'topic_ids',
 	);
-	extract($an602_dispatcher->trigger_event('core.delete_topics_after_query', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.delete_topics_after_query', compact($vars)));
 
 	$moved_topic_ids = array();
 
@@ -887,10 +887,10 @@ function delete_topics($where_type, $where_ids, $auto_sync = true, $post_count_s
 		$config->increment('num_topics', $approved_topics * (-1), false);
 	}
 
-	/* @var $an602_notifications \an602\notification\manager */
-	$an602_notifications = $an602_container->get('notification_manager');
+	/* @var $phpbb_notifications \phpbb\notification\manager */
+	$phpbb_notifications = $phpbb_container->get('notification_manager');
 
-	$an602_notifications->delete_notifications(array(
+	$phpbb_notifications->delete_notifications(array(
 		'notification.type.topic',
 		'notification.type.approve_topic',
 		'notification.type.topic_in_queue',
@@ -904,7 +904,7 @@ function delete_topics($where_type, $where_ids, $auto_sync = true, $post_count_s
 */
 function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync = true, $post_count_sync = true, $call_delete_topics = true)
 {
-	global $db, $config, $an602_root_path, $phpEx, $auth, $user, $an602_container, $an602_dispatcher;
+	global $db, $config, $phpbb_root_path, $phpEx, $auth, $user, $phpbb_container, $phpbb_dispatcher;
 
 	// Notifications types to delete
 	$delete_notifications_types = array(
@@ -936,7 +936,7 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 		'call_delete_topics',
 		'delete_notifications_types',
 	);
-	extract($an602_dispatcher->trigger_event('core.delete_posts_before', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.delete_posts_before', compact($vars)));
 
 	if ($where_type === 'range')
 	{
@@ -1037,7 +1037,7 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 		'delete_notifications_types',
 		'table_ary',
 	);
-	extract($an602_dispatcher->trigger_event('core.delete_posts_in_transaction_before', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.delete_posts_in_transaction_before', compact($vars)));
 
 	foreach ($table_ary as $table)
 	{
@@ -1094,7 +1094,7 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 	}
 
 	$error = false;
-	$search = new $search_type($error, $an602_root_path, $phpEx, $auth, $config, $db, $user, $an602_dispatcher);
+	$search = new $search_type($error, $phpbb_root_path, $phpEx, $auth, $config, $db, $user, $phpbb_dispatcher);
 
 	if ($error)
 	{
@@ -1103,8 +1103,8 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 
 	$search->index_remove($post_ids, $poster_ids, $forum_ids);
 
-	/** @var \an602\attachment\manager $attachment_manager */
-	$attachment_manager = $an602_container->get('attachment.manager');
+	/** @var \phpbb\attachment\manager $attachment_manager */
+	$attachment_manager = $phpbb_container->get('attachment.manager');
 	$attachment_manager->delete('post', $post_ids, false);
 	unset($attachment_manager);
 
@@ -1130,7 +1130,7 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 		'where_ids',
 		'delete_notifications_types',
 	);
-	extract($an602_dispatcher->trigger_event('core.delete_posts_in_transaction', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.delete_posts_in_transaction', compact($vars)));
 
 	$db->sql_transaction('commit');
 
@@ -1156,7 +1156,7 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 		'where_ids',
 		'delete_notifications_types',
 	);
-	extract($an602_dispatcher->trigger_event('core.delete_posts_after', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.delete_posts_after', compact($vars)));
 
 	// Resync topics_posted table
 	if ($posted_sync)
@@ -1182,10 +1182,10 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 		delete_topics('topic_id', $remove_topics, $auto_sync, $post_count_sync, false);
 	}
 
-	/* @var $an602_notifications \an602\notification\manager */
-	$an602_notifications = $an602_container->get('notification_manager');
+	/* @var $phpbb_notifications \phpbb\notification\manager */
+	$phpbb_notifications = $phpbb_container->get('notification_manager');
 
-	$an602_notifications->delete_notifications($delete_notifications_types, $post_ids);
+	$phpbb_notifications->delete_notifications($delete_notifications_types, $post_ids);
 
 	return count($post_ids);
 }
@@ -1324,7 +1324,7 @@ function update_posted_info(&$topic_ids)
 */
 function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false, $sync_extra = false)
 {
-	global $db, $an602_dispatcher;
+	global $db, $phpbb_dispatcher;
 
 	if (is_array($where_ids))
 	{
@@ -1844,7 +1844,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 				* @since 3.3.5-RC1
 				*/
 				$vars = ['sql_ary'];
-				extract($an602_dispatcher->trigger_event('core.sync_forum_last_post_info_sql', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.sync_forum_last_post_info_sql', compact($vars)));
 				$result = $db->sql_query($db->sql_build_query('SELECT', $sql_ary));
 
 				while ($row = $db->sql_fetchrow($result))
@@ -1901,7 +1901,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 				'post_info',
 				'fieldnames',
 			];
-			extract($an602_dispatcher->trigger_event('core.sync_modify_forum_data', compact($vars)));
+			extract($phpbb_dispatcher->trigger_event('core.sync_modify_forum_data', compact($vars)));
 			unset($post_info);
 
 			foreach ($forum_data as $forum_id => $row)
@@ -2095,7 +2095,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 				'sql_ary',
 				'custom_fieldnames',
 			];
-			extract($an602_dispatcher->trigger_event('core.sync_topic_last_post_info_sql', compact($vars)));
+			extract($phpbb_dispatcher->trigger_event('core.sync_topic_last_post_info_sql', compact($vars)));
 			$result = $db->sql_query($db->sql_build_query('SELECT', $sql_ary));
 
 			while ($row = $db->sql_fetchrow($result))
@@ -2133,7 +2133,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 					'row',
 					'topic_id',
 				];
-				extract($an602_dispatcher->trigger_event('core.sync_modify_topic_data', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.sync_modify_topic_data', compact($vars)));
 			}
 			$db->sql_freeresult($result);
 
@@ -2332,7 +2332,7 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 */
 function prune($forum_id, $prune_mode, $prune_date, $prune_flags = 0, $auto_sync = true, $prune_limit = 0)
 {
-	global $db, $an602_dispatcher;
+	global $db, $phpbb_dispatcher;
 
 	if (!is_array($forum_id))
 	{
@@ -2395,7 +2395,7 @@ function prune($forum_id, $prune_mode, $prune_date, $prune_flags = 0, $auto_sync
 		'sql_and',
 		'prune_limit',
 	);
-	extract($an602_dispatcher->trigger_event('core.prune_sql', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.prune_sql', compact($vars)));
 
 	$sql = 'SELECT topic_id
 		FROM ' . TOPICS_TABLE . '
@@ -2438,7 +2438,7 @@ function prune($forum_id, $prune_mode, $prune_date, $prune_flags = 0, $auto_sync
 	 * @since 3.2.2-RC1
 	 */
 	$vars = array('topic_list');
-	extract($an602_dispatcher->trigger_event('core.prune_delete_before', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.prune_delete_before', compact($vars)));
 
 	return delete_topics('topic_id', $topic_list, $auto_sync, false);
 }
@@ -2448,7 +2448,7 @@ function prune($forum_id, $prune_mode, $prune_date, $prune_flags = 0, $auto_sync
 */
 function auto_prune($forum_id, $prune_mode, $prune_flags, $prune_days, $prune_freq, $log_prune = true)
 {
-	global $db, $user, $an602_log;
+	global $db, $user, $phpbb_log;
 
 	$sql = 'SELECT forum_name
 		FROM ' . FORUMS_TABLE . "
@@ -2476,7 +2476,7 @@ function auto_prune($forum_id, $prune_mode, $prune_flags, $prune_days, $prune_fr
 
 		if ($log_prune)
 		{
-			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_AUTO_PRUNE', false, [$row['forum_name']]);
+			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_AUTO_PRUNE', false, [$row['forum_name']]);
 		}
 	}
 
@@ -2488,12 +2488,12 @@ function auto_prune($forum_id, $prune_mode, $prune_flags, $prune_days, $prune_fr
 * via admin_permissions. Changes of usernames and group names
 * must be carried through for the moderators table.
 *
-* @param \an602\db\driver\driver_interface $db Database connection
-* @param \an602\cache\driver\driver_interface $cache Cache driver
-* @param \an602\auth\auth $auth Authentication object
+* @param \phpbb\db\driver\driver_interface $db Database connection
+* @param \phpbb\cache\driver\driver_interface $cache Cache driver
+* @param \phpbb\auth\auth $auth Authentication object
 * @return null
 */
-function an602_cache_moderators($db, $cache, $auth)
+function phpbb_cache_moderators($db, $cache, $auth)
 {
 	// Remove cached sql results
 	$cache->destroy('sql', MODERATOR_CACHE_TABLE);
@@ -2684,26 +2684,26 @@ function an602_cache_moderators($db, $cache, $auth)
 */
 function view_log($mode, &$log, &$log_count, $limit = 0, $offset = 0, $forum_id = 0, $topic_id = 0, $user_id = 0, $limit_days = 0, $sort_by = 'l.log_time DESC', $keywords = '')
 {
-	global $an602_log;
+	global $phpbb_log;
 
 	$count_logs = ($log_count !== false);
 
-	$log = $an602_log->get_logs($mode, $count_logs, $limit, $offset, $forum_id, $topic_id, $user_id, $limit_days, $sort_by, $keywords);
-	$log_count = $an602_log->get_log_count();
+	$log = $phpbb_log->get_logs($mode, $count_logs, $limit, $offset, $forum_id, $topic_id, $user_id, $limit_days, $sort_by, $keywords);
+	$log_count = $phpbb_log->get_log_count();
 
-	return $an602_log->get_valid_offset();
+	return $phpbb_log->get_valid_offset();
 }
 
 /**
 * Removes moderators and administrators from foe lists.
 *
-* @param \an602\db\driver\driver_interface $db Database connection
-* @param \an602\auth\auth $auth Authentication object
+* @param \phpbb\db\driver\driver_interface $db Database connection
+* @param \phpbb\auth\auth $auth Authentication object
 * @param array|bool $group_id If an array, remove all members of this group from foe lists, or false to ignore
 * @param array|bool $user_id If an array, remove this user from foe lists, or false to ignore
 * @return null
 */
-function an602_update_foes($db, $auth, $group_id = false, $user_id = false)
+function phpbb_update_foes($db, $auth, $group_id = false, $user_id = false)
 {
 	// update foes for some user
 	if (is_array($user_id) && count($user_id))
@@ -3087,10 +3087,10 @@ function tidy_database()
 */
 function add_permission_language()
 {
-	global $user, $phpEx, $an602_extension_manager;
+	global $user, $phpEx, $phpbb_extension_manager;
 
 	// add permission language files from extensions
-	$finder = $an602_extension_manager->get_finder();
+	$finder = $phpbb_extension_manager->get_finder();
 
 	$lang_files = $finder
 		->prefix('permissions_')

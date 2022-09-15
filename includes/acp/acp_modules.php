@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,12 +14,12 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
 
-use an602\module\exception\module_exception;
+use phpbb\module\exception\module_exception;
 
 /**
 * - Able to check for new module versions (modes changed/adjusted/added/removed)
@@ -39,10 +39,10 @@ class acp_modules
 
 	function main($id, $mode)
 	{
-		global $db, $user, $template, $module, $request, $an602_log, $an602_container;
+		global $db, $user, $template, $module, $request, $phpbb_log, $phpbb_container;
 
-		/** @var \an602\module\module_manager $module_manager */
-		$module_manager = $an602_container->get('module.manager');
+		/** @var \phpbb\module\module_manager $module_manager */
+		$module_manager = $phpbb_container->get('module.manager');
 
 		// Set a global define for modules we might include (the author is able to prevent execution of code by checking this constant)
 		define('MODULE_INCLUDE', true);
@@ -102,7 +102,7 @@ class acp_modules
 					{
 						$row = $module_manager->get_module_row($module_id, $this->module_class);
 						$module_manager->delete_module($module_id, $this->module_class);
-						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_MODULE_REMOVED', false, array($user->lang($row['module_langname'])));
+						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_MODULE_REMOVED', false, array($user->lang($row['module_langname'])));
 					}
 					catch (module_exception $e)
 					{
@@ -157,7 +157,7 @@ class acp_modules
 						AND module_id = $module_id";
 				$db->sql_query($sql);
 
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_MODULE_' . strtoupper($action), false, array($user->lang($row['module_langname'])));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_MODULE_' . strtoupper($action), false, array($user->lang($row['module_langname'])));
 				$module_manager->remove_cache_file($this->module_class);
 
 			break;
@@ -191,7 +191,7 @@ class acp_modules
 				{
 					$move_module_name = $module_manager->move_module_by($row, $this->module_class, $action, 1);
 
-					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_MODULE_' . strtoupper($action), false, array($user->lang($row['module_langname']), $move_module_name));
+					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_MODULE_' . strtoupper($action), false, array($user->lang($row['module_langname']), $move_module_name));
 					$module_manager->remove_cache_file($this->module_class);
 				}
 				catch (module_exception $e)
@@ -201,7 +201,7 @@ class acp_modules
 
 				if ($request->is_ajax())
 				{
-					$json_response = new \an602\json_response;
+					$json_response = new \phpbb\json_response;
 					$json_response->send(array(
 						'success'	=> ($move_module_name !== false),
 					));
@@ -241,9 +241,9 @@ class acp_modules
 						try
 						{
 							$module_manager->update_module_data($module_data);
-							$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_MODULE_ADD', false, array($user->lang($module_data['module_langname'])));
+							$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_MODULE_ADD', false, array($user->lang($module_data['module_langname'])));
 						}
-						catch (\an602\module\exception\module_exception $e)
+						catch (\phpbb\module\exception\module_exception $e)
 						{
 							$msg = $user->lang($e->getMessage());
 							trigger_error($msg . adm_back_link($this->u_action . '&amp;parent_id=' . $this->parent_id), E_USER_WARNING);
@@ -281,7 +281,7 @@ class acp_modules
 				{
 					$module_row = $module_manager->get_module_row($module_id, $this->module_class);
 				}
-				catch (\an602\module\exception\module_not_found_exception $e)
+				catch (\phpbb\module\exception\module_not_found_exception $e)
 				{
 					$msg = $user->lang($e->getMessage());
 					trigger_error($msg . adm_back_link($this->u_action . '&amp;parent_id=' . $this->parent_id), E_USER_WARNING);
@@ -351,14 +351,14 @@ class acp_modules
 					try
 					{
 						$module_manager->update_module_data($module_data);
-						$an602_log->add('admin',
+						$phpbb_log->add('admin',
 							$user->data['user_id'],
 							$user->ip,
 							($action === 'edit') ? 'LOG_MODULE_EDIT' : 'LOG_MODULE_ADD',
 							false,
 							array($user->lang($module_data['module_langname']))
 						);					}
-					catch (\an602\module\exception\module_exception $e)
+					catch (\phpbb\module\exception\module_exception $e)
 					{
 						$msg = $user->lang($e->getMessage());
 						trigger_error($msg . adm_back_link($this->u_action . '&amp;parent_id=' . $this->parent_id), E_USER_WARNING);
@@ -448,7 +448,7 @@ class acp_modules
 		{
 			if ($request->is_ajax())
 			{
-				$json_response = new \an602\json_response;
+				$json_response = new \phpbb\json_response;
 				$json_response->send(array(
 					'MESSAGE_TITLE'	=> $user->lang('ERROR'),
 					'MESSAGE_TEXT'	=> implode('<br />', $errors),
@@ -540,7 +540,7 @@ class acp_modules
 			{
 				$row = $module_manager->get_module_row($this->parent_id, $this->module_class);
 			}
-			catch (\an602\module\exception\module_not_found_exception $e)
+			catch (\phpbb\module\exception\module_not_found_exception $e)
 			{
 				$msg = $user->lang($e->getMessage());
 				trigger_error($msg . adm_back_link($this->u_action . '&amp;parent_id=' . $this->parent_id), E_USER_WARNING);

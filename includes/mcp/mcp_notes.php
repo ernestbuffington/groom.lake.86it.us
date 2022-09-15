@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -36,7 +36,7 @@ class mcp_notes
 	function main($id, $mode)
 	{
 		global $user, $template, $request;
-		global $an602_root_path, $phpEx;
+		global $phpbb_root_path, $phpEx;
 
 		$action = $request->variable('action', array('' => ''));
 
@@ -51,8 +51,8 @@ class mcp_notes
 		{
 			case 'front':
 				$template->assign_vars(array(
-					'U_FIND_USERNAME'	=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=mcp&amp;field=username&amp;select_single=true'),
-					'U_POST_ACTION'		=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes'),
+					'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=mcp&amp;field=username&amp;select_single=true'),
+					'U_POST_ACTION'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes'),
 
 					'L_TITLE'			=> $user->lang['MCP_NOTES'],
 				));
@@ -74,8 +74,8 @@ class mcp_notes
 	*/
 	function mcp_notes_user_view($action)
 	{
-		global $config, $an602_log, $request, $an602_root_path, $phpEx;
-		global $template, $db, $user, $auth, $an602_container;
+		global $config, $phpbb_log, $request, $phpbb_root_path, $phpEx;
+		global $template, $db, $user, $auth, $phpbb_container;
 
 		$user_id = $request->variable('u', 0);
 		$username = $request->variable('username', '', true);
@@ -84,8 +84,8 @@ class mcp_notes
 		$sk	= $request->variable('sk', 'b');
 		$sd	= $request->variable('sd', 'd');
 
-		/* @var $pagination \an602\pagination */
-		$pagination = $an602_container->get('pagination');
+		/* @var $pagination \phpbb\pagination */
+		$pagination = $phpbb_container->get('pagination');
 
 		add_form_key('mcp_notes');
 
@@ -144,7 +144,7 @@ class mcp_notes
 							$where_sql";
 					$db->sql_query($sql);
 
-					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_CLEAR_USER', false, array($userrow['username']));
+					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_CLEAR_USER', false, array($userrow['username']));
 
 					$msg = ($deletemark) ? 'MARKED_NOTES_DELETED' : 'ALL_NOTES_DELETED';
 				}
@@ -162,13 +162,13 @@ class mcp_notes
 		{
 			if (check_form_key('mcp_notes'))
 			{
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_FEEDBACK', false, array($userrow['username']));
-				$an602_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_USER_FEEDBACK', false, array(
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_FEEDBACK', false, array($userrow['username']));
+				$phpbb_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_USER_FEEDBACK', false, array(
 					'forum_id' => 0,
 					'topic_id' => 0,
 					$userrow['username']
 				));
-				$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_GENERAL', false, array(
+				$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_GENERAL', false, array(
 					'reportee_id' => $user_id,
 					$usernote
 				));
@@ -185,14 +185,14 @@ class mcp_notes
 			trigger_error($msg .  '<br /><br />' . sprintf($user->lang['RETURN_PAGE'], '<a href="' . $redirect . '">', '</a>'));
 		}
 
-		if (!function_exists('an602_get_user_rank'))
+		if (!function_exists('phpbb_get_user_rank'))
 		{
-			include($an602_root_path . 'includes/functions_display.' . $phpEx);
+			include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 		}
 
 		// Generate the appropriate user information for the user we are looking at
-		$rank_data = an602_get_user_rank($userrow, $userrow['user_posts']);
-		$avatar_img = an602_get_user_avatar($userrow);
+		$rank_data = phpbb_get_user_rank($userrow, $userrow['user_posts']);
+		$avatar_img = phpbb_get_user_avatar($userrow);
 
 		$limit_days = array(0 => $user->lang['ALL_ENTRIES'], 1 => $user->lang['1_DAY'], 7 => $user->lang['7_DAYS'], 14 => $user->lang['2_WEEKS'], 30 => $user->lang['1_MONTH'], 90 => $user->lang['3_MONTHS'], 180 => $user->lang['6_MONTHS'], 365 => $user->lang['1_YEAR']);
 		$sort_by_text = array('a' => $user->lang['SORT_USERNAME'], 'b' => $user->lang['SORT_DATE'], 'c' => $user->lang['SORT_IP'], 'd' => $user->lang['SORT_ACTION']);

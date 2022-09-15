@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -22,7 +22,7 @@ if (!defined('IN_AN602'))
 /**
 * ACP Permission/Auth class
 */
-class auth_admin extends \an602\auth\auth
+class auth_admin extends \phpbb\auth\auth
 {
 	/**
 	* Init auth settings
@@ -133,7 +133,7 @@ class auth_admin extends \an602\auth\auth
 			{
 				if ($user->data['user_id'] != $userdata['user_id'])
 				{
-					$auth2 = new \an602\auth\auth();
+					$auth2 = new \phpbb\auth\auth();
 					$auth2->acl($userdata);
 				}
 				else
@@ -266,13 +266,13 @@ class auth_admin extends \an602\auth\auth
 	*/
 	function display_mask($mode, $permission_type, &$hold_ary, $user_mode = 'user', $local = false, $group_display = true)
 	{
-		global $template, $user, $db, $an602_container;
+		global $template, $user, $db, $phpbb_container;
 
-		/* @var $an602_permissions \an602\permissions */
-		$an602_permissions = $an602_container->get('acl.permissions');
+		/* @var $phpbb_permissions \phpbb\permissions */
+		$phpbb_permissions = $phpbb_container->get('acl.permissions');
 
-		/** @var \an602\group\helper $group_helper */
-		$group_helper = $an602_container->get('group_helper');
+		/** @var \phpbb\group\helper $group_helper */
+		$group_helper = $phpbb_container->get('group_helper');
 
 		// Define names for template loops, might be able to be set
 		$tpl_pmask = 'p_mask';
@@ -280,7 +280,7 @@ class auth_admin extends \an602\auth\auth
 		$tpl_category = 'category';
 		$tpl_mask = 'mask';
 
-		$l_acl_type = $an602_permissions->get_type_lang($permission_type, (($local) ? 'local' : 'global'));
+		$l_acl_type = $phpbb_permissions->get_type_lang($permission_type, (($local) ? 'local' : 'global'));
 
 		// Allow trace for viewing permissions and in user mode
 		$show_trace = ($mode == 'view' && $user_mode == 'user') ? true : false;
@@ -630,16 +630,16 @@ class auth_admin extends \an602\auth\auth
 	*/
 	function display_role_mask(&$hold_ary)
 	{
-		global $db, $template, $user, $an602_root_path, $phpEx;
-		global $an602_container;
+		global $db, $template, $user, $phpbb_root_path, $phpEx;
+		global $phpbb_container;
 
 		if (!count($hold_ary))
 		{
 			return;
 		}
 
-		/** @var \an602\group\helper $group_helper */
-		$group_helper = $an602_container->get('group_helper');
+		/** @var \phpbb\group\helper $group_helper */
+		$group_helper = $phpbb_container->get('group_helper');
 
 		// Get forum names
 		$sql = 'SELECT forum_id, forum_name
@@ -697,7 +697,7 @@ class auth_admin extends \an602\auth\auth
 					$template->assign_block_vars('role_mask.groups', array(
 						'GROUP_ID'		=> $row['group_id'],
 						'GROUP_NAME'	=> $group_helper->get_name($row['group_name']),
-						'U_PROFILE'		=> append_sid("{$an602_root_path}memberlist.$phpEx", "mode=group&amp;g={$row['group_id']}"))
+						'U_PROFILE'		=> append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=group&amp;g={$row['group_id']}"))
 					);
 				}
 				$db->sql_freeresult($result);
@@ -1129,16 +1129,16 @@ class auth_admin extends \an602\auth\auth
 	*/
 	function assign_cat_array(&$category_array, $tpl_cat, $tpl_mask, $ug_id, $forum_id, $s_view, $show_trace = false)
 	{
-		global $template, $an602_admin_path, $phpEx, $an602_container;
+		global $template, $phpbb_admin_path, $phpEx, $phpbb_container;
 
-		/** @var \an602\permissions $an602_permissions */
-		$an602_permissions = $an602_container->get('acl.permissions');
+		/** @var \phpbb\permissions $phpbb_permissions */
+		$phpbb_permissions = $phpbb_container->get('acl.permissions');
 
-		$order = array_flip(array_keys($an602_permissions->get_permissions()));
+		$order = array_flip(array_keys($phpbb_permissions->get_permissions()));
 
 		foreach ($category_array as $cat => $cat_array)
 		{
-			if (!$an602_permissions->category_defined($cat))
+			if (!$phpbb_permissions->category_defined($cat))
 			{
 				continue;
 			}
@@ -1148,10 +1148,10 @@ class auth_admin extends \an602\auth\auth
 				'S_NEVER'	=> ($cat_array['S_NEVER'] && !$cat_array['S_YES'] && !$cat_array['S_NO']) ? true : false,
 				'S_NO'		=> ($cat_array['S_NO'] && !$cat_array['S_NEVER'] && !$cat_array['S_YES']) ? true : false,
 
-				'CAT_NAME'	=> $an602_permissions->get_category_lang($cat),
+				'CAT_NAME'	=> $phpbb_permissions->get_category_lang($cat),
 			));
 
-			$permissions = array_filter($cat_array['permissions'], [$an602_permissions, 'permission_defined'], ARRAY_FILTER_USE_KEY);
+			$permissions = array_filter($cat_array['permissions'], [$phpbb_permissions, 'permission_defined'], ARRAY_FILTER_USE_KEY);
 
 			uksort($permissions, function($a, $b) use ($order) {
 				return $order[$a] <=> $order[$b];
@@ -1170,10 +1170,10 @@ class auth_admin extends \an602\auth\auth
 						'FIELD_NAME'	=> $permission,
 						'S_FIELD_NAME'	=> 'setting[' . $ug_id . '][' . $forum_id . '][' . $permission . ']',
 
-						'U_TRACE'		=> ($show_trace) ? append_sid("{$an602_admin_path}index.$phpEx", "i=permissions&amp;mode=trace&amp;u=$ug_id&amp;f=$forum_id&amp;auth=$permission") : '',
-						'UA_TRACE'		=> ($show_trace) ? append_sid("{$an602_admin_path}index.$phpEx", "i=permissions&mode=trace&u=$ug_id&f=$forum_id&auth=$permission", false) : '',
+						'U_TRACE'		=> ($show_trace) ? append_sid("{$phpbb_admin_path}index.$phpEx", "i=permissions&amp;mode=trace&amp;u=$ug_id&amp;f=$forum_id&amp;auth=$permission") : '',
+						'UA_TRACE'		=> ($show_trace) ? append_sid("{$phpbb_admin_path}index.$phpEx", "i=permissions&mode=trace&u=$ug_id&f=$forum_id&auth=$permission", false) : '',
 
-						'PERMISSION'	=> $an602_permissions->get_permission_lang($permission),
+						'PERMISSION'	=> $phpbb_permissions->get_permission_lang($permission),
 					));
 				}
 				else
@@ -1188,10 +1188,10 @@ class auth_admin extends \an602\auth\auth
 						'FIELD_NAME'	=> $permission,
 						'S_FIELD_NAME'	=> 'setting[' . $ug_id . '][' . $forum_id . '][' . $permission . ']',
 
-						'U_TRACE'		=> ($show_trace) ? append_sid("{$an602_admin_path}index.$phpEx", "i=permissions&amp;mode=trace&amp;u=$ug_id&amp;f=$forum_id&amp;auth=$permission") : '',
-						'UA_TRACE'		=> ($show_trace) ? append_sid("{$an602_admin_path}index.$phpEx", "i=permissions&mode=trace&u=$ug_id&f=$forum_id&auth=$permission", false) : '',
+						'U_TRACE'		=> ($show_trace) ? append_sid("{$phpbb_admin_path}index.$phpEx", "i=permissions&amp;mode=trace&amp;u=$ug_id&amp;f=$forum_id&amp;auth=$permission") : '',
+						'UA_TRACE'		=> ($show_trace) ? append_sid("{$phpbb_admin_path}index.$phpEx", "i=permissions&mode=trace&u=$ug_id&f=$forum_id&auth=$permission", false) : '',
 
-						'PERMISSION'	=> $an602_permissions->get_permission_lang($permission),
+						'PERMISSION'	=> $phpbb_permissions->get_permission_lang($permission),
 					));
 				}
 			}
@@ -1204,12 +1204,12 @@ class auth_admin extends \an602\auth\auth
 	*/
 	function build_permission_array(&$permission_row, &$content_array, &$categories, $key_sort_array)
 	{
-		global $an602_container;
+		global $phpbb_container;
 
-		/** @var \an602\permissions $an602_permissions */
-		$an602_permissions = $an602_container->get('acl.permissions');
+		/** @var \phpbb\permissions $phpbb_permissions */
+		$phpbb_permissions = $phpbb_container->get('acl.permissions');
 
-		$order = array_flip(array_keys($an602_permissions->get_permissions()));
+		$order = array_flip(array_keys($phpbb_permissions->get_permissions()));
 
 		foreach ($key_sort_array as $forum_id)
 		{
@@ -1218,7 +1218,7 @@ class auth_admin extends \an602\auth\auth
 				continue;
 			}
 
-			$permissions = array_filter($permission_row[$forum_id], [$an602_permissions, 'permission_defined'], ARRAY_FILTER_USE_KEY);
+			$permissions = array_filter($permission_row[$forum_id], [$phpbb_permissions, 'permission_defined'], ARRAY_FILTER_USE_KEY);
 
 			uksort($permissions, function($a, $b) use ($order) {
 				return $order[$a] <=> $order[$b];
@@ -1226,12 +1226,12 @@ class auth_admin extends \an602\auth\auth
 
 			foreach ($permissions as $permission => $auth_setting)
 			{
-				$cat = $an602_permissions->get_permission_category($permission);
+				$cat = $phpbb_permissions->get_permission_category($permission);
 
 				// Build our categories array
 				if (!isset($categories[$cat]))
 				{
-					$categories[$cat] = $an602_permissions->get_category_lang($cat);
+					$categories[$cat] = $phpbb_permissions->get_category_lang($cat);
 				}
 
 				// Build our content array

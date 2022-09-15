@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -54,7 +54,7 @@ $lang = array_merge($lang, array(
 
 		<br />
 
-		<p>For further information on setting up and managing permissions on your AN6023 board, please see the section on <a href="https://www.groom.lake.86it.us/support/docs/en/3.3/ug/quickstart/permissions/">Setting permissions of our Quick Start Guide</a>.</p>
+		<p>For further information on setting up and managing permissions on your phpBB3 board, please see the section on <a href="https://www.phpbb.com/support/docs/en/3.3/ug/quickstart/permissions/">Setting permissions of our Quick Start Guide</a>.</p>
 	',
 
 	'ACL_NEVER'				=> 'Never',
@@ -283,5 +283,5 @@ $lang = array_merge($lang, array(
 	'VIEW_PERMISSIONS'		=> 'View permissions',
 
 	'WRONG_PERMISSION_TYPE'				=> 'Wrong permission type selected.',
-	'WRONG_PERMISSION_SETTING_FORMAT'	=> 'The permission settings are in a wrong format, AN602 is not able to process them correctly.',
+	'WRONG_PERMISSION_SETTING_FORMAT'	=> 'The permission settings are in a wrong format, phpBB is not able to process them correctly.',
 ));

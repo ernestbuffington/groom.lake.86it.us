@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -83,7 +83,7 @@ function is_empty($mixed)
 }
 
 /**
-* Convert the name of a user's primary group to the appropriate equivalent AN602 group id
+* Convert the name of a user's primary group to the appropriate equivalent phpBB group id
 *
 * @param string $status The name of the group
 * @return int The group_id corresponding to the equivalent group
@@ -114,7 +114,7 @@ function str_to_primary_group($status)
 }
 
 /**
-* Convert a boolean into the appropriate AN602 constant indicating whether the item is locked
+* Convert a boolean into the appropriate phpBB constant indicating whether the item is locked
 */
 function is_item_locked($bool)
 {
@@ -156,7 +156,7 @@ function auto_id($pad = 0)
 }
 
 /**
-* Convert a boolean into the appropriate AN602 constant indicating whether the user is active
+* Convert a boolean into the appropriate phpBB constant indicating whether the user is active
 */
 function set_user_type($user_active)
 {
@@ -207,7 +207,7 @@ function get_group_id($group_name)
 }
 
 /**
-* Convert a boolean into the appropriate AN602 constant indicating whether the topic is locked
+* Convert a boolean into the appropriate phpBB constant indicating whether the topic is locked
 */
 function is_topic_locked($bool)
 {
@@ -546,7 +546,7 @@ function _import_check($config_var, $source, $use_target)
 		'relative_path'	=> (empty($convert->convertor['source_path_absolute'])) ? true : false,
 	);
 
-	// copy file will prepend $AN602_root_path
+	// copy file will prepend $phpBB_root_path
 	$target = $config[$config_var] . '/' . utf8_basename(($use_target === false) ? $source : $use_target);
 
 	if (!empty($convert->convertor[$config_var]) && strpos($source, $convert->convertor[$config_var]) !== 0)
@@ -1175,7 +1175,7 @@ function user_group_auth($group, $select_query, $use_src_db)
 /**
 * Retrieves configuration information from the source forum and caches it as an array
 * Both database and file driven configuration formats can be handled
-* (the type used is specified in $config_schema, see convert_an6020.php for more details)
+* (the type used is specified in $config_schema, see convert_phpbb20.php for more details)
 */
 function get_config()
 {
@@ -1263,7 +1263,7 @@ function get_config()
 
 /**
 * Transfers the relevant configuration information from the source forum
-* The mapping of fields is specified in $config_schema, see convert_an6020.php for more details
+* The mapping of fields is specified in $config_schema, see convert_phpbb20.php for more details
 */
 function restore_config($schema)
 {
@@ -1371,14 +1371,14 @@ function extract_variables_from_file($_filename)
 
 function get_path($src_path, $src_url, $test_file)
 {
-	global $an602_root_path, $phpEx;
+	global $phpbb_root_path, $phpEx;
 
 	$board_config = get_config();
 
 	$test_file = preg_replace('/\.php$/i', ".$phpEx", $test_file);
 	$src_path = path($src_path);
 
-	if (@file_exists($an602_root_path . $src_path . $test_file))
+	if (@file_exists($phpbb_root_path . $src_path . $test_file))
 	{
 		return $src_path;
 	}
@@ -1416,10 +1416,10 @@ function get_path($src_path, $src_url, $test_file)
 
 		$path_array = array();
 
-		$an602_parts = explode('/', $script_path);
+		$phpbb_parts = explode('/', $script_path);
 		for ($i = 0, $end = count($url_parts); $i < $end; ++$i)
 		{
-			if ($i < count($an602_parts[$i]) && $url_parts[$i] == $an602_parts[$i])
+			if ($i < count($phpbb_parts[$i]) && $url_parts[$i] == $phpbb_parts[$i])
 			{
 				$path_array[] = $url_parts[$i];
 				unset($url_parts[$i]);
@@ -1427,7 +1427,7 @@ function get_path($src_path, $src_url, $test_file)
 			else
 			{
 				$path = '';
-				for ($j = $i, $end2 = count($an602_parts); $j < $end2; ++$j)
+				for ($j = $i, $end2 = count($phpbb_parts); $j < $end2; ++$j)
 				{
 					$path .= '../';
 				}
@@ -1438,7 +1438,7 @@ function get_path($src_path, $src_url, $test_file)
 
 		if (!empty($path))
 		{
-			if (@file_exists($an602_root_path . $path . $test_file))
+			if (@file_exists($phpbb_root_path . $path . $test_file))
 			{
 				return $path;
 			}
@@ -1809,7 +1809,7 @@ function sync_post_count($offset, $limit)
 */
 function add_bots()
 {
-	global $db, $convert, $user, $config, $an602_root_path, $phpEx;
+	global $db, $convert, $user, $config, $phpbb_root_path, $phpEx;
 
 	$db->sql_query($convert->truncate_statement . BOTS_TABLE);
 
@@ -1894,7 +1894,7 @@ function add_bots()
 
 	if (!function_exists('user_add'))
 	{
-		include($an602_root_path . 'includes/functions_user.' . $phpEx);
+		include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 	}
 
 	foreach ($bots as $bot_name => $bot_ary)
@@ -2166,7 +2166,7 @@ function fix_empty_primary_groups()
 */
 function remove_invalid_users()
 {
-	global $db, $phpEx, $an602_root_path;
+	global $db, $phpEx, $phpbb_root_path;
 
 	// username_clean is UNIQUE
 	$sql = 'SELECT user_id
@@ -2180,7 +2180,7 @@ function remove_invalid_users()
 	{
 		if (!function_exists('user_delete'))
 		{
-			include($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		user_delete('remove', $row['user_id']);
@@ -2302,10 +2302,10 @@ function convert_bbcode($message, $convert_size = true, $extended_bbcodes = fals
 
 function copy_file($src, $trg, $overwrite = false, $die_on_failure = true, $source_relative_path = true)
 {
-	global $convert, $an602_root_path, $user, $an602_filesystem;
+	global $convert, $phpbb_root_path, $user, $phpbb_filesystem;
 
-	/** @var \an602\filesystem\filesystem_interface $filesystem */
-	$filesystem = $an602_filesystem;
+	/** @var \phpbb\filesystem\filesystem_interface $filesystem */
+	$filesystem = $phpbb_filesystem;
 
 	if (substr($trg, -1) == '/')
 	{
@@ -2324,7 +2324,7 @@ function copy_file($src, $trg, $overwrite = false, $die_on_failure = true, $sour
 		return;
 	}
 
-	$path = $an602_root_path;
+	$path = $phpbb_root_path;
 	$parts = explode('/', $trg);
 	unset($parts[count($parts) - 1]);
 
@@ -2343,15 +2343,15 @@ function copy_file($src, $trg, $overwrite = false, $die_on_failure = true, $sour
 		@chmod($path, 0777);
 	}
 
-	if (!@copy($src_path, $an602_root_path . $trg_path))
+	if (!@copy($src_path, $phpbb_root_path . $trg_path))
 	{
-		$convert->p_master->error(sprintf($user->lang['COULD_NOT_COPY'], $src_path, $an602_root_path . $trg_path), __LINE__, __FILE__, !$die_on_failure);
+		$convert->p_master->error(sprintf($user->lang['COULD_NOT_COPY'], $src_path, $phpbb_root_path . $trg_path), __LINE__, __FILE__, !$die_on_failure);
 		return;
 	}
 
 	if ($perm = @fileperms($src_path))
 	{
-		@chmod($an602_root_path . $trg_path, $perm);
+		@chmod($phpbb_root_path . $trg_path, $perm);
 	}
 
 	return true;
@@ -2359,16 +2359,16 @@ function copy_file($src, $trg, $overwrite = false, $die_on_failure = true, $sour
 
 function copy_dir($src, $trg, $copy_subdirs = true, $overwrite = false, $die_on_failure = true, $source_relative_path = true)
 {
-	global $convert, $an602_root_path, $config, $user, $an602_filesystem;
+	global $convert, $phpbb_root_path, $config, $user, $phpbb_filesystem;
 
-	/** @var \an602\filesystem\filesystem_interface $filesystem */
-	$filesystem = $an602_filesystem;
+	/** @var \phpbb\filesystem\filesystem_interface $filesystem */
+	$filesystem = $phpbb_filesystem;
 
 	$dirlist = $filelist = $bad_dirs = array();
 	$src = path($src, $source_relative_path);
 	$trg = path($trg);
 	$src_path = relative_base($src, $source_relative_path, __LINE__, __FILE__);
-	$trg_path = $an602_root_path . $trg;
+	$trg_path = $phpbb_root_path . $trg;
 
 	if (!is_dir($trg_path))
 	{

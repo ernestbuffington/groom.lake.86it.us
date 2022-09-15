@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,13 +14,13 @@
 /**
 * @ignore
 */
-define('IN_AN602', true);
-$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
+define('IN_PHPBB', true);
+$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-include($an602_root_path . 'common.' . $phpEx);
-include($an602_root_path . 'includes/functions_admin.' . $phpEx);
-include($an602_root_path . 'includes/functions_mcp.' . $phpEx);
-require($an602_root_path . 'includes/functions_module.' . $phpEx);
+include($phpbb_root_path . 'common.' . $phpEx);
+include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+include($phpbb_root_path . 'includes/functions_mcp.' . $phpEx);
+require($phpbb_root_path . 'includes/functions_module.' . $phpEx);
 
 // Start session management
 $user->session_begin();
@@ -43,7 +43,7 @@ if (!$user->data['is_registered'])
 {
 	if ($user->data['is_bot'])
 	{
-		redirect(append_sid("{$an602_root_path}index.$phpEx"));
+		redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
 	}
 
 	login_box('', $user->lang['LOGIN_EXPLAIN_MCP']);
@@ -54,7 +54,7 @@ $action = $request->variable('action', '');
 $action_ary = $request->variable('action', array('' => 0));
 
 $forum_action = $request->variable('forum_action', '');
-if ($forum_action !== '' && $request->variable('sort', false, false, \an602\request\request_interface::POST))
+if ($forum_action !== '' && $request->variable('sort', false, false, \phpbb\request\request_interface::POST))
 {
 	$action = $forum_action;
 }
@@ -118,7 +118,7 @@ if (!$auth->acl_getf_global('m_'))
 	$allow_user = false;
 	if ($quickmod && isset($user_quickmod_actions[$action]) && $user->data['is_registered'] && $auth->acl_gets($user_quickmod_actions[$action], $forum_id))
 	{
-		$topic_info = an602_get_topic_data(array($topic_id));
+		$topic_info = phpbb_get_topic_data(array($topic_id));
 		if ($topic_info[$topic_id]['topic_poster'] == $user->data['user_id'])
 		{
 			$allow_user = true;
@@ -143,7 +143,7 @@ if (!$auth->acl_getf_global('m_'))
 		'forum_id',
 		'topic_id',
 	);
-	extract($an602_dispatcher->trigger_event('core.mcp_modify_permissions', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.mcp_modify_permissions', compact($vars)));
 
 	if (!$allow_user)
 	{
@@ -179,7 +179,7 @@ $vars = array(
 	'quickmod',
 	'topic_id',
 );
-extract($an602_dispatcher->trigger_event('core.mcp_global_f_read_auth_after', compact($vars)));
+extract($phpbb_dispatcher->trigger_event('core.mcp_global_f_read_auth_after', compact($vars)));
 
 if ($forum_id)
 {
@@ -247,7 +247,7 @@ if ($quickmod)
 			* @since 3.1.0-a4
 			*/
 			$vars = array('module', 'action', 'is_valid_action');
-			extract($an602_dispatcher->trigger_event('core.modify_quickmod_options', compact($vars)));
+			extract($phpbb_dispatcher->trigger_event('core.modify_quickmod_options', compact($vars)));
 
 			if (!$is_valid_action)
 			{
@@ -326,26 +326,26 @@ $vars = array(
 	'username',
 	'id',
 );
-extract($an602_dispatcher->trigger_event('core.modify_mcp_modules_display_option', compact($vars)));
+extract($phpbb_dispatcher->trigger_event('core.modify_mcp_modules_display_option', compact($vars)));
 
 $template->assign_block_vars('navlinks', array(
 	'BREADCRUMB_NAME'	=> $user->lang('MCP'),
-	'U_BREADCRUMB'		=> append_sid("{$an602_root_path}mcp.$phpEx"),
+	'U_BREADCRUMB'		=> append_sid("{$phpbb_root_path}mcp.$phpEx"),
 ));
 
 // Generate urls for letting the moderation control panel being accessed in different modes
 $template->assign_vars(array(
-	'U_MCP'			=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=main'),
-	'U_MCP_FORUM'	=> ($forum_id) ? append_sid("{$an602_root_path}mcp.$phpEx", "i=main&amp;mode=forum_view&amp;f=$forum_id") : '',
-	'U_MCP_TOPIC'	=> ($forum_id && $topic_id) ? append_sid("{$an602_root_path}mcp.$phpEx", "i=main&amp;mode=topic_view&amp;t=$topic_id") : '',
-	'U_MCP_POST'	=> ($forum_id && $topic_id && $post_id) ? append_sid("{$an602_root_path}mcp.$phpEx", "i=main&amp;mode=post_details&amp;t=$topic_id&amp;p=$post_id") : '',
+	'U_MCP'			=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=main'),
+	'U_MCP_FORUM'	=> ($forum_id) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=main&amp;mode=forum_view&amp;f=$forum_id") : '',
+	'U_MCP_TOPIC'	=> ($forum_id && $topic_id) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=main&amp;mode=topic_view&amp;t=$topic_id") : '',
+	'U_MCP_POST'	=> ($forum_id && $topic_id && $post_id) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=main&amp;mode=post_details&amp;t=$topic_id&amp;p=$post_id") : '',
 ));
 
 // Load and execute the relevant module
 $module->load_active();
 
 // Assign data to the template engine for the list of modules
-$module->assign_tpl_vars(append_sid("{$an602_root_path}mcp.$phpEx"));
+$module->assign_tpl_vars(append_sid("{$phpbb_root_path}mcp.$phpEx"));
 
 // Generate the page, do not display/query online list
 $module->display($module->get_page_title());

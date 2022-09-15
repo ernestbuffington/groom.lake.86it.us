@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -32,42 +32,42 @@ class acp_styles
 	protected $styles_list_cols = 0;
 	protected $reserved_style_names = array('adm', 'admin', 'all');
 
-	/** @var \an602\config\config */
+	/** @var \phpbb\config\config */
 	protected $config;
 
-	/** @var \an602\db\driver\driver_interface */
+	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
-	/** @var \an602\user */
+	/** @var \phpbb\user */
 	protected $user;
 
-	/** @var \an602\template\template */
+	/** @var \phpbb\template\template */
 	protected $template;
 
-	/** @var \an602\request\request_interface */
+	/** @var \phpbb\request\request_interface */
 	protected $request;
 
-	/** @var \an602\cache\driver\driver_interface */
+	/** @var \phpbb\cache\driver\driver_interface */
 	protected $cache;
 
-	/** @var \an602\auth\auth */
+	/** @var \phpbb\auth\auth */
 	protected $auth;
 
-	/** @var \an602\textformatter\cache_interface */
+	/** @var \phpbb\textformatter\cache_interface */
 	protected $text_formatter_cache;
 
 	/** @var string */
-	protected $an602_root_path;
+	protected $phpbb_root_path;
 
 	/** @var string */
 	protected $php_ext;
 
-	/** @var \an602\event\dispatcher_interface */
+	/** @var \phpbb\event\dispatcher_interface */
 	protected $dispatcher;
 
 	public function main($id, $mode)
 	{
-		global $db, $user, $an602_admin_path, $an602_root_path, $phpEx, $template, $request, $cache, $auth, $config, $an602_dispatcher, $an602_container;
+		global $db, $user, $phpbb_admin_path, $phpbb_root_path, $phpEx, $template, $request, $cache, $auth, $config, $phpbb_dispatcher, $phpbb_container;
 
 		$this->db = $db;
 		$this->user = $user;
@@ -75,16 +75,16 @@ class acp_styles
 		$this->request = $request;
 		$this->cache = $cache;
 		$this->auth = $auth;
-		$this->text_formatter_cache = $an602_container->get('text_formatter.cache');
+		$this->text_formatter_cache = $phpbb_container->get('text_formatter.cache');
 		$this->config = $config;
-		$this->an602_root_path = $an602_root_path;
+		$this->phpbb_root_path = $phpbb_root_path;
 		$this->php_ext = $phpEx;
-		$this->dispatcher = $an602_dispatcher;
+		$this->dispatcher = $phpbb_dispatcher;
 
 		$this->default_style = $config['default_style'];
-		$this->styles_path = $this->an602_root_path . $this->styles_path_absolute . '/';
+		$this->styles_path = $this->phpbb_root_path . $this->styles_path_absolute . '/';
 
-		$this->u_base_action = append_sid("{$an602_admin_path}index.{$this->php_ext}", "i={$id}");
+		$this->u_base_action = append_sid("{$phpbb_admin_path}index.{$this->php_ext}", "i={$id}");
 		$this->s_hidden_fields = array(
 			'mode'		=> $mode,
 		);
@@ -300,7 +300,7 @@ class acp_styles
 	*/
 	protected function action_uninstall_confirmed($ids, $delete_files)
 	{
-		global $user, $an602_log;
+		global $user, $phpbb_log;
 
 		$default = $this->default_style;
 		$uninstalled = array();
@@ -361,7 +361,7 @@ class acp_styles
 		// Log action
 		if (count($uninstalled))
 		{
-			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_STYLE_DELETE', false, array(implode(', ', $uninstalled)));
+			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_STYLE_DELETE', false, array(implode(', ', $uninstalled)));
 		}
 
 		// Clear cache
@@ -433,7 +433,7 @@ class acp_styles
 	*/
 	protected function action_details()
 	{
-		global $user, $an602_log;
+		global $user, $phpbb_log;
 
 		$id = $this->request->variable('id', 0);
 		if (!$id)
@@ -570,7 +570,7 @@ class acp_styles
 					}
 				}
 
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_STYLE_EDIT_DETAILS', false, array($style['style_name']));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_STYLE_EDIT_DETAILS', false, array($style['style_name']));
 			}
 
 			// Update default style
@@ -968,7 +968,7 @@ class acp_styles
 			'STYLE_ID'				=> $style['style_id'],
 			'STYLE_NAME'			=> htmlspecialchars($style['style_name'], ENT_COMPAT),
 			'STYLE_VERSION'			=> $style_cfg['style_version'] ?? '-',
-			'STYLE_AN602_VERSION'	=> $style_cfg['an602_version'],
+			'STYLE_PHPBB_VERSION'	=> $style_cfg['phpbb_version'],
 			'STYLE_PATH'			=> htmlspecialchars($style['style_path'], ENT_COMPAT),
 			'STYLE_COPYRIGHT'		=> strip_tags($style['style_copyright']),
 			'STYLE_ACTIVE'			=> $style['style_active'],
@@ -1025,7 +1025,7 @@ class acp_styles
 
 			// Preview
 			$actions[] = array(
-				'U_ACTION'	=> append_sid($this->an602_root_path . 'index.' . $this->php_ext, 'style=' . $style['style_id']),
+				'U_ACTION'	=> append_sid($this->phpbb_root_path . 'index.' . $this->php_ext, 'style=' . $style['style_id']),
 				'L_ACTION'	=> $this->user->lang['PREVIEW']
 			);
 		}
@@ -1148,7 +1148,7 @@ class acp_styles
 			trigger_error($this->user->lang('NO_STYLE_CFG', $dir), E_USER_WARNING);
 		}
 
-		static $required = array('name', 'an602_version', 'copyright');
+		static $required = array('name', 'phpbb_version', 'copyright');
 
 		$cfg = parse_cfg_file($this->styles_path . $dir . '/style.cfg');
 
@@ -1182,7 +1182,7 @@ class acp_styles
 	*/
 	protected function install_style($style)
 	{
-		global $user, $an602_log;
+		global $user, $phpbb_log;
 
 		// Generate row
 		$sql_ary = array();
@@ -1205,7 +1205,7 @@ class acp_styles
 
 		$this->db->sql_transaction('commit');
 
-		$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_STYLE_ADD', false, array($sql_ary['style_name']));
+		$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_STYLE_ADD', false, array($sql_ary['style_name']));
 
 		return $id;
 	}

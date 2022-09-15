@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -29,7 +29,7 @@ class ucp_attachments
 
 	function main($id, $mode)
 	{
-		global $template, $user, $db, $config, $phpEx, $an602_root_path, $an602_container, $request, $auth;
+		global $template, $user, $db, $config, $phpEx, $phpbb_root_path, $phpbb_container, $request, $auth;
 
 		$start		= $request->variable('start', 0);
 		$sort_key	= $request->variable('sk', 'a');
@@ -80,8 +80,8 @@ class ucp_attachments
 
 			if (confirm_box(true))
 			{
-				/** @var \an602\attachment\manager $attachment_manager */
-				$attachment_manager = $an602_container->get('attachment.manager');
+				/** @var \phpbb\attachment\manager $attachment_manager */
+				$attachment_manager = $phpbb_container->get('attachment.manager');
 				$attachment_manager->delete('attach', $delete_ids);
 				unset($attachment_manager);
 
@@ -131,8 +131,8 @@ class ucp_attachments
 		$db->sql_freeresult($result);
 
 		// Ensure start is a valid value
-		/* @var $pagination \an602\pagination */
-		$pagination = $an602_container->get('pagination');
+		/* @var $pagination \phpbb\pagination */
+		$pagination = $phpbb_container->get('pagination');
 		$start = $pagination->validate_start($start, $config['topics_per_page'], $num_attachments);
 
 		$sql = 'SELECT a.*, t.topic_title, pr.message_subject as message_title, p.post_edit_locked, t.topic_status, f.forum_id, f.forum_status
@@ -155,11 +155,11 @@ class ucp_attachments
 			{
 				if ($row['in_message'])
 				{
-					$view_topic = append_sid("{$an602_root_path}ucp.$phpEx", "i=pm&amp;p={$row['post_msg_id']}");
+					$view_topic = append_sid("{$phpbb_root_path}ucp.$phpEx", "i=pm&amp;p={$row['post_msg_id']}");
 				}
 				else
 				{
-					$view_topic = append_sid("{$an602_root_path}viewtopic.$phpEx", "p={$row['post_msg_id']}") . "#p{$row['post_msg_id']}";
+					$view_topic = append_sid("{$phpbb_root_path}viewtopic.$phpEx", "p={$row['post_msg_id']}") . "#p{$row['post_msg_id']}";
 				}
 
 				$template->assign_block_vars('attachrow', array(
@@ -179,7 +179,7 @@ class ucp_attachments
 					'S_IN_MESSAGE'		=> $row['in_message'],
 					'S_LOCKED'			=> !$row['in_message'] && !$auth->acl_get('m_edit', $row['forum_id']) && ($row['forum_status'] == ITEM_LOCKED || $row['topic_status'] == ITEM_LOCKED || $row['post_edit_locked']),
 
-					'U_VIEW_ATTACHMENT'	=> append_sid("{$an602_root_path}download/file.$phpEx", 'id=' . $row['attach_id']),
+					'U_VIEW_ATTACHMENT'	=> append_sid("{$phpbb_root_path}download/file.$phpEx", 'id=' . $row['attach_id']),
 					'U_VIEW_TOPIC'		=> $view_topic)
 				);
 

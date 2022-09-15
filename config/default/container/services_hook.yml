@@ -1,6 +1,6 @@
 services:
     hook_finder:
-        class: an602\hook\finder
+        class: phpbb\hook\finder
         arguments:
             - '%core.root_path%'
             - '%core.php_ext%'

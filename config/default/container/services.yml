@@ -35,7 +35,7 @@ imports:
 
 services:
     cache:
-        class: an602\cache\service
+        class: phpbb\cache\service
         arguments:
              - '@cache.driver'
              - '@config'
@@ -48,9 +48,9 @@ services:
         class: '%cache.driver.class%'
 
     class_loader:
-        class: an602\class_loader
+        class: phpbb\class_loader
         arguments:
-            - an602\
+            - phpbb\
             - '%core.root_path%includes/'
             - '%core.php_ext%'
         calls:
@@ -58,7 +58,7 @@ services:
             - [set_cache, ['@cache.driver']]
 
     class_loader.ext:
-        class: an602\class_loader
+        class: phpbb\class_loader
         arguments:
             - \
             - '%core.root_path%ext/'
@@ -68,7 +68,7 @@ services:
             - [set_cache, ['@cache.driver']]
 
     config:
-        class: an602\config\db
+        class: phpbb\config\db
         arguments:
             - '@dbal.conn'
             - '@cache.driver'
@@ -78,13 +78,13 @@ services:
         synthetic: true
 
     config_text:
-        class: an602\config\db_text
+        class: phpbb\config\db_text
         arguments:
             - '@dbal.conn'
             - '%tables.config_text%'
 
     controller.helper:
-        class: an602\controller\helper
+        class: phpbb\controller\helper
         arguments:
             - '@auth'
             - '@cache.driver'
@@ -104,14 +104,14 @@ services:
             - '%debug.sql_explain%'
 
     controller.resolver:
-        class: an602\controller\resolver
+        class: phpbb\controller\resolver
         arguments:
             - '@service_container'
             - '%core.root_path%'
             - '@template'
 
     ext.manager:
-        class: an602\extension\manager
+        class: phpbb\extension\manager
         arguments:
             - '@service_container'
             - '@dbal.conn'
@@ -123,16 +123,16 @@ services:
             - '@cache'
 
     file_downloader:
-        class: an602\file_downloader
+        class: phpbb\file_downloader
 
     file_locator:
-        class: an602\routing\file_locator
+        class: phpbb\routing\file_locator
         arguments:
             - '@filesystem'
             - '%core.root_path%'
 
     group_helper:
-        class: an602\group\helper
+        class: phpbb\group\helper
         arguments:
             - '@auth'
             - '@cache'
@@ -143,7 +143,7 @@ services:
             - '@user'
 
     log:
-        class: an602\log\log
+        class: phpbb\log\log
         arguments:
             - '@dbal.conn'
             - '@user'
@@ -155,7 +155,7 @@ services:
             - '%tables.log%'
 
     path_helper:
-        class: an602\path_helper
+        class: phpbb\path_helper
         arguments:
             - '@symfony_request'
             - '@filesystem'
@@ -165,7 +165,7 @@ services:
             - '%core.adm_relative_path%'
 
     plupload:
-        class: an602\plupload\plupload
+        class: phpbb\plupload\plupload
         arguments:
             - '%core.root_path%'
             - '@config'
@@ -178,7 +178,7 @@ services:
         class: FastImageSize\FastImageSize
 
     version_helper:
-        class: an602\version_helper
+        class: phpbb\version_helper
         shared: false
         arguments:
             - '@cache'

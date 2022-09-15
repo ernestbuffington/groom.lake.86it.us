@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -13,7 +13,7 @@
 
 /**
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -120,7 +120,7 @@ $global_rule_conditions = array(
 function get_folder($user_id, $folder_id = false)
 {
 	global $db, $user, $template;
-	global $an602_root_path, $phpEx;
+	global $phpbb_root_path, $phpEx;
 
 	$folder = array();
 
@@ -204,7 +204,7 @@ function get_folder($user_id, $folder_id = false)
 			'NUM_MESSAGES'		=> $folder_ary['num_messages'],
 			'UNREAD_MESSAGES'	=> $folder_ary['unread_messages'],
 
-			'U_FOLDER'			=> ($f_id > 0) ? append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;folder=' . $f_id) : append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;folder=' . $folder_id_name),
+			'U_FOLDER'			=> ($f_id > 0) ? append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=' . $f_id) : append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=' . $folder_id_name),
 
 			'S_CUR_FOLDER'		=> ($f_id === $folder_id) ? true : false,
 			'S_UNREAD_MESSAGES'	=> ($folder_ary['unread_messages']) ? true : false,
@@ -344,7 +344,7 @@ function check_rule(&$rules, &$rule_row, &$message_row, $user_id)
 			$userdata = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
 
-			$auth2 = new \an602\auth\auth();
+			$auth2 = new \phpbb\auth\auth();
 			$auth2->acl($userdata);
 
 			if (!$auth2->acl_get('a_') && !$auth2->acl_get('m_') && !$auth2->acl_getf_global('m_'))
@@ -776,7 +776,7 @@ function place_pm_into_folder(&$global_privmsgs_rules, $release = false)
 function move_pm($user_id, $message_limit, $move_msg_ids, $dest_folder, $cur_folder_id)
 {
 	global $db, $user;
-	global $an602_root_path, $phpEx;
+	global $phpbb_root_path, $phpEx;
 
 	$num_moved = 0;
 
@@ -808,7 +808,7 @@ function move_pm($user_id, $message_limit, $move_msg_ids, $dest_folder, $cur_fol
 			if ($message_limit && $row['pm_count'] + count($move_msg_ids) > $message_limit)
 			{
 				$message = sprintf($user->lang['NOT_ENOUGH_SPACE_FOLDER'], $row['folder_name']) . '<br /><br />';
-				$message .= sprintf($user->lang['CLICK_RETURN_FOLDER'], '<a href="' . append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;folder=' . $row['folder_id']) . '">', '</a>', $row['folder_name']);
+				$message .= sprintf($user->lang['CLICK_RETURN_FOLDER'], '<a href="' . append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=' . $row['folder_id']) . '">', '</a>', $row['folder_name']);
 				trigger_error($message);
 			}
 		}
@@ -825,7 +825,7 @@ function move_pm($user_id, $message_limit, $move_msg_ids, $dest_folder, $cur_fol
 			if ($message_limit && $num_messages + count($move_msg_ids) > $message_limit)
 			{
 				$message = sprintf($user->lang['NOT_ENOUGH_SPACE_FOLDER'], $user->lang['PM_INBOX']) . '<br /><br />';
-				$message .= sprintf($user->lang['CLICK_RETURN_FOLDER'], '<a href="' . append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;folder=inbox') . '">', '</a>', $user->lang['PM_INBOX']);
+				$message .= sprintf($user->lang['CLICK_RETURN_FOLDER'], '<a href="' . append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=inbox') . '">', '</a>', $user->lang['PM_INBOX']);
 				trigger_error($message);
 			}
 		}
@@ -878,12 +878,12 @@ function update_unread_status($unread, $msg_id, $user_id, $folder_id)
 		return;
 	}
 
-	global $db, $user, $an602_container;
+	global $db, $user, $phpbb_container;
 
-	/* @var $an602_notifications \an602\notification\manager */
-	$an602_notifications = $an602_container->get('notification_manager');
+	/* @var $phpbb_notifications \phpbb\notification\manager */
+	$phpbb_notifications = $phpbb_container->get('notification_manager');
 
-	$an602_notifications->mark_notifications('notification.type.pm', $msg_id, $user_id);
+	$phpbb_notifications->mark_notifications('notification.type.pm', $msg_id, $user_id);
 
 	$sql = 'UPDATE ' . PRIVMSGS_TO_TABLE . "
 		SET pm_unread = 0
@@ -944,7 +944,7 @@ function mark_folder_read($user_id, $folder_id)
 */
 function handle_mark_actions($user_id, $mark_action)
 {
-	global $db, $user, $an602_root_path, $phpEx, $request;
+	global $db, $user, $phpbb_root_path, $phpEx, $request;
 
 	$msg_ids		= $request->variable('marked_msg_id', array(0));
 	$cur_folder_id	= $request->variable('cur_folder_id', PRIVMSGS_NO_BOX);
@@ -987,7 +987,7 @@ function handle_mark_actions($user_id, $mark_action)
 				delete_pm($user_id, $msg_ids, $cur_folder_id);
 
 				$success_msg = (count($msg_ids) == 1) ? 'MESSAGE_DELETED' : 'MESSAGES_DELETED';
-				$redirect = append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm&amp;folder=' . $cur_folder_id);
+				$redirect = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=' . $cur_folder_id);
 
 				meta_refresh(3, $redirect);
 				trigger_error($user->lang[$success_msg] . '<br /><br />' . sprintf($user->lang['RETURN_FOLDER'], '<a href="' . $redirect . '">', '</a>'));
@@ -1018,7 +1018,7 @@ function handle_mark_actions($user_id, $mark_action)
 */
 function delete_pm($user_id, $msg_ids, $folder_id)
 {
-	global $db, $user, $an602_container, $an602_dispatcher;
+	global $db, $user, $phpbb_container, $phpbb_dispatcher;
 
 	$user_id	= (int) $user_id;
 	$folder_id	= (int) $folder_id;
@@ -1052,7 +1052,7 @@ function delete_pm($user_id, $msg_ids, $folder_id)
 	* @since 3.1.0-b5
 	*/
 	$vars = array('user_id', 'msg_ids', 'folder_id');
-	extract($an602_dispatcher->trigger_event('core.delete_pm_before', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.delete_pm_before', compact($vars)));
 
 	// Get PM Information for later deleting
 	$sql = 'SELECT msg_id, pm_unread, pm_new
@@ -1142,10 +1142,10 @@ function delete_pm($user_id, $msg_ids, $folder_id)
 		$user->data['user_unread_privmsg'] -= $num_unread;
 	}
 
-	/* @var $an602_notifications \an602\notification\manager */
-	$an602_notifications = $an602_container->get('notification_manager');
+	/* @var $phpbb_notifications \phpbb\notification\manager */
+	$phpbb_notifications = $phpbb_container->get('notification_manager');
 
-	$an602_notifications->delete_notifications('notification.type.pm', array_keys($delete_rows));
+	$phpbb_notifications->delete_notifications('notification.type.pm', array_keys($delete_rows));
 
 	// Now we have to check which messages we can delete completely
 	$sql = 'SELECT msg_id
@@ -1164,8 +1164,8 @@ function delete_pm($user_id, $msg_ids, $folder_id)
 	if (count($delete_ids))
 	{
 		// Check if there are any attachments we need to remove
-		/** @var \an602\attachment\manager $attachment_manager */
-		$attachment_manager = $an602_container->get('attachment.manager');
+		/** @var \phpbb\attachment\manager $attachment_manager */
+		$attachment_manager = $phpbb_container->get('attachment.manager');
 		$attachment_manager->delete('message', $delete_ids, false);
 		unset($attachment_manager);
 
@@ -1186,9 +1186,9 @@ function delete_pm($user_id, $msg_ids, $folder_id)
 *
 * @return	boolean		False if there were no pms found, true otherwise.
 */
-function an602_delete_users_pms($user_ids)
+function phpbb_delete_users_pms($user_ids)
 {
-	global $db, $an602_container;
+	global $db, $phpbb_container;
 
 	$user_id_sql = $db->sql_in_set('user_id', $user_ids);
 	$author_id_sql = $db->sql_in_set('author_id', $user_ids);
@@ -1233,8 +1233,8 @@ function an602_delete_users_pms($user_ids)
 
 	$db->sql_transaction('begin');
 
-	/* @var $an602_notifications \an602\notification\manager */
-	$an602_notifications = $an602_container->get('notification_manager');
+	/* @var $phpbb_notifications \phpbb\notification\manager */
+	$phpbb_notifications = $phpbb_container->get('notification_manager');
 
 	if (!empty($undelivered_msg))
 	{
@@ -1305,7 +1305,7 @@ function an602_delete_users_pms($user_ids)
 					AND ' . $db->sql_in_set('msg_id', $delivered_msg);
 			$db->sql_query($sql);
 
-			$an602_notifications->delete_notifications('notification.type.pm', $delivered_msg);
+			$phpbb_notifications->delete_notifications('notification.type.pm', $delivered_msg);
 		}
 
 		if (!empty($undelivered_msg))
@@ -1318,7 +1318,7 @@ function an602_delete_users_pms($user_ids)
 				WHERE ' . $db->sql_in_set('msg_id', $undelivered_msg);
 			$db->sql_query($sql);
 
-			$an602_notifications->delete_notifications('notification.type.pm', $undelivered_msg);
+			$phpbb_notifications->delete_notifications('notification.type.pm', $undelivered_msg);
 		}
 	}
 
@@ -1351,8 +1351,8 @@ function an602_delete_users_pms($user_ids)
 		if (!empty($delete_ids))
 		{
 			// Check if there are any attachments we need to remove
-			/** @var \an602\attachment\manager $attachment_manager */
-			$attachment_manager = $an602_container->get('attachment.manager');
+			/** @var \phpbb\attachment\manager $attachment_manager */
+			$attachment_manager = $phpbb_container->get('attachment.manager');
 			$attachment_manager->delete('message', $delete_ids, false);
 			unset($attachment_manager);
 
@@ -1360,7 +1360,7 @@ function an602_delete_users_pms($user_ids)
 				WHERE ' . $db->sql_in_set('msg_id', $delete_ids);
 			$db->sql_query($sql);
 
-			$an602_notifications->delete_notifications('notification.type.pm', $delete_ids);
+			$phpbb_notifications->delete_notifications('notification.type.pm', $delete_ids);
 		}
 	}
 
@@ -1420,10 +1420,10 @@ function rebuild_header($check_ary)
 */
 function write_pm_addresses($check_ary, $author_id, $plaintext = false)
 {
-	global $db, $user, $template, $an602_root_path, $phpEx, $an602_container;
+	global $db, $user, $template, $phpbb_root_path, $phpEx, $phpbb_container;
 
-	/** @var \an602\group\helper $group_helper */
-	$group_helper = $an602_container->get('group_helper');
+	/** @var \phpbb\group\helper $group_helper */
+	$group_helper = $phpbb_container->get('group_helper');
 
 	$addresses = array();
 
@@ -1545,7 +1545,7 @@ function write_pm_addresses($check_ary, $author_id, $plaintext = false)
 					else
 					{
 						$tpl_ary = array_merge($tpl_ary, array(
-							'U_VIEW'		=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $id),
+							'U_VIEW'		=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $id),
 						));
 					}
 
@@ -1598,7 +1598,7 @@ function get_folder_status($folder_id, $folder)
 */
 function submit_pm($mode, $subject, &$data_ary, $put_in_outbox = true)
 {
-	global $db, $auth, $config, $user, $an602_root_path, $an602_container, $an602_dispatcher, $request;
+	global $db, $auth, $config, $user, $phpbb_root_path, $phpbb_container, $phpbb_dispatcher, $request;
 
 	// We do not handle erasing pms here
 	if ($mode == 'delete')
@@ -1619,7 +1619,7 @@ function submit_pm($mode, $subject, &$data_ary, $put_in_outbox = true)
 	* @since 3.1.0-b3
 	*/
 	$vars = array('mode', 'subject', 'data');
-	extract($an602_dispatcher->trigger_event('core.submit_pm_before', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.submit_pm_before', compact($vars)));
 	$data_ary = $data;
 	unset($data);
 
@@ -1867,7 +1867,7 @@ function submit_pm($mode, $subject, &$data_ary, $put_in_outbox = true)
 			else
 			{
 				// insert attachment into db
-				if (!@file_exists($an602_root_path . $config['upload_path'] . '/' . utf8_basename($orphan_rows[$attach_row['attach_id']]['physical_filename'])))
+				if (!@file_exists($phpbb_root_path . $config['upload_path'] . '/' . utf8_basename($orphan_rows[$attach_row['attach_id']]['physical_filename'])))
 				{
 					continue;
 				}
@@ -1916,16 +1916,16 @@ function submit_pm($mode, $subject, &$data_ary, $put_in_outbox = true)
 		'recipients'			=> $recipients,
 	));
 
-	/* @var $an602_notifications \an602\notification\manager */
-	$an602_notifications = $an602_container->get('notification_manager');
+	/* @var $phpbb_notifications \phpbb\notification\manager */
+	$phpbb_notifications = $phpbb_container->get('notification_manager');
 
 	if ($mode == 'edit')
 	{
-		$an602_notifications->update_notifications('notification.type.pm', $pm_data);
+		$phpbb_notifications->update_notifications('notification.type.pm', $pm_data);
 	}
 	else
 	{
-		$an602_notifications->add_notifications('notification.type.pm', $pm_data);
+		$phpbb_notifications->add_notifications('notification.type.pm', $pm_data);
 	}
 
 	$data = $data_ary;
@@ -1940,7 +1940,7 @@ function submit_pm($mode, $subject, &$data_ary, $put_in_outbox = true)
 	* @since 3.1.0-b5
 	*/
 	$vars = array('mode', 'subject', 'data', 'pm_data');
-	extract($an602_dispatcher->trigger_event('core.submit_pm_after', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.submit_pm_after', compact($vars)));
 	$data_ary = $data;
 	unset($data);
 
@@ -1952,7 +1952,7 @@ function submit_pm($mode, $subject, &$data_ary, $put_in_outbox = true)
 */
 function message_history($msg_id, $user_id, $message_row, $folder, $in_post_mode = false)
 {
-	global $db, $user, $template, $an602_root_path, $phpEx, $auth, $an602_dispatcher;
+	global $db, $user, $template, $phpbb_root_path, $phpEx, $auth, $phpbb_dispatcher;
 
 	// Select all receipts and the author from the pm we currently view, to only display their pm-history
 	$sql = 'SELECT author_id, user_id
@@ -2009,7 +2009,7 @@ function message_history($msg_id, $user_id, $message_row, $folder, $in_post_mode
 	* @since 3.2.8-RC1
 	*/
 	$vars = array('sql_ary');
-	extract($an602_dispatcher->trigger_event('core.message_history_modify_sql_ary', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.message_history_modify_sql_ary', compact($vars)));
 
 	$sql = $db->sql_build_query('SELECT', $sql_ary);
 	unset($sql_ary);
@@ -2026,7 +2026,7 @@ function message_history($msg_id, $user_id, $message_row, $folder, $in_post_mode
 	$title = $row['message_subject'];
 
 	$rowset = array();
-	$folder_url = append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm') . '&amp;folder=';
+	$folder_url = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm') . '&amp;folder=';
 
 	do
 	{
@@ -2046,7 +2046,7 @@ function message_history($msg_id, $user_id, $message_row, $folder, $in_post_mode
 	while ($row = $db->sql_fetchrow($result));
 	$db->sql_freeresult($result);
 
-	$url = append_sid("{$an602_root_path}ucp.$phpEx", 'i=pm');
+	$url = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm');
 
 	/**
 	* Modify message rows before displaying the history in private messages
@@ -2073,7 +2073,7 @@ function message_history($msg_id, $user_id, $message_row, $folder, $in_post_mode
 		'url',
 		'title',
 	];
-	extract($an602_dispatcher->trigger_event('core.message_history_modify_rowset', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.message_history_modify_rowset', compact($vars)));
 
 	if (count($rowset) == 1 && !$in_post_mode)
 	{
@@ -2160,7 +2160,7 @@ function message_history($msg_id, $user_id, $message_row, $folder, $in_post_mode
 			'template_vars',
 			'row',
 		);
-		extract($an602_dispatcher->trigger_event('core.message_history_modify_template_vars', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.message_history_modify_template_vars', compact($vars)));
 
 		$template->assign_block_vars('history_row', $template_vars);
 
@@ -2188,7 +2188,7 @@ function set_user_message_limit()
 	global $user, $db, $config;
 
 	// Get maximum about from user memberships
-	$message_limit = an602_get_max_setting_from_group($db, $user->data['user_id'], 'message_limit');
+	$message_limit = phpbb_get_max_setting_from_group($db, $user->data['user_id'], 'message_limit');
 
 	// If it is 0, there is no limit set and we use the maximum value within the config.
 	$user->data['message_limit'] = (!$message_limit) ? $config['pm_max_msgs'] : $message_limit;
@@ -2197,13 +2197,13 @@ function set_user_message_limit()
 /**
  * Get the maximum PM setting for the groups of the user
  *
- * @param \an602\db\driver\driver_interface $db
+ * @param \phpbb\db\driver\driver_interface $db
  * @param int $user_id
  * @param string $setting Only 'max_recipients' and 'message_limit' are supported
  * @return int The maximum setting for all groups of the user, unless one group has '0'
  * @throws \InvalidArgumentException If selected group setting is not supported
  */
-function an602_get_max_setting_from_group(\an602\db\driver\driver_interface $db, $user_id, $setting)
+function phpbb_get_max_setting_from_group(\phpbb\db\driver\driver_interface $db, $user_id, $setting)
 {
 	if ($setting !== 'max_recipients' && $setting !== 'message_limit')
 	{
@@ -2235,10 +2235,10 @@ function an602_get_max_setting_from_group(\an602\db\driver\driver_interface $db,
 */
 function get_recipient_strings($pm_by_id)
 {
-	global $db, $an602_root_path, $phpEx, $user, $an602_container;
+	global $db, $phpbb_root_path, $phpEx, $user, $phpbb_container;
 
-	/** @var \an602\group\helper $group_helper */
-	$group_helper = $an602_container->get('group_helper');
+	/** @var \phpbb\group\helper $group_helper */
+	$group_helper = $phpbb_container->get('group_helper');
 
 	$address_list = $recipient_list = $address = array();
 
@@ -2306,7 +2306,7 @@ function get_recipient_strings($pm_by_id)
 				else
 				{
 					$user_colour = ($recipient_list[$type][$ug_id]['colour']) ? ' style="font-weight: bold; color:#' . $recipient_list[$type][$ug_id]['colour'] . '"' : '';
-					$link = '<a href="' . append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $ug_id) . '"' . $user_colour . '>';
+					$link = '<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $ug_id) . '"' . $user_colour . '>';
 					$address_list[$message_id][] = $link . $recipient_list[$type][$ug_id]['name'] . (($link) ? '</a>' : '');
 				}
 			}

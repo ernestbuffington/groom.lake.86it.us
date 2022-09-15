@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -29,8 +29,8 @@ class ucp_activate
 
 	function main($id, $mode)
 	{
-		global $config, $an602_root_path, $phpEx, $request;
-		global $db, $user, $auth, $an602_container, $an602_log, $an602_dispatcher;
+		global $config, $phpbb_root_path, $phpEx, $request;
+		global $db, $user, $auth, $phpbb_container, $phpbb_log, $phpbb_dispatcher;
 
 		$user_id = $request->variable('u', 0);
 		$key = $request->variable('k', '');
@@ -49,7 +49,7 @@ class ucp_activate
 
 		if ($user_row['user_type'] <> USER_INACTIVE && !$user_row['user_newpasswd'])
 		{
-			meta_refresh(3, append_sid("{$an602_root_path}index.$phpEx"));
+			meta_refresh(3, append_sid("{$phpbb_root_path}index.$phpEx"));
 			trigger_error('ALREADY_ACTIVATED');
 		}
 
@@ -91,7 +91,7 @@ class ucp_activate
 
 			$user->reset_login_keys($user_row['user_id']);
 
-			$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_NEW_PASSWORD', false, array(
+			$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_NEW_PASSWORD', false, array(
 				'reportee_id' => $user_row['user_id'],
 				$user_row['username']
 			));
@@ -99,7 +99,7 @@ class ucp_activate
 
 		if (!$update_password)
 		{
-			include_once($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 
 			user_active_flip('activate', $user_row['user_id']);
 
@@ -115,23 +115,23 @@ class ucp_activate
 			$db->sql_query($sql);
 
 			// Create the correct logs
-			$an602_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_ACTIVE_USER', false, array(
+			$phpbb_log->add('user', $user->data['user_id'], $user->ip, 'LOG_USER_ACTIVE_USER', false, array(
 				'reportee_id' => $user_row['user_id']
 			));
 
 			if ($auth->acl_get('a_user'))
 			{
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_ACTIVE', false, array($user_row['username']));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_USER_ACTIVE', false, array($user_row['username']));
 			}
 		}
 
 		if ($config['require_activation'] == USER_ACTIVATION_ADMIN && !$update_password)
 		{
-			/* @var $an602_notifications \an602\notification\manager */
-			$an602_notifications = $an602_container->get('notification_manager');
-			$an602_notifications->delete_notifications('notification.type.admin_activate_user', $user_row['user_id']);
+			/* @var $phpbb_notifications \phpbb\notification\manager */
+			$phpbb_notifications = $phpbb_container->get('notification_manager');
+			$phpbb_notifications->delete_notifications('notification.type.admin_activate_user', $user_row['user_id']);
 
-			include_once($an602_root_path . 'includes/functions_messenger.' . $phpEx);
+			include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
 
 			$messenger = new messenger(false);
 
@@ -170,9 +170,9 @@ class ucp_activate
 		* @since 3.1.6-RC1
 		*/
 		$vars = array('user_row', 'message');
-		extract($an602_dispatcher->trigger_event('core.ucp_activate_after', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.ucp_activate_after', compact($vars)));
 
-		meta_refresh(3, append_sid("{$an602_root_path}index.$phpEx"));
+		meta_refresh(3, append_sid("{$phpbb_root_path}index.$phpEx"));
 		trigger_error($user->lang[$message]);
 	}
 }

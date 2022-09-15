@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -31,12 +31,12 @@ class acp_language
 
 	function main($id, $mode)
 	{
-		global $config, $db, $user, $template, $an602_log, $an602_container;
-		global $an602_root_path, $phpEx, $request, $an602_dispatcher;
+		global $config, $db, $user, $template, $phpbb_log, $phpbb_container;
+		global $phpbb_root_path, $phpEx, $request, $phpbb_dispatcher;
 
 		if (!function_exists('validate_language_iso_name'))
 		{
-			include($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		// Check and set some common vars
@@ -93,7 +93,7 @@ class acp_language
 					SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 					WHERE lang_id = ' . $lang_id);
 
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_LANGUAGE_PACK_UPDATED', false, array($sql_ary['lang_english_name']));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_LANGUAGE_PACK_UPDATED', false, array($sql_ary['lang_english_name']));
 
 				trigger_error($user->lang['LANGUAGE_DETAILS_UPDATED'] . adm_back_link($this->u_action));
 			break;
@@ -140,9 +140,9 @@ class acp_language
 					try
 					{
 						$iterator = new \RecursiveIteratorIterator(
-							new \an602\recursive_dot_prefix_filter_iterator(
+							new \phpbb\recursive_dot_prefix_filter_iterator(
 								new \RecursiveDirectoryIterator(
-									$an602_root_path . 'language/' . $config['default_lang'] . '/',
+									$phpbb_root_path . 'language/' . $config['default_lang'] . '/',
 									\FilesystemIterator::SKIP_DOTS
 								)
 							),
@@ -160,7 +160,7 @@ class acp_language
 						$relative_path = $iterator->getInnerIterator()->getSubPathname();
 						$relative_path = str_replace(DIRECTORY_SEPARATOR, '/', $relative_path);
 
-						if (file_exists($an602_root_path . 'language/' . $lang_iso . '/' . $relative_path))
+						if (file_exists($phpbb_root_path . 'language/' . $lang_iso . '/' . $relative_path))
 						{
 							if (substr($relative_path, 0 - strlen($phpEx)) === $phpEx)
 							{
@@ -227,7 +227,7 @@ class acp_language
 					$sql = 'DELETE FROM ' . PROFILE_FIELDS_LANG_TABLE . ' WHERE lang_id = ' . $lang_id;
 					$db->sql_query($sql);
 
-					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_LANGUAGE_PACK_DELETED', false, array($row['lang_english_name']));
+					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_LANGUAGE_PACK_DELETED', false, array($row['lang_english_name']));
 
 					$delete_message = sprintf($user->lang['LANGUAGE_PACK_DELETED'], $row['lang_english_name']);
 					$lang_iso = $row['lang_iso'];
@@ -240,7 +240,7 @@ class acp_language
 					 * @since 3.2.2-RC1
 					 */
 					$vars = array('lang_iso', 'delete_message');
-					extract($an602_dispatcher->trigger_event('core.acp_language_after_delete', compact($vars)));
+					extract($phpbb_dispatcher->trigger_event('core.acp_language_after_delete', compact($vars)));
 
 					trigger_error($delete_message . adm_back_link($this->u_action));
 				}
@@ -265,12 +265,12 @@ class acp_language
 				$lang_iso = $request->variable('iso', '');
 				$lang_iso = basename($lang_iso);
 
-				if (!$lang_iso || !file_exists("{$an602_root_path}language/$lang_iso/iso.txt"))
+				if (!$lang_iso || !file_exists("{$phpbb_root_path}language/$lang_iso/iso.txt"))
 				{
 					trigger_error($user->lang['LANGUAGE_PACK_NOT_EXIST'] . adm_back_link($this->u_action), E_USER_WARNING);
 				}
 
-				$file = file("{$an602_root_path}language/$lang_iso/iso.txt");
+				$file = file("{$phpbb_root_path}language/$lang_iso/iso.txt");
 
 				$lang_pack = array(
 					'iso'		=> $lang_iso,
@@ -350,7 +350,7 @@ class acp_language
 				}
 				$db->sql_freeresult($result);
 
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_LANGUAGE_PACK_INSTALLED', false, array($lang_pack['name']));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_LANGUAGE_PACK_INSTALLED', false, array($lang_pack['name']));
 
 				$message = sprintf($user->lang['LANGUAGE_PACK_INSTALLED'], $lang_pack['name']);
 				$message .= ($notify_cpf_update) ? '<br /><br />' . $user->lang['LANGUAGE_PACK_CPF_UPDATE'] : '';
@@ -399,8 +399,8 @@ class acp_language
 
 		$new_ary = $iso = array();
 
-		/** @var \an602\language\language_file_helper $language_helper */
-		$language_helper = $an602_container->get('language.helper.language_file');
+		/** @var \phpbb\language\language_file_helper $language_helper */
+		$language_helper = $phpbb_container->get('language.helper.language_file');
 		$iso = $language_helper->get_available_languages();
 
 		foreach ($iso as $lang_array)
@@ -436,10 +436,10 @@ class acp_language
 	*/
 	function compare_language_files($source_lang, $dest_lang, $file)
 	{
-		global $an602_root_path;
+		global $phpbb_root_path;
 
-		$source_file = $an602_root_path . 'language/' . $source_lang . '/' . $file;
-		$dest_file = $an602_root_path . 'language/' . $dest_lang . '/' . $file;
+		$source_file = $phpbb_root_path . 'language/' . $source_lang . '/' . $file;
+		$dest_file = $phpbb_root_path . 'language/' . $dest_lang . '/' . $file;
 
 		if (!file_exists($dest_file))
 		{

@@ -3,11 +3,11 @@
 "use strict";
 
 $('#tz_date').change(function() {
-	an602.timezoneSwitchDate(false);
+	phpbb.timezoneSwitchDate(false);
 });
 
 $(document).ready(
-	an602.timezoneEnableDateSelection
+	phpbb.timezoneEnableDateSelection
 );
 
 })(jQuery); // Avoid conflicts with other libraries

@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -15,7 +15,7 @@ class acp_logs_info
 {
 	function module()
 	{
-		global $an602_dispatcher;
+		global $phpbb_dispatcher;
 
 		$modes = array(
 			'admin'		=> array('title' => 'ACP_ADMIN_LOGS', 'auth' => 'acl_a_viewlogs', 'cat' => array('ACP_FORUM_LOGS')),
@@ -33,7 +33,7 @@ class acp_logs_info
 		* @since 3.2.1-RC1
 		*/
 		$vars = array('modes');
-		extract($an602_dispatcher->trigger_event('core.acp_logs_info_modify_modes', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.acp_logs_info_modify_modes', compact($vars)));
 
 		return array(
 			'filename'	=> 'acp_logs',

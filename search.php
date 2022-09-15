@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,10 +14,10 @@
 /**
 * @ignore
 */
-define('IN_AN602', true);
-$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './';
+define('IN_PHPBB', true);
+$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-include($an602_root_path . 'common.' . $phpEx);
+include($phpbb_root_path . 'common.' . $phpEx);
 
 // Start session management
 $user->session_begin();
@@ -123,15 +123,15 @@ $sort_by_text	= array('a' => $user->lang['SORT_AUTHOR'], 't' => $user->lang['SOR
 $s_limit_days = $s_sort_key = $s_sort_dir = $u_sort_param = '';
 gen_sort_selects($limit_days, $sort_by_text, $sort_days, $sort_key, $sort_dir, $s_limit_days, $s_sort_key, $s_sort_dir, $u_sort_param);
 
-/* @var $an602_content_visibility \an602\content_visibility */
-$an602_content_visibility = $an602_container->get('content.visibility');
+/* @var $phpbb_content_visibility \phpbb\content_visibility */
+$phpbb_content_visibility = $phpbb_container->get('content.visibility');
 
-/* @var $pagination \an602\pagination */
-$pagination = $an602_container->get('pagination');
+/* @var $pagination \phpbb\pagination */
+$pagination = $phpbb_container->get('pagination');
 
 $template->assign_block_vars('navlinks', array(
 	'BREADCRUMB_NAME'	=> $user->lang('SEARCH'),
-	'U_BREADCRUMB'		=> append_sid("{$an602_root_path}search.$phpEx"),
+	'U_BREADCRUMB'		=> append_sid("{$phpbb_root_path}search.$phpEx"),
 ));
 
 /**
@@ -152,7 +152,7 @@ $vars = array(
 	'search_id',
 	'submit',
 );
-extract($an602_dispatcher->trigger_event('core.search_modify_submit_parameters', compact($vars)));
+extract($phpbb_dispatcher->trigger_event('core.search_modify_submit_parameters', compact($vars)));
 
 if ($keywords || $author || $author_id || $search_id || $submit)
 {
@@ -285,8 +285,8 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 	$db->sql_freeresult($result);
 
 	// find out in which forums the user is allowed to view posts
-	$m_approve_posts_fid_sql = $an602_content_visibility->get_global_visibility_sql('post', $ex_fid_ary, 'p.');
-	$m_approve_topics_fid_sql = $an602_content_visibility->get_global_visibility_sql('topic', $ex_fid_ary, 't.');
+	$m_approve_posts_fid_sql = $phpbb_content_visibility->get_global_visibility_sql('post', $ex_fid_ary, 'p.');
+	$m_approve_topics_fid_sql = $phpbb_content_visibility->get_global_visibility_sql('topic', $ex_fid_ary, 't.');
 
 	if ($reset_search_forum)
 	{
@@ -302,7 +302,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 	}
 	// We do some additional checks in the module to ensure it can actually be utilised
 	$error = false;
-	$search = new $search_type($error, $an602_root_path, $phpEx, $auth, $config, $db, $user, $an602_dispatcher);
+	$search = new $search_type($error, $phpbb_root_path, $phpEx, $auth, $config, $db, $user, $phpbb_dispatcher);
 
 	if ($error)
 	{
@@ -362,7 +362,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 		'id_ary',
 		'show_results',
 	);
-	extract($an602_dispatcher->trigger_event('core.search_modify_param_before', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.search_modify_param_before', compact($vars)));
 
 	// pre-made searches
 	$sql = $field = $l_search_title = '';
@@ -461,7 +461,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				gen_sort_selects($limit_days, $sort_by_text, $sort_days, $sort_key, $sort_dir, $s_limit_days, $s_sort_key, $s_sort_dir, $u_sort_param);
 				$s_sort_key = $s_sort_dir = $u_sort_param = $s_limit_days = '';
 
-				$template->assign_var('U_MARK_ALL_READ', ($user->data['is_registered'] || $config['load_anon_lastread']) ? append_sid("{$an602_root_path}index.$phpEx", 'hash=' . generate_link_hash('global') . '&amp;mark=forums&amp;mark_time=' . time()) : '');
+				$template->assign_var('U_MARK_ALL_READ', ($user->data['is_registered'] || $config['load_anon_lastread']) ? append_sid("{$phpbb_root_path}index.$phpEx", 'hash=' . generate_link_hash('global') . '&amp;mark=forums&amp;mark_time=' . time()) : '');
 			break;
 
 			case 'newposts':
@@ -519,7 +519,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 
 		$template->assign_block_vars('navlinks', array(
 			'BREADCRUMB_NAME'	=> $l_search_title,
-			'U_BREADCRUMB'		=> append_sid("{$an602_root_path}search.$phpEx", "search_id=$search_id"),
+			'U_BREADCRUMB'		=> append_sid("{$phpbb_root_path}search.$phpEx", "search_id=$search_id"),
 		));
 	}
 
@@ -539,7 +539,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 		'show_results',
 		'sql',
 	);
-	extract($an602_dispatcher->trigger_event('core.search_modify_param_after', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.search_modify_param_after', compact($vars)));
 
 	// show_results should not change after this
 	$per_page = ($show_results == 'posts') ? $config['posts_per_page'] : $config['topics_per_page'];
@@ -648,7 +648,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 		'per_page',
 		'total_match_count',
 	);
-	extract($an602_dispatcher->trigger_event('core.search_backend_search_after', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.search_backend_search_after', compact($vars)));
 
 	$sql_where = '';
 
@@ -661,11 +661,11 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 
 	if ($show_results == 'posts')
 	{
-		include($an602_root_path . 'includes/functions_posting.' . $phpEx);
+		include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 	}
 	else
 	{
-		include($an602_root_path . 'includes/functions_display.' . $phpEx);
+		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 	}
 
 	$user->add_lang('viewtopic');
@@ -675,14 +675,14 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 
 	// define some vars for urls
 	// A single wildcard will make the search results look ugly
-	$hilit = an602_clean_search_string(str_replace(array('+', '-', '|', '(', ')', '&quot;'), ' ', $keywords));
+	$hilit = phpbb_clean_search_string(str_replace(array('+', '-', '|', '(', ')', '&quot;'), ' ', $keywords));
 	$hilit = str_replace(' ', '|', $hilit);
 
 	$u_hilit = urlencode(html_entity_decode(str_replace('|', ' ', $hilit), ENT_COMPAT));
 	$u_show_results = '&amp;sr=' . $show_results;
 	$u_search_forum = implode('&amp;fid%5B%5D=', $search_forum);
 
-	$u_search = append_sid("{$an602_root_path}search.$phpEx", $u_sort_param . $u_show_results);
+	$u_search = append_sid("{$phpbb_root_path}search.$phpEx", $u_sort_param . $u_show_results);
 	$u_search .= ($search_id) ? '&amp;search_id=' . $search_id : '';
 	$u_search .= ($u_hilit) ? '&amp;keywords=' . urlencode(html_entity_decode($keywords, ENT_COMPAT)) : '';
 	$u_search .= ($search_terms != 'all') ? '&amp;terms=' . $search_terms : '';
@@ -716,7 +716,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 		'total_match_count',
 		'ex_fid_ary',
 	);
-	extract($an602_dispatcher->trigger_event('core.search_modify_url_parameters', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.search_modify_url_parameters', compact($vars)));
 
 	if ($sql_where)
 	{
@@ -793,7 +793,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				'search_id',
 				'start',
 			);
-			extract($an602_dispatcher->trigger_event('core.search_get_posts_data', compact($vars)));
+			extract($phpbb_dispatcher->trigger_event('core.search_get_posts_data', compact($vars)));
 
 			$sql = $db->sql_build_query('SELECT', $sql_array);
 		}
@@ -825,7 +825,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 
 			if ($config['load_anon_lastread'] || ($user->data['is_registered'] && !$config['load_db_lastread']))
 			{
-				$tracking_topics = $request->variable($config['cookie_name'] . '_track', '', true, \an602\request\request_interface::COOKIE);
+				$tracking_topics = $request->variable($config['cookie_name'] . '_track', '', true, \phpbb\request\request_interface::COOKIE);
 				$tracking_topics = ($tracking_topics) ? tracking_unserialize($tracking_topics) : array();
 			}
 
@@ -857,7 +857,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				'sort_key',
 				'sql_order_by',
 			);
-			extract($an602_dispatcher->trigger_event('core.search_get_topic_data', compact($vars)));
+			extract($phpbb_dispatcher->trigger_event('core.search_get_topic_data', compact($vars)));
 
 			$sql = "SELECT $sql_select
 				FROM $sql_from
@@ -961,7 +961,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 					'view',
 					'zebra',
 				);
-				extract($an602_dispatcher->trigger_event('core.search_modify_post_row', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.search_modify_post_row', compact($vars)));
 
 				// We pre-process some variables here for later usage
 				$row['post_text'] = censor_text($row['post_text']);
@@ -1035,7 +1035,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 			$hilit_array = array_filter(explode('|', $hilit), 'strlen');
 			foreach ($hilit_array as $key => $value)
 			{
-				$hilit_array[$key] = an602_clean_search_string($value);
+				$hilit_array[$key] = phpbb_clean_search_string($value);
 				$hilit_array[$key] = str_replace('\*', '\w*?', preg_quote($hilit_array[$key], '#'));
 				$hilit_array[$key] = preg_replace('#(^|\s)\\\\w\*\?(\s|$)#', '$1\w+?$2', $hilit_array[$key]);
 			}
@@ -1067,17 +1067,17 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 			'view',
 			'zebra',
 		);
-		extract($an602_dispatcher->trigger_event('core.search_modify_rowset', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.search_modify_rowset', compact($vars)));
 
 		foreach ($rowset as $row)
 		{
 			$forum_id = $row['forum_id'];
 			$result_topic_id = $row['topic_id'];
 			$topic_title = censor_text($row['topic_title']);
-			$replies = $an602_content_visibility->get_count('topic_posts', $row, $forum_id) - 1;
+			$replies = $phpbb_content_visibility->get_count('topic_posts', $row, $forum_id) - 1;
 
 			$view_topic_url_params = "t=$result_topic_id" . (($u_hilit) ? "&amp;hilit=$u_hilit" : '');
-			$view_topic_url = append_sid("{$an602_root_path}viewtopic.$phpEx", $view_topic_url_params);
+			$view_topic_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", $view_topic_url_params);
 
 			$folder_img = $folder_alt = $u_mcp_queue = '';
 			$topic_type = $posts_unapproved = 0;
@@ -1097,8 +1097,8 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				$topic_unapproved = (($row['topic_visibility'] == ITEM_UNAPPROVED || $row['topic_visibility'] == ITEM_REAPPROVE) && $auth->acl_get('m_approve', $forum_id)) ? true : false;
 				$posts_unapproved = ($row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $auth->acl_get('m_approve', $forum_id)) ? true : false;
 				$topic_deleted = $row['topic_visibility'] == ITEM_DELETED;
-				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$an602_root_path}mcp.$phpEx", 'i=queue&amp;mode=' . (($topic_unapproved) ? 'approve_details' : 'unapproved_posts') . "&amp;t=$result_topic_id", true, $user->session_id) : '';
-				$u_mcp_queue = (!$u_mcp_queue && $topic_deleted) ? append_sid("{$an602_root_path}mcp.$phpEx", "i=queue&amp;mode=deleted_topics&amp;t=$result_topic_id", true, $user->session_id) : $u_mcp_queue;
+				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue&amp;mode=' . (($topic_unapproved) ? 'approve_details' : 'unapproved_posts') . "&amp;t=$result_topic_id", true, $user->session_id) : '';
+				$u_mcp_queue = (!$u_mcp_queue && $topic_deleted) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=queue&amp;mode=deleted_topics&amp;t=$result_topic_id", true, $user->session_id) : $u_mcp_queue;
 
 				$row['topic_title'] = preg_replace('#(?!<.*)(?<!\w)(' . $hilit . ')(?!\w|[^<>]*(?:</s(?:cript|tyle))?>)#isu', '<span class="posthilit">$1</span>', $row['topic_title']);
 
@@ -1139,11 +1139,11 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 					'S_TOPIC_DELETED'		=> $topic_deleted,
 					'S_HAS_POLL'			=> ($row['poll_start']) ? true : false,
 
-					'U_LAST_POST'			=> append_sid("{$an602_root_path}viewtopic.$phpEx", 'p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
+					'U_LAST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
 					'U_LAST_POST_AUTHOR'	=> get_username_string('profile', $row['topic_last_poster_id'], $row['topic_last_poster_name'], $row['topic_last_poster_colour']),
 					'U_TOPIC_AUTHOR'		=> get_username_string('profile', $row['topic_poster'], $row['topic_first_poster_name'], $row['topic_first_poster_colour']),
-					'U_NEWEST_POST'			=> append_sid("{$an602_root_path}viewtopic.$phpEx", $view_topic_url_params . '&amp;view=unread') . '#unread',
-					'U_MCP_REPORT'			=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=reports&amp;mode=reports&amp;t=' . $result_topic_id, true, $user->session_id),
+					'U_NEWEST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", $view_topic_url_params . '&amp;view=unread') . '#unread',
+					'U_MCP_REPORT'			=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=reports&amp;mode=reports&amp;t=' . $result_topic_id, true, $user->session_id),
 					'U_MCP_QUEUE'			=> $u_mcp_queue,
 				);
 			}
@@ -1213,8 +1213,8 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				'TOPIC_VIEWS'		=> $row['topic_views'],
 
 				'U_VIEW_TOPIC'		=> $view_topic_url,
-				'U_VIEW_FORUM'		=> append_sid("{$an602_root_path}viewforum.$phpEx", 'f=' . $forum_id),
-				'U_VIEW_POST'		=> (!empty($row['post_id'])) ? append_sid("{$an602_root_path}viewtopic.$phpEx", 'p=' . $row['post_id'] . (($u_hilit) ? '&amp;hilit=' . $u_hilit : '')) . '#p' . $row['post_id'] : '',
+				'U_VIEW_FORUM'		=> append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $forum_id),
+				'U_VIEW_POST'		=> (!empty($row['post_id'])) ? append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'p=' . $row['post_id'] . (($u_hilit) ? '&amp;hilit=' . $u_hilit : '')) . '#p' . $row['post_id'] : '',
 			));
 
 			/**
@@ -1261,7 +1261,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				'zebra',
 				'attachments',
 			);
-			extract($an602_dispatcher->trigger_event('core.search_modify_tpl_ary', compact($vars)));
+			extract($phpbb_dispatcher->trigger_event('core.search_modify_tpl_ary', compact($vars)));
 
 			$template->assign_block_vars('searchresults', $tpl_ary);
 
@@ -1353,14 +1353,14 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 		'total_match_count',
 		'keywords',
 	);
-	extract($an602_dispatcher->trigger_event('core.search_results_modify_search_title', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.search_results_modify_search_title', compact($vars)));
 
 	page_header(($l_search_title) ? $l_search_title : $user->lang['SEARCH']);
 
 	$template->set_filenames(array(
 		'body' => 'search_results.html')
 	);
-	make_jumpbox(append_sid("{$an602_root_path}viewforum.$phpEx"));
+	make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
 
 	page_footer();
 }
@@ -1393,7 +1393,7 @@ $pad_store = array('0' => '');
 * @since 3.1.10-RC1
 */
 $vars = array('rowset');
-extract($an602_dispatcher->trigger_event('core.search_modify_forum_select_list', compact($vars)));
+extract($phpbb_dispatcher->trigger_event('core.search_modify_forum_select_list', compact($vars)));
 
 foreach ($rowset as $row)
 {
@@ -1516,7 +1516,7 @@ if (!empty($_EXTRA_URL))
 
 $template->assign_vars(array(
 	'DEFAULT_RETURN_CHARS'	=> (int) $config['default_search_return_chars'],
-	'S_SEARCH_ACTION'		=> append_sid("{$an602_root_path}search.$phpEx", false, true, 0), // We force no ?sid= appending by using 0
+	'S_SEARCH_ACTION'		=> append_sid("{$phpbb_root_path}search.$phpEx", false, true, 0), // We force no ?sid= appending by using 0
 	'S_HIDDEN_FIELDS'		=> build_hidden_fields($s_hidden_fields),
 	'S_CHARACTER_OPTIONS'	=> $s_characters,
 	'S_FORUM_OPTIONS'		=> $s_forums,
@@ -1564,7 +1564,7 @@ if ($auth->acl_get('a_search'))
 			'KEYWORDS'	=> $keywords,
 			'TIME'		=> $user->format_date($row['search_time']),
 
-			'U_KEYWORDS'	=> append_sid("{$an602_root_path}search.$phpEx", 'keywords=' . urlencode(html_entity_decode($keywords, ENT_COMPAT)))
+			'U_KEYWORDS'	=> append_sid("{$phpbb_root_path}search.$phpEx", 'keywords=' . urlencode(html_entity_decode($keywords, ENT_COMPAT)))
 		));
 	}
 	$db->sql_freeresult($result);
@@ -1576,6 +1576,6 @@ page_header($user->lang['SEARCH']);
 $template->set_filenames(array(
 	'body' => 'search_body.html')
 );
-make_jumpbox(append_sid("{$an602_root_path}viewforum.$phpEx"));
+make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
 
 page_footer();

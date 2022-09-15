@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -28,9 +28,9 @@ class acp_database
 	function main($id, $mode)
 	{
 		global $cache, $db, $user, $template, $table_prefix, $request;
-		global $an602_root_path, $an602_container, $an602_log;
+		global $phpbb_root_path, $phpbb_container, $phpbb_log;
 
-		$this->db_tools = $an602_container->get('dbal.tools');
+		$this->db_tools = $phpbb_container->get('dbal.tools');
 
 		$user->add_lang('acp/database');
 
@@ -76,8 +76,8 @@ class acp_database
 
 						$filename = 'backup_' . $time . '_' . unique_id();
 
-						/** @var an602\db\extractor\extractor_interface $extractor Database extractor */
-						$extractor = $an602_container->get('dbal.extractor');
+						/** @var phpbb\db\extractor\extractor_interface $extractor Database extractor */
+						$extractor = $phpbb_container->get('dbal.extractor');
 						$extractor->init_extractor($format, $filename, $time, false, true);
 
 						$extractor->write_start($table_prefix);
@@ -118,7 +118,7 @@ class acp_database
 
 						$extractor->write_end();
 
-						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_DB_BACKUP');
+						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_DB_BACKUP');
 
 						trigger_error($user->lang['BACKUP_SUCCESS'] . adm_back_link($this->u_action));
 					break;
@@ -172,7 +172,7 @@ class acp_database
 						$delete = $request->variable('delete', '');
 						$file = $request->variable('file', '');
 
-						$backup_info = $this->get_backup_file($an602_root_path . 'store/', $file);
+						$backup_info = $this->get_backup_file($phpbb_root_path . 'store/', $file);
 
 						if (empty($backup_info) || !is_readable($backup_info['file_name']))
 						{
@@ -184,7 +184,7 @@ class acp_database
 							if (confirm_box(true))
 							{
 								unlink($backup_info['file_name']);
-								$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_DB_DELETE');
+								$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_DB_DELETE');
 								trigger_error($user->lang['BACKUP_DELETE'] . adm_back_link($this->u_action));
 							}
 							else
@@ -299,7 +299,7 @@ class acp_database
 							// Purge the cache due to updated data
 							$cache->purge();
 
-							$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_DB_RESTORE');
+							$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_DB_RESTORE');
 							trigger_error($user->lang['RESTORE_SUCCESS'] . adm_back_link($this->u_action));
 							break;
 						}
@@ -309,7 +309,7 @@ class acp_database
 						}
 
 					default:
-						$backup_files = $this->get_file_list($an602_root_path . 'store/');
+						$backup_files = $this->get_file_list($phpbb_root_path . 'store/');
 
 						if (!empty($backup_files))
 						{

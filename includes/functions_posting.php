@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -24,12 +24,12 @@ if (!defined('IN_AN602'))
 */
 function generate_smilies($mode, $forum_id)
 {
-	global $db, $user, $config, $template, $an602_dispatcher, $request;
-	global $phpEx, $an602_root_path, $an602_container, $an602_path_helper;
+	global $db, $user, $config, $template, $phpbb_dispatcher, $request;
+	global $phpEx, $phpbb_root_path, $phpbb_container, $phpbb_path_helper;
 
-	/* @var $pagination \an602\pagination */
-	$pagination = $an602_container->get('pagination');
-	$base_url = append_sid("{$an602_root_path}posting.$phpEx", 'mode=smilies&amp;f=' . $forum_id);
+	/* @var $pagination \phpbb\pagination */
+	$pagination = $phpbb_container->get('pagination');
+	$base_url = append_sid("{$phpbb_root_path}posting.$phpEx", 'mode=smilies&amp;f=' . $forum_id);
 	$start = $request->variable('start', 0);
 
 	if ($mode == 'window')
@@ -75,7 +75,7 @@ function generate_smilies($mode, $forum_id)
 			'sql_ary',
 			'base_url',
 		];
-		extract($an602_dispatcher->trigger_event('core.generate_smilies_count_sql_before', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.generate_smilies_count_sql_before', compact($vars)));
 
 		$sql = $db->sql_build_query('SELECT', $sql_ary);
 		$result = $db->sql_query($sql, 3600);
@@ -148,7 +148,7 @@ function generate_smilies($mode, $forum_id)
 		'forum_id',
 		'sql_ary',
 	];
-	extract($an602_dispatcher->trigger_event('core.generate_smilies_modify_sql', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.generate_smilies_modify_sql', compact($vars)));
 
 	$sql = $db->sql_build_query('SELECT', $sql_ary);
 
@@ -185,11 +185,11 @@ function generate_smilies($mode, $forum_id)
 		'forum_id',
 		'smilies',
 	];
-	extract($an602_dispatcher->trigger_event('core.generate_smilies_modify_rowset', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.generate_smilies_modify_rowset', compact($vars)));
 
 	if (count($smilies))
 	{
-		$root_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $an602_path_helper->get_web_root_path();
+		$root_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $phpbb_path_helper->get_web_root_path();
 
 		foreach ($smilies as $row)
 		{
@@ -201,7 +201,7 @@ function generate_smilies($mode, $forum_id)
 			* @since 3.1.11-RC1
 			*/
 			$vars = array('root_path');
-			extract($an602_dispatcher->trigger_event('core.generate_smilies_before', compact($vars)));
+			extract($phpbb_dispatcher->trigger_event('core.generate_smilies_before', compact($vars)));
 			$template->assign_block_vars('smiley', array(
 				'SMILEY_CODE'	=> $row['code'],
 				'A_SMILEY_CODE'	=> addslashes($row['code']),
@@ -230,7 +230,7 @@ function generate_smilies($mode, $forum_id)
 		'display_link',
 		'base_url',
 	];
-	extract($an602_dispatcher->trigger_event('core.generate_smilies_after', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.generate_smilies_after', compact($vars)));
 
 	if ($mode == 'inline' && $display_link)
 	{
@@ -256,7 +256,7 @@ function generate_smilies($mode, $forum_id)
 */
 function update_post_information($type, $ids, $return_update_sql = false)
 {
-	global $db, $an602_dispatcher;
+	global $db, $phpbb_dispatcher;
 
 	if (empty($ids))
 	{
@@ -362,7 +362,7 @@ function update_post_information($type, $ids, $return_update_sql = false)
 			'type',
 			'sql_ary',
 		];
-		extract($an602_dispatcher->trigger_event('core.update_post_info_modify_posts_sql', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.update_post_info_modify_posts_sql', compact($vars)));
 		$result = $db->sql_query($db->sql_build_query('SELECT', $sql_ary));
 
 		$rowset = array();
@@ -392,7 +392,7 @@ function update_post_information($type, $ids, $return_update_sql = false)
 			'rowset',
 			'update_sql',
 		];
-		extract($an602_dispatcher->trigger_event('core.update_post_info_modify_sql', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.update_post_info_modify_sql', compact($vars)));
 		unset($rowset);
 	}
 	unset($empty_forums, $ids, $last_post_ids);
@@ -420,7 +420,7 @@ function update_post_information($type, $ids, $return_update_sql = false)
 */
 function posting_gen_topic_icons($mode, $icon_id)
 {
-	global $an602_root_path, $config, $template, $cache;
+	global $phpbb_root_path, $config, $template, $cache;
 
 	// Grab icons
 	$icons = $cache->obtain_icons();
@@ -432,7 +432,7 @@ function posting_gen_topic_icons($mode, $icon_id)
 
 	if (count($icons))
 	{
-		$root_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $an602_root_path;
+		$root_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $phpbb_root_path;
 
 		foreach ($icons as $id => $data)
 		{
@@ -616,7 +616,7 @@ function get_supported_image_types($type = false)
 */
 function create_thumbnail($source, $destination, $mimetype)
 {
-	global $config, $an602_filesystem, $an602_dispatcher;
+	global $config, $phpbb_filesystem, $phpbb_dispatcher;
 
 	$min_filesize = (int) $config['img_min_thumb_filesize'];
 	$img_filesize = (file_exists($source)) ? @filesize($source) : false;
@@ -670,7 +670,7 @@ function create_thumbnail($source, $destination, $mimetype)
 		'new_height',
 		'thumbnail_created',
 	);
-	extract($an602_dispatcher->trigger_event('core.thumbnail_create_before', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.thumbnail_create_before', compact($vars)));
 
 	if (!$thumbnail_created)
 	{
@@ -778,9 +778,9 @@ function create_thumbnail($source, $destination, $mimetype)
 
 	try
 	{
-		$an602_filesystem->an602_chmod($destination, \an602\filesystem\filesystem_interface::CHMOD_READ | \an602\filesystem\filesystem_interface::CHMOD_WRITE);
+		$phpbb_filesystem->phpbb_chmod($destination, \phpbb\filesystem\filesystem_interface::CHMOD_READ | \phpbb\filesystem\filesystem_interface::CHMOD_WRITE);
 	}
-	catch (\an602\filesystem\exception\filesystem_exception $e)
+	catch (\phpbb\filesystem\exception\filesystem_exception $e)
 	{
 		// Do nothing
 	}
@@ -823,7 +823,7 @@ function posting_gen_inline_attachments(&$attachment_data)
  */
 function posting_gen_attachment_entry($attachment_data, &$filename_data, $show_attach_box = true, $forum_id = false)
 {
-	global $template, $cache, $config, $an602_root_path, $phpEx, $user, $an602_dispatcher;
+	global $template, $cache, $config, $phpbb_root_path, $phpEx, $user, $phpbb_dispatcher;
 
 	$allowed_attachments = array_keys($cache->obtain_attach_extensions($forum_id)['_allowed_']);
 
@@ -846,7 +846,7 @@ function posting_gen_attachment_entry($attachment_data, &$filename_data, $show_a
 	 * @since 3.3.6-RC1
 	 */
 	$vars = ['allowed_attachments', 'default_vars'];
-	extract($an602_dispatcher->trigger_event('core.modify_default_attachments_template_vars', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.modify_default_attachments_template_vars', compact($vars)));
 
 	$template->assign_vars($default_vars);
 
@@ -867,7 +867,7 @@ function posting_gen_attachment_entry($attachment_data, &$filename_data, $show_a
 				$hidden .= '<input type="hidden" name="attachment_data[' . $count . '][' . $key . ']" value="' . $value . '" />';
 			}
 
-			$download_link = append_sid("{$an602_root_path}download/file.$phpEx", 'mode=view&amp;id=' . (int) $attach_row['attach_id'], true, ($attach_row['is_orphan']) ? $user->session_id : false);
+			$download_link = append_sid("{$phpbb_root_path}download/file.$phpEx", 'mode=view&amp;id=' . (int) $attach_row['attach_id'], true, ($attach_row['is_orphan']) ? $user->session_id : false);
 
 			$attachrow_template_vars[(int) $attach_row['attach_id']] = array(
 				'FILENAME'			=> utf8_basename($attach_row['real_filename']),
@@ -892,7 +892,7 @@ function posting_gen_attachment_entry($attachment_data, &$filename_data, $show_a
 		* @since 3.2.2-RC1
 		*/
 		$vars = array('attachment_data', 'attachrow_template_vars');
-		extract($an602_dispatcher->trigger_event('core.modify_inline_attachments_template_vars', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.modify_inline_attachments_template_vars', compact($vars)));
 
 		$template->assign_block_vars_array('attach_row', $attachrow_template_vars);
 	}
@@ -910,7 +910,7 @@ function posting_gen_attachment_entry($attachment_data, &$filename_data, $show_a
 function load_drafts($topic_id = 0, $forum_id = 0, $id = 0, $pm_action = '', $msg_id = 0)
 {
 	global $user, $db, $template, $auth;
-	global $an602_root_path, $an602_dispatcher, $phpEx;
+	global $phpbb_root_path, $phpbb_dispatcher, $phpEx;
 
 	$topic_ids = $forum_ids = $draft_rows = array();
 
@@ -976,7 +976,7 @@ function load_drafts($topic_id = 0, $forum_id = 0, $id = 0, $pm_action = '', $ms
 	* @since 3.1.0-RC3
 	*/
 	$vars = array('draft_rows', 'topic_ids', 'topic_rows');
-	extract($an602_dispatcher->trigger_event('core.load_drafts_draft_list_result', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.load_drafts_draft_list_result', compact($vars)));
 
 	unset($topic_ids);
 
@@ -997,24 +997,24 @@ function load_drafts($topic_id = 0, $forum_id = 0, $id = 0, $pm_action = '', $ms
 			$topic_forum_id = ($topic_rows[$draft['topic_id']]['forum_id']) ? $topic_rows[$draft['topic_id']]['forum_id'] : $forum_id;
 
 			$link_topic = true;
-			$view_url = append_sid("{$an602_root_path}viewtopic.$phpEx", 't=' . $draft['topic_id']);
+			$view_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $draft['topic_id']);
 			$title = $topic_rows[$draft['topic_id']]['topic_title'];
 
-			$insert_url = append_sid("{$an602_root_path}posting.$phpEx", 't=' . $draft['topic_id'] . '&amp;mode=reply&amp;d=' . $draft['draft_id']);
+			$insert_url = append_sid("{$phpbb_root_path}posting.$phpEx", 't=' . $draft['topic_id'] . '&amp;mode=reply&amp;d=' . $draft['draft_id']);
 		}
 		else if ($draft['forum_id'] && $auth->acl_get('f_read', $draft['forum_id']))
 		{
 			$link_forum = true;
-			$view_url = append_sid("{$an602_root_path}viewforum.$phpEx", 'f=' . $draft['forum_id']);
+			$view_url = append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $draft['forum_id']);
 			$title = $draft['forum_name'];
 
-			$insert_url = append_sid("{$an602_root_path}posting.$phpEx", 'f=' . $draft['forum_id'] . '&amp;mode=post&amp;d=' . $draft['draft_id']);
+			$insert_url = append_sid("{$phpbb_root_path}posting.$phpEx", 'f=' . $draft['forum_id'] . '&amp;mode=post&amp;d=' . $draft['draft_id']);
 		}
 		else
 		{
 			// Either display as PM draft if forum_id and topic_id are empty or if access to the forums has been denied afterwards...
 			$link_pm = true;
-			$insert_url = append_sid("{$an602_root_path}ucp.$phpEx", "i=$id&amp;mode=compose&amp;d={$draft['draft_id']}" . (($pm_action) ? "&amp;action=$pm_action" : '') . (($msg_id) ? "&amp;p=$msg_id" : ''));
+			$insert_url = append_sid("{$phpbb_root_path}ucp.$phpEx", "i=$id&amp;mode=compose&amp;d={$draft['draft_id']}" . (($pm_action) ? "&amp;action=$pm_action" : '') . (($msg_id) ? "&amp;p=$msg_id" : ''));
 		}
 
 		$template->assign_block_vars('draftrow', array(
@@ -1039,17 +1039,17 @@ function load_drafts($topic_id = 0, $forum_id = 0, $id = 0, $pm_action = '', $ms
 function topic_review($topic_id, $forum_id, $mode = 'topic_review', $cur_post_id = 0, $show_quote_button = true)
 {
 	global $user, $auth, $db, $template;
-	global $config, $an602_root_path, $phpEx, $an602_container, $an602_dispatcher;
+	global $config, $phpbb_root_path, $phpEx, $phpbb_container, $phpbb_dispatcher;
 
-	/* @var $an602_content_visibility \an602\content_visibility */
-	$an602_content_visibility = $an602_container->get('content.visibility');
+	/* @var $phpbb_content_visibility \phpbb\content_visibility */
+	$phpbb_content_visibility = $phpbb_container->get('content.visibility');
 	$sql_sort = ($mode == 'post_review') ? 'ASC' : 'DESC';
 
 	// Go ahead and pull all data for this topic
 	$sql = 'SELECT p.post_id
 		FROM ' . POSTS_TABLE . ' p' . "
 		WHERE p.topic_id = $topic_id
-			AND " . $an602_content_visibility->get_visibility_sql('post', $forum_id, 'p.') . '
+			AND " . $phpbb_content_visibility->get_visibility_sql('post', $forum_id, 'p.') . '
 			' . (($mode == 'post_review') ? " AND p.post_id > $cur_post_id" : '') . '
 			' . (($mode == 'post_review_edit') ? " AND p.post_id = $cur_post_id" : '') . '
 		ORDER BY p.post_time ' . $sql_sort . ', p.post_id ' . $sql_sort;
@@ -1120,7 +1120,7 @@ function topic_review($topic_id, $forum_id, $mode = 'topic_review', $cur_post_id
 		'post_list',
 		'sql_ary',
 	);
-	extract($an602_dispatcher->trigger_event('core.topic_review_modify_sql_ary', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.topic_review_modify_sql_ary', compact($vars)));
 
 	$sql = $db->sql_build_query('SELECT', $sql_ary);
 	$result = $db->sql_query($sql);
@@ -1181,7 +1181,7 @@ function topic_review($topic_id, $forum_id, $mode = 'topic_review', $cur_post_id
 		'show_quote_button',
 		'topic_id',
 	);
-	extract($an602_dispatcher->trigger_event('core.topic_review_modify_post_list', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.topic_review_modify_post_list', compact($vars)));
 
 	for ($i = 0, $end = count($post_list); $i < $end; ++$i)
 	{
@@ -1220,7 +1220,7 @@ function topic_review($topic_id, $forum_id, $mode = 'topic_review', $cur_post_id
 		$post_subject = censor_text($post_subject);
 
 		$post_anchor = ($mode == 'post_review') ? 'ppr' . $row['post_id'] : 'pr' . $row['post_id'];
-		$u_show_post = append_sid($an602_root_path . 'viewtopic.' . $phpEx, "t=$topic_id&amp;p={$row['post_id']}&amp;view=show#p{$row['post_id']}");
+		$u_show_post = append_sid($phpbb_root_path . 'viewtopic.' . $phpEx, "t=$topic_id&amp;p={$row['post_id']}&amp;view=show#p{$row['post_id']}");
 
 		$l_deleted_message = '';
 		if ($row['post_visibility'] == ITEM_DELETED)
@@ -1256,7 +1256,7 @@ function topic_review($topic_id, $forum_id, $mode = 'topic_review', $cur_post_id
 			'S_HAS_ATTACHMENTS'	=> !empty($attachments[$row['post_id']]),
 			'S_FRIEND'			=> (bool) $row['friend'],
 			'S_IGNORE_POST'		=> (bool) $row['foe'],
-			'L_IGNORE_POST'		=> $row['foe'] ? $user->lang('POST_BY_FOE', get_username_string('full', $poster_id, $row['username'], $row['user_colour'], $row['post_username']), "<a href=\"{$u_show_post}\" onclick=\"an602.toggleDisplay('{$post_anchor}', 1); return false;\">", '</a>') : '',
+			'L_IGNORE_POST'		=> $row['foe'] ? $user->lang('POST_BY_FOE', get_username_string('full', $poster_id, $row['username'], $row['user_colour'], $row['post_username']), "<a href=\"{$u_show_post}\" onclick=\"phpbb.toggleDisplay('{$post_anchor}', 1); return false;\">", '</a>') : '',
 			'S_POST_DELETED'	=> $row['post_visibility'] == ITEM_DELETED,
 			'L_DELETE_POST'		=> $l_deleted_message,
 
@@ -1268,8 +1268,8 @@ function topic_review($topic_id, $forum_id, $mode = 'topic_review', $cur_post_id
 			'POST_ID'			=> $row['post_id'],
 			'POST_TIME'			=> $row['post_time'],
 			'USER_ID'			=> $row['user_id'],
-			'U_MINI_POST'		=> append_sid("{$an602_root_path}viewtopic.$phpEx", 'p=' . $row['post_id']) . '#p' . $row['post_id'],
-			'U_MCP_DETAILS'		=> ($auth->acl_get('m_info', $forum_id)) ? append_sid("{$an602_root_path}mcp.$phpEx", 'i=main&amp;mode=post_details&amp;p=' . $row['post_id'], true, $user->session_id) : '',
+			'U_MINI_POST'		=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'p=' . $row['post_id']) . '#p' . $row['post_id'],
+			'U_MCP_DETAILS'		=> ($auth->acl_get('m_info', $forum_id)) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=main&amp;mode=post_details&amp;p=' . $row['post_id'], true, $user->session_id) : '',
 			'POSTER_QUOTE'		=> ($show_quote_button && $auth->acl_get('f_reply', $forum_id)) ? addslashes(get_username_string('username', $poster_id, $row['username'], $row['user_colour'], $row['post_username'])) : '',
 		);
 
@@ -1297,7 +1297,7 @@ function topic_review($topic_id, $forum_id, $mode = 'topic_review', $cur_post_id
 			'post_row',
 			'row',
 		);
-		extract($an602_dispatcher->trigger_event('core.topic_review_modify_row', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.topic_review_modify_row', compact($vars)));
 
 		$template->assign_block_vars($mode . '_row', $post_row);
 
@@ -1332,8 +1332,8 @@ function topic_review($topic_id, $forum_id, $mode = 'topic_review', $cur_post_id
 */
 function delete_post($forum_id, $topic_id, $post_id, &$data, $is_soft = false, $softdelete_reason = '')
 {
-	global $db, $user, $an602_container, $an602_dispatcher;
-	global $config, $phpEx, $an602_root_path;
+	global $db, $user, $phpbb_container, $phpbb_dispatcher;
+	global $config, $phpEx, $phpbb_root_path;
 
 	// Specify our post mode
 	$post_mode = 'delete';
@@ -1352,7 +1352,7 @@ function delete_post($forum_id, $topic_id, $post_id, &$data, $is_soft = false, $
 	$sql_data = array();
 	$next_post_id = false;
 
-	include_once($an602_root_path . 'includes/functions_admin.' . $phpEx);
+	include_once($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
 
 	$db->sql_transaction('begin');
 
@@ -1379,13 +1379,13 @@ function delete_post($forum_id, $topic_id, $post_id, &$data, $is_soft = false, $
 		$db->sql_freeresult($result);
 	}
 
-	/* @var $an602_content_visibility \an602\content_visibility */
-	$an602_content_visibility = $an602_container->get('content.visibility');
+	/* @var $phpbb_content_visibility \phpbb\content_visibility */
+	$phpbb_content_visibility = $phpbb_container->get('content.visibility');
 
 	// (Soft) delete the post
 	if ($is_soft && ($post_mode != 'delete_topic'))
 	{
-		$an602_content_visibility->set_post_visibility(ITEM_DELETED, $post_id, $topic_id, $forum_id, $user->data['user_id'], time(), $softdelete_reason, ($data['topic_first_post_id'] == $post_id), ($data['topic_last_post_id'] == $post_id));
+		$phpbb_content_visibility->set_post_visibility(ITEM_DELETED, $post_id, $topic_id, $forum_id, $user->data['user_id'], time(), $softdelete_reason, ($data['topic_first_post_id'] == $post_id), ($data['topic_last_post_id'] == $post_id));
 	}
 	else if (!$is_soft)
 	{
@@ -1421,13 +1421,13 @@ function delete_post($forum_id, $topic_id, $post_id, &$data, $is_soft = false, $
 
 			if ($is_soft)
 			{
-				$an602_content_visibility->set_topic_visibility(ITEM_DELETED, $topic_id, $forum_id, $user->data['user_id'], time(), $softdelete_reason);
+				$phpbb_content_visibility->set_topic_visibility(ITEM_DELETED, $topic_id, $forum_id, $user->data['user_id'], time(), $softdelete_reason);
 			}
 			else
 			{
 				delete_topics('topic_id', array($topic_id), false);
 
-				$an602_content_visibility->remove_topic_from_statistic($data, $sql_data);
+				$phpbb_content_visibility->remove_topic_from_statistic($data, $sql_data);
 				$config->increment('num_posts', -1, false);
 
 				$update_sql = update_post_information('forum', $forum_id, true);
@@ -1500,7 +1500,7 @@ function delete_post($forum_id, $topic_id, $post_id, &$data, $is_soft = false, $
 				$sql = 'SELECT MAX(post_id) as last_post_id
 					FROM ' . POSTS_TABLE . "
 					WHERE topic_id = $topic_id
-						AND " . $an602_content_visibility->get_visibility_sql('post', $forum_id);
+						AND " . $phpbb_content_visibility->get_visibility_sql('post', $forum_id);
 				$result = $db->sql_query($sql);
 				$next_post_id = (int) $db->sql_fetchfield('last_post_id');
 				$db->sql_freeresult($result);
@@ -1511,7 +1511,7 @@ function delete_post($forum_id, $topic_id, $post_id, &$data, $is_soft = false, $
 			$sql = 'SELECT post_id
 				FROM ' . POSTS_TABLE . "
 				WHERE topic_id = $topic_id
-					AND " . $an602_content_visibility->get_visibility_sql('post', $forum_id) . '
+					AND " . $phpbb_content_visibility->get_visibility_sql('post', $forum_id) . '
 					AND post_time > ' . $data['post_time'] . '
 				ORDER BY post_time ASC, post_id ASC';
 			$result = $db->sql_query_limit($sql, 1);
@@ -1524,7 +1524,7 @@ function delete_post($forum_id, $topic_id, $post_id, &$data, $is_soft = false, $
 	{
 		if (!$is_soft)
 		{
-			$an602_content_visibility->remove_post_from_statistic($data, $sql_data);
+			$phpbb_content_visibility->remove_post_from_statistic($data, $sql_data);
 		}
 
 		$sql = 'SELECT 1 AS has_attachments
@@ -1610,7 +1610,7 @@ function delete_post($forum_id, $topic_id, $post_id, &$data, $is_soft = false, $
 		'post_mode',
 		'next_post_id',
 	);
-	extract($an602_dispatcher->trigger_event('core.delete_post_after', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.delete_post_after', compact($vars)));
 
 	return $next_post_id;
 }
@@ -1621,7 +1621,7 @@ function delete_post($forum_id, $topic_id, $post_id, &$data, $is_soft = false, $
 */
 function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data_ary, $update_message = true, $update_search_index = true)
 {
-	global $db, $auth, $user, $config, $phpEx, $an602_root_path, $an602_container, $an602_dispatcher, $an602_log, $request;
+	global $db, $auth, $user, $config, $phpEx, $phpbb_root_path, $phpbb_container, $phpbb_dispatcher, $phpbb_log, $request;
 
 	$poll = $poll_ary;
 	$data = $data_ary;
@@ -1649,7 +1649,7 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 		'update_message',
 		'update_search_index',
 	);
-	extract($an602_dispatcher->trigger_event('core.modify_submit_post_data', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.modify_submit_post_data', compact($vars)));
 	$poll_ary = $poll;
 	$data_ary = $data;
 	unset($poll);
@@ -1811,7 +1811,7 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 			if ($user->data['user_id'] != $poster_id)
 			{
 				$log_subject = ($subject) ? $subject : $data_ary['topic_title'];
-				$an602_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_POST_EDITED', false, array(
+				$phpbb_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_POST_EDITED', false, array(
 					'forum_id' => $data_ary['forum_id'],
 					'topic_id' => $data_ary['topic_id'],
 					'post_id'  => $data_ary['post_id'],
@@ -2005,7 +2005,7 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 		'topic_type',
 		'username',
 	);
-	extract($an602_dispatcher->trigger_event('core.submit_post_modify_sql_data', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.submit_post_modify_sql_data', compact($vars)));
 	$poll_ary = $poll;
 	$data_ary = $data;
 	unset($poll);
@@ -2216,7 +2216,7 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 			else
 			{
 				// insert attachment into db
-				if (!@file_exists($an602_root_path . $config['upload_path'] . '/' . utf8_basename($orphan_rows[$attach_row['attach_id']]['physical_filename'])))
+				if (!@file_exists($phpbb_root_path . $config['upload_path'] . '/' . utf8_basename($orphan_rows[$attach_row['attach_id']]['physical_filename'])))
 				{
 					continue;
 				}
@@ -2261,9 +2261,9 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 		$is_starter = ($post_mode == 'edit_first_post' || $post_mode == 'edit_topic' || $data_ary['post_visibility'] != ITEM_APPROVED);
 		$is_latest = ($post_mode == 'edit_last_post' || $post_mode == 'edit_topic' || $data_ary['post_visibility'] != ITEM_APPROVED);
 
-		/* @var $an602_content_visibility \an602\content_visibility */
-		$an602_content_visibility = $an602_container->get('content.visibility');
-		$an602_content_visibility->set_post_visibility($post_visibility, $data_ary['post_id'], $data_ary['topic_id'], $data_ary['forum_id'], $user->data['user_id'], time(), '', $is_starter, $is_latest);
+		/* @var $phpbb_content_visibility \phpbb\content_visibility */
+		$phpbb_content_visibility = $phpbb_container->get('content.visibility');
+		$phpbb_content_visibility->set_post_visibility($post_visibility, $data_ary['post_id'], $data_ary['topic_id'], $data_ary['forum_id'], $user->data['user_id'], time(), '', $is_starter, $is_latest);
 	}
 	else if ($post_mode == 'edit_last_post' || $post_mode == 'edit_topic' || $first_post_has_topic_info)
 	{
@@ -2358,7 +2358,7 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 		}
 
 		$error = false;
-		$search = new $search_type($error, $an602_root_path, $phpEx, $auth, $config, $db, $user, $an602_dispatcher);
+		$search = new $search_type($error, $phpbb_root_path, $phpEx, $auth, $config, $db, $user, $phpbb_dispatcher);
 
 		if ($error)
 		{
@@ -2451,17 +2451,17 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 	* @since 3.2.4-RC1
 	*/
 	$vars = array('notification_data', 'data_ary', 'mode', 'poster_id');
-	extract($an602_dispatcher->trigger_event('core.modify_submit_notification_data', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.modify_submit_notification_data', compact($vars)));
 
-	/* @var $an602_notifications \an602\notification\manager */
-	$an602_notifications = $an602_container->get('notification_manager');
+	/* @var $phpbb_notifications \phpbb\notification\manager */
+	$phpbb_notifications = $phpbb_container->get('notification_manager');
 
 	if ($post_visibility == ITEM_APPROVED)
 	{
 		switch ($mode)
 		{
 			case 'post':
-				$an602_notifications->add_notifications(array(
+				$phpbb_notifications->add_notifications(array(
 					'notification.type.quote',
 					'notification.type.topic',
 				), $notification_data);
@@ -2469,7 +2469,7 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 
 			case 'reply':
 			case 'quote':
-				$an602_notifications->add_notifications(array(
+				$phpbb_notifications->add_notifications(array(
 					'notification.type.quote',
 					'notification.type.bookmark',
 					'notification.type.post',
@@ -2483,12 +2483,12 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 			case 'edit_last_post':
 				if ($user->data['user_id'] == $poster_id)
 				{
-					$an602_notifications->update_notifications(array(
+					$phpbb_notifications->update_notifications(array(
 						'notification.type.quote',
 					), $notification_data);
 				}
 
-				$an602_notifications->update_notifications(array(
+				$phpbb_notifications->update_notifications(array(
 					'notification.type.bookmark',
 					'notification.type.topic',
 					'notification.type.post',
@@ -2502,12 +2502,12 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 		switch ($mode)
 		{
 			case 'post':
-				$an602_notifications->add_notifications('notification.type.topic_in_queue', $notification_data);
+				$phpbb_notifications->add_notifications('notification.type.topic_in_queue', $notification_data);
 			break;
 
 			case 'reply':
 			case 'quote':
-				$an602_notifications->add_notifications('notification.type.post_in_queue', $notification_data);
+				$phpbb_notifications->add_notifications('notification.type.post_in_queue', $notification_data);
 			break;
 
 			case 'edit_topic':
@@ -2524,20 +2524,20 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 		{
 			case 'edit_topic':
 			case 'edit_first_post':
-				$an602_notifications->add_notifications('notification.type.topic_in_queue', $notification_data);
+				$phpbb_notifications->add_notifications('notification.type.topic_in_queue', $notification_data);
 
 				// Delete the approve_post notification so we can notify the user again,
 				// when his post got reapproved
-				$an602_notifications->delete_notifications('notification.type.approve_post', $notification_data['post_id']);
+				$phpbb_notifications->delete_notifications('notification.type.approve_post', $notification_data['post_id']);
 			break;
 
 			case 'edit':
 			case 'edit_last_post':
-				$an602_notifications->add_notifications('notification.type.post_in_queue', $notification_data);
+				$phpbb_notifications->add_notifications('notification.type.post_in_queue', $notification_data);
 
 				// Delete the approve_post notification so we can notify the user again,
 				// when his post got reapproved
-				$an602_notifications->delete_notifications('notification.type.approve_post', $notification_data['post_id']);
+				$phpbb_notifications->delete_notifications('notification.type.approve_post', $notification_data['post_id']);
 			break;
 
 			case 'post':
@@ -2565,7 +2565,7 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 
 	$params = [];
 	$add_anchor = '';
-	$url = "{$an602_root_path}viewtopic.$phpEx";
+	$url = "{$phpbb_root_path}viewtopic.$phpEx";
 
 	if ($post_visibility == ITEM_APPROVED ||
 		($auth->acl_get('m_softdelete', $data_ary['forum_id']) && $post_visibility == ITEM_DELETED) ||
@@ -2587,7 +2587,7 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 	}
 	else
 	{
-		$url = "{$an602_root_path}viewforum.$phpEx";
+		$url = "{$phpbb_root_path}viewforum.$phpEx";
 		$params['f'] = $data_ary['forum_id'];
 	}
 
@@ -2631,7 +2631,7 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 		'update_search_index',
 		'url',
 	);
-	extract($an602_dispatcher->trigger_event('core.submit_post_end', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.submit_post_end', compact($vars)));
 	$data_ary = $data;
 	$poll_ary = $poll;
 	unset($data);
@@ -2654,9 +2654,9 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 * @param int $bump_time The time at which topic was bumped, usually it is a current time as obtained via time().
 * @return string An URL to the bumped topic, example: ./viewtopic.php?p=3#p3
 */
-function an602_bump_topic($forum_id, $topic_id, $post_data, $bump_time = false)
+function phpbb_bump_topic($forum_id, $topic_id, $post_data, $bump_time = false)
 {
-	global $config, $db, $user, $phpEx, $an602_root_path, $an602_log;
+	global $config, $db, $user, $phpEx, $phpbb_root_path, $phpbb_log;
 
 	if ($bump_time === false)
 	{
@@ -2735,13 +2735,13 @@ function an602_bump_topic($forum_id, $topic_id, $post_data, $bump_time = false)
 		update_forum_tracking_info($forum_id, $forum_last_post_time, $f_mark_time, false);
 	}
 
-	$an602_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_BUMP_TOPIC', false, array(
+	$phpbb_log->add('mod', $user->data['user_id'], $user->ip, 'LOG_BUMP_TOPIC', false, array(
 		'forum_id' => $forum_id,
 		'topic_id' => $topic_id,
 		$post_data['topic_title']
 	));
 
-	$url = append_sid("{$an602_root_path}viewtopic.$phpEx", "p={$post_data['topic_last_post_id']}") . "#p{$post_data['topic_last_post_id']}";
+	$url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", "p={$post_data['topic_last_post_id']}") . "#p{$post_data['topic_last_post_id']}";
 
 	return $url;
 }
@@ -2749,7 +2749,7 @@ function an602_bump_topic($forum_id, $topic_id, $post_data, $bump_time = false)
 /**
 * Show upload popup (progress bar)
 */
-function an602_upload_popup($forum_style = 0)
+function phpbb_upload_popup($forum_style = 0)
 {
 	global $template, $user;
 
@@ -2783,10 +2783,10 @@ function an602_upload_popup($forum_style = 0)
 *
 * @return null
 */
-function an602_handle_post_delete($forum_id, $topic_id, $post_id, &$post_data, $is_soft = false, $delete_reason = '')
+function phpbb_handle_post_delete($forum_id, $topic_id, $post_id, &$post_data, $is_soft = false, $delete_reason = '')
 {
 	global $user, $auth, $config, $request;
-	global $an602_root_path, $phpEx, $an602_log, $an602_dispatcher;
+	global $phpbb_root_path, $phpEx, $phpbb_log, $phpbb_dispatcher;
 
 	$force_delete_allowed = $force_softdelete_allowed = false;
 	$perm_check = ($is_soft) ? 'softdelete' : 'delete';
@@ -2817,7 +2817,7 @@ function an602_handle_post_delete($forum_id, $topic_id, $post_id, &$post_data, $
 		'force_softdelete_allowed',
 		'perm_check',
 	);
-	extract($an602_dispatcher->trigger_event('core.handle_post_delete_conditions', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.handle_post_delete_conditions', compact($vars)));
 
 	// If moderator removing post or user itself removing post, present a confirmation screen
 	if ($force_delete_allowed || ($is_soft && $force_softdelete_allowed) || $auth->acl_get("m_$perm_check", $forum_id) || ($post_data['poster_id'] == $user->data['user_id'] && $user->data['is_registered'] && $auth->acl_get("f_$perm_check", $forum_id) && $post_id == $post_data['topic_last_post_id'] && !$post_data['post_edit_locked'] && ($post_data['post_time'] > time() - ($config['delete_time'] * 60) || !$config['delete_time'])))
@@ -2850,7 +2850,7 @@ function an602_handle_post_delete($forum_id, $topic_id, $post_id, &$post_data, $
 
 			if ($next_post_id === false)
 			{
-				$an602_log->add('mod', $user->data['user_id'], $user->ip, (($is_soft) ? 'LOG_SOFTDELETE_TOPIC' : 'LOG_DELETE_TOPIC'), false, array(
+				$phpbb_log->add('mod', $user->data['user_id'], $user->ip, (($is_soft) ? 'LOG_SOFTDELETE_TOPIC' : 'LOG_DELETE_TOPIC'), false, array(
 					'forum_id' => $forum_id,
 					'topic_id' => $topic_id,
 					$post_data['topic_title'],
@@ -2858,12 +2858,12 @@ function an602_handle_post_delete($forum_id, $topic_id, $post_id, &$post_data, $
 					$delete_reason
 				));
 
-				$meta_info = append_sid("{$an602_root_path}viewforum.$phpEx", "f=$forum_id");
+				$meta_info = append_sid("{$phpbb_root_path}viewforum.$phpEx", "f=$forum_id");
 				$message = $user->lang['POST_DELETED'];
 			}
 			else
 			{
-				$an602_log->add('mod', $user->data['user_id'], $user->ip, (($is_soft) ? 'LOG_SOFTDELETE_POST' : 'LOG_DELETE_POST'), false, array(
+				$phpbb_log->add('mod', $user->data['user_id'], $user->ip, (($is_soft) ? 'LOG_SOFTDELETE_POST' : 'LOG_DELETE_POST'), false, array(
 					'forum_id' => $forum_id,
 					'topic_id' => $topic_id,
 					'post_id'  => $post_id,
@@ -2872,7 +2872,7 @@ function an602_handle_post_delete($forum_id, $topic_id, $post_id, &$post_data, $
 					$delete_reason
 				));
 
-				$meta_info = append_sid("{$an602_root_path}viewtopic.$phpEx", "p=$next_post_id") . "#p$next_post_id";
+				$meta_info = append_sid("{$phpbb_root_path}viewtopic.$phpEx", "p=$next_post_id") . "#p$next_post_id";
 				$message = $user->lang['POST_DELETED'];
 
 				if (!$request->is_ajax())
@@ -2884,7 +2884,7 @@ function an602_handle_post_delete($forum_id, $topic_id, $post_id, &$post_data, $
 			meta_refresh(3, $meta_info);
 			if (!$request->is_ajax())
 			{
-				$message .= '<br /><br />' . $user->lang('RETURN_FORUM', '<a href="' . append_sid("{$an602_root_path}viewforum.$phpEx", 'f=' . $forum_id) . '">', '</a>');
+				$message .= '<br /><br />' . $user->lang('RETURN_FORUM', '<a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $forum_id) . '">', '</a>');
 			}
 			trigger_error($message);
 		}

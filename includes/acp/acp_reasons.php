@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -26,7 +26,7 @@ class acp_reasons
 	function main($id, $mode)
 	{
 		global $db, $user, $template;
-		global $request, $an602_log;
+		global $request, $phpbb_log;
 
 		$user->add_lang(array('mcp', 'acp/posting'));
 
@@ -138,7 +138,7 @@ class acp_reasons
 							$log = 'UPDATED';
 						}
 
-						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_REASON_' . $log, false, array($reason_row['reason_title']));
+						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_REASON_' . $log, false, array($reason_row['reason_title']));
 						trigger_error($user->lang['REASON_' . $log] . adm_back_link($this->u_action));
 					}
 				}
@@ -259,7 +259,7 @@ class acp_reasons
 
 					$db->sql_query('DELETE FROM ' . REPORTS_REASONS_TABLE . ' WHERE reason_id = ' . $reason_id);
 
-					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_REASON_REMOVED', false, array($reason_row['reason_title']));
+					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_REASON_REMOVED', false, array($reason_row['reason_title']));
 					trigger_error($user->lang['REASON_REMOVED'] . adm_back_link($this->u_action));
 				}
 				else
@@ -303,7 +303,7 @@ class acp_reasons
 
 				if ($request->is_ajax())
 				{
-					$json_response = new \an602\json_response;
+					$json_response = new \phpbb\json_response;
 					$json_response->send(array(
 						'success'	=> (bool) $db->sql_affectedrows(),
 					));

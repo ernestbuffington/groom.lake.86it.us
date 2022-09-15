@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,15 +14,15 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
 
 /**
-* AN602 Hook Class
+* phpBB Hook Class
 */
-class an602_hook
+class phpbb_hook
 {
 	/**
 	* Registered hooks
@@ -51,9 +51,9 @@ class an602_hook
 			$this->add_hook($method);
 		}
 
-		if (function_exists('an602_hook_register'))
+		if (function_exists('phpbb_hook_register'))
 		{
-			an602_hook_register($this);
+			phpbb_hook_register($this);
 		}
 	}
 

@@ -1,7 +1,7 @@
-an602_ucp_reset_password_controller:
+phpbb_ucp_reset_password_controller:
     path: /reset_password
-    defaults: { _controller: an602.ucp.controller.reset_password:reset }
+    defaults: { _controller: phpbb.ucp.controller.reset_password:reset }
 
-an602_ucp_forgot_password_controller:
+phpbb_ucp_forgot_password_controller:
     path: /forgot_password
-    defaults: { _controller: an602.ucp.controller.reset_password:request }
+    defaults: { _controller: phpbb.ucp.controller.reset_password:request }

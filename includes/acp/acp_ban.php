@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -25,12 +25,12 @@ class acp_ban
 
 	function main($id, $mode)
 	{
-		global $user, $template, $request, $an602_dispatcher;
-		global $an602_root_path, $phpEx;
+		global $user, $template, $request, $phpbb_dispatcher;
+		global $phpbb_root_path, $phpEx;
 
 		if (!function_exists('user_ban'))
 		{
-			include($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		$bansubmit	= $request->is_set_post('bansubmit');
@@ -85,7 +85,7 @@ class acp_ban
 					'ban_give_reason',
 					'abort_ban',
 				);
-				extract($an602_dispatcher->trigger_event('core.acp_ban_before', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.acp_ban_before', compact($vars)));
 
 				if ($abort_ban)
 				{
@@ -115,7 +115,7 @@ class acp_ban
 					'ban_reason',
 					'ban_give_reason',
 				);
-				extract($an602_dispatcher->trigger_event('core.acp_ban_after', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.acp_ban_after', compact($vars)));
 
 				trigger_error($user->lang['BAN_UPDATE_SUCCESSFUL'] . adm_back_link($this->u_action));
 			}
@@ -171,7 +171,7 @@ class acp_ban
 			'S_USERNAME_BAN'	=> ($mode == 'user') ? true : false,
 
 			'U_ACTION'			=> $this->u_action,
-			'U_FIND_USERNAME'	=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=acp_ban&amp;field=ban'),
+			'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=acp_ban&amp;field=ban'),
 		));
 	}
 }

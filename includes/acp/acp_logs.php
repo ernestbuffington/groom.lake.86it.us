@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -25,7 +25,7 @@ class acp_logs
 
 	function main($id, $mode)
 	{
-		global $user, $auth, $template, $an602_container;
+		global $user, $auth, $template, $phpbb_container;
 		global $config;
 		global $request;
 
@@ -35,8 +35,8 @@ class acp_logs
 		$action		= $request->variable('action', '');
 		$forum_id	= $request->variable('f', 0);
 		$start		= $request->variable('start', 0);
-		$deletemark = $request->variable('delmarked', false, false, \an602\request\request_interface::POST);
-		$deleteall	= $request->variable('delall', false, false, \an602\request\request_interface::POST);
+		$deletemark = $request->variable('delmarked', false, false, \phpbb\request\request_interface::POST);
+		$deleteall	= $request->variable('delall', false, false, \phpbb\request\request_interface::POST);
 		$marked		= $request->variable('mark', array(0));
 
 		// Sort keys
@@ -47,8 +47,8 @@ class acp_logs
 		$this->tpl_name = 'acp_logs';
 		$this->log_type = constant('LOG_' . strtoupper($mode));
 
-		/* @var $pagination \an602\pagination */
-		$pagination = $an602_container->get('pagination');
+		/* @var $pagination \phpbb\pagination */
+		$pagination = $phpbb_container->get('pagination');
 
 		// Delete entries if requested and able
 		if (($deletemark || $deleteall) && $auth->acl_get('a_clearlogs'))
@@ -73,9 +73,9 @@ class acp_logs
 					$conditions['keywords'] = $keywords;
 				}
 
-				/* @var $an602_log \an602\log\log_interface */
-				$an602_log = $an602_container->get('log');
-				$an602_log->delete($mode, $conditions);
+				/* @var $phpbb_log \phpbb\log\log_interface */
+				$phpbb_log = $phpbb_container->get('log');
+				$phpbb_log->delete($mode, $conditions);
 			}
 			else
 			{

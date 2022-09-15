@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,14 +14,14 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
 
 /**
 * ucp_login_link
-* Allows users of external accounts link those accounts to their AN602 accounts
+* Allows users of external accounts link those accounts to their phpBB accounts
 * during an attempted login.
 */
 class ucp_login_link
@@ -39,8 +39,8 @@ class ucp_login_link
 	*/
 	function main($id, $mode)
 	{
-		global $an602_container, $request, $template, $user, $an602_dispatcher;
-		global $an602_root_path, $phpEx;
+		global $phpbb_container, $request, $template, $user, $phpbb_dispatcher;
+		global $phpbb_root_path, $phpEx;
 
 		// Initialize necessary variables
 		$login_error = null;
@@ -57,8 +57,8 @@ class ucp_login_link
 		}
 
 		// Use the auth_provider requested even if different from configured
-		/* @var $provider_collection \an602\auth\provider_collection */
-		$provider_collection = $an602_container->get('auth.provider_collection');
+		/* @var $provider_collection \phpbb\auth\provider_collection */
+		$provider_collection = $phpbb_container->get('auth.provider_collection');
 		$auth_provider = $provider_collection->get_provider($request->variable('auth_provider', ''));
 
 		// Set the link_method to login_link
@@ -76,8 +76,8 @@ class ucp_login_link
 		{
 			if ($request->is_set_post('login'))
 			{
-				$login_username = $request->variable('login_username', '', true, \an602\request\request_interface::POST);
-				$login_password = $request->untrimmed_variable('login_password', '', true, \an602\request\request_interface::POST);
+				$login_username = $request->variable('login_username', '', true, \phpbb\request\request_interface::POST);
+				$login_password = $request->untrimmed_variable('login_password', '', true, \phpbb\request\request_interface::POST);
 
 				$login_result = $auth_provider->login($login_username, $login_password);
 
@@ -116,7 +116,7 @@ class ucp_login_link
 			'S_HIDDEN_FIELDS'		=> $this->get_hidden_fields($data),
 
 			// Registration elements
-			'REGISTER_ACTION'	=> append_sid("{$an602_root_path}ucp.$phpEx", 'mode=register'),
+			'REGISTER_ACTION'	=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=register'),
 
 			// Login elements
 			'LOGIN_ERROR'		=> $login_error,
@@ -128,7 +128,7 @@ class ucp_login_link
 		*
 		* @event core.ucp_login_link_template_after
 		* @var	array							data				Login link data
-		* @var	\an602\auth\provider_interface	auth_provider		Auth provider
+		* @var	\phpbb\auth\provider_interface	auth_provider		Auth provider
 		* @var	string							login_link_error	Login link error
 		* @var	string							login_error			Login error
 		* @var	string							login_username		Login username
@@ -136,7 +136,7 @@ class ucp_login_link
 		* @since 3.2.4-RC1
 		*/
 		$vars = array('data', 'auth_provider', 'login_link_error', 'login_error', 'login_username', 'tpl_ary');
-		extract($an602_dispatcher->trigger_event('core.ucp_login_link_template_after', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.ucp_login_link_template_after', compact($vars)));
 
 		$template->assign_vars($tpl_ary);
 
@@ -174,7 +174,7 @@ class ucp_login_link
 	{
 		global $request;
 
-		$var_names = $request->variable_names(\an602\request\request_interface::GET);
+		$var_names = $request->variable_names(\phpbb\request\request_interface::GET);
 		$login_link_data = array();
 		$string_start_length = strlen('login_link_');
 
@@ -183,7 +183,7 @@ class ucp_login_link
 			if (strpos($var_name, 'login_link_') === 0)
 			{
 				$key_name = substr($var_name, $string_start_length);
-				$login_link_data[$key_name] = $request->variable($var_name, '', false, \an602\request\request_interface::GET);
+				$login_link_data[$key_name] = $request->variable($var_name, '', false, \phpbb\request\request_interface::GET);
 			}
 		}
 
@@ -199,7 +199,7 @@ class ucp_login_link
 	*/
 	protected function process_login_result($result)
 	{
-		global $config, $template, $user, $an602_container;
+		global $config, $template, $user, $phpbb_container;
 
 		$login_error = null;
 
@@ -215,7 +215,7 @@ class ucp_login_link
 			{
 				case LOGIN_ERROR_ATTEMPTS:
 
-					$captcha = $an602_container->get('captcha.factory')->get_instance($config['captcha_plugin']);
+					$captcha = $phpbb_container->get('captcha.factory')->get_instance($config['captcha_plugin']);
 					$captcha->init(CONFIRM_LOGIN);
 
 					$template->assign_vars(array(
@@ -228,7 +228,7 @@ class ucp_login_link
 				case LOGIN_ERROR_PASSWORD_CONVERT:
 					$login_error = sprintf(
 						$user->lang[$result['error_msg']],
-						($config['email_enable']) ? '<a href="' . append_sid("{$an602_root_path}ucp.$phpEx", 'mode=sendpassword') . '">' : '',
+						($config['email_enable']) ? '<a href="' . append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=sendpassword') . '">' : '',
 						($config['email_enable']) ? '</a>' : '',
 						($config['board_contact']) ? '<a href="mailto:' . htmlspecialchars($config['board_contact'], ENT_COMPAT) . '">' : '',
 						($config['board_contact']) ? '</a>' : ''
@@ -257,8 +257,8 @@ class ucp_login_link
 	*/
 	protected function perform_redirect()
 	{
-		global $an602_root_path, $phpEx;
-		$url = append_sid($an602_root_path . 'index.' . $phpEx);
+		global $phpbb_root_path, $phpEx;
+		$url = append_sid($phpbb_root_path . 'index.' . $phpEx);
 		redirect($url);
 	}
 }

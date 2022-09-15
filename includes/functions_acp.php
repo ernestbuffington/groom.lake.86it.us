@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -25,8 +25,8 @@ if (!defined('IN_AN602'))
 function adm_page_header($page_title)
 {
 	global $config, $user, $template;
-	global $an602_root_path, $an602_admin_path, $phpEx, $SID, $_SID;
-	global $an602_dispatcher, $an602_container;
+	global $phpbb_root_path, $phpbb_admin_path, $phpEx, $SID, $_SID;
+	global $phpbb_dispatcher, $phpbb_container;
 
 	if (defined('HEADER_INC'))
 	{
@@ -48,7 +48,7 @@ function adm_page_header($page_title)
 	* @since 3.1.0-a1
 	*/
 	$vars = array('page_title', 'adm_page_header_override');
-	extract($an602_dispatcher->trigger_event('core.adm_page_header', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.adm_page_header', compact($vars)));
 
 	if ($adm_page_header_override)
 	{
@@ -73,23 +73,23 @@ function adm_page_header($page_title)
 		'SID'					=> $SID,
 		'_SID'					=> $_SID,
 		'SESSION_ID'			=> $user->session_id,
-		'ROOT_PATH'				=> $an602_root_path,
-		'ADMIN_ROOT_PATH'		=> $an602_admin_path,
+		'ROOT_PATH'				=> $phpbb_root_path,
+		'ADMIN_ROOT_PATH'		=> $phpbb_admin_path,
 
-		'U_LOGOUT'				=> append_sid("{$an602_root_path}ucp.$phpEx", 'mode=logout'),
-		'U_ADM_LOGOUT'			=> append_sid("{$an602_admin_path}index.$phpEx", 'action=admlogout'),
-		'U_ADM_INDEX'			=> append_sid("{$an602_admin_path}index.$phpEx"),
-		'U_INDEX'				=> append_sid("{$an602_root_path}index.$phpEx"),
+		'U_LOGOUT'				=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=logout'),
+		'U_ADM_LOGOUT'			=> append_sid("{$phpbb_admin_path}index.$phpEx", 'action=admlogout'),
+		'U_ADM_INDEX'			=> append_sid("{$phpbb_admin_path}index.$phpEx"),
+		'U_INDEX'				=> append_sid("{$phpbb_root_path}index.$phpEx"),
 
-		'T_IMAGES_PATH'			=> "{$an602_root_path}images/",
-		'T_SMILIES_PATH'		=> "{$an602_root_path}{$config['smilies_path']}/",
-		'T_AVATAR_PATH'			=> "{$an602_root_path}{$config['avatar_path']}/",
-		'T_AVATAR_GALLERY_PATH'	=> "{$an602_root_path}{$config['avatar_gallery_path']}/",
-		'T_ICONS_PATH'			=> "{$an602_root_path}{$config['icons_path']}/",
-		'T_RANKS_PATH'			=> "{$an602_root_path}{$config['ranks_path']}/",
-		'T_UPLOAD_PATH'			=> "{$an602_root_path}{$config['upload_path']}/",
+		'T_IMAGES_PATH'			=> "{$phpbb_root_path}images/",
+		'T_SMILIES_PATH'		=> "{$phpbb_root_path}{$config['smilies_path']}/",
+		'T_AVATAR_PATH'			=> "{$phpbb_root_path}{$config['avatar_path']}/",
+		'T_AVATAR_GALLERY_PATH'	=> "{$phpbb_root_path}{$config['avatar_gallery_path']}/",
+		'T_ICONS_PATH'			=> "{$phpbb_root_path}{$config['icons_path']}/",
+		'T_RANKS_PATH'			=> "{$phpbb_root_path}{$config['ranks_path']}/",
+		'T_UPLOAD_PATH'			=> "{$phpbb_root_path}{$config['upload_path']}/",
 
-		'T_FONT_AWESOME_LINK'	=> !empty($config['allow_cdn']) && !empty($config['load_font_awesome_url']) ? $config['load_font_awesome_url'] : "{$an602_root_path}assets/css/font-awesome.min.css?assets_version=" . $config['assets_version'],
+		'T_FONT_AWESOME_LINK'	=> !empty($config['allow_cdn']) && !empty($config['load_font_awesome_url']) ? $config['load_font_awesome_url'] : "{$phpbb_root_path}assets/css/font-awesome.min.css?assets_version=" . $config['assets_version'],
 
 		'T_ASSETS_VERSION'		=> $config['assets_version'],
 
@@ -110,10 +110,10 @@ function adm_page_header($page_title)
 		'S_CONTENT_FLOW_BEGIN'	=> ($user->lang['DIRECTION'] == 'ltr') ? 'left' : 'right',
 		'S_CONTENT_FLOW_END'	=> ($user->lang['DIRECTION'] == 'ltr') ? 'right' : 'left',
 
-		'CONTAINER_EXCEPTION'	=> $an602_container->hasParameter('container_exception') ? $an602_container->getParameter('container_exception') : false,
+		'CONTAINER_EXCEPTION'	=> $phpbb_container->hasParameter('container_exception') ? $phpbb_container->getParameter('container_exception') : false,
 	));
 
-	// An array of http headers that AN602 will set. The following event may override these.
+	// An array of http headers that phpBB will set. The following event may override these.
 	$http_headers = array(
 		// application/xhtml+xml not used because of IE
 		'Content-type' => 'text/html; charset=UTF-8',
@@ -132,7 +132,7 @@ function adm_page_header($page_title)
 	* @since 3.1.0-RC3
 	*/
 	$vars = array('page_title', 'http_headers');
-	extract($an602_dispatcher->trigger_event('core.adm_page_header_after', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.adm_page_header_after', compact($vars)));
 
 	foreach ($http_headers as $hname => $hval)
 	{
@@ -148,8 +148,8 @@ function adm_page_header($page_title)
 function adm_page_footer($copyright_html = true)
 {
 	global $db, $config, $template, $user, $auth;
-	global $an602_root_path;
-	global $request, $an602_dispatcher;
+	global $phpbb_root_path;
+	global $request, $phpbb_dispatcher;
 
 	// A listener can set this variable to `true` when it overrides this function
 	$adm_page_footer_override = false;
@@ -164,21 +164,21 @@ function adm_page_footer($copyright_html = true)
 	* @since 3.1.0-a1
 	*/
 	$vars = array('copyright_html', 'adm_page_footer_override');
-	extract($an602_dispatcher->trigger_event('core.adm_page_footer', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.adm_page_footer', compact($vars)));
 
 	if ($adm_page_footer_override)
 	{
 		return;
 	}
 
-	an602_check_and_display_sql_report($request, $auth, $db);
+	phpbb_check_and_display_sql_report($request, $auth, $db);
 
 	$template->assign_vars(array(
-		'DEBUG_OUTPUT'		=> an602_generate_debug_output($db, $config, $auth, $user, $an602_dispatcher),
+		'DEBUG_OUTPUT'		=> phpbb_generate_debug_output($db, $config, $auth, $user, $phpbb_dispatcher),
 		'TRANSLATION_INFO'	=> (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['TRANSLATION_INFO'] : '',
 		'S_COPYRIGHT_HTML'	=> $copyright_html,
-		'CREDIT_LINE'		=> $user->lang('POWERED_BY', '<a href="https://www.groom.lake.86it.us/">AN602</a>&reg; Forum Software &copy; AN602 Limited'),
-		'T_JQUERY_LINK'		=> !empty($config['allow_cdn']) && !empty($config['load_jquery_url']) ? $config['load_jquery_url'] : "{$an602_root_path}assets/javascript/jquery-3.6.0.min.js",
+		'CREDIT_LINE'		=> $user->lang('POWERED_BY', '<a href="https://www.phpbb.com/">phpBB</a>&reg; Forum Software &copy; phpBB Limited'),
+		'T_JQUERY_LINK'		=> !empty($config['allow_cdn']) && !empty($config['load_jquery_url']) ? $config['load_jquery_url'] : "{$phpbb_root_path}assets/javascript/jquery-3.6.0.min.js",
 		'S_ALLOW_CDN'		=> !empty($config['allow_cdn']),
 		'VERSION'			=> $config['version'])
 	);
@@ -239,7 +239,7 @@ function h_radio($name, $input_ary, $input_default = false, $id = false, $key = 
 */
 function build_cfg_template($tpl_type, $key, &$new_ary, $config_key, $vars)
 {
-	global $user, $module, $an602_dispatcher;
+	global $user, $module, $phpbb_dispatcher;
 
 	$tpl = '';
 	$name = 'config[' . $config_key . ']';
@@ -398,7 +398,7 @@ function build_cfg_template($tpl_type, $key, &$new_ary, $config_key, $vars)
 	* @since 3.1.0-a1
 	*/
 	$vars = array('tpl_type', 'key', 'new', 'name', 'vars', 'tpl');
-	extract($an602_dispatcher->trigger_event('core.build_config_template', compact($vars)));
+	extract($phpbb_dispatcher->trigger_event('core.build_config_template', compact($vars)));
 	$new_ary = $new;
 	unset($new);
 
@@ -411,7 +411,7 @@ function build_cfg_template($tpl_type, $key, &$new_ary, $config_key, $vars)
 */
 function validate_config_vars($config_vars, &$cfg_array, &$error)
 {
-	global $an602_root_path, $user, $an602_dispatcher, $an602_filesystem, $language;
+	global $phpbb_root_path, $user, $phpbb_dispatcher, $phpbb_filesystem, $language;
 
 	$type	= 0;
 	$min	= 1;
@@ -550,13 +550,13 @@ function validate_config_vars($config_vars, &$cfg_array, &$error)
 
 				$cfg_array[$config_name] = basename($cfg_array[$config_name]);
 
-				if (!file_exists($an602_root_path . 'language/' . $cfg_array[$config_name] . '/'))
+				if (!file_exists($phpbb_root_path . 'language/' . $cfg_array[$config_name] . '/'))
 				{
 					$error[] = $user->lang['WRONG_DATA_LANG'];
 				}
 			break;
 
-			// Relative path (appended $an602_root_path)
+			// Relative path (appended $phpbb_root_path)
 			case 'rpath':
 			case 'rwpath':
 				if (!$cfg_array[$config_name])
@@ -580,7 +580,7 @@ function validate_config_vars($config_vars, &$cfg_array, &$error)
 
 				$cfg_array[$config_name] = trim($destination);
 
-			// Path being relative (still prefixed by an602_root_path), but with the ability to escape the root dir...
+			// Path being relative (still prefixed by phpbb_root_path), but with the ability to escape the root dir...
 			case 'path':
 			case 'wpath':
 
@@ -598,7 +598,7 @@ function validate_config_vars($config_vars, &$cfg_array, &$error)
 					break;
 				}
 
-				$path = $an602_root_path . $cfg_array[$config_name];
+				$path = $phpbb_root_path . $cfg_array[$config_name];
 
 				if (!file_exists($path))
 				{
@@ -613,7 +613,7 @@ function validate_config_vars($config_vars, &$cfg_array, &$error)
 				// Check if the path is writable
 				if ($config_definition['validate'] == 'wpath' || $config_definition['validate'] == 'rwpath')
 				{
-					if (file_exists($path) && !$an602_filesystem->is_writable($path))
+					if (file_exists($path) && !$phpbb_filesystem->is_writable($path))
 					{
 						$error[] = sprintf($user->lang['DIRECTORY_NOT_WRITABLE'], $cfg_array[$config_name]);
 					}
@@ -636,7 +636,7 @@ function validate_config_vars($config_vars, &$cfg_array, &$error)
 				* @since 3.1.0-a1
 				*/
 				$vars = array('cfg_array', 'config_name', 'config_definition', 'error');
-				extract($an602_dispatcher->trigger_event('core.validate_config_variable', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.validate_config_variable', compact($vars)));
 			break;
 		}
 	}
@@ -716,7 +716,7 @@ function validate_range($value_ary, &$error)
 *              array('before' => 'config_name').
 * @return array The array of config display vars
 */
-function an602_insert_config_array($display_vars, $add_config_vars, $where)
+function phpbb_insert_config_array($display_vars, $add_config_vars, $where)
 {
 	if (is_array($where) && array_key_exists(current($where), $display_vars))
 	{

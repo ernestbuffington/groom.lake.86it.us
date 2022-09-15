@@ -1,11 +1,11 @@
 services:
     dispatcher:
-        class: an602\event\dispatcher
+        class: phpbb\event\dispatcher
         arguments:
             - '@service_container'
 
     kernel_exception_subscriber:
-        class: an602\event\kernel_exception_subscriber
+        class: phpbb\event\kernel_exception_subscriber
         arguments:
             - '@template'
             - '@language'
@@ -14,7 +14,7 @@ services:
             - { name: kernel.event_subscriber }
 
     kernel_terminate_subscriber:
-        class: an602\event\kernel_terminate_subscriber
+        class: phpbb\event\kernel_terminate_subscriber
         tags:
             - { name: kernel.event_subscriber }
 

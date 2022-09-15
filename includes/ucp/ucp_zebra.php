@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -25,7 +25,7 @@ class ucp_zebra
 
 	function main($id, $mode)
 	{
-		global $db, $user, $auth, $template, $an602_root_path, $phpEx, $request, $an602_dispatcher;
+		global $db, $user, $auth, $template, $phpbb_root_path, $phpEx, $request, $phpbb_dispatcher;
 
 		$submit	= (isset($_POST['submit']) || isset($_GET['add']) || isset($_GET['remove'])) ? true : false;
 		$s_hidden_fields = '';
@@ -65,7 +65,7 @@ class ucp_zebra
 						* @since 3.1.0-a1
 						*/
 						$vars = array('mode', 'user_ids');
-						extract($an602_dispatcher->trigger_event('core.ucp_remove_zebra', compact($vars)));
+						extract($phpbb_dispatcher->trigger_event('core.ucp_remove_zebra', compact($vars)));
 
 						$sql = 'DELETE FROM ' . ZEBRA_TABLE . '
 							WHERE user_id = ' . $user->data['user_id'] . '
@@ -210,7 +210,7 @@ class ucp_zebra
 									* @since 3.1.0-a1
 									*/
 									$vars = array('mode', 'sql_ary');
-									extract($an602_dispatcher->trigger_event('core.ucp_add_zebra', compact($vars)));
+									extract($phpbb_dispatcher->trigger_event('core.ucp_add_zebra', compact($vars)));
 
 									$db->sql_multi_insert(ZEBRA_TABLE, $sql_ary);
 
@@ -229,7 +229,7 @@ class ucp_zebra
 					{
 						$message = ($updated) ? $user->lang[$l_mode . '_UPDATED'] : implode('<br />', $error);
 
-						$json_response = new \an602\json_response;
+						$json_response = new \phpbb\json_response;
 						$json_response->send(array(
 							'success' => $updated,
 
@@ -283,7 +283,7 @@ class ucp_zebra
 		$template->assign_vars(array(
 			'L_TITLE'			=> $user->lang['UCP_ZEBRA_' . $l_mode],
 
-			'U_FIND_USERNAME'	=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=ucp&amp;field=add'),
+			'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=ucp&amp;field=add'),
 
 			'S_USERNAME_OPTIONS'	=> $s_username_options,
 			'S_HIDDEN_FIELDS'		=> $s_hidden_fields,

@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -27,24 +27,24 @@ class acp_profile
 	var $lang_defs;
 
 	/**
-	 * @var \an602\di\service_collection
+	 * @var \phpbb\di\service_collection
 	 */
 	protected $type_collection;
 
 	function main($id, $mode)
 	{
 		global $config, $db, $user, $template;
-		global $an602_root_path, $phpEx;
-		global $request, $an602_container, $an602_log, $an602_dispatcher;
+		global $phpbb_root_path, $phpEx;
+		global $request, $phpbb_container, $phpbb_log, $phpbb_dispatcher;
 
 		if (!function_exists('generate_smilies'))
 		{
-			include($an602_root_path . 'includes/functions_posting.' . $phpEx);
+			include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 		}
 
 		if (!function_exists('user_get_id_name'))
 		{
-			include($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		$user->add_lang(array('ucp', 'acp/profile'));
@@ -64,9 +64,9 @@ class acp_profile
 			trigger_error($user->lang['NO_FIELD_ID'] . adm_back_link($this->u_action), E_USER_WARNING);
 		}
 
-		/* @var $cp \an602\profilefields\manager */
-		$cp = $an602_container->get('profilefields.manager');
-		$this->type_collection = $an602_container->get('profilefields.type_collection');
+		/* @var $cp \phpbb\profilefields\manager */
+		$cp = $phpbb_container->get('profilefields.manager');
+		$this->type_collection = $phpbb_container->get('profilefields.type_collection');
 
 		// Build Language array
 		// Based on this, we decide which elements need to be edited later and which language items are missing
@@ -126,8 +126,8 @@ class acp_profile
 					$db->sql_query('DELETE FROM ' . PROFILE_FIELDS_LANG_TABLE . " WHERE field_id = $field_id");
 					$db->sql_query('DELETE FROM ' . PROFILE_LANG_TABLE . " WHERE field_id = $field_id");
 
-					/* @var $db_tools \an602\db\tools\tools_interface */
-					$db_tools = $an602_container->get('dbal.tools');
+					/* @var $db_tools \phpbb\db\tools\tools_interface */
+					$db_tools = $phpbb_container->get('dbal.tools');
 					$db_tools->sql_column_remove(PROFILE_FIELDS_DATA_TABLE, 'pf_' . $field_ident);
 
 					$order = 0;
@@ -152,7 +152,7 @@ class acp_profile
 
 					$db->sql_transaction('commit');
 
-					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_REMOVED', false, array($field_ident));
+					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_REMOVED', false, array($field_ident));
 					trigger_error($user->lang['REMOVED_PROFILE_FIELD'] . adm_back_link($this->u_action));
 				}
 				else
@@ -198,11 +198,11 @@ class acp_profile
 				$field_ident = (string) $db->sql_fetchfield('field_ident');
 				$db->sql_freeresult($result);
 
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_ACTIVATE', false, array($field_ident));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_ACTIVATE', false, array($field_ident));
 
 				if ($request->is_ajax())
 				{
-					$json_response = new \an602\json_response();
+					$json_response = new \phpbb\json_response();
 					$json_response->send(array(
 						'text'	=> $user->lang('DEACTIVATE'),
 					));
@@ -233,13 +233,13 @@ class acp_profile
 
 				if ($request->is_ajax())
 				{
-					$json_response = new \an602\json_response();
+					$json_response = new \phpbb\json_response();
 					$json_response->send(array(
 						'text'	=> $user->lang('ACTIVATE'),
 					));
 				}
 
-				$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_DEACTIVATE', false, array($field_ident));
+				$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_DEACTIVATE', false, array($field_ident));
 
 				trigger_error($user->lang['PROFILE_FIELD_DEACTIVATED'] . adm_back_link($this->u_action));
 
@@ -274,7 +274,7 @@ class acp_profile
 
 				if ($request->is_ajax())
 				{
-					$json_response = new \an602\json_response;
+					$json_response = new \phpbb\json_response;
 					$json_response->send(array(
 						'success'	=> (bool) $db->sql_affectedrows(),
 					));
@@ -423,7 +423,7 @@ class acp_profile
 					'exclude',
 					'visibility_ary',
 				);
-				extract($an602_dispatcher->trigger_event('core.acp_profile_create_edit_init', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.acp_profile_create_edit_init', compact($vars)));
 
 				$options = $profile_field->prepare_options_form($exclude, $visibility_ary);
 
@@ -727,7 +727,7 @@ class acp_profile
 					's_hidden_fields',
 					'options',
 				);
-				extract($an602_dispatcher->trigger_event('core.acp_profile_create_edit_after', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.acp_profile_create_edit_after', compact($vars)));
 
 				$template->assign_vars(array(
 					'S_HIDDEN_FIELDS'	=> $s_hidden_fields)
@@ -758,7 +758,7 @@ class acp_profile
 			'page_title',
 			'u_action',
 		);
-		extract($an602_dispatcher->trigger_event('core.acp_profile_action', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.acp_profile_action', compact($vars)));
 
 		$this->tpl_name = $tpl_name;
 		$this->page_title = $page_title;
@@ -810,7 +810,7 @@ class acp_profile
 			* @event core.acp_profile_modify_profile_row
 			* @var	array	row				Array with data for the current profile field
 			* @var	array	field_block		Template data that is being assigned to the 'fields' block
-			* @var	object	profile_field	A profile field instance, implements \an602\profilefields\type\type_base
+			* @var	object	profile_field	A profile field instance, implements \phpbb\profilefields\type\type_base
 			* @since 3.2.2-RC1
 			*/
 			$vars = array(
@@ -818,7 +818,7 @@ class acp_profile
 				'field_block',
 				'profile_field',
 			);
-			extract($an602_dispatcher->trigger_event('core.acp_profile_modify_profile_row', compact($vars)));
+			extract($phpbb_dispatcher->trigger_event('core.acp_profile_modify_profile_row', compact($vars)));
 
 			$template->assign_block_vars('fields', $field_block);
 		}
@@ -944,7 +944,7 @@ class acp_profile
 	*/
 	function save_profile_field($cp, $field_type, $action = 'create')
 	{
-		global $db, $config, $user, $an602_container, $an602_log, $request, $an602_dispatcher;
+		global $db, $config, $user, $phpbb_container, $phpbb_log, $request, $phpbb_dispatcher;
 
 		$field_id = $request->variable('field_id', 0);
 
@@ -1003,7 +1003,7 @@ class acp_profile
 			'field_data',
 			'profile_fields',
 		);
-		extract($an602_dispatcher->trigger_event('core.acp_profile_create_edit_save_before', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('core.acp_profile_create_edit_save_before', compact($vars)));
 
 		if ($action == 'create')
 		{
@@ -1033,8 +1033,8 @@ class acp_profile
 		if ($action == 'create')
 		{
 			$field_ident = 'pf_' . $field_ident;
-			/* @var $db_tools \an602\db\tools\tools_interface */
-			$db_tools = $an602_container->get('dbal.tools');
+			/* @var $db_tools \phpbb\db\tools\tools_interface */
+			$db_tools = $phpbb_container->get('dbal.tools');
 			$db_tools->sql_column_add(PROFILE_FIELDS_DATA_TABLE, $field_ident, array($profile_field->get_database_column_type(), null));
 		}
 
@@ -1232,12 +1232,12 @@ class acp_profile
 
 		if ($action == 'edit')
 		{
-			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_EDIT', false, array($cp->vars['field_ident'] . ':' . $cp->vars['lang_name']));
+			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_EDIT', false, array($cp->vars['field_ident'] . ':' . $cp->vars['lang_name']));
 			trigger_error($user->lang['CHANGED_PROFILE_FIELD'] . adm_back_link($this->u_action));
 		}
 		else
 		{
-			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_CREATE', false, array(substr($field_ident, 3) . ':' . $cp->vars['lang_name']));
+			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_PROFILE_FIELD_CREATE', false, array(substr($field_ident, 3) . ':' . $cp->vars['lang_name']));
 			trigger_error($user->lang['ADDED_PROFILE_FIELD'] . adm_back_link($this->u_action));
 		}
 	}

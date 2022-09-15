@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -13,17 +13,17 @@
 
 /**
 */
-define('IN_AN602', true);
+define('IN_PHPBB', true);
 define('ADMIN_START', true);
 define('NEED_SID', true);
 
 // Include files
-$an602_root_path = (defined('AN602_ROOT_PATH')) ? AN602_ROOT_PATH : './../';
+$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './../';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-require($an602_root_path . 'common.' . $phpEx);
-require($an602_root_path . 'includes/functions_acp.' . $phpEx);
-require($an602_root_path . 'includes/functions_admin.' . $phpEx);
-require($an602_root_path . 'includes/functions_module.' . $phpEx);
+require($phpbb_root_path . 'common.' . $phpEx);
+require($phpbb_root_path . 'includes/functions_acp.' . $phpEx);
+require($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+require($phpbb_root_path . 'includes/functions_module.' . $phpEx);
 
 // Start session management
 $user->session_begin();
@@ -57,12 +57,12 @@ $mode			= $request->variable('mode', '');
 $template->set_custom_style(array(
 	array(
 		'name' 		=> 'adm',
-		'ext_path' 	=> 'admin/style/',
+		'ext_path' 	=> 'adm/style/',
 	),
-), $an602_admin_path . 'style');
+), $phpbb_admin_path . 'style');
 
-$template->assign_var('T_ASSETS_PATH', $an602_root_path . 'assets');
-$template->assign_var('T_TEMPLATE_PATH', $an602_admin_path . 'style');
+$template->assign_var('T_ASSETS_PATH', $phpbb_root_path . 'assets');
+$template->assign_var('T_TEMPLATE_PATH', $phpbb_admin_path . 'style');
 
 // Instantiate new module
 $module = new p_master();
@@ -75,7 +75,7 @@ $module->set_active($module_id, $mode);
 
 // Assign data to the template engine for the list of modules
 // We do this before loading the active module for correct menu display in trigger_error
-$module->assign_tpl_vars(append_sid("{$an602_admin_path}index.$phpEx"));
+$module->assign_tpl_vars(append_sid("{$phpbb_admin_path}index.$phpEx"));
 
 // Load and execute the relevant module
 $module->load_active();

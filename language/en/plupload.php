@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @copyright (c) 2010-2013 Moxiecode Systems AB
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
@@ -15,7 +15,7 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -74,6 +74,6 @@ $lang = array_merge($lang, array(
 	'PLUPLOAD_STOP_UPLOAD'		=> 'Stop upload',
 	'PLUPLOAD_STOP_CURRENT_UPLOAD'	=> 'Stop current upload',
 	// Note: This string is formatted independently by plupload and so does not
-	// use the same formatting rules as normal AN602 translation strings
+	// use the same formatting rules as normal phpBB translation strings
 	'PLUPLOAD_UPLOADED'			=> 'Uploaded %d/%d files',
 ));

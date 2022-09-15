@@ -1,7 +1,7 @@
-/*  AN602 3.3 Admin Style Sheet
+/*  phpBB 3.3 Admin Style Sheet
 	------------------------------------------------------------------------
 	Original author:	subBlue ( http://www.subblue.com/ )
-	Copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+	Copyright (c) phpBB Limited <https://www.phpbb.com>
 
 	For full copyright and license information, please see
 	the docs/CREDITS.txt file.
@@ -191,7 +191,7 @@ li {
 
 #page-header {
 	text-align: right;
-	background: url("../images/an602_logo.svg") top left no-repeat;
+	background: url("../images/phpbb_logo.svg") top left no-repeat;
 	height: 54px;
 	font-size: 0.85em;
 	margin-bottom: 10px;
@@ -199,7 +199,7 @@ li {
 
 .rtl #page-header {
 	text-align: left;
-	background: url("../images/an602_logo.svg") top right no-repeat;
+	background: url("../images/phpbb_logo.svg") top right no-repeat;
 }
 
 #page-header h1 {
@@ -1599,7 +1599,7 @@ input.button1:focus, input.button2:focus {
 
 /* jQuery popups
 ---------------------------------------- */
-.an602_alert {
+.phpbb_alert {
 	background-color: #FFFFFF;
 	border: 1px solid #999999;
 	position: fixed;
@@ -1614,7 +1614,7 @@ input.button1:focus, input.button2:focus {
 	padding: 0 25px 20px 25px;
 }
 
-.an602_alert .alert_close {
+.phpbb_alert .alert_close {
 	display: block;
 	float: right;
 	width: 16px;
@@ -1625,27 +1625,27 @@ input.button1:focus, input.button2:focus {
 	margin-top: -7px;
 	margin-right: -31px;
 }
-.an602_alert .alert_close:hover {
+.phpbb_alert .alert_close:hover {
 	background-position: 0 -16px;
 }
 
 
-.an602_alert p {
+.phpbb_alert p {
 	margin: 8px 0;
 	padding-bottom: 8px;
 }
 
-.an602_alert label {
+.phpbb_alert label {
 	display: block;
 	margin: 8px 0;
 	padding-bottom: 8px;
 }
 
-.an602_alert div.alert_text > p,
-.an602_alert div.alert_text > label,
-.an602_alert div.alert_text > select,
-.an602_alert div.alert_text > textarea,
-.an602_alert div.alert_text > input {
+.phpbb_alert div.alert_text > p,
+.phpbb_alert div.alert_text > label,
+.phpbb_alert div.alert_text > select,
+.phpbb_alert div.alert_text > textarea,
+.phpbb_alert div.alert_text > input {
 	font-size: 0.9em;
 }
 
@@ -1668,14 +1668,14 @@ input.button1:focus, input.button2:focus {
 
 @media only screen and (max-height: 500px), only screen and (max-device-width: 500px)
 {
-	.an602_alert {
+	.phpbb_alert {
 		top: 25px;
 	}
 }
 
 @media only screen and (max-width: 700px), only screen and (max-device-width: 700px)
 {
-	.an602_alert {
+	.phpbb_alert {
 		width: auto;
 		margin: 0 25px;
 	}

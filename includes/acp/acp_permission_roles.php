@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -26,18 +26,18 @@ class acp_permission_roles
 
 	function main($id, $mode)
 	{
-		global $db, $user, $template, $an602_container;
-		global $an602_root_path, $phpEx;
-		global $request, $an602_log;
+		global $db, $user, $template, $phpbb_container;
+		global $phpbb_root_path, $phpEx;
+		global $request, $phpbb_log;
 
 		if (!function_exists('user_get_id_name'))
 		{
-			include($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		if (!class_exists('auth_admin'))
 		{
-			include($an602_root_path . 'includes/acp/auth.' . $phpEx);
+			include($phpbb_root_path . 'includes/acp/auth.' . $phpEx);
 		}
 
 		$this->auth_admin = new auth_admin();
@@ -116,7 +116,7 @@ class acp_permission_roles
 						$this->remove_role($role_id, $permission_type);
 
 						$role_name = (!empty($user->lang[$role_row['role_name']])) ? $user->lang[$role_row['role_name']] : $role_row['role_name'];
-						$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_' . strtoupper($permission_type) . 'ROLE_REMOVED', false, array($role_name));
+						$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_' . strtoupper($permission_type) . 'ROLE_REMOVED', false, array($role_name));
 						trigger_error($user->lang['ROLE_DELETED'] . adm_back_link($this->u_action));
 					}
 					else
@@ -219,7 +219,7 @@ class acp_permission_roles
 					$this->auth_admin->acl_set_role($role_id, $auth_settings);
 
 					$role_name = (!empty($user->lang[$role_name])) ? $user->lang[$role_name] : $role_name;
-					$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_' . strtoupper($permission_type) . 'ROLE_' . strtoupper($action), false, array($role_name));
+					$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_' . strtoupper($permission_type) . 'ROLE_' . strtoupper($action), false, array($role_name));
 
 					trigger_error($user->lang['ROLE_' . strtoupper($action) . '_SUCCESS'] . adm_back_link($this->u_action));
 
@@ -306,8 +306,8 @@ class acp_permission_roles
 					trigger_error($user->lang['NO_ROLE_SELECTED'] . adm_back_link($this->u_action), E_USER_WARNING);
 				}
 
-				/* @var $an602_permissions \an602\permissions */
-				$an602_permissions = $an602_container->get('acl.permissions');
+				/* @var $phpbb_permissions \phpbb\permissions */
+				$phpbb_permissions = $phpbb_container->get('acl.permissions');
 
 				$template->assign_vars(array(
 					'S_EDIT'			=> true,
@@ -317,7 +317,7 @@ class acp_permission_roles
 
 					'ROLE_NAME'			=> $role_row['role_name'],
 					'ROLE_DESCRIPTION'	=> $role_row['role_description'],
-					'L_ACL_TYPE'		=> $an602_permissions->get_type_lang($permission_type),
+					'L_ACL_TYPE'		=> $phpbb_permissions->get_type_lang($permission_type),
 				));
 
 				// We need to fill the auth options array with ACL_NO options ;)
@@ -394,7 +394,7 @@ class acp_permission_roles
 
 				if ($request->is_ajax())
 				{
-					$json_response = new \an602\json_response;
+					$json_response = new \phpbb\json_response;
 					$json_response->send(array(
 						'success'	=> (bool) $db->sql_affectedrows(),
 					));
@@ -482,10 +482,10 @@ class acp_permission_roles
 	*/
 	function display_auth_options($auth_options)
 	{
-		global $template, $an602_container;
+		global $template, $phpbb_container;
 
-		/* @var $an602_permissions \an602\permissions */
-		$an602_permissions = $an602_container->get('acl.permissions');
+		/* @var $phpbb_permissions \phpbb\permissions */
+		$phpbb_permissions = $phpbb_container->get('acl.permissions');
 
 		$content_array = $categories = array();
 		$key_sort_array = array(0);
@@ -502,7 +502,7 @@ class acp_permission_roles
 		foreach ($content_array as $cat => $cat_array)
 		{
 			$template->assign_block_vars('auth', array(
-				'CAT_NAME'	=> $an602_permissions->get_category_lang($cat),
+				'CAT_NAME'	=> $phpbb_permissions->get_category_lang($cat),
 
 				'S_YES'		=> ($cat_array['S_YES'] && !$cat_array['S_NEVER'] && !$cat_array['S_NO']) ? true : false,
 				'S_NEVER'	=> ($cat_array['S_NEVER'] && !$cat_array['S_YES'] && !$cat_array['S_NO']) ? true : false,
@@ -517,7 +517,7 @@ class acp_permission_roles
 					'S_NO'		=> ($allowed == ACL_NO) ? true : false,
 
 					'FIELD_NAME'	=> $permission,
-					'PERMISSION'	=> $an602_permissions->get_permission_lang($permission),
+					'PERMISSION'	=> $phpbb_permissions->get_permission_lang($permission),
 				));
 			}
 		}

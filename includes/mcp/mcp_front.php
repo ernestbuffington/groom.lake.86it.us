@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -24,9 +24,9 @@ if (!defined('IN_AN602'))
 */
 function mcp_front_view($id, $mode, $action)
 {
-	global $phpEx, $an602_root_path;
+	global $phpEx, $phpbb_root_path;
 	global $template, $db, $user, $auth, $module;
-	global $an602_dispatcher, $request;
+	global $phpbb_dispatcher, $request;
 
 	// Latest 5 unapproved
 	if ($module->loaded('queue'))
@@ -59,7 +59,7 @@ function mcp_front_view($id, $mode, $action)
 			* @since 3.1.5-RC1
 			*/
 			$vars = array('sql_ary', 'forum_list');
-			extract($an602_dispatcher->trigger_event('core.mcp_front_queue_unapproved_total_before', compact($vars)));
+			extract($phpbb_dispatcher->trigger_event('core.mcp_front_queue_unapproved_total_before', compact($vars)));
 
 			$sql = $db->sql_build_query('SELECT', $sql_ary);
 			$result = $db->sql_query($sql);
@@ -109,7 +109,7 @@ function mcp_front_view($id, $mode, $action)
 			* @since 3.1.0-RC3
 			*/
 			$vars = array('total', 'post_list', 'forum_list', 'forum_names');
-			extract($an602_dispatcher->trigger_event('core.mcp_front_view_queue_postid_list_after', compact($vars)));
+			extract($phpbb_dispatcher->trigger_event('core.mcp_front_view_queue_postid_list_after', compact($vars)));
 
 			if ($total)
 			{
@@ -138,18 +138,18 @@ function mcp_front_view($id, $mode, $action)
 					'sql',
 					'total',
 				];
-				extract($an602_dispatcher->trigger_event('core.mcp_front_view_modify_posts_data_sql', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.mcp_front_view_modify_posts_data_sql', compact($vars)));
 
 				$result = $db->sql_query($sql);
 
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$unapproved_post_row = [
-						'U_POST_DETAILS'	=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=queue&amp;mode=approve_details&amp;p=' . $row['post_id']),
-						'U_MCP_FORUM'		=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=main&amp;mode=forum_view&amp;f=' . $row['forum_id']),
-						'U_MCP_TOPIC'		=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=main&amp;mode=topic_view&amp;t=' . $row['topic_id']),
-						'U_FORUM'			=> append_sid("{$an602_root_path}viewforum.$phpEx", 'f=' . $row['forum_id']),
-						'U_TOPIC'			=> append_sid("{$an602_root_path}viewtopic.$phpEx", 't=' . $row['topic_id']),
+						'U_POST_DETAILS'	=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue&amp;mode=approve_details&amp;p=' . $row['post_id']),
+						'U_MCP_FORUM'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=main&amp;mode=forum_view&amp;f=' . $row['forum_id']),
+						'U_MCP_TOPIC'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=main&amp;mode=topic_view&amp;t=' . $row['topic_id']),
+						'U_FORUM'			=> append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $row['forum_id']),
+						'U_TOPIC'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $row['topic_id']),
 
 						'AUTHOR_FULL'		=> get_username_string('full', $row['poster_id'], $row['username'], $row['user_colour']),
 						'AUTHOR'			=> get_username_string('username', $row['poster_id'], $row['username'], $row['user_colour']),
@@ -180,7 +180,7 @@ function mcp_front_view($id, $mode, $action)
 						'row',
 						'unapproved_post_row',
 					];
-					extract($an602_dispatcher->trigger_event('core.mcp_front_view_modify_unapproved_post_row', compact($vars)));
+					extract($phpbb_dispatcher->trigger_event('core.mcp_front_view_modify_unapproved_post_row', compact($vars)));
 
 					$template->assign_block_vars('unapproved', $unapproved_post_row);
 				}
@@ -188,12 +188,12 @@ function mcp_front_view($id, $mode, $action)
 			}
 
 			$s_hidden_fields = build_hidden_fields(array(
-				'redirect'		=> append_sid("{$an602_root_path}mcp.$phpEx", 'i=main' . (($forum_id) ? '&amp;f=' . $forum_id : ''))
+				'redirect'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=main' . (($forum_id) ? '&amp;f=' . $forum_id : ''))
 			));
 
 			$template->assign_vars(array(
 				'S_HIDDEN_FIELDS'		=> $s_hidden_fields,
-				'S_MCP_QUEUE_ACTION'	=> append_sid("{$an602_root_path}mcp.$phpEx", "i=queue"),
+				'S_MCP_QUEUE_ACTION'	=> append_sid("{$phpbb_root_path}mcp.$phpEx", "i=queue"),
 				'L_UNAPPROVED_TOTAL'	=> $user->lang('UNAPPROVED_POSTS_TOTAL', (int) $total),
 				'S_HAS_UNAPPROVED_POSTS'=> ($total != 0),
 			));
@@ -225,7 +225,7 @@ function mcp_front_view($id, $mode, $action)
 			* @since 3.1.5-RC1
 			*/
 			$vars = array('sql', 'forum_list');
-			extract($an602_dispatcher->trigger_event('core.mcp_front_reports_count_query_before', compact($vars)));
+			extract($phpbb_dispatcher->trigger_event('core.mcp_front_reports_count_query_before', compact($vars)));
 
 			$result = $db->sql_query($sql);
 			$total = (int) $db->sql_fetchfield('total');
@@ -272,7 +272,7 @@ function mcp_front_view($id, $mode, $action)
 				* @since 3.1.0-RC3
 				*/
 				$vars = array('sql_ary', 'forum_list');
-				extract($an602_dispatcher->trigger_event('core.mcp_front_reports_listing_query_before', compact($vars)));
+				extract($phpbb_dispatcher->trigger_event('core.mcp_front_reports_listing_query_before', compact($vars)));
 
 				$sql = $db->sql_build_query('SELECT', $sql_ary);
 				$result = $db->sql_query_limit($sql, 5);
@@ -280,11 +280,11 @@ function mcp_front_view($id, $mode, $action)
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$reported_post_row = [
-						'U_POST_DETAILS'	=> append_sid("{$an602_root_path}mcp.$phpEx", 'p=' . $row['post_id'] . "&amp;i=reports&amp;mode=report_details"),
-						'U_MCP_FORUM'		=> append_sid("{$an602_root_path}mcp.$phpEx", 'f=' . $row['forum_id'] . "&amp;i=$id&amp;mode=forum_view"),
-						'U_MCP_TOPIC'		=> append_sid("{$an602_root_path}mcp.$phpEx", 't=' . $row['topic_id'] . "&amp;i=$id&amp;mode=topic_view"),
-						'U_FORUM'			=> append_sid("{$an602_root_path}viewforum.$phpEx", 'f=' . $row['forum_id']),
-						'U_TOPIC'			=> append_sid("{$an602_root_path}viewtopic.$phpEx", 't=' . $row['topic_id']),
+						'U_POST_DETAILS'	=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'p=' . $row['post_id'] . "&amp;i=reports&amp;mode=report_details"),
+						'U_MCP_FORUM'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'f=' . $row['forum_id'] . "&amp;i=$id&amp;mode=forum_view"),
+						'U_MCP_TOPIC'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", 't=' . $row['topic_id'] . "&amp;i=$id&amp;mode=topic_view"),
+						'U_FORUM'			=> append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $row['forum_id']),
+						'U_TOPIC'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $row['topic_id']),
 
 						'REPORTER_FULL'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
 						'REPORTER'			=> get_username_string('username', $row['user_id'], $row['username'], $row['user_colour']),
@@ -320,7 +320,7 @@ function mcp_front_view($id, $mode, $action)
 						'reported_post_row',
 						'row',
 					];
-					extract($an602_dispatcher->trigger_event('core.mcp_front_view_modify_reported_post_row', compact($vars)));
+					extract($phpbb_dispatcher->trigger_event('core.mcp_front_view_modify_reported_post_row', compact($vars)));
 
 					$template->assign_block_vars('report', $reported_post_row);
 				}
@@ -353,7 +353,7 @@ function mcp_front_view($id, $mode, $action)
 		{
 			if (!function_exists('get_recipient_strings'))
 			{
-				include($an602_root_path . 'includes/functions_privmsgs.' . $phpEx);
+				include($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
 			}
 
 			$sql_ary = array(
@@ -393,7 +393,7 @@ function mcp_front_view($id, $mode, $action)
 				$row = $pm_by_id[$message_id];
 
 				$template->assign_block_vars('pm_report', array(
-					'U_PM_DETAILS'	=> append_sid("{$an602_root_path}mcp.$phpEx", 'r=' . $row['report_id'] . "&amp;i=pm_reports&amp;mode=pm_report_details"),
+					'U_PM_DETAILS'	=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'r=' . $row['report_id'] . "&amp;i=pm_reports&amp;mode=pm_report_details"),
 
 					'REPORTER_FULL'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
 					'REPORTER'			=> get_username_string('username', $row['user_id'], $row['username'], $row['user_colour']),
@@ -450,6 +450,6 @@ function mcp_front_view($id, $mode, $action)
 		);
 	}
 
-	$template->assign_var('S_MCP_ACTION', append_sid("{$an602_root_path}mcp.$phpEx"));
-	make_jumpbox(append_sid("{$an602_root_path}mcp.$phpEx", 'i=main&amp;mode=forum_view'), 0, false, 'm_', true);
+	$template->assign_var('S_MCP_ACTION', append_sid("{$phpbb_root_path}mcp.$phpEx"));
+	make_jumpbox(append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=main&amp;mode=forum_view'), 0, false, 'm_', true);
 }

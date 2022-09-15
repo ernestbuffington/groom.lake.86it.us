@@ -1,6 +1,6 @@
 services:
     installer.update_filesystem.check_task:
-        class: an602\install\module\update_filesystem\task\file_check
+        class: phpbb\install\module\update_filesystem\task\file_check
         arguments:
             - '@filesystem'
             - '@installer.helper.config'
@@ -11,7 +11,7 @@ services:
             - { name: update_filesystem, order: 10 }
 
     installer.update_filesystem.diff_files:
-        class: an602\install\module\update_filesystem\task\diff_files
+        class: phpbb\install\module\update_filesystem\task\diff_files
         arguments:
             - '@installer.helper.container_factory'
             - '@installer.helper.config'
@@ -23,7 +23,7 @@ services:
             - { name: update_filesystem, order: 20 }
 
     installer.update_filesystem.show_file_status:
-        class: an602\install\module\update_filesystem\task\show_file_status
+        class: phpbb\install\module\update_filesystem\task\show_file_status
         arguments:
             - '@installer.helper.container_factory'
             - '@installer.helper.config'
@@ -34,7 +34,7 @@ services:
             - { name: update_filesystem, order: 30 }
 
     installer.update_filesystem.update_files:
-        class: an602\install\module\update_filesystem\task\update_files
+        class: phpbb\install\module\update_filesystem\task\update_files
         arguments:
             - '@installer.helper.container_factory'
             - '@installer.helper.config'
@@ -46,7 +46,7 @@ services:
             - { name: update_filesystem, order: 40 }
 
     installer.update_filesystem.download_updated_files:
-        class: an602\install\module\update_filesystem\task\download_updated_files
+        class: phpbb\install\module\update_filesystem\task\download_updated_files
         arguments:
             - '@installer.helper.config'
             - '@installer.helper.iohandler'
@@ -55,14 +55,14 @@ services:
             - { name: update_filesystem, order: 50 }
 
     installer.module.update_filesystem_collection:
-        class: an602\di\ordered_service_collection
+        class: phpbb\di\ordered_service_collection
         arguments:
             - '@service_container'
         tags:
             - { name: service_collection, tag: update_filesystem, class_name_aware: true }
 
     installer.module.filesystem_update:
-        class: an602\install\module\update_filesystem\module
+        class: phpbb\install\module\update_filesystem\module
         parent: installer.module_base
         arguments:
             - '@installer.module.update_filesystem_collection'

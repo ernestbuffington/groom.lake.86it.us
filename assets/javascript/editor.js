@@ -403,9 +403,9 @@ function getCaretPosition(txtarea) {
 
 		textarea = doc.forms[form_name].elements[text_name];
 
-		an602.applyCodeEditor(textarea);
+		phpbb.applyCodeEditor(textarea);
 		if ($('#attach-panel').length) {
-			an602.showDragNDrop(textarea);
+			phpbb.showDragNDrop(textarea);
 		}
 
 		$('textarea').on('keydown', function (e) {

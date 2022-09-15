@@ -3,7 +3,7 @@ javascript for Bubble Tooltips by Alessandro Fulciniti
 - http://pro.html.it - http://web-graphics.com
 obtained from: http://web-graphics.com/mtarchive/001717.php
 
-AN602 Development Team:
+phpBB Development Team:
 	- modified to adhere to our coding guidelines
 	- integration into our design
 	- added ability to perform tooltips on select elements
@@ -22,7 +22,7 @@ var tooltips = [];
  * @param {string} headline Text that should appear on top of tooltip
  * @param {string} [subId] Sub ID that should only be using tooltips (optional)
 */
-an602.enableTooltipsSelect = function (id, headline, subId) {
+phpbb.enableTooltipsSelect = function (id, headline, subId) {
 	var $links, hold;
 
 	hold = $('<span />', {
@@ -45,10 +45,10 @@ an602.enableTooltipsSelect = function (id, headline, subId) {
 
 		if (subId) {
 			if ($this.parent().attr('id').substr(0, subId.length) === subId) {
-				an602.prepareTooltips($this, headline);
+				phpbb.prepareTooltips($this, headline);
 			}
 		} else {
-			an602.prepareTooltips($this, headline);
+			phpbb.prepareTooltips($this, headline);
 		}
 	});
 };
@@ -59,7 +59,7 @@ an602.enableTooltipsSelect = function (id, headline, subId) {
  * @param {jQuery} $element Element to prepare for tooltips
  * @param {string} headText Text heading to display
 */
-an602.prepareTooltips = function ($element, headText) {
+phpbb.prepareTooltips = function ($element, headText) {
 	var $tooltip, text, $desc, $title;
 
 	text = $element.attr('data-title');
@@ -94,8 +94,8 @@ an602.prepareTooltips = function ($element, headText) {
 		.append($desc);
 
 	tooltips[$element.attr('data-id')] = $tooltip;
-	$element.on('mouseover', an602.showTooltip);
-	$element.on('mouseout', an602.hideTooltip);
+	$element.on('mouseover', phpbb.showTooltip);
+	$element.on('mouseout', phpbb.hideTooltip);
 };
 
 /**
@@ -103,16 +103,16 @@ an602.prepareTooltips = function ($element, headText) {
  *
  * @param {object} $element Element passed by .on()
 */
-an602.showTooltip = function ($element) {
+phpbb.showTooltip = function ($element) {
 	var $this = $($element.target);
 	$('#_tooltip_container').append(tooltips[$this.attr('data-id')]);
-	an602.positionTooltip($this);
+	phpbb.positionTooltip($this);
 };
 
 /**
  * Hide tooltip
 */
-an602.hideTooltip = function () {
+phpbb.hideTooltip = function () {
 	var d = document.getElementById('_tooltip_container');
 	if (d.childNodes.length > 0) {
 		d.removeChild(d.firstChild);
@@ -124,7 +124,7 @@ an602.hideTooltip = function () {
  *
  * @param {jQuery} $element Tooltip element that should be positioned
 */
-an602.positionTooltip = function ($element) {
+phpbb.positionTooltip = function ($element) {
 	var offset;
 
 	$element = $element.parent();
@@ -146,7 +146,7 @@ an602.positionTooltip = function ($element) {
 /**
  * Prepare roles drop down select
  */
-an602.prepareRolesDropdown = function () {
+phpbb.prepareRolesDropdown = function () {
 	var $options = $('.roles-options li');
 
 	// Display span and hide select
@@ -214,10 +214,10 @@ an602.prepareRolesDropdown = function () {
 // Run onload functions for RolesDropdown and tooltips
 $(function() {
 	// Enable tooltips
-	an602.enableTooltipsSelect('set-permissions', $('#set-permissions').attr('data-role-description'), 'role');
+	phpbb.enableTooltipsSelect('set-permissions', $('#set-permissions').attr('data-role-description'), 'role');
 
 	// Prepare dropdown
-	an602.prepareRolesDropdown();
+	phpbb.prepareRolesDropdown();
 });
 
 })(jQuery); // Avoid conflicts with other libraries

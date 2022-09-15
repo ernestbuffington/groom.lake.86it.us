@@ -1,13 +1,13 @@
-Subject: AN602 is correctly configured to send emails
+Subject: phpBB is correctly configured to send emails
 
 Hello {USERNAME},
 
-Congratulations. If you received this email, AN602 is correctly configured to send emails.
+Congratulations. If you received this email, phpBB is correctly configured to send emails.
 
 <!-- IF MESSAGE -->
 {MESSAGE}
 
 <!-- ENDIF -->
-In case you require assistance, please visit the AN602 support forums - https://www.groom.lake.86it.us/community/
+In case you require assistance, please visit the phpBB support forums - https://www.phpbb.com/community/
 
 {EMAIL_SIG}

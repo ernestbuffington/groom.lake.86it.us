@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -25,23 +25,23 @@ class acp_permissions
 	var $permission_dropdown;
 
 	/**
-	 * @var $an602_permissions \an602\permissions
+	 * @var $phpbb_permissions \phpbb\permissions
 	 */
 	protected $permissions;
 
 	function main($id, $mode)
 	{
-		global $db, $user, $auth, $template, $an602_container, $request;
-		global $config, $an602_root_path, $phpEx;
+		global $db, $user, $auth, $template, $phpbb_container, $request;
+		global $config, $phpbb_root_path, $phpEx;
 
 		if (!function_exists('user_get_id_name'))
 		{
-			include($an602_root_path . 'includes/functions_user.' . $phpEx);
+			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		if (!class_exists('auth_admin'))
 		{
-			include($an602_root_path . 'includes/acp/auth.' . $phpEx);
+			include($phpbb_root_path . 'includes/acp/auth.' . $phpEx);
 		}
 
 		$auth_admin = new auth_admin();
@@ -51,7 +51,7 @@ class acp_permissions
 
 		$this->tpl_name = 'acp_permissions';
 
-		$this->permissions = $an602_container->get('acl.permissions');
+		$this->permissions = $phpbb_container->get('acl.permissions');
 
 		// Trace has other vars
 		if ($mode == 'trace')
@@ -402,7 +402,7 @@ class acp_permissions
 
 					$template->assign_vars(array(
 						'S_SELECT_USER'			=> true,
-						'U_FIND_USERNAME'		=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=select_victim&amp;field=username&amp;select_single=true'),
+						'U_FIND_USERNAME'		=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=select_victim&amp;field=username&amp;select_single=true'),
 					));
 
 				break;
@@ -464,7 +464,7 @@ class acp_permissions
 						'S_DEFINED_USER_OPTIONS'	=> $items['user_ids_options'],
 						'S_DEFINED_GROUP_OPTIONS'	=> $items['group_ids_options'],
 						'S_ADD_GROUP_OPTIONS'		=> group_select_options(false, $items['group_ids'], false),	// Show all groups
-						'U_FIND_USERNAME'			=> append_sid("{$an602_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=add_user&amp;field=username&amp;select_single=true'),
+						'U_FIND_USERNAME'			=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=add_user&amp;field=username&amp;select_single=true'),
 					));
 
 				break;
@@ -697,7 +697,7 @@ class acp_permissions
 		$ug_id = key($psubmit);
 		$forum_id = key($psubmit[$ug_id]);
 
-		$settings = $request->variable('setting', array(0 => array(0 => array('' => 0))), false, \an602\request\request_interface::POST);
+		$settings = $request->variable('setting', array(0 => array(0 => array('' => 0))), false, \phpbb\request\request_interface::POST);
 		if (empty($settings) || empty($settings[$ug_id]) || empty($settings[$ug_id][$forum_id]))
 		{
 			trigger_error('WRONG_PERMISSION_SETTING_FORMAT', E_USER_WARNING);
@@ -706,7 +706,7 @@ class acp_permissions
 		$auth_settings = $settings[$ug_id][$forum_id];
 
 		// Do we have a role we want to set?
-		$roles = $request->variable('role', array(0 => array(0 => 0)), false, \an602\request\request_interface::POST);
+		$roles = $request->variable('role', array(0 => array(0 => 0)), false, \phpbb\request\request_interface::POST);
 		$assigned_role = (isset($roles[$ug_id][$forum_id])) ? (int) $roles[$ug_id][$forum_id] : 0;
 
 		// Do the admin want to set these permissions to other items too?
@@ -747,13 +747,13 @@ class acp_permissions
 		// Do we need to recache the moderator lists?
 		if ($permission_type == 'm_')
 		{
-			an602_cache_moderators($db, $cache, $auth);
+			phpbb_cache_moderators($db, $cache, $auth);
 		}
 
 		// Remove users who are now moderators or admins from everyones foes list
 		if ($permission_type == 'm_' || $permission_type == 'a_')
 		{
-			an602_update_foes($db, $auth, $group_id, $user_id);
+			phpbb_update_foes($db, $auth, $group_id, $user_id);
 		}
 
 		$this->log_action($mode, 'add', $permission_type, $ug_type, $ug_id, $forum_id);
@@ -780,8 +780,8 @@ class acp_permissions
 			trigger_error($user->lang['NO_AUTH_OPERATION'] . adm_back_link($this->u_action), E_USER_WARNING);
 		}
 
-		$auth_settings = $request->variable('setting', array(0 => array(0 => array('' => 0))), false, \an602\request\request_interface::POST);
-		$auth_roles = $request->variable('role', array(0 => array(0 => 0)), false, \an602\request\request_interface::POST);
+		$auth_settings = $request->variable('setting', array(0 => array(0 => array('' => 0))), false, \phpbb\request\request_interface::POST);
+		$auth_roles = $request->variable('role', array(0 => array(0 => 0)), false, \phpbb\request\request_interface::POST);
 		$ug_ids = $forum_ids = array();
 
 		// We need to go through the auth settings
@@ -817,13 +817,13 @@ class acp_permissions
 		// Do we need to recache the moderator lists?
 		if ($permission_type == 'm_')
 		{
-			an602_cache_moderators($db, $cache, $auth);
+			phpbb_cache_moderators($db, $cache, $auth);
 		}
 
 		// Remove users who are now moderators or admins from everyones foes list
 		if ($permission_type == 'm_' || $permission_type == 'a_')
 		{
-			an602_update_foes($db, $auth, $group_id, $user_id);
+			phpbb_update_foes($db, $auth, $group_id, $user_id);
 		}
 
 		$this->log_action($mode, 'add', $permission_type, $ug_type, $ug_ids, $forum_ids);
@@ -900,7 +900,7 @@ class acp_permissions
 		// Do we need to recache the moderator lists?
 		if ($permission_type == 'm_')
 		{
-			an602_cache_moderators($db, $cache, $auth);
+			phpbb_cache_moderators($db, $cache, $auth);
 		}
 
 		$this->log_action($mode, 'del', $permission_type, $ug_type, (($ug_type == 'user') ? $user_id : $group_id), (count($forum_id) ? $forum_id : array(0 => 0)));
@@ -922,7 +922,7 @@ class acp_permissions
 	*/
 	function log_action($mode, $action, $permission_type, $ug_type, $ug_id, $forum_id)
 	{
-		global $db, $user, $an602_log, $an602_container;
+		global $db, $user, $phpbb_log, $phpbb_container;
 
 		if (!is_array($ug_id))
 		{
@@ -939,8 +939,8 @@ class acp_permissions
 		$sql .= $db->sql_in_set(($ug_type == 'group') ? 'group_id' : 'user_id', array_map('intval', $ug_id));
 		$result = $db->sql_query($sql);
 
-		/** @var \an602\group\helper $group_helper */
-		$group_helper = $an602_container->get('group_helper');
+		/** @var \phpbb\group\helper $group_helper */
+		$group_helper = $phpbb_container->get('group_helper');
 
 		$l_ug_list = '';
 		while ($row = $db->sql_fetchrow($result))
@@ -954,7 +954,7 @@ class acp_permissions
 
 		if ($forum_id[0] == 0)
 		{
-			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ACL_' . strtoupper($action) . '_' . strtoupper($mode) . '_' . strtoupper($permission_type), false, array($l_ug_list));
+			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ACL_' . strtoupper($action) . '_' . strtoupper($mode) . '_' . strtoupper($permission_type), false, array($l_ug_list));
 		}
 		else
 		{
@@ -971,7 +971,7 @@ class acp_permissions
 			}
 			$db->sql_freeresult($result);
 
-			$an602_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ACL_' . strtoupper($action) . '_' . strtoupper($mode) . '_' . strtoupper($permission_type), false, array($l_forum_list, $l_ug_list));
+			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ACL_' . strtoupper($action) . '_' . strtoupper($mode) . '_' . strtoupper($permission_type), false, array($l_forum_list, $l_ug_list));
 		}
 	}
 
@@ -980,7 +980,7 @@ class acp_permissions
 	*/
 	function permission_trace($user_id, $forum_id, $permission)
 	{
-		global $db, $template, $user, $auth, $request, $an602_container;
+		global $db, $template, $user, $auth, $request, $phpbb_container;
 
 		if ($user_id != $user->data['user_id'])
 		{
@@ -996,8 +996,8 @@ class acp_permissions
 			trigger_error('NO_USERS', E_USER_ERROR);
 		}
 
-		/** @var \an602\group\helper $group_helper */
-		$group_helper = $an602_container->get('group_helper');
+		/** @var \phpbb\group\helper $group_helper */
+		$group_helper = $phpbb_container->get('group_helper');
 
 		$forum_name = false;
 
@@ -1135,7 +1135,7 @@ class acp_permissions
 		{
 			if ($user_id != $user->data['user_id'])
 			{
-				$auth2 = new \an602\auth\auth();
+				$auth2 = new \phpbb\auth\auth();
 				$auth2->acl($userdata);
 				$auth_setting = $auth2->acl_get($permission);
 			}
@@ -1217,7 +1217,7 @@ class acp_permissions
 			{
 				if (copy_forum_permissions($src, $dest))
 				{
-					an602_cache_moderators($db, $cache, $auth);
+					phpbb_cache_moderators($db, $cache, $auth);
 
 					$auth->acl_clear_prefetch();
 					$cache->destroy('sql', FORUMS_TABLE);
@@ -1253,10 +1253,10 @@ class acp_permissions
 	*/
 	function retrieve_defined_user_groups($permission_scope, $forum_id, $permission_type)
 	{
-		global $db, $an602_container;
+		global $db, $phpbb_container;
 
-		/** @var \an602\group\helper $group_helper */
-		$group_helper = $an602_container->get('group_helper');
+		/** @var \phpbb\group\helper $group_helper */
+		$group_helper = $phpbb_container->get('group_helper');
 
 		$sql_forum_id = ($permission_scope == 'global') ? 'AND a.forum_id = 0' : ((count($forum_id)) ? 'AND ' . $db->sql_in_set('a.forum_id', $forum_id) : 'AND a.forum_id <> 0');
 

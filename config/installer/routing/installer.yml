@@ -1,67 +1,67 @@
-an602_installer_index:
+phpbb_installer_index:
     path: /
     defaults:
-        _controller: an602.installer.controller.welcome:handle
+        _controller: phpbb.installer.controller.welcome:handle
         mode: 'intro'
 
-an602_installer_license:
+phpbb_installer_license:
     path: /license
     defaults:
-        _controller: an602.installer.controller.welcome:handle
+        _controller: phpbb.installer.controller.welcome:handle
         mode: 'license'
 
-an602_installer_support:
+phpbb_installer_support:
     path: /support
     defaults:
-        _controller: an602.installer.controller.welcome:handle
+        _controller: phpbb.installer.controller.welcome:handle
         mode: 'support'
 
-an602_installer_install:
+phpbb_installer_install:
     path: /install
     defaults:
-        _controller: an602.installer.controller.install:handle
+        _controller: phpbb.installer.controller.install:handle
 
-an602_installer_update:
+phpbb_installer_update:
     path: /update
     defaults:
-        _controller: an602.installer.controller.update:handle
+        _controller: phpbb.installer.controller.update:handle
 
-an602_installer_update_file_download:
+phpbb_installer_update_file_download:
     path: /download/updated
     defaults:
-        _controller: an602.installer.controller.file_downloader:update_archive
+        _controller: phpbb.installer.controller.file_downloader:update_archive
 
-an602_installer_update_conflict_download:
+phpbb_installer_update_conflict_download:
     path: /download/conflict
     defaults:
-        _controller: an602.installer.controller.file_downloader:conflict_archive
+        _controller: phpbb.installer.controller.file_downloader:conflict_archive
 
-an602_convert_intro:
+phpbb_convert_intro:
     path: /convert/{start_new}
     defaults:
-        _controller: an602.installer.controller.convert:intro
+        _controller: phpbb.installer.controller.convert:intro
         start_new: 0
 
-an602_convert_settings:
+phpbb_convert_settings:
     path: /convert/settings/{converter}
     defaults:
-        _controller: an602.installer.controller.convert:settings
+        _controller: phpbb.installer.controller.convert:settings
     requirements:
         converter: "[a-zA-Z0-9_]+"
 
-an602_convert_convert:
+phpbb_convert_convert:
     path: /convert/in_progress/{converter}
     defaults:
-        _controller: an602.installer.controller.convert:convert
+        _controller: phpbb.installer.controller.convert:convert
     requirements:
         converter: "[a-zA-Z0-9_]+"
 
-an602_convert_finish:
+phpbb_convert_finish:
     path: /convert/finished
     defaults:
-        _controller: an602.installer.controller.convert:finish
+        _controller: phpbb.installer.controller.convert:finish
 
-an602_installer_status:
+phpbb_installer_status:
     path: /installer/status
     defaults:
-        _controller: an602.installer.controller.status:status
+        _controller: phpbb.installer.controller.status:status

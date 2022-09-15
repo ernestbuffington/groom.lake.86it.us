@@ -1,9 +1,9 @@
 <?php
 /**
 *
-* This file is part of the AN602 CMS Software package.
+* This file is part of the phpBB Forum Software package.
 *
-* @copyright (c) AN602 Limited <https://www.groom.lake.86it.us>
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -14,7 +14,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_AN602'))
+if (!defined('IN_PHPBB'))
 {
 	exit;
 }
@@ -36,9 +36,9 @@ class ucp_confirm
 
 	function main($id, $mode)
 	{
-		global $config, $an602_container, $request;
+		global $config, $phpbb_container, $request;
 
-		$captcha = $an602_container->get('captcha.factory')->get_instance($config['captcha_plugin']);
+		$captcha = $phpbb_container->get('captcha.factory')->get_instance($config['captcha_plugin']);
 		$captcha->init($request->variable('type', 0));
 		$captcha->execute();
 

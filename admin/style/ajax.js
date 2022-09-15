@@ -5,8 +5,8 @@
 'use strict';
 
 
-an602.prepareSendStats = function () {
-	var $form = $('#acp_help_an602');
+phpbb.prepareSendStats = function () {
+	var $form = $('#acp_help_phpbb');
 	var $dark = $('#darkenwrapper');
 	var $loadingIndicator;
 
@@ -36,7 +36,7 @@ an602.prepareSendStats = function () {
 			if (typeof console !== 'undefined' && console.log) {
 				console.log('AJAX error. status: ' + textStatus + ', message: ' + errorThrown);
 			}
-			an602.clearLoadingTimeout();
+			phpbb.clearLoadingTimeout();
 			var errorText = '';
 
 			if (typeof errorThrown === 'string' && errorThrown.length > 0) {
@@ -47,7 +47,7 @@ an602.prepareSendStats = function () {
 					errorText = $dark.attr('data-ajax-error-text');
 				}
 			}
-			an602.alert($dark.attr('data-ajax-error-title'), errorText);
+			phpbb.alert($dark.attr('data-ajax-error-title'), errorText);
 		}
 
 		/**
@@ -61,14 +61,14 @@ an602.prepareSendStats = function () {
 		 * @param {object} res The object sent back by the server.
 		 */
 		function returnHandler(res) {
-			an602.clearLoadingTimeout();
+			phpbb.clearLoadingTimeout();
 
 			// If a confirmation is not required, display an alert and call the
 			// callbacks.
-			$dark.fadeOut(an602.alertTime);
+			$dark.fadeOut(phpbb.alertTime);
 
 			if ($loadingIndicator) {
-				$loadingIndicator.fadeOut(an602.alertTime);
+				$loadingIndicator.fadeOut(phpbb.alertTime);
 			}
 
 			var $sendStatisticsSuccess = $('<input />', {
@@ -82,7 +82,7 @@ an602.prepareSendStats = function () {
 			$form.find('input[type=submit]').click();
 		}
 
-		$loadingIndicator = an602.loadingIndicator();
+		$loadingIndicator = phpbb.loadingIndicator();
 
 		$.ajax({
 			url: $this.attr('data-ajax-action').replace('&amp;', '&'),
@@ -93,7 +93,7 @@ an602.prepareSendStats = function () {
 			cache: false
 		}).always(function() {
 			if ($loadingIndicator && $loadingIndicator.is(':visible')) {
-				$loadingIndicator.fadeOut(an602.alertTime);
+				$loadingIndicator.fadeOut(phpbb.alertTime);
 			}
 		});
 	});
@@ -105,7 +105,7 @@ an602.prepareSendStats = function () {
  * an item is moved up. It moves the row up or down, and deactivates /
  * activates any up / down icons that require it (the ones at the top or bottom).
  */
-an602.addAjaxCallback('row_down', function(res) {
+phpbb.addAjaxCallback('row_down', function(res) {
 	if (typeof res.success === 'undefined' || !res.success) {
 		return;
 	}
@@ -116,7 +116,7 @@ an602.addAjaxCallback('row_down', function(res) {
 	$firstTr.insertAfter($secondTr);
 });
 
-an602.addAjaxCallback('row_up', function(res) {
+phpbb.addAjaxCallback('row_up', function(res) {
 	if (typeof res.success === 'undefined' || !res.success) {
 		return;
 	}
@@ -132,7 +132,7 @@ an602.addAjaxCallback('row_up', function(res) {
  * It does this by replacing the text, and replacing all instances of "activate"
  * in the href with "deactivate", and vice versa.
  */
-an602.addAjaxCallback('activate_deactivate', function(res) {
+phpbb.addAjaxCallback('activate_deactivate', function(res) {
 	var $this = $(this),
 		newHref = $this.attr('href');
 
@@ -151,7 +151,7 @@ an602.addAjaxCallback('activate_deactivate', function(res) {
  * The removes the parent row of the link or form that triggered the callback,
  * and is good for stuff like the removal of forums.
  */
-an602.addAjaxCallback('row_delete', function(res) {
+phpbb.addAjaxCallback('row_delete', function(res) {
 	if (res.SUCCESS !== false) {
 		$(this).parents('tr').remove();
 	}
@@ -209,7 +209,7 @@ function submitPermissions() {
 		}
 	});
 
-	$loadingIndicator = an602.loadingIndicator();
+	$loadingIndicator = phpbb.loadingIndicator();
 
 	/**
 	 * Handler for submitted permissions form chunk
@@ -221,14 +221,14 @@ function submitPermissions() {
 		var $dark = $('#darkenwrapper');
 
 		if (res.S_USER_WARNING) {
-			an602.alert(res.MESSAGE_TITLE, res.MESSAGE_TEXT);
+			phpbb.alert(res.MESSAGE_TITLE, res.MESSAGE_TEXT);
 			permissionSubmitFailed = true;
 		} else if (!permissionSubmitFailed && res.S_USER_NOTICE) {
 			// Display success message at the end of submitting the form
 			if (permissionRequestCount >= permissionSubmitSize) {
 				clearIndicator = true;
 
-				var $alert = an602.alert(res.MESSAGE_TITLE, res.MESSAGE_TEXT);
+				var $alert = phpbb.alert(res.MESSAGE_TITLE, res.MESSAGE_TEXT);
 				var $alertBoxLink = $alert.find('p.alert_text > a');
 
 				// Create form to submit instead of normal "Back to previous page" link
@@ -267,7 +267,7 @@ function submitPermissions() {
 
 						// Hide the alert even if we refresh the page, in case the user
 						// presses the back button.
-						$dark.fadeOut(an602.alertTime, function () {
+						$dark.fadeOut(phpbb.alertTime, function () {
 							if (typeof $alert !== 'undefined') {
 								$alert.hide();
 							}
@@ -284,10 +284,10 @@ function submitPermissions() {
 		}
 
 		if (clearIndicator) {
-			an602.clearLoadingTimeout();
+			phpbb.clearLoadingTimeout();
 
 			if ($loadingIndicator) {
-				$loadingIndicator.fadeOut(an602.alertTime);
+				$loadingIndicator.fadeOut(phpbb.alertTime);
 			}
 		}
 	}
@@ -314,7 +314,7 @@ $('[data-ajax]').each(function() {
 
 	if (ajax !== 'false') {
 		var fn = (ajax !== 'true') ? ajax : null;
-		an602.ajaxify({
+		phpbb.ajaxify({
 			selector: this,
 			refresh: $this.attr('data-refresh') !== undefined,
 			callback: fn
@@ -326,7 +326,7 @@ $('[data-ajax]').each(function() {
 * Automatically resize textarea
 */
 $(function() {
-	an602.resizeTextArea($('textarea:not(.no-auto-resize)'), {minHeight: 75});
+	phpbb.resizeTextArea($('textarea:not(.no-auto-resize)'), {minHeight: 75});
 
 	var $setPermissionsForm = $('form#set-permissions');
 	if ($setPermissionsForm.length) {
@@ -340,8 +340,8 @@ $(function() {
 		});
 	}
 
-	if ($('#acp_help_an602')) {
-		an602.prepareSendStats();
+	if ($('#acp_help_phpbb')) {
+		phpbb.prepareSendStats();
 	}
 });
 

@@ -1,13 +1,13 @@
 services:
     console.installer.command_collection:
-        class: an602\di\service_collection
+        class: phpbb\di\service_collection
         arguments:
             - '@service_container'
         tags:
             - { name: service_collection, tag: console.installer.command }
 
     console.installer.command.install:
-        class: an602\install\console\command\install\install
+        class: phpbb\install\console\command\install\install
         arguments:
             - '@language'
             - '@installer.helper.iohandler_factory'
@@ -17,7 +17,7 @@ services:
             - { name: console.installer.command }
 
     console.installer.command.config.show:
-        class: an602\install\console\command\install\config\show
+        class: phpbb\install\console\command\install\config\show
         arguments:
             - '@language'
             - '@installer.helper.iohandler_factory'
@@ -26,7 +26,7 @@ services:
 
 
     console.installer.command.config.validate:
-        class: an602\install\console\command\install\config\validate
+        class: phpbb\install\console\command\install\config\validate
         arguments:
             - '@language'
             - '@installer.helper.iohandler_factory'
@@ -34,7 +34,7 @@ services:
             - { name: console.installer.command }
 
     console.updater.command.update:
-        class: an602\install\console\command\update\update
+        class: phpbb\install\console\command\update\update
         arguments:
             - '@language'
             - '@installer.helper.iohandler_factory'
@@ -44,7 +44,7 @@ services:
             - { name: console.installer.command }
 
     console.updater.command.config.show:
-        class: an602\install\console\command\update\config\show
+        class: phpbb\install\console\command\update\config\show
         arguments:
             - '@language'
             - '@installer.helper.iohandler_factory'
@@ -53,7 +53,7 @@ services:
 
 
     console.updater.command.config.validate:
-        class: an602\install\console\command\update\config\validate
+        class: phpbb\install\console\command\update\config\validate
         arguments:
             - '@language'
             - '@installer.helper.iohandler_factory'

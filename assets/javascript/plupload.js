@@ -1,7 +1,7 @@
 /* global phpbb, plupload, attachInline */
 
-plupload.addI18n(an602.plupload.i18n);
-an602.plupload.ids = [];
+plupload.addI18n(phpbb.plupload.i18n);
+phpbb.plupload.ids = [];
 
 (function($) {  // Avoid conflicts with other libraries
 
@@ -10,20 +10,20 @@ an602.plupload.ids = [];
 /**
  * Set up the uploader.
  */
-an602.plupload.initialize = function() {
+phpbb.plupload.initialize = function() {
 	// Initialize the Plupload uploader.
-	an602.plupload.uploader.init();
+	phpbb.plupload.uploader.init();
 
 	// Set attachment data.
-	an602.plupload.setData(an602.plupload.data);
-	an602.plupload.updateMultipartParams(an602.plupload.getSerializedData());
+	phpbb.plupload.setData(phpbb.plupload.data);
+	phpbb.plupload.updateMultipartParams(phpbb.plupload.getSerializedData());
 
 	// Only execute if Plupload initialized successfully.
-	an602.plupload.uploader.bind('Init', function() {
-		an602.plupload.form = $(an602.plupload.config.form_hook)[0];
+	phpbb.plupload.uploader.bind('Init', function() {
+		phpbb.plupload.form = $(phpbb.plupload.config.form_hook)[0];
 		let $attachRowTemplate = $('#attach-row-tpl');
 		$attachRowTemplate.removeClass('attach-row-tpl');
-		an602.plupload.rowTpl = $attachRowTemplate[0].outerHTML;
+		phpbb.plupload.rowTpl = $attachRowTemplate[0].outerHTML;
 
 		// Hide the basic upload panel and remove the attach row template.
 		$('#attach-row-tpl, #attach-panel-basic').remove();
@@ -31,18 +31,18 @@ an602.plupload.initialize = function() {
 		$('#attach-panel-multi').show();
 	});
 
-	an602.plupload.uploader.bind('PostInit', function() {
+	phpbb.plupload.uploader.bind('PostInit', function() {
 		// Point out the drag-and-drop zone if it's supported.
-		if (an602.plupload.uploader.features.dragdrop) {
+		if (phpbb.plupload.uploader.features.dragdrop) {
 			$('#drag-n-drop-message').show();
 		}
 
 		// Ensure "Add files" button position is correctly calculated.
 		if ($('#attach-panel-multi').is(':visible')) {
-			an602.plupload.uploader.refresh();
+			phpbb.plupload.uploader.refresh();
 		}
 		$('[data-subpanel="attach-panel"]').one('click', function() {
-			an602.plupload.uploader.refresh();
+			phpbb.plupload.uploader.refresh();
 		});
 	});
 };
@@ -51,14 +51,14 @@ an602.plupload.initialize = function() {
  * Unsets all elements in the object uploader.settings.multipart_params whose keys
  * begin with 'attachment_data['
  */
-an602.plupload.clearParams = function() {
-	var obj = an602.plupload.uploader.settings.multipart_params;
+phpbb.plupload.clearParams = function() {
+	var obj = phpbb.plupload.uploader.settings.multipart_params;
 	for (var key in obj) {
 		if (!obj.hasOwnProperty(key) || key.indexOf('attachment_data[') !== 0) {
 			continue;
 		}
 
-		delete an602.plupload.uploader.settings.multipart_params[key];
+		delete phpbb.plupload.uploader.settings.multipart_params[key];
 	}
 };
 
@@ -67,8 +67,8 @@ an602.plupload.clearParams = function() {
  *
  * @param {object} obj
  */
-an602.plupload.updateMultipartParams = function(obj) {
-	var settings = an602.plupload.uploader.settings;
+phpbb.plupload.updateMultipartParams = function(obj) {
+	var settings = phpbb.plupload.uploader.settings;
 	settings.multipart_params = $.extend(settings.multipart_params, obj);
 };
 
@@ -78,10 +78,10 @@ an602.plupload.updateMultipartParams = function(obj) {
  * @returns {object} An object in the form 'attachment_data[i][key]': value as
  * 	expected by the server
  */
-an602.plupload.getSerializedData = function() {
+phpbb.plupload.getSerializedData = function() {
 	var obj = {};
-	for (var i = 0; i < an602.plupload.data.length; i++) {
-		var datum = an602.plupload.data[i];
+	for (var i = 0; i < phpbb.plupload.data.length; i++) {
+		var datum = phpbb.plupload.data[i];
 		for (var key in datum) {
 			if (!datum.hasOwnProperty(key)) {
 				continue;
@@ -92,7 +92,7 @@ an602.plupload.getSerializedData = function() {
 	}
 
 	// Insert form data
-	var $pluploadForm = $(an602.plupload.config.form_hook).first();
+	var $pluploadForm = $(phpbb.plupload.config.form_hook).first();
 	obj.creation_time = $pluploadForm.find('input[type=hidden][name="creation_time"]').val();
 	obj.form_token = $pluploadForm.find('input[type=hidden][name="form_token"]').val();
 
@@ -100,48 +100,48 @@ an602.plupload.getSerializedData = function() {
 };
 
 /**
- * Get the index from the an602.plupload.data array where the given
+ * Get the index from the phpbb.plupload.data array where the given
  * attachment id appears.
  *
  * @param {int} attachId The attachment id of the file.
  * @returns {bool|int} Index of the file if exists, otherwise false.
  */
-an602.plupload.getIndex = function(attachId) {
-	var index = $.inArray(Number(attachId), an602.plupload.ids);
+phpbb.plupload.getIndex = function(attachId) {
+	var index = $.inArray(Number(attachId), phpbb.plupload.ids);
 	return (index !== -1) ? index : false;
 };
 
 /**
- * Set the data in an602.plupload.data and an602.plupload.ids arrays.
+ * Set the data in phpbb.plupload.data and phpbb.plupload.ids arrays.
  *
  * @param {Array} data	Array containing the new data to use. In the form of
  * array(index => object(property: value). Requires attach_id to be one of the object properties.
  */
-an602.plupload.setData = function(data) {
+phpbb.plupload.setData = function(data) {
 	// Make sure that the array keys are reset.
-	an602.plupload.ids = an602.plupload.data = [];
-	an602.plupload.data = data;
+	phpbb.plupload.ids = phpbb.plupload.data = [];
+	phpbb.plupload.data = data;
 
 	for (var i = 0; i < data.length; i++) {
-		an602.plupload.ids.push(Number(data[i].attach_id));
+		phpbb.plupload.ids.push(Number(data[i].attach_id));
 	}
 };
 
 /**
- * Update the attachment data in the HTML and the phpbb & an602.plupload objects.
+ * Update the attachment data in the HTML and the phpbb & phpbb.plupload objects.
  *
  * @param {Array} data			Array containing the new data to use.
  * @param {string} action		The action that required the update. Used to update the inline attachment bbcodes.
- * @param {int} index			The index from an602.plupload_ids that was affected by the action.
+ * @param {int} index			The index from phpbb.plupload_ids that was affected by the action.
  * @param {Array} downloadUrl	Optional array of download urls to update.
  */
-an602.plupload.update = function(data, action, index, downloadUrl) {
+phpbb.plupload.update = function(data, action, index, downloadUrl) {
 
-	an602.plupload.updateBbcode(action, index);
-	an602.plupload.setData(data);
-	an602.plupload.updateRows(downloadUrl);
-	an602.plupload.clearParams();
-	an602.plupload.updateMultipartParams(an602.plupload.getSerializedData());
+	phpbb.plupload.updateBbcode(action, index);
+	phpbb.plupload.setData(data);
+	phpbb.plupload.updateRows(downloadUrl);
+	phpbb.plupload.clearParams();
+	phpbb.plupload.updateMultipartParams(phpbb.plupload.getSerializedData());
 };
 
 /**
@@ -149,9 +149,9 @@ an602.plupload.update = function(data, action, index, downloadUrl) {
  *
  * @param {Array} downloadUrl Optional array of download urls to update.
  */
-an602.plupload.updateRows = function(downloadUrl) {
-	for (var i = 0; i < an602.plupload.ids.length; i++) {
-		an602.plupload.updateRow(i, downloadUrl);
+phpbb.plupload.updateRows = function(downloadUrl) {
+	for (var i = 0; i < phpbb.plupload.ids.length; i++) {
+		phpbb.plupload.updateRow(i, downloadUrl);
 	}
 };
 
@@ -163,14 +163,14 @@ an602.plupload.updateRows = function(downloadUrl) {
  *
  * @param {object} file Plupload file object for the new attachment.
  */
-an602.plupload.insertRow = function(file) {
-	var row = $(an602.plupload.rowTpl);
+phpbb.plupload.insertRow = function(file) {
+	var row = $(phpbb.plupload.rowTpl);
 
 	row.attr('id', file.id);
 	row.find('.file-name').html(plupload.xmlEncode(file.name));
 	row.find('.file-size').html(plupload.formatSize(file.size));
 
-	if (an602.plupload.order === 'desc') {
+	if (phpbb.plupload.order === 'desc') {
 		$('#file-list').prepend(row);
 	} else {
 		$('#file-list').append(row);
@@ -180,11 +180,11 @@ an602.plupload.insertRow = function(file) {
 /**
  * Update the relevant elements and hidden data for an attachment.
  *
- * @param {int} index The index from an602.plupload.ids of the attachment to edit.
+ * @param {int} index The index from phpbb.plupload.ids of the attachment to edit.
  * @param {Array} downloadUrl Optional array of download urls to update.
  */
-an602.plupload.updateRow = function(index, downloadUrl) {
-	var attach = an602.plupload.data[index],
+phpbb.plupload.updateRow = function(index, downloadUrl) {
+	var attach = phpbb.plupload.data[index],
 		row = $('[data-attach-id="' + attach.attach_id + '"]');
 
 	// Add the link to the file
@@ -197,17 +197,17 @@ an602.plupload.updateRow = function(index, downloadUrl) {
 	}
 
 	row.find('textarea').attr('name', 'comment_list[' + index + ']');
-	an602.plupload.updateHiddenData(row, attach, index);
+	phpbb.plupload.updateHiddenData(row, attach, index);
 };
 
 /**
  * Update hidden input data for an attachment.
  *
  * @param {object} row		jQuery object for the attachment row.
- * @param {object} attach	Attachment data object from an602.plupload.data
- * @param {int} index		Attachment index from an602.plupload.ids
+ * @param {object} attach	Attachment data object from phpbb.plupload.data
+ * @param {int} index		Attachment index from phpbb.plupload.ids
  */
-an602.plupload.updateHiddenData = function(row, attach, index) {
+phpbb.plupload.updateHiddenData = function(row, attach, index) {
 	row.find('input[type="hidden"]').remove();
 
 	for (var key in attach) {
@@ -232,19 +232,19 @@ an602.plupload.updateHiddenData = function(row, attach, index) {
  * @param {object} row		jQuery object for the attachment row.
  * @param {int} attachId	Attachment id of the file to be removed.
  */
-an602.plupload.deleteFile = function(row, attachId) {
+phpbb.plupload.deleteFile = function(row, attachId) {
 	// If there's no attach id, then the file hasn't been uploaded. Simply delete the row.
 	if (typeof attachId === 'undefined') {
-		var file = an602.plupload.uploader.getFile(row.attr('id'));
-		an602.plupload.uploader.removeFile(file);
+		var file = phpbb.plupload.uploader.getFile(row.attr('id'));
+		phpbb.plupload.uploader.removeFile(file);
 
 		row.slideUp(100, function() {
 			row.remove();
-			an602.plupload.hideEmptyList();
+			phpbb.plupload.hideEmptyList();
 		});
 	}
 
-	var index = an602.plupload.getIndex(attachId);
+	var index = phpbb.plupload.getIndex(attachId);
 	row.find('.file-status').toggleClass('file-uploaded file-working');
 
 	if (index === false) {
@@ -264,7 +264,7 @@ an602.plupload.deleteFile = function(row, attachId) {
 
 		// trigger_error() was called which likely means a permission error was encountered.
 		if (typeof response.title !== 'undefined') {
-			an602.plupload.uploader.trigger('Error', { message: response.message });
+			phpbb.plupload.uploader.trigger('Error', { message: response.message });
 			// We will have to assume that the deletion failed. So leave the file status as uploaded.
 			row.find('.file-status').toggleClass('file-uploaded');
 
@@ -273,7 +273,7 @@ an602.plupload.deleteFile = function(row, attachId) {
 
 		// Handle errors while deleting file
 		if (typeof response.error !== 'undefined') {
-			an602.alert(an602.plupload.lang.ERROR, response.error.message);
+			phpbb.alert(phpbb.plupload.lang.ERROR, response.error.message);
 
 			// We will have to assume that the deletion failed. So leave the file status as uploaded.
 			row.find('.file-status').toggleClass('file-uploaded');
@@ -281,26 +281,26 @@ an602.plupload.deleteFile = function(row, attachId) {
 			return;
 		}
 
-		an602.plupload.update(response, 'removal', index);
+		phpbb.plupload.update(response, 'removal', index);
 		// Check if the user can upload files now if he had reached the max files limit.
-		an602.plupload.handleMaxFilesReached();
+		phpbb.plupload.handleMaxFilesReached();
 
 		if (row.attr('id')) {
-			var file = an602.plupload.uploader.getFile(row.attr('id'));
-			an602.plupload.uploader.removeFile(file);
+			var file = phpbb.plupload.uploader.getFile(row.attr('id'));
+			phpbb.plupload.uploader.removeFile(file);
 		}
 		row.slideUp(100, function() {
 			row.remove();
 			// Hide the file list if it's empty now.
-			an602.plupload.hideEmptyList();
+			phpbb.plupload.hideEmptyList();
 		});
-		an602.plupload.uploader.trigger('FilesRemoved');
+		phpbb.plupload.uploader.trigger('FilesRemoved');
 	};
 
-	$.ajax(an602.plupload.config.url, {
+	$.ajax(phpbb.plupload.config.url, {
 		type: 'POST',
-		data: $.extend(fields, an602.plupload.getSerializedData()),
-		headers: an602.plupload.config.headers
+		data: $.extend(fields, phpbb.plupload.getSerializedData()),
+		headers: phpbb.plupload.config.headers
 	})
 	.always(always)
 	.done(done);
@@ -309,7 +309,7 @@ an602.plupload.deleteFile = function(row, attachId) {
 /**
  * Check the attachment list and hide its container if it's empty.
  */
-an602.plupload.hideEmptyList = function() {
+phpbb.plupload.hideEmptyList = function() {
 	if (!$('#file-list').children().length) {
 		$('#file-list-container').slideUp(100);
 	}
@@ -318,14 +318,14 @@ an602.plupload.hideEmptyList = function() {
 /**
  * Update the indices used in inline attachment bbcodes. This ensures that the
  * bbcodes correspond to the correct file after a file is added or removed.
- * This should be called before the an602.plupload,data and an602.plupload.ids
+ * This should be called before the phpbb.plupload,data and phpbb.plupload.ids
  * arrays are updated, otherwise it will not work correctly.
  *
  * @param {string} action	The action that occurred -- either "addition" or "removal"
- * @param {int} index		The index of the attachment from an602.plupload.ids that was affected.
+ * @param {int} index		The index of the attachment from phpbb.plupload.ids that was affected.
  */
-an602.plupload.updateBbcode = function(action, index) {
-	var	textarea = $('#message', an602.plupload.form),
+phpbb.plupload.updateBbcode = function(action, index) {
+	var	textarea = $('#message', phpbb.plupload.form),
 		text = textarea.val(),
 		removal = (action === 'removal');
 
@@ -350,11 +350,11 @@ an602.plupload.updateBbcode = function(action, index) {
 	// corrupt the bbcode index.
 	var i;
 	if (removal) {
-		for (i = index; i < an602.plupload.ids.length; i++) {
+		for (i = index; i < phpbb.plupload.ids.length; i++) {
 			runUpdate(i);
 		}
 	} else {
-		for (i = an602.plupload.ids.length - 1; i >= index; i--) {
+		for (i = phpbb.plupload.ids.length - 1; i >= index; i--) {
 			runUpdate(i);
 		}
 	}
@@ -370,10 +370,10 @@ an602.plupload.updateBbcode = function(action, index) {
  *
  * @returns {Array} The Plupload file objects matching the status.
  */
-an602.plupload.getFilesByStatus = function(status) {
+phpbb.plupload.getFilesByStatus = function(status) {
 	var files = [];
 
-	$.each(an602.plupload.uploader.files, function(i, file) {
+	$.each(phpbb.plupload.uploader.files, function(i, file) {
 		if (file.status === status) {
 			files.push(file);
 		}
@@ -388,23 +388,23 @@ an602.plupload.getFilesByStatus = function(status) {
  *
  * @returns {bool} True if the limit has been reached. False if otherwise.
  */
-an602.plupload.handleMaxFilesReached = function() {
+phpbb.plupload.handleMaxFilesReached = function() {
 	// If there is no limit, the user is an admin or moderator.
-	if (!an602.plupload.maxFiles) {
+	if (!phpbb.plupload.maxFiles) {
 		return false;
 	}
 
-	if (an602.plupload.maxFiles <= an602.plupload.ids.length) {
+	if (phpbb.plupload.maxFiles <= phpbb.plupload.ids.length) {
 		// Fail the rest of the queue.
-		an602.plupload.markQueuedFailed(an602.plupload.lang.TOO_MANY_ATTACHMENTS);
+		phpbb.plupload.markQueuedFailed(phpbb.plupload.lang.TOO_MANY_ATTACHMENTS);
 		// Disable the uploader.
-		an602.plupload.disableUploader();
-		an602.plupload.uploader.trigger('Error', { message: an602.plupload.lang.TOO_MANY_ATTACHMENTS });
+		phpbb.plupload.disableUploader();
+		phpbb.plupload.uploader.trigger('Error', { message: phpbb.plupload.lang.TOO_MANY_ATTACHMENTS });
 
 		return true;
-	} else if (an602.plupload.maxFiles > an602.plupload.ids.length) {
+	} else if (phpbb.plupload.maxFiles > phpbb.plupload.ids.length) {
 		// Enable the uploader if the user is under the limit
-		an602.plupload.enableUploader();
+		phpbb.plupload.enableUploader();
 	}
 	return false;
 };
@@ -412,17 +412,17 @@ an602.plupload.handleMaxFilesReached = function() {
 /**
  * Disable the uploader
  */
-an602.plupload.disableUploader = function() {
+phpbb.plupload.disableUploader = function() {
 	$('#add_files').addClass('disabled');
-	an602.plupload.uploader.disableBrowse();
+	phpbb.plupload.uploader.disableBrowse();
 };
 
 /**
  * Enable the uploader
  */
-an602.plupload.enableUploader = function() {
+phpbb.plupload.enableUploader = function() {
 	$('#add_files').removeClass('disabled');
-	an602.plupload.uploader.disableBrowse(false);
+	phpbb.plupload.uploader.disableBrowse(false);
 };
 
 /**
@@ -430,12 +430,12 @@ an602.plupload.enableUploader = function() {
  *
  * @param {string} error Error message to present to the user.
  */
-an602.plupload.markQueuedFailed = function(error) {
-	var files = an602.plupload.getFilesByStatus(plupload.QUEUED);
+phpbb.plupload.markQueuedFailed = function(error) {
+	var files = phpbb.plupload.getFilesByStatus(plupload.QUEUED);
 
 	$.each(files, function(i, file) {
 		$('#' + file.id).find('.file-progress').hide();
-		an602.plupload.fileError(file, error);
+		phpbb.plupload.fileError(file, error);
 	});
 };
 
@@ -445,13 +445,13 @@ an602.plupload.markQueuedFailed = function(error) {
  * @param {object} file		Plupload file object that failed.
  * @param {string} error	Error message to present to the user.
  */
-an602.plupload.fileError = function(file, error) {
+phpbb.plupload.fileError = function(file, error) {
 	file.status = plupload.FAILED;
 	file.error = error;
 	$('#' + file.id).find('.file-status')
 		.addClass('file-error')
 		.attr({
-			'data-error-title': an602.plupload.lang.ERROR,
+			'data-error-title': phpbb.plupload.lang.ERROR,
 			'data-error-message': error
 		});
 };
@@ -460,8 +460,8 @@ an602.plupload.fileError = function(file, error) {
 /**
  * Set up the Plupload object and get some basic data.
  */
-an602.plupload.uploader = new plupload.Uploader(an602.plupload.config);
-an602.plupload.initialize();
+phpbb.plupload.uploader = new plupload.Uploader(phpbb.plupload.config);
+phpbb.plupload.initialize();
 
 /**
  * Add a file filter to check for max file sizes per mime type.
@@ -481,7 +481,7 @@ plupload.addFileFilter('mime_types_max_file_size', function(types, file, callbac
 			if (regex.test(file.name)) {
 				if (type.max_file_size !== 'undefined' && type.max_file_size) {
 					if (file.size > type.max_file_size) {
-						an602.plupload.uploader.trigger('Error', {
+						phpbb.plupload.uploader.trigger('Error', {
 							code: plupload.FILE_SIZE_ERROR,
 							message: plupload.translate('File size error.'),
 							file: file
@@ -508,9 +508,9 @@ var $fileList = $('#file-list');
  */
 $fileList.on('click', '.file-inline-bbcode', function(e) {
 	var attachId = $(this).parents('.attach-row').attr('data-attach-id'),
-		index = an602.plupload.getIndex(attachId);
+		index = phpbb.plupload.getIndex(attachId);
 
-	attachInline(index, an602.plupload.data[index].real_filename);
+	attachInline(index, phpbb.plupload.data[index].real_filename);
 	e.preventDefault();
 });
 
@@ -521,7 +521,7 @@ $fileList.on('click', '.file-delete', function(e) {
 	var row = $(this).parents('.attach-row'),
 		attachId = row.attr('data-attach-id');
 
-	an602.plupload.deleteFile(row, attachId);
+	phpbb.plupload.deleteFile(row, attachId);
 	e.preventDefault();
 });
 
@@ -529,14 +529,14 @@ $fileList.on('click', '.file-delete', function(e) {
  * Display the error message for a particular file when the error icon is clicked.
  */
 $fileList.on('click', '.file-error', function(e) {
-	an602.alert($(this).attr('data-error-title'), $(this).attr('data-error-message'));
+	phpbb.alert($(this).attr('data-error-title'), $(this).attr('data-error-message'));
 	e.preventDefault();
 });
 
 /**
  * Fires when an error occurs.
  */
-an602.plupload.uploader.bind('Error', function(up, error) {
+phpbb.plupload.uploader.bind('Error', function(up, error) {
 	error.file.name = plupload.xmlEncode(error.file.name);
 
 	// The error message that Plupload provides for these is vague, so we'll be more specific.
@@ -545,7 +545,7 @@ an602.plupload.uploader.bind('Error', function(up, error) {
 	} else if (error.code === plupload.FILE_SIZE_ERROR) {
 		error.message = plupload.translate('File too large:') + ' ' + error.file.name;
 	}
-	an602.alert(an602.plupload.lang.ERROR, error.message);
+	phpbb.alert(phpbb.plupload.lang.ERROR, error.message);
 });
 
 /**
@@ -556,12 +556,12 @@ an602.plupload.uploader.bind('Error', function(up, error) {
  * @param {object} up	The plupload.Uploader object
  * @param {object} file	The plupload.File object that is about to be uploaded
  */
-an602.plupload.uploader.bind('BeforeUpload', function(up, file) {
-	if (an602.plupload.handleMaxFilesReached()) {
+phpbb.plupload.uploader.bind('BeforeUpload', function(up, file) {
+	if (phpbb.plupload.handleMaxFilesReached()) {
 		return;
 	}
 
-	an602.plupload.updateMultipartParams({ real_filename: file.name });
+	phpbb.plupload.updateMultipartParams({ real_filename: file.name });
 });
 
 /**
@@ -574,7 +574,7 @@ an602.plupload.uploader.bind('BeforeUpload', function(up, file) {
  * 	been uploaded
  * @param {object} response	The response object from the server
  */
-an602.plupload.uploader.bind('ChunkUploaded', function(up, file, response) {
+phpbb.plupload.uploader.bind('ChunkUploaded', function(up, file, response) {
 	if (response.chunk >= response.chunks - 1) {
 		return;
 	}
@@ -613,10 +613,10 @@ an602.plupload.uploader.bind('ChunkUploaded', function(up, file, response) {
 /**
  * Fires when files are added to the queue.
  */
-an602.plupload.uploader.bind('FilesAdded', function(up, files) {
+phpbb.plupload.uploader.bind('FilesAdded', function(up, files) {
 	// Prevent unnecessary requests to the server if the user already uploaded
 	// the maximum number of files allowed.
-	if (an602.plupload.handleMaxFilesReached()) {
+	if (phpbb.plupload.handleMaxFilesReached()) {
 		return;
 	}
 
@@ -632,7 +632,7 @@ an602.plupload.uploader.bind('FilesAdded', function(up, files) {
 	}
 
 	$.each(files, function(i, file) {
-		an602.plupload.insertRow(file);
+		phpbb.plupload.insertRow(file);
 	});
 
 	up.bind('UploadProgress', function(up, file) {
@@ -641,7 +641,7 @@ an602.plupload.uploader.bind('FilesAdded', function(up, files) {
 	});
 
 	// Do not allow more files to be added to the running queue.
-	an602.plupload.disableUploader();
+	phpbb.plupload.disableUploader();
 
 	// Start uploading the files once the user has selected them.
 	up.start();
@@ -659,7 +659,7 @@ an602.plupload.uploader.bind('FilesAdded', function(up, files) {
  * 	uploaded
  * @param {string} response	The response string from the server
  */
-an602.plupload.uploader.bind('FileUploaded', function(up, file, response) {
+phpbb.plupload.uploader.bind('FileUploaded', function(up, file, response) {
 	var json = {},
 		row = $('#' + file.id),
 		error;
@@ -679,27 +679,27 @@ an602.plupload.uploader.bind('FileUploaded', function(up, file, response) {
 		up.trigger('Error', { message: error });
 
 		// The rest of the queue will fail.
-		an602.plupload.markQueuedFailed(error);
+		phpbb.plupload.markQueuedFailed(error);
 	} else if (json.error) {
 		error = json.error.message;
 	}
 
 	if (typeof error !== 'undefined') {
-		an602.plupload.fileError(file, error);
+		phpbb.plupload.fileError(file, error);
 	} else if (file.status === plupload.DONE) {
 		file.attachment_data = json.data[0];
 
 		row.attr('data-attach-id', file.attachment_data.attach_id);
 		row.find('.file-inline-bbcode').show();
 		row.find('.file-status').addClass('file-uploaded');
-		an602.plupload.update(json.data, 'addition', 0, [json.download_url]);
+		phpbb.plupload.update(json.data, 'addition', 0, [json.download_url]);
 	}
 });
 
 /**
  * Fires when the entire queue of files have been uploaded.
  */
-an602.plupload.uploader.bind('UploadComplete', function() {
+phpbb.plupload.uploader.bind('UploadComplete', function() {
 	// Hide the progress bar
 	setTimeout(function() {
 		$('#file-total-progress-bar').fadeOut(500, function() {
@@ -708,7 +708,7 @@ an602.plupload.uploader.bind('UploadComplete', function() {
 	}, 2000);
 
 	// Re-enable the uploader
-	an602.plupload.enableUploader();
+	phpbb.plupload.enableUploader();
 });
 
 })(jQuery); // Avoid conflicts with other libraries
