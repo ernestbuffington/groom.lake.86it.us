@@ -1,0 +1,194 @@
+services:
+    an602.skeleton.collection:
+        class: an602\di\service_collection
+        arguments:
+            - '@service_container'
+        tags:
+            - { name: service_collection, tag: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.phplistener:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'phplistener'
+            - false
+            - []
+            - ['config/services.yml', 'event/main_listener.php', 'language/en/common.php']
+            - 'BACK_END'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.htmllistener:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'htmllistener'
+            - false
+            - []
+            - ['styles/prosilver/template/event/overall_header_navigation_prepend.html']
+            - 'FRONT_END'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.acp:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'acp'
+            - false
+            - []
+            - ['acp/main_info.php', 'acp/main_module.php', 'adm/style/acp_demo_body.html', 'config/services.yml', 'controller/acp_controller.php', 'language/en/common.php', 'language/en/info_acp_demo.php', 'migrations/install_acp_module.php']
+            - 'CONTROL_PANELS'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.mcp:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'mcp'
+            - false
+            - []
+            - ['mcp/main_info.php', 'mcp/main_module.php', 'config/services.yml', 'controller/mcp_controller.php', 'styles/prosilver/template/mcp_demo_body.html', 'language/en/info_mcp_demo.php', 'migrations/install_mcp_module.php']
+            - 'CONTROL_PANELS'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.ucp:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'ucp'
+            - false
+            - []
+            - ['ucp/main_info.php', 'ucp/main_module.php', 'config/services.yml', 'controller/ucp_controller.php', 'styles/prosilver/template/ucp_demo_body.html', 'language/en/info_ucp_demo.php', 'migrations/install_ucp_module.php', 'migrations/install_sample_schema.php']
+            - 'CONTROL_PANELS'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.migration:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'migration'
+            - false
+            - []
+            - ['migrations/install_sample_schema.php', 'migrations/install_sample_data.php']
+            - 'DATABASE'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.service:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'service'
+            - false
+            - []
+            - ['service.php', 'config/services.yml', 'config/parameters.yml']
+            - 'BACK_END'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.controller:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'controller'
+            - false
+            - []
+            - ['config/routing.yml', 'config/services.yml', 'event/main_listener.php', 'language/en/common.php', 'controller/main_controller.php', 'styles/prosilver/template/demo_body.html', 'styles/prosilver/template/event/overall_header_navigation_prepend.html']
+            - 'BACK_END'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.ext:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'ext'
+            - false
+            - []
+            - ['ext.php']
+            - 'BACK_END'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.console:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'console'
+            - false
+            - []
+            - ['config/services.yml', 'console/command/sample.php', 'language/en/cli.php']
+            - 'OTHER'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.cron:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'cron'
+            - false
+            - []
+            - ['config/services.yml', 'cron/task/sample.php', 'migrations/install_cron.php']
+            - 'OTHER'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.notification:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'notification'
+            - false
+            - []
+            - ['ext.php', 'config/services.yml', 'notification/type/sample.php', 'language/en/common.php', 'language/en/info_ucp_demo.php']
+            - 'OTHER'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.permissions:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'permissions'
+            - false
+            - []
+            - ['migrations/install_sample_data.php', 'event/main_listener.php', 'language/en/permissions_demo.php', 'config/services.yml']
+            - 'OTHER'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.tests:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'tests'
+            - false
+            - []
+            - ['tests/controller/main_test.php', 'tests/dbal/fixtures/config.xml', 'tests/dbal/simple_test.php', 'tests/functional/view_test.php', 'phpunit.xml.dist']
+            - 'TEST_DEPLOY'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.githubactions:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'githubactions'
+            - false
+            - ['tests']
+            - ['.github/workflows/tests.yml']
+            - 'TEST_DEPLOY'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.travis:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'travis'
+            - false
+            - ['tests']
+            - ['travis/prepare-an602.sh', '.travis.yml']
+            - 'TEST_DEPLOY'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }
+
+    an602.skeleton.ext.skeleton.build:
+        class: an602\skeleton\skeleton
+        arguments:
+            - 'build'
+            - false
+            - []
+            - ['build.xml']
+            - 'TEST_DEPLOY'
+        tags:
+            - { name: an602.skeleton.ext.skeleton }

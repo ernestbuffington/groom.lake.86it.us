@@ -1,0 +1,88 @@
+<?php
+/**
+ *
+ * {{ EXTENSION.extension_display_name }}. An extension for the AN602 Forum Software package.
+ *
+ * @copyright (c) {{ "now"|date("Y") ~ (AUTHORS.0.author_name ? ', ' ~ AUTHORS.0.author_name) ~ (AUTHORS.0.author_homepage ? ', ' ~ AUTHORS.0.author_homepage) }}
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
+
+namespace {{ EXTENSION.vendor_name }}\{{ EXTENSION.extension_name }};
+
+/**
+ * {{ EXTENSION.extension_display_name }} Extension base
+ *
+ * It is recommended to remove this file from
+ * an extension if it is not going to be used.
+ */
+class ext extends \an602\extension\base
+{
+{% if COMPONENT.notification %}
+	/**
+	 * Enable notifications for the extension
+	 *
+	 * @param	mixed	$old_state	The return value of the previous call
+	 *								of this method, or false on the first call
+	 * @return	mixed				Returns false after last step, otherwise
+	 *								temporary state which is passed as an
+	 *								argument to the next step
+	 */
+	public function enable_step($old_state)
+	{
+		if ($old_state === false)
+		{
+			$this->container->get('notification_manager')
+				->enable_notifications('{{ EXTENSION.vendor_name }}.{{ EXTENSION.extension_name }}.notification.type.sample');
+
+			return 'notification';
+		}
+
+		return parent::enable_step($old_state);
+	}
+
+	/**
+	 * Disable notifications for the extension
+	 *
+	 * @param	mixed	$old_state	The return value of the previous call
+	 *								of this method, or false on the first call
+	 * @return	mixed				Returns false after last step, otherwise
+	 *								temporary state which is passed as an
+	 *								argument to the next step
+	 */
+	public function disable_step($old_state)
+	{
+		if ($old_state === false)
+		{
+			$this->container->get('notification_manager')
+				->disable_notifications('{{ EXTENSION.vendor_name }}.{{ EXTENSION.extension_name }}.notification.type.sample');
+
+			return 'notification';
+		}
+
+		return parent::disable_step($old_state);
+	}
+
+	/**
+	 * Purge notifications for the extension
+	 *
+	 * @param	mixed	$old_state	The return value of the previous call
+	 *								of this method, or false on the first call
+	 * @return	mixed				Returns false after last step, otherwise
+	 *								temporary state which is passed as an
+	 *								argument to the next step
+	 */
+	public function purge_step($old_state)
+	{
+		if ($old_state === false)
+		{
+			$this->container->get('notification_manager')
+				->purge_notifications('{{ EXTENSION.vendor_name }}.{{ EXTENSION.extension_name }}.notification.type.sample');
+
+			return 'notification';
+		}
+
+		return parent::purge_step($old_state);
+	}
+{% endif %}
+}

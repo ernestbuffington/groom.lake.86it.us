@@ -1,0 +1,32 @@
+<?php
+/**
+ *
+ * {{ EXTENSION.extension_display_name }}. An extension for the AN602 Forum Software package.
+ *
+ * @copyright (c) {{ "now"|date("Y") ~ (AUTHORS.0.author_name ? ', ' ~ AUTHORS.0.author_name) ~ (AUTHORS.0.author_homepage ? ', ' ~ AUTHORS.0.author_homepage) }}
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
+
+namespace {{ EXTENSION.vendor_name }}\{{ EXTENSION.extension_name }}\acp;
+
+/**
+ * {{ EXTENSION.extension_display_name }} ACP module info.
+ */
+class main_info
+{
+	public function module()
+	{
+		return [
+			'filename'	=> '\{{ EXTENSION.vendor_name }}\{{ EXTENSION.extension_name }}\acp\main_module',
+			'title'		=> 'ACP_{{ EXTENSION.extension_name|upper }}_TITLE',
+			'modes'		=> [
+				'settings'	=> [
+					'title'	=> 'ACP_{{ EXTENSION.extension_name|upper }}',
+					'auth'	=> 'ext_{{ EXTENSION.vendor_name }}/{{ EXTENSION.extension_name }} && {% if COMPONENT.permissions %}acl_a_new_{{ EXTENSION.vendor_name }}_{{ EXTENSION.extension_name }}{% else %}acl_a_board{% endif %}',
+					'cat'	=> ['ACP_{{ EXTENSION.extension_name|upper }}_TITLE'],
+				],
+			],
+		];
+	}
+}

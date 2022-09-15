@@ -1,0 +1,58 @@
+<?php
+/**
+ *
+ * {{ EXTENSION.extension_display_name }}. An extension for the AN602 Forum Software package.
+ *
+ * @copyright (c) {{ "now"|date("Y") ~ (AUTHORS.0.author_name ? ', ' ~ AUTHORS.0.author_name) ~ (AUTHORS.0.author_homepage ? ', ' ~ AUTHORS.0.author_homepage) }}
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
+
+namespace {{ EXTENSION.vendor_name }}\{{ EXTENSION.extension_name }}\console\command;
+
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+/**
+ * {{ EXTENSION.extension_display_name }} console command.
+ */
+class sample extends \an602\console\command\command
+{
+	/** @var \an602\user */
+	protected $user;
+
+	/**
+	 * Constructor
+	 *
+	 * @param \an602\user $user User instance (mostly for translation)
+	 */
+	public function __construct(\an602\user $user)
+	{
+		parent::__construct($user);
+
+		// Set up additional properties here
+	}
+
+	/**
+	 * Configures the current command.
+	 */
+	protected function configure()
+	{
+		$this->user->add_lang_ext('{{ EXTENSION.vendor_name }}/{{ EXTENSION.extension_name }}', 'cli');
+		$this
+			->setName('{{ EXTENSION.vendor_name|lower }}:{{ EXTENSION.extension_name|lower }}')
+			->setDescription($this->user->lang('CLI_{{ EXTENSION.extension_name|upper }}'))
+		;
+	}
+
+	/**
+	 * Executes the command {{ EXTENSION.vendor_name|lower }}:{{ EXTENSION.extension_name|lower }}.
+	 *
+	 * @param InputInterface  $input  An InputInterface instance
+	 * @param OutputInterface $output An OutputInterface instance
+	 */
+	protected function execute(InputInterface $input, OutputInterface $output)
+	{
+		$output->writeln($this->user->lang('CLI_{{ EXTENSION.extension_name|upper }}_HELLO'));
+	}
+}

@@ -4,8 +4,8 @@ Colours and backgrounds for common.css
 -------------------------------------------------------------- */
 
 html, body {
-	color: #536482;
-	background-color: #F5F7FA;
+	color: #c9d1d9;
+	background-color: #0d1117;
 }
 
 h1 {
@@ -17,13 +17,13 @@ h2 {
 }
 
 h3 {
-	border-bottom-color: #CCCCCC;
-	color: #115098;
+	border-bottom-color: #30363d;
+	color: #c9d1d9;
 }
 
 hr {
-	border-color: #FFFFFF;
-	border-top-color: #CCCCCC;
+	border-color: #c9d1d9;
+	border-top-color: #30363d;
 }
 
 /*
@@ -81,8 +81,8 @@ a:hover { color: #D31141; }
 /* Round cornered boxes and backgrounds
 ---------------------------------------- */
 .wrap {
-	background-color: #FFF;
-	border-color: #E6E9ED;
+	background-color: #161b22;
+	border-color: #30363d;
 }
 
 .headerbar {

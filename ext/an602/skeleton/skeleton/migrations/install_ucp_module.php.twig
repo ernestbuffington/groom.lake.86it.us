@@ -1,0 +1,51 @@
+<?php
+/**
+ *
+ * {{ EXTENSION.extension_display_name }}. An extension for the AN602 Forum Software package.
+ *
+ * @copyright (c) {{ "now"|date("Y") ~ (AUTHORS.0.author_name ? ', ' ~ AUTHORS.0.author_name) ~ (AUTHORS.0.author_homepage ? ', ' ~ AUTHORS.0.author_homepage) }}
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
+
+namespace {{ EXTENSION.vendor_name }}\{{ EXTENSION.extension_name }}\migrations;
+
+class install_ucp_module extends \an602\db\migration\migration
+{
+	public function effectively_installed()
+	{
+		$sql = 'SELECT module_id
+			FROM ' . $this->table_prefix . "modules
+			WHERE module_class = 'ucp'
+				AND module_langname = 'UCP_{{ EXTENSION.extension_name|upper }}_TITLE'";
+		$result = $this->db->sql_query($sql);
+		$module_id = $this->db->sql_fetchfield('module_id');
+		$this->db->sql_freeresult($result);
+
+		return $module_id !== false;
+	}
+
+	public static function depends_on()
+	{
+		return ['\{{ EXTENSION.vendor_name }}\{{ EXTENSION.extension_name }}\migrations\install_sample_schema'];
+	}
+
+	public function update_data()
+	{
+		return [
+			['module.add', [
+				'ucp',
+				0,
+				'UCP_{{ EXTENSION.extension_name|upper }}_TITLE'
+			]],
+			['module.add', [
+				'ucp',
+				'UCP_{{ EXTENSION.extension_name|upper }}_TITLE',
+				[
+					'module_basename'	=> '\{{ EXTENSION.vendor_name }}\{{ EXTENSION.extension_name }}\ucp\main_module',
+					'modes'				=> ['settings'],
+				],
+			]],
+		];
+	}
+}

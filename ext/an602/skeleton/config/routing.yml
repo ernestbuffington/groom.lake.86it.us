@@ -1,0 +1,3 @@
+an602_skeleton_controller:
+    path: /skeleton
+    defaults: { _controller: an602.skeleton.controller:handle }

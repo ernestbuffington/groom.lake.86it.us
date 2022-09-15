@@ -1,0 +1,46 @@
+<?php
+/**
+ *
+ * {{ EXTENSION.extension_display_name }}. An extension for the AN602 Forum Software package.
+ *
+ * @copyright (c) {{ "now"|date("Y") ~ (AUTHORS.0.author_name ? ', ' ~ AUTHORS.0.author_name) ~ (AUTHORS.0.author_homepage ? ', ' ~ AUTHORS.0.author_homepage) }}
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
+
+namespace {{ EXTENSION.vendor_name }}\{{ EXTENSION.extension_name }};
+
+/**
+ * {{ EXTENSION.extension_display_name }} Service info.
+ */
+class service
+{
+	/** @var \an602\user */
+	protected $user;
+
+	/** @var string */
+	protected $table_name;
+
+	/**
+	 * Constructor
+	 *
+	 * @param \an602\user $user       User object
+	 * @param string      $table_name The name of a db table
+	 */
+	public function __construct(\an602\user $user, $table_name)
+	{
+		$this->user = $user;
+		$this->table_name = $table_name;
+	}
+
+	/**
+	 * Get user object
+	 *
+	 * @return \an602\user $user User object
+	 */
+	public function get_user()
+	{
+		var_dump($this->table_name);
+		return $this->user;
+	}
+}

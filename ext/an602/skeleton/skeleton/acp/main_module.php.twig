@@ -1,0 +1,51 @@
+<?php
+/**
+ *
+ * {{ EXTENSION.extension_display_name }}. An extension for the AN602 Forum Software package.
+ *
+ * @copyright (c) {{ "now"|date("Y") ~ (AUTHORS.0.author_name ? ', ' ~ AUTHORS.0.author_name) ~ (AUTHORS.0.author_homepage ? ', ' ~ AUTHORS.0.author_homepage) }}
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
+
+namespace {{ EXTENSION.vendor_name }}\{{ EXTENSION.extension_name }}\acp;
+
+/**
+ * {{ EXTENSION.extension_display_name }} ACP module.
+ */
+class main_module
+{
+	public $page_title;
+	public $tpl_name;
+	public $u_action;
+
+	/**
+	 * Main ACP module
+	 *
+	 * @param int    $id   The module ID
+	 * @param string $mode The module mode (for example: manage or settings)
+	 * @throws \Exception
+	 */
+	public function main($id, $mode)
+	{
+		global $an602_container;
+
+		/** @var \{{ EXTENSION.vendor_name }}\{{ EXTENSION.extension_name }}\controller\acp_controller $acp_controller */
+		$acp_controller = $an602_container->get('{{ EXTENSION.vendor_name }}.{{ EXTENSION.extension_name }}.controller.acp');
+
+		/** @var {{ LANGUAGE.class }} ${{ LANGUAGE.object }} */
+		${{ LANGUAGE.object }} = $an602_container->get('{{ LANGUAGE.object }}');
+
+		// Load a template from adm/style for our ACP page
+		$this->tpl_name = 'acp_{{ EXTENSION.extension_name|lower }}_body';
+
+		// Set the page title for our ACP page
+		$this->page_title = ${{ LANGUAGE.object }}->lang('ACP_{{ EXTENSION.extension_name|upper }}_TITLE');
+
+		// Make the $u_action url available in our ACP controller
+		$acp_controller->set_page_url($this->u_action);
+
+		// Load the display options handle in our ACP controller
+		$acp_controller->display_options();
+	}
+}

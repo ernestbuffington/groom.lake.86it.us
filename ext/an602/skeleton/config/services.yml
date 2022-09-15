@@ -1,0 +1,36 @@
+imports:
+    - { resource: console.yml }
+    - { resource: skeletons.yml }
+
+services:
+    an602.skeleton.controller:
+        class: an602\skeleton\controller\main
+        arguments:
+            - '@config'
+            - '@controller.helper'
+            - '@language'
+            - '@request'
+            - '@an602.skeleton.helper.packager'
+            - '@an602.skeleton.helper.validator'
+            - '@template'
+            - '@user'
+
+    an602.skeleton.helper.packager:
+        class: an602\skeleton\helper\packager
+        arguments:
+            - '@service_container'
+            - '@an602.skeleton.collection'
+            - '%core.root_path%'
+
+    an602.skeleton.helper.validator:
+        class: an602\skeleton\helper\validator
+        arguments:
+            - '@language'
+
+    an602.skeleton.listener:
+        class: an602\skeleton\event\main_listener
+        arguments:
+            - '@controller.helper'
+            - '@template'
+        tags:
+            - { name: event.listener }
