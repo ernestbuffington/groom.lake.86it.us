@@ -3,6 +3,6 @@ All men dream, but not equally. Those who dream by night in the dusty recesses o
 
 ## Developers: 
 ScottybCoder <Truman Scott Buffington><br>
-Alleb Scott  <Sebastian Scott Buffington><br>
+Allen Scott  <Sebastian Scott Buffington><br>
 TheWolf      <Winston Terrance Wolfe><br>
                        
