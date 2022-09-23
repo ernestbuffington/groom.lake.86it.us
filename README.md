@@ -1,7 +1,8 @@
 ### The Groom Lake Developers Facility
 All men dream, but not equally. Those who dream by night in the dusty recesses of their minds, wake in the day to find that it was vanity: but the dreamers of the day are dangerous men, for they may act on their dreams with open eyes, to make them possible.
 
-### Developers: 
+### Developers:
+TheGhost     <Ernest Allen Buffington><br>
 ScottybCoder <Truman Scott Buffington><br>
 Allen Scott  <Sebastian Scott Buffington><br>
 TheWolf      <Winston Terrance Wolfe><br>
