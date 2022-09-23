@@ -1029,6 +1029,11 @@ function append_titanium_sid($url, $non_html_amp = false)
     return($url);
 }
 
+function titanium_home_sid($url)
+{
+    return $url;
+}
+
 # Not being used anywhere yet
 function titanium_admin_sid($url, $non_html_amp = false)
 {

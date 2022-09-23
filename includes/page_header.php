@@ -510,7 +510,10 @@ $phpbb2_template->assign_vars(array(
         'L_LOGIN' => $titanium_lang['Login'],
         'L_LOG_ME_IN' => $titanium_lang['Log_me_in'],
         'L_AUTO_LOGIN' => $titanium_lang['Log_me_in'],
+
 		'L_INDEX' => sprintf($titanium_lang['Forum_Index'], $phpbb2_board_config['sitename']),
+	    'L_INDEXHOME' => $titanium_lang['Home_Index'],'index.php',
+
         'L_REGISTER' => $titanium_lang['Register'],
         'L_PROFILE' => $titanium_lang['Edit_profile'],
         'L_SEARCH' => $titanium_lang['Search'],
@@ -544,8 +547,11 @@ $phpbb2_template->assign_vars(array(
         'U_SEARCH_UNANSWERED' => append_titanium_sid('search.'.$phpEx.'?search_id=unanswered'),
         'U_SEARCH_SELF' => append_titanium_sid('search.'.$phpEx.'?search_id=egosearch'),
         'U_SEARCH_NEW' => append_titanium_sid('search.'.$phpEx.'?search_id=newposts'),
-        'U_INDEX' => append_titanium_sid('index.'.$phpEx),
-        'U_REGISTER' => append_titanium_sid('profile.'.$phpEx.'?mode=register'),
+        
+		'U_INDEX' => append_titanium_sid('index.'.$phpEx),
+        'U_HINDEX' => titanium_home_sid('index.'.$phpEx),
+		
+		'U_REGISTER' => append_titanium_sid('profile.'.$phpEx.'?mode=register'),
         'U_PROFILE' => append_titanium_sid('profile.'.$phpEx.'?mode=editprofile'),
         'U_PRIVATEMSGS' => append_titanium_sid('privmsg.'.$phpEx.'?folder=inbox'),
         'U_PRIVATEMSGS_POPUP' => append_titanium_sid('privmsg.'.$phpEx.'?mode=newpm&popup=1',true),

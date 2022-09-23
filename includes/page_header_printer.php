@@ -58,8 +58,11 @@ $phpbb2_template->assign_vars(array(
     'L_ADMIN' => $titanium_lang['Admin'],
     'L_USERNAME' => $titanium_lang['Username'],
     'L_PASSWORD' => $titanium_lang['Password'],
-    'L_INDEX' => $titanium_lang['Forum_Index'],
-    'L_REGISTER' => $titanium_lang['Register'],
+    
+	'L_INDEX' => $titanium_lang['Forum_Index'],
+	'L_INDEXHOME' => $titanium_lang['Home_Index'],
+    
+	'L_REGISTER' => $titanium_lang['Register'],
     'L_PROFILE' => $titanium_lang['Profile'],
     'L_SEARCH' => $titanium_lang['Search'],
     'L_PRIVATEMSGS' => $titanium_lang['Private_msgs'],
@@ -92,7 +95,10 @@ $phpbb2_template->assign_vars(array(
     'L_PRINT_DESC' => $titanium_lang['printertopic_Print_desc'],
 
     'U_INDEX' => append_titanium_sid('index.'.$phpEx),
-    'U_FAQ' => append_titanium_sid('faq.'.$phpEx),
+    'U_HINDEX' => titanium_home_sid('index.'.$phpEx),
+    
+	
+	'U_FAQ' => append_titanium_sid('faq.'.$phpEx),
 
     'S_TIMEZONE' => sprintf($titanium_lang['All_times'], $l_timezone),
     'S_LOGIN_ACTION' => append_titanium_sid('../login.'.$phpEx),

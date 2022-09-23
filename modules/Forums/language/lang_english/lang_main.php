@@ -206,6 +206,7 @@ $titanium_lang['Delete_This_User'] = '%sDelete this user%s';
 
 // $titanium_lang['Forum_Index'] = '%s Forum Index';  // eg. sitename Forum Index, %s can be removed if you prefer
 $titanium_lang['Forum_Index'] = 'Forum Index';
+$titanium_lang['Home_Index']  = 'Home';
 
 
 $titanium_lang['Post_new_topic'] = 'Post new topic';

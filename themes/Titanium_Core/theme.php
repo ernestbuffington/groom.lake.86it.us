@@ -112,7 +112,7 @@ $make_xtreme_avatar_small,
 				   
 # be sure and set your user number in the config.php file.
 //$my_welcome_message = '<a class = "welcome" href="'.$domain.'">Welcome to The 86it Developers Network</a>';
-$my_welcome_message = '<a class = "welcome" href="'.$domain.'">Welcome to The Ghost\'s 86it Portal <font color="#FF9900" size="3">86it™</font></a>';
+$my_welcome_message = '<a class = "welcome" href="'.$domain.'">Welcome to The Groom Lake Developers Facilty <font color="#FF9900" size="1.2">86it™</font></a>';
 //$my_welcome_message = '<a class = "welcome" href="'.HTTPS.'">PHP-Nuke Titanium Dev 4 <font color="#FF9900" size="1">(Desktop Version)</font></a>';
 
 # This is to tell the main portal menu to look for the images
