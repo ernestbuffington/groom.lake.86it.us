@@ -93,13 +93,13 @@ $phpbb2_template->assign_vars(array(
     'L_SHOW' => $titanium_lang['printertopic_Show'],
     'L_PRINT' => $titanium_lang['printertopic_Print'],
     'L_PRINT_DESC' => $titanium_lang['printertopic_Print_desc'],
-
     'U_INDEX' => append_titanium_sid('index.'.$phpEx),
-    'U_HINDEX' => titanium_home_sid('index.'.$phpEx),
-    
-	
-	'U_FAQ' => append_titanium_sid('faq.'.$phpEx),
 
+    # Home Index Mod START
+	'U_HINDEX' => titanium_home_sid('index.'.$phpEx),
+    # Home Index Mod END
+
+	'U_FAQ' => append_titanium_sid('faq.'.$phpEx),
     'S_TIMEZONE' => sprintf($titanium_lang['All_times'], $l_timezone),
     'S_LOGIN_ACTION' => append_titanium_sid('../login.'.$phpEx),
     'S_JUMPBOX_ACTION' => append_titanium_sid('../viewforum.'.$phpEx),

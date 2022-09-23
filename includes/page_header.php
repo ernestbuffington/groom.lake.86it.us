@@ -547,10 +547,12 @@ $phpbb2_template->assign_vars(array(
         'U_SEARCH_UNANSWERED' => append_titanium_sid('search.'.$phpEx.'?search_id=unanswered'),
         'U_SEARCH_SELF' => append_titanium_sid('search.'.$phpEx.'?search_id=egosearch'),
         'U_SEARCH_NEW' => append_titanium_sid('search.'.$phpEx.'?search_id=newposts'),
-        
 		'U_INDEX' => append_titanium_sid('index.'.$phpEx),
-        'U_HINDEX' => titanium_home_sid('index.'.$phpEx),
-		
+
+        # Home Index Mod START
+		'U_HINDEX' => titanium_home_sid('index.'.$phpEx),
+        # Home Index Mod END
+	
 		'U_REGISTER' => append_titanium_sid('profile.'.$phpEx.'?mode=register'),
         'U_PROFILE' => append_titanium_sid('profile.'.$phpEx.'?mode=editprofile'),
         'U_PRIVATEMSGS' => append_titanium_sid('privmsg.'.$phpEx.'?folder=inbox'),
