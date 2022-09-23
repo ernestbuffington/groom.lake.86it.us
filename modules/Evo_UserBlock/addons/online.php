@@ -245,27 +245,32 @@ function evouserinfo_online_display($members, $guests)
         $out .= '<div style="font-weight: bold">'.$titanium_lang_evo_userblock['BLOCK']['ONLINE']['STATS'].'</div>';
 
         $out .= '<div style="padding-left: 10px;">';
-        $out .= '<font color="gold"><i class="fas fa-radiation-alt" aria-hidden="true"></i></font>&nbsp;'.$titanium_lang_evo_userblock['BLOCK']['ONLINE']['MEMBERS'].'<span style="float:right">'.$members['total'].'&nbsp;&nbsp;</span>';
+        $out .= '<font color="gold"><i class="fa fa-pie-chart" aria-hidden="true"></i>
+</font>&nbsp;'.$titanium_lang_evo_userblock['BLOCK']['ONLINE']['MEMBERS'].'<span style="float:right">'.$members['total'].'&nbsp;&nbsp;</span>';
         $out .= '</div>'; 
 
         if($evouserinfo_addons['online_show_hv'] == 'yes'):
 
             $out .= '<div style="padding-left: 10px;">';
-            $out .= '<font color="gold"><i class="fas fa-radiation-alt" aria-hidden="true"></i></font>&nbsp;'.$titanium_lang_evo_userblock['BLOCK']['ONLINE']['VISIBLE'].'<span style="float:right">'.$members['visible'].'&nbsp;&nbsp;</span>';
+            $out .= '<font color="#FF3300"><i class="fa fa-pie-chart" aria-hidden="true"></i>
+</font>&nbsp;'.$titanium_lang_evo_userblock['BLOCK']['ONLINE']['VISIBLE'].'<span style="float:right">'.$members['visible'].'&nbsp;&nbsp;</span>';
             $out .= '</div>';
 
             $out .= '<div style="padding-left: 10px;">';
-            $out .= '<font color="gold"><i class="fas fa-radiation-alt" aria-hidden="true"></i></font>&nbsp;'.$titanium_lang_evo_userblock['BLOCK']['ONLINE']['HIDDEN'].'<span style="float:right">'.$members['hidden'].'&nbsp;&nbsp;</span>';
+            $out .= '<font color="gold"><i class="fa fa-pie-chart" aria-hidden="true"></i>
+</font>&nbsp;'.$titanium_lang_evo_userblock['BLOCK']['ONLINE']['HIDDEN'].'<span style="float:right">'.$members['hidden'].'&nbsp;&nbsp;</span>';
             $out .= '</div>';
 
         endif;
 
         $out .= '<div style="padding-left: 10px;">';
-        $out .= '<font color="gold"><i class="fas fa-radiation-alt" aria-hidden="true"></i></font>&nbsp;'.$titanium_lang_evo_userblock['BLOCK']['ONLINE']['GUESTS'].'<span style="float:right">'.$guests['total'].'&nbsp;&nbsp;</span>';
+        $out .= '<font color="#FF3300"><i class="fa fa-pie-chart" aria-hidden="true"></i>
+</font>&nbsp;'.$titanium_lang_evo_userblock['BLOCK']['ONLINE']['GUESTS'].'<span style="float:right">'.$guests['total'].'&nbsp;&nbsp;</span>';
         $out .= '</div>';
 
         $out .= '<div style="padding-left: 10px;">';
-        $out .= '<font color="gold"><i class="fas fa-radiation-alt" aria-hidden="true"></i></font>&nbsp;'.$titanium_lang_evo_userblock['BLOCK']['ONLINE']['TOTAL'].'<span style="float:right">'.($guests['total']+$members['total']).'&nbsp;&nbsp;</span><hr />';
+        $out .= '<font color="pink"><i class="fa fa-pie-chart" aria-hidden="true"></i>
+</font>&nbsp;'.$titanium_lang_evo_userblock['BLOCK']['ONLINE']['TOTAL'].'<span style="float:right">'.($guests['total']+$members['total']).'&nbsp;&nbsp;</span><hr />';
         $out .= '</div>';
     
     endif;

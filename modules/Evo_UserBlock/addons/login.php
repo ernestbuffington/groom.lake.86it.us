@@ -94,47 +94,50 @@ else
 {
 	global $userinfo, $bgcolor1, $bgcolor2;
 
+
+
 	$evouserinfo_login .= '<div style="padding-left: 11px;">';
-    $evouserinfo_login .= '  <font color="#3498DB"><i class="far fa-file-image" aria-hidden="true"></i></font> <a 
+    $evouserinfo_login .= '  <font color="#FFFFFF"><i class="fa fa-envelope-open-o" aria-hidden="true"></i></font> <a 
+	href="modules.php?name=Private_Messages">'.$titanium_lang_evo_userblock['BLOCK']['LOGIN']['MYMESSAGEBOX'].'</a>';
+    $evouserinfo_login .= '</div>';
+
+	$evouserinfo_login .= '<div style="padding-left: 11px;">';
+    $evouserinfo_login .= '  <font color="#3498DB"><i class="fa fa-upload" aria-hidden="true"></i></font> <a 
 	href="modules.php?name=Image_Repository">'.$titanium_lang_evo_userblock['BLOCK']['LOGIN']['MYHOSTEDIMAGES'].'</a>';
     $evouserinfo_login .= '</div>';
     
-	$evouserinfo_login .= '<div style="padding-left: 8px;">';
-    $evouserinfo_login .= '  <font color="darkgreen"><i class="fas fa-link" aria-hidden="true"></i></font> <a 
+	$evouserinfo_login .= '<div style="padding-left: 14px;">';
+    $evouserinfo_login .= '  <font color="red"><i class="fa fa-bookmark" aria-hidden="true"></i></font>&nbsp;<a 
 	href="modules.php?name=Bookmarks">'.$titanium_lang_evo_userblock['BLOCK']['LOGIN']['MYBOOKMARKS'].'</a>';
     $evouserinfo_login .= '</div>';
 
-    $evouserinfo_login .= '<div style="padding-left: 10px;">';
-    $evouserinfo_login .= '  <font color="#EC7063"><i class="fas fa-user" aria-hidden="true"></i></font> <a 
-	href="modules.php?name=Profile&mode=viewprofile&u='.$userinfo['user_id'].'">'.$titanium_lang_evo_userblock['BLOCK']['LOGIN']['MYPROFILE'].'</a>';
-    $evouserinfo_login .= '</div>';
-
-    $evouserinfo_login .= '<div style="padding-left: 8px;">';
-    $evouserinfo_login .= '  <font color="#EC7063"><i class="far fa-edit" aria-hidden="true"></i></font> <a 
-	href="modules.php?name=Profile">'.$titanium_lang_evo_userblock['BLOCK']['LOGIN']['EDITMYPROFILE'].'</a>';
-    $evouserinfo_login .= '</div>';
-
-    $evouserinfo_login .= '<div style="padding-left: 8px;">';
-    $evouserinfo_login .= '  <font color="#45B39D"><i class="far fa-edit" aria-hidden="true"></i></font> <a 
+    $evouserinfo_login .= '<div style="padding-left: 11px;">';
+    $evouserinfo_login .= '  <font color="#45B39D"><i class="fa fa-cog" aria-hidden="true"></i></font> <a 
 	href="modules.php?name=Your_Account&op=chgtheme">'.$titanium_lang_evo_userblock['BLOCK']['LOGIN']['CHANGEMYTHEME'].'</a>';
     $evouserinfo_login .= '</div>';
 
-    $evouserinfo_login .= '<div style="padding-left: 8px;">';
-    $evouserinfo_login .= '  <font color="#D4AC0D"><i class="far fa-edit" aria-hidden="true"></i></font> <a 
-	href="modules.php?name=Your_Account&op=edithome">'.$titanium_lang_evo_userblock['BLOCK']['LOGIN']['SETBLOGPOSTS'].'</a>';
+    $evouserinfo_login .= '<div style="padding-left: 14px;">';
+    $evouserinfo_login .= '  <font color="gold"><i class="fa fa-id-badge" aria-hidden="true"></i>
+</font> <a 
+	href="modules.php?name=Profile&mode=viewprofile&u='.$userinfo['user_id'].'">'.$titanium_lang_evo_userblock['BLOCK']['LOGIN']['MYPROFILE'].'</a>';
     $evouserinfo_login .= '</div>';
 
-    $evouserinfo_login .= '<div style="padding-left: 10px;">';
-    $evouserinfo_login .= '  <font color="violet"><i class="fas fa-sign-out-alt" aria-hidden="true"></i></font> <a 
+    $evouserinfo_login .= '<div style="padding-left: 13px;">';
+    $evouserinfo_login .= '  <font color="gold"><i class="fa fa-bars" aria-hidden="true"></i></font> <a 
+	href="modules.php?name=Profile">'.$titanium_lang_evo_userblock['BLOCK']['LOGIN']['EDITMYPROFILE'].'</a>';
+    $evouserinfo_login .= '</div>';
+
+    $evouserinfo_login .= '<div style="padding-left: 12px;">';
+    $evouserinfo_login .= '  <font color="orange"><i class="fa fa-sign-out" aria-hidden="true"></i></font> <a 
 	href="modules.php?name=Your_Account&amp;op=logout">'.$titanium_lang_evo_userblock['BLOCK']['LOGIN']['LOGOUT'].'</a>';
     $evouserinfo_login .= '</div>';
 
-    $evouserinfo_login .= '<div style="padding-left: 10px;">';
-    $evouserinfo_login .= '  <font color="red"><i class="fas fa-user"></i></font> <a href="modules.php?name=Your_Account&op=delete">'.
+    $evouserinfo_login .= '<div style="padding-left: 12px;">';
+    $evouserinfo_login .= '  <font color="red"><i class="fa fa-trash" aria-hidden="true"></i></font> <a href="modules.php?name=Your_Account&op=delete">'.
 	$titanium_lang_evo_userblock['BLOCK']['LOGIN']['DELETE'].'</a>';
     $evouserinfo_login .= '</div>';
 
-    $evouserinfo_login .= '<div style="padding-left: 10px;">';
+    $evouserinfo_login .= '<div style="padding-left: 11px;">';
     $evouserinfo_login .= '  <font color="tan"><i class="fas fa-cookie" aria-hidden="true"></i></font> <a 
 	href="modules.php?name=Your_Account&op=ShowCookiesRedirect">'.$titanium_lang_evo_userblock['BLOCK']['LOGIN']['COOKIES'].'</a>';
     $evouserinfo_login .= '</div>';

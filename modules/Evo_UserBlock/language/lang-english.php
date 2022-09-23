@@ -30,10 +30,11 @@ $titanium_lang_evo_userblock['BLOCK']['LOGIN']['DELETE'] = 'Deactivate Account';
 
 //Online
 $titanium_lang_evo_userblock['BLOCK']['LOGIN']['SETBLOGPOSTS'] = 'Set Blog Posts';
-$titanium_lang_evo_userblock['BLOCK']['LOGIN']['CHANGEMYTHEME'] = 'Change My Theme';
+$titanium_lang_evo_userblock['BLOCK']['LOGIN']['CHANGEMYTHEME'] = 'My Theme';
 $titanium_lang_evo_userblock['BLOCK']['LOGIN']['MYHOSTEDIMAGES'] = 'My Hosted Images';
+$titanium_lang_evo_userblock['BLOCK']['LOGIN']['MYMESSAGEBOX'] = 'My Message Box';
 $titanium_lang_evo_userblock['BLOCK']['LOGIN']['MYBOOKMARKS'] = 'My Bookmark Vault';
-$titanium_lang_evo_userblock['BLOCK']['LOGIN']['MYPROFILE'] = 'View My Profile';
+$titanium_lang_evo_userblock['BLOCK']['LOGIN']['MYPROFILE'] = 'My Profile';
 $titanium_lang_evo_userblock['BLOCK']['LOGIN']['EDITMYPROFILE'] = 'Edit My Profile';
 $titanium_lang_evo_userblock['BLOCK']['ONLINE']['BREAK'] = ':';
 $titanium_lang_evo_userblock['BLOCK']['ONLINE']['HIDDEN'] = 'Hidden';
