@@ -1029,10 +1029,12 @@ function append_titanium_sid($url, $non_html_amp = false)
     return($url);
 }
 
+# Home Index Mod START
 function titanium_home_sid($url)
 {
     return $url;
 }
+# Home Index Mod END
 
 # Not being used anywhere yet
 function titanium_admin_sid($url, $non_html_amp = false)
