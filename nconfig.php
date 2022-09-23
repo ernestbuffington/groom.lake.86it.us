@@ -19,13 +19,13 @@ if(realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) exit('Access Den
 global $portaladmin, $titanium_dbhost2, $titanium_dbname2, $titanium_dbuname2, $titanium_db2, $network_prefix;
 
 # Your ADMIN user id number goes here!
-$portaladmin ='2';
+$portaladmin = "22";
  
-//define('network', 'enabled');
+define('network', 'enabled');
 if ( defined('network') ):
 $titanium_dbhost2 = 'localhost';
-$titanium_dbname2 = '';
-$titanium_dbuname2 = '';
+$titanium_dbname2 = 'hub_db';
+$titanium_dbuname2 = 'hub_user';
 $titanium_dbpass2 = '';
 $network_prefix = 'network';
 endif;
