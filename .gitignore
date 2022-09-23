@@ -13,8 +13,8 @@ _vti_pvt
 desktop.ini
 _private
 tpl_*.php
-.well-known
-cgi-bin
-config.php
+error_log.php
+error_log
+*.mp4
 
 
