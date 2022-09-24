@@ -589,9 +589,6 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
              $bgcolor2,
              $bgcolor3,
              $bgcolor4,
-		  $portaladmin, 
-	           $titanium_prefix, 
-	  $portaladminname,    
 			   $domain, 
 			      $uid, 
 			 $ThemeSel;
@@ -599,28 +596,8 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 	   $align = 'absmiddle'; # added by Ernest Buffingtn to align the new.gif image
 	$aligncat = 'style="text-align:left"'; # added by Ernest Buffingtn to align the link text left
 	
-    list($portaladminname, 
-	              $avatar, 
-				   $email) = $titanium_db->sql_ufetchrow("SELECT `username`,`user_avatar`, `user_email` FROM `".$titanium_prefix."_users` WHERE `user_id`='$portaladmin'", SQL_NUM);
 
     $content .= "\n\n\n";
-	
-	if (strcmp($_SERVER['SERVER_NAME'], 'cvs.86it.us') == 0)
-	{
-      $content .= "<div class=\"supersmall\" align=\"center\"><font size=\"1\" color=\"$textcolor1\"><strong>86it CVS</strong></font></div>\n";
-      $content .= "<div class=\"supersmall\" align=\"center\"><font size=\"1\" color=\"$textcolor2\"><strong>https://".$_SERVER['SERVER_NAME']."</strong></font></div>\n";
-	}
-    else
-	if (strcmp($_SERVER['SERVER_NAME'], 'www.86it.us') == 0)
-	{
-      $content .= "<div class=\"supersmall\" align=\"center\"><font size=\"1\" color=\"$textcolor1\"><strong>Welcome Home</strong></font></div>\n";
-      $content .= "<div class=\"supersmall\" align=\"center\"><font size=\"1\" color=\"$textcolor2\"><strong>The 86it HQ</strong></font></div>\n";
-	}
-    else
-	{
-      $content.= "<div class=\"supersmall\" align=\"center\"><font size=\"1\" color=\"$textcolor1\"><strong>$portaladminname</strong></font></div>\n";
-      $content.= "<div class=\"supersmall\" align=\"center\"><font size=\"1\" color=\"$textcolor2\"><strong>Owns This 86it Portal</strong></font></div>\n";
-	}
 
     $content .= "<br />";
 	$content .= "<img align=\"$align\" src=\"images/menu/home.gif\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">";
