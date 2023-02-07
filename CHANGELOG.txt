@@ -1,0 +1,227 @@
+/**
+ * Coppermine Photo Gallery
+ *
+ * v1.0 originally written by Gregory Demar
+ *
+ * @copyright  Copyright (c) 2003-2022 Coppermine Dev Team
+ * @license    GNU General Public License version 3 or later; see LICENSE
+ *
+ * CHANGELOG.txt
+ * @since  1.6.21
+ */
+Changelog
+=========
+[A] = Added new feature
+[B] = Bugfix (fix something that wasn't working as expected)
+[C] = Cosmetical fix (layout, typo etc.)
+[D] = Documentation improvements
+[M] = Maintenance works
+[O] = Optimization of code
+[S] = Security fix (issues that are related to security)
+*********************************************
+
+2022-10-28 [M] Fail more gracefully from database connection error {ron4mac}
+2022-10-18 [B] Correct typo in bridgemgr.php (thanks {bembi64}) {ron4mac}
+2022-08-01 [M,B] Correct PHP8 error with IPTC processing {ron4mac}
+2022-06-08 [M] More updates for PHP 8.1.x deprecations {ron4mac}
+2022-06-08 [O,C] HTML5 audio/video player: removed "autostart" parameter; set control offset to "0" {eenemeenemuu}
+2022-05-03 [B] Correct failure in bridgemgr for PHP 8 {ron4mac}
+2022-04-01 [B] Reset failure report mode in mysqli for PHP 8.1 {ron4mac}
+2022-03-25 [M] Updates for PHP 8.1.x; remove use of strftime() {ron4mac}
+2022-02-02 [B] Handle failure to get image dimensions in thumb updater tool {ron4mac}
+2021-11-22 [B] Allow ratings from different logged in users regardless of IP address {ron4mac}
+2021-11-20 [M] Update third party (ZenPhoto maintained) exif reader {ron4mac}
+2021-11-15 [M] Change bridge file for SMF 2.1 to function with latest SMF version {ron4mac}
+2021-11-09 [B] Correct install failure when single quote (') is used in db config {ron4mac}
+2021-10-07 [B] Correct more issues when running with PHP 8 (thanks to user altenae) {ron4mac}
+2021-10-07 [B] Correct some additional issues when running with PHP 8 {ron4mac}
+2021-09-24 [B] Correct conditions causing failures under PHP 8 {ron4mac}
+2021-09-24 [A] Added re_key admin tool to distribution {ron4mac}
+2021-08-18 [S] Remove possibility of XSS injection in upload_h5a plugin {ron4mac}
+2021-07-25 [B] Correct missing method for database creation when using PDO:mysql {ron4mac}
+2021-06-26 [B] Remove unnecessary, server objectionable parameters from batch upload iframe url (thread ID 80407) {ron4mac}
+2021-04-22 [M] Upgraded jQuery version to 1.12.4 and included migration script (1.4.1) {ron4mac}
+2021-03-21 [A] Added user login authorization hook for plugins {ron4mac}
+2021-02-23 [B] Correct javascript Array.find polyfill for conflict issues {ron4mac}
+2021-01-22 [M] Various code adjustments made for compatibility with PHP 8(.01) {ron4mac}
+2021-01-03 [B] Guard against array_keys failure (PHP8) caused by theme {ron4mac}
+2020-10-03 [B] Correct no plugin uninstall action for disabled plugins {ron4mac}
+2020-09-07 [M] Release of version 1.6.09 {ron4mac}
+2020-07-29 [B] Upload plugin upload_h5a fails to complete queue when uploading one at a time {ron4mac}
+2020-05-01 [B] Upload plugin upload_h5a fails to install if DB already has configuration {ron4mac}
+2020-04-30 [A] Provide themes with a method to request a body tag class based on current page {ron4mac}
+2020-04-28 [M] Cosmetic changes/corrections to admin tools, edit pics and contact {heismauri}
+2020-03-27 [B] Failure in include/archive.php due to __construct() changes {ron4mac}
+2020-03-23 [B] Use 'dbcharset' parameter when opening bridged database {ron4mac}
+2020-02-26 [O,M] Simlify log creation and display {ron4mac}
+2020-02-26 [M] Clean up code involved in PHP warnings {ron4mac}
+2020-02-25 [M] Remove use of deprecated *magic_quotes* functions {ron4mac}
+2020-02-07 [A] Provide themes with a method to use font icons {ron4mac}
+2020-02-07 [M] Clean up rating icon in pics edit {ron4mac}
+2020-02-05 [B] Change javascript 'zebra' code to apply to table cells instead of rows {ron4mac}
+2020-01-22 [B] Refresh form token when admin tools process for extra long times {ron4mac}
+2019-12-29 [A] Add bridge compatibility for SMF2.0.x versions greater than 2.0.15 {ron4mac}
+2019-12-07 [M] Update remaining old class constructors to new style {Dukecz}
+2019-11-08 [B] Abort install if no PHP XML parser cabability {ron4mac}
+2019-08-09 [B] Capture and display admin tool critical errors {ron4mac}
+2019-07-06 [B] Show hidden invalid fields when submitting admin config form {ron4mac}
+2019-06-05 [A] Updated Estonian language file (user contribution) {eenemeenemuu}
+2019-04-17 [C] Added title to intermediate-sized image, changed alt attritube (thread ID 79654) {eenemeenemuu}
+2019-03-28 [B] Correct regex for valid file name in showthumb.php {ron4mac}
+2019-03-12 [M] Only build filmstrip if it will be displayed {ron4mac}
+2019-03-11 [B] Remove unwarranted urldecode() in theme_html_picture() {ron4mac}
+2019-03-04 [M] Fail when CONFIG table cannot be read from DB {ron4mac}
+2019-01-26 [B] Correct upload issue by removing memory_limit from HTML5 max upload size calculation {ron4mac}
+2018-12-22 [O,M] Updated version check to a functioning condition {ron4mac}
+2018-12-22 [O,A] Changed Admin Tools to drop-in widgets {ron4mac}
+2018-12-21 [S] Fixed XSS issue {eenemeenemuu}
+2018-12-20 [B] Catch system resource errors during HTML5 upload {ron4mac}
+2018-11-20 [O] Replace config max upload filesize with combo UI element(s) {ron4mac}
+2018-11-20 [B] Correct failure to report range error during config submission {ron4mac}
+2018-10-31 [A] Added hidden config option to choose if auto-orient is checked by default in upload forms {eenemeenemuu}
+2018-10-30 [B] Fixed misleading approval message if approval is not needed when using single upload form {eenemeenemuu}
+2018-10-17 [B] Correction to bridge file for SMF 2.1 (thanks maximus23) {ron4mac}
+2018-10-17 [B] Correct error when extracting EXIF from some Canon images (thanks jsh) {ron4mac}
+2018-09-20 [B] Provide english fallback for remote help (thanks tbsmark86) {ron4mac}
+2018-08-25 [B] Added charset support for PDO driver {chipviled}
+2018-07-25 [M] Replaced headers in files changed since 1.6.03 for use in '@since' versioning {ron4mac}
+2018-07-25 [A] Removed documentation from distribution; online (coppermine-gallery.net) access to docs with option for local copy {ron4mac}
+2018-07-25 [M] Advance supplied jQuery version from 1.4.2(1.4.4) to 1.7.2 {ron4mac}
+2018-06-22 [B] Corrections for database connection ports and bridging errors {ron4mac}
+2018-06-20 [A] Provide method for themes to have/use language files {ron4mac}
+2018-03-25 [B] Correct condition where some uploads did not generate email to admin, even though configured to do so {ron4mac}
+2018-03-07 [B] Fixed SET NAMES query for mysqli (thanks SiavaRu) {ron4mac}
+2018-01-26 [B] Fixed typo causing phpBB3 bridge fail when using bridge app custom groups (thread ID 79302) {eenemeenemuu}
+2018-01-16 [B] Fixed white screens with low privileged users clicking into open albums when using theme "curve" (thread ID 79283) {eenemeenemuu}
+2018-01-14 [B] Prevent install failure with PDO on PHP 7.1+ {ron4mac}
+2018-01-09 [A] Added plugin hooks to filter image sort parameters {ron4mac}
+2017-12-31 [A] Added bridge file for SMF 2.1 {dpaulat}
+2017-12-30 [M] Removed extraneous bridge files {ron4mac}
+2017-12-06 [B] Don't require php EXIF extension during upload {ron4mac}
+2017-12-04 [B] Fixed bridge emergency recovery {eenemeenemuu}
+2017-11-23 [A] Allow for plugin authors to include remote .js and .css files {ron4mac}
+2017-11-23 [A] Rewrite js_include() to allow remote URLs {ron4mac}
+2017-11-23 [A] Added utility function to determine if a string is in the form or a URL {ron4mac}
+2017-11-21 [D] Updating documentation to reflect switch from Subversion on sourceforge.net to Git at github.com {eenemeenemuu}
+2017-10-23 [B] Relax sql modes for successful database update on mysql 5.7 {ron4mac}
+2017-10-23 [B] Filter database errors during update so 'real' errors are reported {ron4mac}
+2017-10-23 [B] Remove (at least one) cause of blank screen when database access error {ron4mac}
+2017-08-28 [B,M] Remove spinbutton js for config screen; make number fields HTML5 elements {ron4mac}
+2017-07-26 [O] Use mysqli OO methods in mysqli driver {ron4mac}
+2017-07-04 [D] Added some explanation about FTP transfer modes and versioncheck {eenemeenemuu}
+2017-06-26 [O] Improve uploading error handling/response {ron4mac}
+2017-06-23 [B] Correct showthumb.php failure on PHP7.1 {ron4mac}
+2017-06-22 [B] Keep from failing when asked to free a db result that is not a result {ron4mac}
+2017-06-18 [M] Use 'random_bytes' in password hash generation instead of deprecated mcrypt {ron4mac}
+2017-05-25 [B] Correct bridge query test failure (thread ID 79053) {ron4mac}
+2017-04-24 [B] Correct error getting dbtype as pdo:mysql when updating {ron4mac}
+2017-04-21 [B] When dbtype not set, default to mysqli for initial connect (PHP7 happy) {ron4mac}
+2017-04-21 [M] With SQL update, modify CPG_users/user_password to varchar(255) {ron4mac}
+2017-03-30 [C] Generate decimal % widths in thumbnail view (Github issue #12) {ron4mac}
+2017-03-29 [B] Correction for strict SQL DISTINCT use (thread ID 78952 msg 383016) {ron4mac}
+2017-03-29 [M] Improve mysqli & pdo:mysql error reporting {ron4mac}
+2017-03-12 [B] Correct use of default database when bridged (Github issue #11) {ron4mac}
+2017-02-15 [S] Fixed possible directory traversal vulnerability (thread ID 78978) {eenemeenemuu}
+2017-01-28 [B] Correct 'zero' datetime values in database during update so ALTER TABLE does not fail {ron4mac}
+2017-01-16 [O] Use one-time declared define for jQuery version path {ron4mac}
+2017-01-06 [B] Keep cpg_die() from failing under PHP7 {ron4mac}
+2017-01-05 [S] Fixed possible shell execution issue due to outdated PHPMailer {ron4mac}
+2016-12-31 [M] Updated doc plugin tutorials (removed simplest) {ron4mac}
+2016-12-29 [O] Removed hard-coded theme directory name from themes; provides user more convenient theme copy {ron4mac}
+2016-12-29 [B] Corrected a few language issues found by lang_check.php {ron4mac}
+2016-12-22 [B] Added code for vBulletin alternate dbase port (Github issue #7) {ron4mac}
+2016-12-22 [B] Fixed invocation of graphics tool during auto-orientation of image {ron4mac}
+2016-12-22 [A] Added plugin filter hook "theme_name" to allow plugins to set theme dynamically {ron4mac}
+2016-10-24 [B,C] HTML5 video - fix autoplay, improve layout render {ron4mac}
+2016-09-23 [S] Fixed possible arbitrary shell command execution {eenemeenemuu}
+2016-09-23 [S] Fixed possible SQL injection vulnerabilities {eenemeenemuu}
+2016-09-06 [O] Replaced hard-coded number "10000" with constant "FIRST_USER_CAT" (thread ID 78848) {eenemeenemuu}
+2016-07-19 [A] Added new options to "sort order of albums" (thread ID 78795) {eenemeenemuu}
+2016-05-24 [B] Correct possible failure to get update when curl must be used {ron4mac}
+2016-05-24 [C] Set table width to 100% on update.php {eenemeenemuu}
+2016-05-23 [B] Change data check method and notify admin of failed repository retrieval for version check {ron4mac}
+2016-05-22 [M] Corrected URL for repository file and adjusted link to repository {ron4mac}
+2016-05-20 [M] If can't get versioncheck XML file from Github, try getting it from coppermine-gallery.net {ron4mac}
+2016-05-20 [M] Get correct XML file from Github for versioncheck {ron4mac}
+2016-05-20 [M] Removed SVN keyword "revision" from all files {eenemeenemuu}
+2016-05-20 [B] Updated repository link {eenemeenemuu}
+2016-05-20 [M] Removed any reference to SVN revision from versioncheck {eenemeenemuu}
+2016-05-20 [D] Updated link in credits page (thread ID 78727) {eenemeenemuu}
+2016-05-18 [C] Removed some PHP notices during installation {eenemeenemuu}
+2016-05-18 [M] Improved plugin configuration action (pluginmgr) {ron4mac}
+2016-05-10 [M] Removed obsolete XP Publisher feature {ron4mac}
+2016-05-10 [M] Accomodate conversion of mysql_real_escape_string to cpg_db... {ron4mac}
+2016-05-06 [M] Don't show pre-release update versions (unless overridden) {ron4mac}
+2016-05-05 [M] Remove trailing php end tags (?>) {ron4mac}
+2016-05-05 [M] Perform cursory writeable directory check before allowing update/upgrade action {ron4mac}
+2016-05-04 [M] Only show plugin manager upload feature if ZLib is available {ron4mac}
+2016-05-04 [B] Repair include/zip.lib.php, allowing it to extract files (for plugin manager) {ron4mac}
+2016-05-03 [M] Fully enabled updater/upgrader, allowing pre-releases with warning {ron4mac}
+2016-04-27 [M] Improved cpg_db_ function compatabilities {ron4mac}
+2016-04-25 [A] Added plugin compatibility include file {ron4mac}
+2016-04-19 [A] Added plugin enable/disable feature {ron4mac}
+2016-03-22 [M] Put code in place to not offer pre-releases as a scripted upgrade choice {ron4mac}
+2016-03-22 [C] Use nl2br() in upgrader for release body text {ron4mac}
+2016-03-18 [B] Don't die during check for updates when there is no access to Github {ron4mac}
+2016-03-17 [A] Integrated 'updates available' notification and scripted update capability {ron4mac}
+2016-03-16 [A] Added beginning of tool for scripted upgrades (upgrader.php) {ron4mac}
+2016-03-16 [M] Cleaned up some defunct swf stuff and improved upgrading over 1.5x {ron4mac}
+2016-03-13 [A] In admin config, only show ImageMagick settings if ImageMagick method is selected {ron4mac}
+2016-03-12 [A] Added checkbox option for auto-orient to upload methods (and batch-add) {ron4mac}
+2016-03-11 [D] Updated README.txt {ron4mac}
+2016-03-11 [A] Formally added Imagick Extension as an image manipulation option {ron4mac}
+2016-03-09 [B] Corrected issues with SWF upload button UI {ron4mac}
+2016-03-06 [A] Added automatic image orientation during upload of images {ron4mac}
+2016-03-02 [B] Corrected a problem where some server/PHP environments would hang at step 9 of install {ron4mac}
+2016-03-01 [M,O] Moved all image manipulation code into 'ImageTool' object classes {ron4mac}
+2016-02-21 [B] Repaired 'spinButton' code and CSS (should be made into standard HTML5 elements) {ron4mac}
+2016-02-12 [M] Changed default cookie name to 'cpg16x' {ron4mac}
+2016-01-27 [B,M] Made compatible with PHP7 [ class constructor, split(), mis-placed break ] {ron4mac}
+2016-01-24 [A] Added 'change_values' function to admin tools, removing need for 'del_titles' {ron4mac}
+2016-01-22 [B] Corrected array name typo in section of french.php {ron4mac}
+2016-01-22 [B] Resolved update conflict with older html5upload plugin {ron4mac}
+2016-01-21 [A] Added example of using 'config_action' to sample plugin {ron4mac}
+2016-01-20 [O] Provided option to cpg_config_set() for Db insertion if item not set in $CONFIG {ron4mac}
+2016-01-18 [A] Added plugin 'config_action' setting used by plugin manager to present plugin configuration {ron4mac}
+2016-01-18 [A] Implemented uploading via core enabled plugins using HTML5, SWF and SINGLE {ron4mac}
+2016-01-13 [A] Implemented database abstraction allowing use of MYSQLI, MYSQL(PDO), or MYSQL {ron4mac}
+2016-01-13 [M] Updated header information to reflect current year 2016 {ron4mac}
+2015-11-11 [M] Updated header information to reflect current year {eenemeenemuu}
+2015-11-04 [M] Abstracted Inspekt and CPGPluginAPI classes, changed PHP minimum to 5.0, cleaned up various PHP complaints {ron4mac}
+2015-11-04 [B] Corrected install not completing {ron4mac}
+2015-09-23 [M] Converted plugins "link_target", "onlinestats", "opensearch" and "usergal_alphatabs" to standalone plugins and removed from Coppermine package {eenemeenemuu}
+2015-09-23 [D] Updated docs and template plugin regarding i18n of plugins {eenemeenemuu}
+2015-09-18 [A] Load plugin language files, if available {eenemeenemuu}
+2015-09-16 [A] Display confirmation message when adding/removing pictures to/from favorites (thread ID 78394) {eenemeenemuu}
+2015-09-08 [A] Better double vote prevention if detailed vote statistics are enabled in the config {eenemeenemuu}
+2015-09-08 [B] Fixed broken referrer feature (thread ID 78385) {eenemeenemuu}
+2015-08-31 [A] Added config option to set default value for album property "Visitors can upload files" (thread ID 78355) {eenemeenemuu}
+2015-08-31 [B] Fixed not processed variable in db_input.php (thread ID 78348) {eenemeenemuu}
+2015-07-27 [B] Fixed database error if meta albums are viewed with invalid or missing parameters (thread ID 78067) {eenemeenemuu}
+2015-07-23 [A] Added hidden feature to adjust log file retention (thread ID 78309) {eenemeenemuu}
+2015-07-07 [B] Fixed album sort order for "first level" albums (thread ID 77314) {eenemeenemuu}
+2015-07-06 [B] Fixed GIF support check when resizing images (thread ID 78279) {eenemeenemuu}
+2015-06-10 [B] Fixed typo in user manager that created invalid user passwords (thread ID 76021) {eenemeenemuu}
+2015-06-03 [A] Added config option to hide file count and disk space usage in user manager to increase performance (thread ID 78129) {eenemeenemuu}
+2014-10-07 [A] Added config option to display button next to album drop-down box to display only empty albums (thread ID 77824) {eenemeenemuu}
+2014-10-06 [A] Added config option to hide already existing files on batch-add interface (thread ID 77671) {eenemeenemuu}
+2014-06-27 [C] Display exactly which account data needs to be entered to authenticate in update.php {eenemeenemuu}
+2014-06-27 [O] Don't populate language array manually, but load English language file if authentification is skipped in update.php {eenemeenemuu}
+2014-06-25 [A] Salt user passwords (thread ID 76021) {eenemeenemuu}
+2014-05-06 [C] Fixed typo (thread ID 77494) {eenemeenemuu}
+2014-03-12 [A] Added language string 'announcement_thread' to English language file {eenemeenemuu}
+2014-01-29 [C] Altered font size calculation of clickable keyword list (thread ID 76928) {eenemeenemuu}
+2014-01-21 [A] Added config option to regard upload time of linked files in album info (thread ID 77021) {eenemeenemuu}
+2012-11-28 [A] Added config option to display all files after flash upload (thread ID 75588) {eenemeenemuu}
+2012-07-06 [A] Added config option to toggle the display of the sort buttons on the thumbnail page {eenemeenemuu}
+2012-06-29 [A] Added config option to set sort order of albums (thread ID 75112) {eenemeenemuu}
+2011-12-28 [S] Fixed a potential path disclosure vulnerability in core plugin configuration files (thread ID 74125) {Abbas}
+2011-10-07 [A] Create sub-directory named according to the album ID in users' upload directories during HTTP upload {eenemeenemuu}
+2011-10-07 [B] Updated embedded jQuery library from version 1.4.2 to 1.4.4 {eenemeenemuu}
+2010-11-13 [O] Changed favourites zip download to build on disk instead of in memory {Nibbler}
+2010-10-02 [A] Added error message support for the batch add process {Nibbler}
+2010-09-26 [M] Removed support for GD1 (thread ID 66761) {Nibbler}
+2010-09-26 [O] No longer specify a MySQL engine - use the server default. {Nibbler}
+2010-09-20 [O] Updated jquery libraries 'elastic', 'datePicker', 'spinbox' {GauGau}
+2010-09-20 [O] Updated embedded jquery library from version 1.3.2 to 1.4.2 {GauGau}
+2010-09-16 [B] Fixed registration process if both email verification and admin activation enabled (thread ID 67095) {eenemeenemuu}
